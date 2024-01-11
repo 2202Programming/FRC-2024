@@ -8,6 +8,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.MotorTrigger;
+import frc.robot.commands.MotorTriggerOrDash;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -60,7 +61,7 @@ public class RobotContainer {
    */
   public Command getTeleCommand() {
     // An example command will be run in autonomous
-    return new MotorTrigger(m_driverController, m_exampleSubsystem);
+    return new MotorTriggerOrDash(m_driverController, m_exampleSubsystem);
   }
 
   /**

@@ -13,8 +13,11 @@ public class ExampleSubsystem extends SubsystemBase {
     //Instantiations 
   final CANSparkMax mtr = new CANSparkMax(20, CANSparkMax.MotorType.kBrushless);
 
+  private double currentMotorSpeed;
+
   public ExampleSubsystem() {
     motor_config(mtr, false);
+    currentMotorSpeed = mtr.get();
   }
 
 
@@ -31,10 +34,16 @@ public class ExampleSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
   }
 
   public void setMotorSpeed(double motorSpeed){
     mtr.set(motorSpeed);
+    currentMotorSpeed = motorSpeed;
+  }
+
+  public double getMotorSpeed(){
+    return currentMotorSpeed;
   }
 
   void motor_config(CANSparkMax mtr, boolean inverted) {
