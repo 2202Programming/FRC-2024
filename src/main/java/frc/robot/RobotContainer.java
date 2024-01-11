@@ -50,7 +50,7 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
   }
 
   /**
@@ -60,7 +60,7 @@ public class RobotContainer {
    */
   public Command getTeleCommand() {
     // An example command will be run in autonomous
-    return new MotorTrigger(m_driverController);
+    return new MotorTrigger(m_driverController, m_exampleSubsystem);
   }
 
   /**
@@ -68,8 +68,8 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  //public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
-  }
+  //  return Autos.exampleAuto(m_exampleSubsystem);
+  //}
 }

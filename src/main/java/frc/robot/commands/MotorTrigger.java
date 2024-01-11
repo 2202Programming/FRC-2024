@@ -7,19 +7,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.ExampleSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class MotorTrigger extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final CommandXboxController m_driverController;
+  private final ExampleSubsystem m_mtr;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MotorTrigger(CommandXboxController driverController) {
+  public MotorTrigger(CommandXboxController driverController, ExampleSubsystem mtr) {
     m_driverController = driverController;
+    m_mtr = mtr;
     // Use addRequirements() here to declare subsystem dependencies.
     //addRequirements(subsystem);
   }
@@ -31,6 +34,8 @@ public class MotorTrigger extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    //set motor to be left trigger %
+    m_mtr.setMotorSpeed(m_driverController.getLeftTriggerAxis());
     SmartDashboard.putNumber("Trigger Percent", m_driverController.getLeftTriggerAxis());
   }
 

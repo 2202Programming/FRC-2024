@@ -4,26 +4,19 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ExampleSubsystem extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  public ExampleSubsystem() {}
 
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public Command exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
+    //Instantiations 
+  final CANSparkMax mtr = new CANSparkMax(20, CANSparkMax.MotorType.kBrushless);
+
+  public ExampleSubsystem() {
+    motor_config(mtr, false);
   }
+
 
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
@@ -40,8 +33,14 @@ public class ExampleSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
+  public void setMotorSpeed(double motorSpeed){
+    mtr.set(motorSpeed);
   }
+
+  void motor_config(CANSparkMax mtr, boolean inverted) {
+    mtr.clearFaults();
+    mtr.restoreFactoryDefaults();
+    mtr.setInverted(inverted);
+ }
+
 }
