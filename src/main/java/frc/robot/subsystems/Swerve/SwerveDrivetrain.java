@@ -6,9 +6,7 @@ package frc.robot.subsystems.Swerve;
 
 import com.revrobotics.CANSparkMax;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -25,10 +23,6 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CAN;
@@ -38,7 +32,6 @@ import frc.robot.Constants.NTStrings;
 import frc.robot.Constants.WheelOffsets;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
-import frc.robot.subsystems.Sensors.PhotonVision;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem.EncoderID;
 import frc.robot.util.ModMath;
@@ -90,7 +83,6 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   // used to update postion esimates
   double kTimeoffset = .1; // [s] measurement delay from photonvis TODO:measure this???
-  private final PhotonVision photonVision;
   private final Limelight_Subsystem limelight;
   // Network tables
   private NetworkTable table;
@@ -157,7 +149,6 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   public SwerveDrivetrain() {
     sensors = RobotContainer.RC().sensors;
-    photonVision = RobotContainer.RC().photonVision;
     limelight = RobotContainer.RC().limelight;
     watchdog = new VisionWatchdog(3.0);
 
@@ -402,10 +393,6 @@ public class SwerveDrivetrain extends SubsystemBase {
     m_odometry.resetPosition(sensors.getRotation2d(), meas_pos, m_pose);
 
     // keep our vision pose estimators up to date
-    if (photonVision != null) {
-      // position and timestamp
-      photonVision.setInitialPose(new Pair<Pose2d, Double>(pose, 0.0));
-    }
     if (limelight != null) {
       limelight.setInitialPose(pose, 0.0);
     }
@@ -492,10 +479,6 @@ public class SwerveDrivetrain extends SubsystemBase {
       llPoseEstimatorUpdate();
     }
 
-    if (photonVision != null){
-      m_poseEstimator_pv.update(sensors.getRotation2d(), meas_pos); //this should happen every robot cycle, regardless of vision targets.
-      pvPoseEstimatorUpdate();
-    }
 
     //only update pose from imaging if max velocity is low enough
     //get center of robot velocity from sqrt of vX2 + vY2
@@ -527,7 +510,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     
 
     // WIP use other poseEstimator
-    if (limelight != null && photonVision != null)
+    if (limelight != null)
     {
       /*
       if (photonVision.hasAprilTarget() && pvPose != null){
@@ -550,16 +533,6 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   }
 
-  void pvPoseEstimatorUpdate(){
-    
-    if (photonVision.hasAprilTarget() ) {
-      // this should happen only if we have a tag in view
-      // OK if it is run only intermittanly.  Uses latency of vision pose.
-      m_poseEstimator_pv.addVisionMeasurement(photonVision.getPoseEstimate().getFirst(), photonVision.getVisionTimestamp());
-
-      pvPose = m_poseEstimator_pv.getEstimatedPosition();
-    }
-  }
 
   void llPoseEstimatorUpdate(){
     

@@ -8,6 +8,7 @@
 package frc.robot.subsystems.Sensors;
 
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -41,7 +42,7 @@ public class Sensors_Subsystem extends SubsystemBase {
    */
   private NetworkTable table;
   private NetworkTable positionTable;
-  
+
   private NetworkTableEntry nt_canUtilization;
   private NetworkTableEntry nt_canTxError;
   private NetworkTableEntry nt_canRxError;
@@ -51,15 +52,14 @@ public class Sensors_Subsystem extends SubsystemBase {
   private NetworkTableEntry nt_cancoder_fl;
   private NetworkTableEntry nt_cancoder_fr;
   private NetworkTableEntry nt_activeIMU;
-  
+
   private NetworkTableEntry nt_yaw;
   private NetworkTableEntry nt_roll;
   private NetworkTableEntry nt_pitch;
   private NetworkTableEntry nt_rotation;
 
-
   // Sensors
-  Pigeon2 m_pigeon;  
+  Pigeon2 m_pigeon;
   double[] m_xyz_dps = new double[3]; // rotation rates [deg/s]
 
   public static class RotationPositions {
@@ -88,11 +88,11 @@ public class Sensors_Subsystem extends SubsystemBase {
     }
   }
 
-  // CANCoders - monitor dt angles
-  CANcoder rot_encoder_bl = new CANcoder(CAN.DT_BL_CANCODER);
-  CANcoder rot_encoder_br = new CANcoder(CAN.DT_BR_CANCODER);
-  CANcoder rot_encoder_fl = new CANcoder(CAN.DT_FL_CANCODER);
-  CANcoder rot_encoder_fr = new CANcoder(CAN.DT_FR_CANCODER);
+  // CANcoders - monitor dt angles
+  CANcoder rot_encoder_bl = init(new CANcoder(CAN.DT_BL_CANCODER));
+  CANcoder rot_encoder_br = init(new CANcoder(CAN.DT_BR_CANCODER));
+  CANcoder rot_encoder_fl = init(new CANcoder(CAN.DT_FL_CANCODER));
+  CANcoder rot_encoder_fr = init(new CANcoder(CAN.DT_FR_CANCODER));
 
   // CAN monitoring
   CANStatus m_canStatus;
@@ -104,13 +104,13 @@ public class Sensors_Subsystem extends SubsystemBase {
   double m_roll;
   double m_pitch;
   double m_yaw;
-  //offsets measured at power up
-  final int BIAS_SAMPLES = 5; //[count]
-  final double BIAS_DELAY = 0.2; //[s]
-  double m_roll_bias;  //[deg]
-  double m_pitch_bias; //[deg]
-  double m_yaw_bias;   //[deg] measured, but not corrected for
-  
+  // offsets measured at power up
+  final int BIAS_SAMPLES = 5; // [count]
+  final double BIAS_DELAY = 0.2; // [s]
+  double m_roll_bias; // [deg]
+  double m_pitch_bias; // [deg]
+  double m_yaw_bias; // [deg] measured, but not corrected for
+
   double m_yaw_d;
   final RotationPositions m_rot = new RotationPositions();
 
@@ -121,7 +121,7 @@ public class Sensors_Subsystem extends SubsystemBase {
   final int NT_UPDATE_FRAME = 20;
   int log_counter = 0;
 
-  //set this to true to default to pigeon
+  // set this to true to default to pigeon
   public Pose2d autoStartPose;
   public Pose2d autoEndPose;
 
@@ -132,11 +132,15 @@ public class Sensors_Subsystem extends SubsystemBase {
     m_pigeon = new Pigeon2(CAN.PIGEON_IMU_CAN);
 
     // set all the CanCoders to 100ms refresh rate to save the can bus
-    //TODO: REVIEW NEEDED I think by default it is set to be 100 for phoenix 6
-    //rot_encoder_bl.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100, 100);
-    //rot_encoder_br.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100, 100);
-    //rot_encoder_fl.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100, 100);
-    //rot_encoder_fr.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100, 100);
+    // TODO: REVIEW NEEDED I think by default it is set to be 100 for phoenix 6
+    // rot_encoder_bl.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100,
+    // 100);
+    // rot_encoder_br.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100,
+    // 100);
+    // rot_encoder_fl.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100,
+    // 100);
+    // rot_encoder_fr.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100,
+    // 100);
 
     // setup network table
     table = NetworkTableInstance.getDefault().getTable("Sensors");
@@ -161,28 +165,27 @@ public class Sensors_Subsystem extends SubsystemBase {
     log();
   }
 
-
-  //@Override
+  // @Override
   public void calibrate() {
-    double roll_bias=0.0, pitch_bias=0.0, yaw_bias=0.0;
-    for (int i=0; i< BIAS_SAMPLES; i++)
-    {
-      //TODO: REVIEW NEEDED: https://api.ctr-electronics.com/phoenix6/release/java/com/ctre/phoenix6/hardware/Pigeon2.html#getRotation3d()
-      roll_bias +=  m_pigeon.getRotation3d().getX();//Roll
-      pitch_bias +=  m_pigeon.getRotation3d().getY();//Pitch
-      yaw_bias += m_pigeon.getRotation3d().getZ();//Yaw
+    double roll_bias = 0.0, pitch_bias = 0.0, yaw_bias = 0.0;
+    for (int i = 0; i < BIAS_SAMPLES; i++) {
+      // TODO: REVIEW NEEDED:
+      // https://api.ctr-electronics.com/phoenix6/release/java/com/ctre/phoenix6/hardware/Pigeon2.html#getRotation3d()
+      roll_bias += m_pigeon.getRotation3d().getX();// Roll
+      pitch_bias += m_pigeon.getRotation3d().getY();// Pitch
+      yaw_bias += m_pigeon.getRotation3d().getZ();// Yaw
       Timer.delay(BIAS_DELAY);
     }
-    //save bias value to subtract from live measurements
-    m_roll_bias =  roll_bias/(double)BIAS_SAMPLES;
-    m_pitch_bias = pitch_bias/(double)BIAS_SAMPLES;
-    m_yaw_bias = yaw_bias/(double)BIAS_SAMPLES;
+    // save bias value to subtract from live measurements
+    m_roll_bias = roll_bias / (double) BIAS_SAMPLES;
+    m_pitch_bias = pitch_bias / (double) BIAS_SAMPLES;
+    m_yaw_bias = yaw_bias / (double) BIAS_SAMPLES;
   }
 
   @Override
-  public void periodic() {  
-    //CCW positive, inverting here to match all the NavX code previously written.
-    m_yaw = ModMath.fmod360_2(-m_pigeon.getRotation3d().getZ()); 
+  public void periodic() {
+    // CCW positive, inverting here to match all the NavX code previously written.
+    m_yaw = ModMath.fmod360_2(-m_pigeon.getRotation3d().getZ());
     m_pitch = m_pigeon.getRotation3d().getY() - m_pitch_bias;
     m_roll = m_pigeon.getRotation3d().getX() - m_roll_bias;
     getRotationPositions(m_rot);
@@ -192,7 +195,6 @@ public class Sensors_Subsystem extends SubsystemBase {
     log();
   }
 
-  
   void setupSimulation() {
     // m_gyroSim_ahrs = new AHRS_GyroSim(m_ahrs);
     // m_gyroSim SimDevice
@@ -204,8 +206,8 @@ public class Sensors_Subsystem extends SubsystemBase {
   }
 
   public void log() {
-    if ((log_counter % NT_UPDATE_FRAME)==0) {
-     
+    if ((log_counter % NT_UPDATE_FRAME) == 0) {
+
       CANJNI.getCANStatus(m_canStatus);
       nt_canUtilization.setDouble(m_canStatus.percentBusUtilization);
       nt_canRxError.setNumber(m_canStatus.receiveErrorCount);
@@ -216,7 +218,7 @@ public class Sensors_Subsystem extends SubsystemBase {
       nt_cancoder_fl.setDouble(m_rot.front_left);
       nt_cancoder_fr.setDouble(m_rot.front_right);
       nt_activeIMU.setString(c_gryo_status.toString());
-     
+
       nt_yaw.setDouble(getYaw());
       nt_rotation.setDouble(getRotation2d().getDegrees());
       nt_roll.setDouble(getRoll());
@@ -224,14 +226,13 @@ public class Sensors_Subsystem extends SubsystemBase {
     }
   }
 
-
   // All accessors return values measured in the periodic()
-  public double getRoll() {   
-      return m_roll;
+  public double getRoll() {
+    return m_roll;
   }
 
   public double getPitch() {
-      return m_pitch;
+    return m_pitch;
   }
 
   public double getPitchRate() {
@@ -246,15 +247,16 @@ public class Sensors_Subsystem extends SubsystemBase {
     return m_xyz_dps[2];
   }
 
-  /* not sure why these would be needed - Mr.L 2//22/2023
-  public double getTotalTilt() {
-    return Math.sqrt(Math.pow(getPitch(), 2) + Math.pow(getRoll(), 2));
-  }
-
-  public double getTotalTiltRate() {
-    return Math.sqrt(Math.pow(getPitchRate(), 2) + Math.pow(getRollRate(), 2));
-  }
-  */
+  /*
+   * not sure why these would be needed - Mr.L 2//22/2023
+   * public double getTotalTilt() {
+   * return Math.sqrt(Math.pow(getPitch(), 2) + Math.pow(getRoll(), 2));
+   * }
+   * 
+   * public double getTotalTiltRate() {
+   * return Math.sqrt(Math.pow(getPitchRate(), 2) + Math.pow(getRollRate(), 2));
+   * }
+   */
 
   /**
    * Return the heading of the robot in degrees.
@@ -273,20 +275,21 @@ public class Sensors_Subsystem extends SubsystemBase {
    *
    * @return the current heading of the robot in degrees.
    */
-    public double getYaw() {
-      return m_yaw;
-     }
+  public double getYaw() {
+    return m_yaw;
+  }
 
   public void setYaw(double yawDegrees) {
     m_pigeon.setYaw(yawDegrees);
   }
+
   public void setYaw(Rotation2d rotation) {
     setYaw(rotation.getDegrees());
   }
 
-
-/**
-   * Return the heading of the robot as a {@link edu.wpi.first.math.geometry.Rotation2d}.
+  /**
+   * Return the heading of the robot as a
+   * {@link edu.wpi.first.math.geometry.Rotation2d}.
    *
    * <p>
    * The angle is continuous, that is it will continue from 360 to 361 degrees.
@@ -308,7 +311,7 @@ public class Sensors_Subsystem extends SubsystemBase {
    */
   // @Override
   public Rotation2d getRotation2d() {
-    return Rotation2d.fromDegrees(-m_yaw);  //note sign
+    return Rotation2d.fromDegrees(-m_yaw); // note sign
   }
 
   /**
@@ -325,11 +328,14 @@ public class Sensors_Subsystem extends SubsystemBase {
    */
   // @Override
   public double getRate() {
-        return m_yaw_d;
+    return m_yaw_d;
   }
 
   public RotationPositions getRotationPositions(RotationPositions pos) {
-
+    // pos.back_left = rot_encoder_bl.getAbsolutePosition(); in phohenix 5 range is
+    // (-180,180)
+    // https://api.ctr-electronics.com/phoenix6/release/java/com/ctre/phoenix6/hardware/core/CoreCANcoder.html#getPosition()
+    // TODO: REVIEW NEEDED
     pos.back_left = rot_encoder_bl.getAbsolutePosition().getValueAsDouble();
     pos.back_right = rot_encoder_br.getAbsolutePosition().getValueAsDouble();
     pos.front_left = rot_encoder_fl.getAbsolutePosition().getValueAsDouble();
@@ -353,6 +359,25 @@ public class Sensors_Subsystem extends SubsystemBase {
     }
   }
 
+  /**
+   * init() - setup cancoder the way we need them.
+   * 
+   * @param c
+   * @return CANCoder just initialized
+   */
+  // TODO: REVIEW NEEDED
+  CANcoder init(CANcoder c) {
+    CANcoderConfiguration configs = new CANcoderConfiguration();
+    // According to doc this should report absolute position from [-0.5, 0.5)
+    // rotations
+    // (clock wise is positive)
+    configs.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
+    configs.MagnetSensor.MagnetOffset = 0.0;
+    configs.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive;
+    c.getConfigurator().apply(configs);
+    c.clearStickyFaults();
+    return c;
+  }
 
   public void setAutoStartPose(Pose2d pose) {
     autoStartPose = new Pose2d(pose.getTranslation(), pose.getRotation());
@@ -388,9 +413,5 @@ public class Sensors_Subsystem extends SubsystemBase {
      */
     // RobotContainer.RC().drivetrain.resetAnglePose(pose.getRotation().minus(rotError));
     System.out.println("***Corrected End Pose: " + pose);
-
   }
-
-
-
 }

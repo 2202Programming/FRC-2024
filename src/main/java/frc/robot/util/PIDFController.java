@@ -2,7 +2,7 @@ package frc.robot.util;
 
 import static frc.robot.Constants.DT;
 
-import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -18,8 +18,8 @@ import edu.wpi.first.util.sendable.SendableBuilder;
  * 
  */
 public class PIDFController extends PIDController {
-    // hardware refs if used    
-    SparkMaxPIDController sparkMaxController = null;
+    // hardware refs if used
+    SparkPIDController sparkMaxController = null;
     double m_smartMaxVel = 0.1;
     double m_smartMaxAccel = .01;
 
@@ -36,10 +36,10 @@ public class PIDFController extends PIDController {
     }
 
     public PIDFController(PIDFController src) {
-        this(src.getP(), src.getI(), src.getD(), src.getF(), src.getPeriod() );
+        this(src.getP(), src.getI(), src.getD(), src.getF(), src.getPeriod());
     }
 
-    public void setPIDF(double kP, double kI, double kD, double kF){
+    public void setPIDF(double kP, double kI, double kD, double kF) {
         setPID(kP, kI, kD);
         setF(kF);
     }
@@ -53,18 +53,19 @@ public class PIDFController extends PIDController {
         m_Kf = Kf;
     }
 
-   public void setIzone(double izone) {
-      this.m_izone = Math.abs(izone);
-      // PIDController does support asymetric, but sparkmax doesn't
-      if ((getI() != 0.0) && (m_izone != 0.0)) {
-        //PIDF integration is normalized +- 1.0
-        super.setIntegratorRange(-m_izone, m_izone);
-      }
+    public void setIzone(double izone) {
+        this.m_izone = Math.abs(izone);
+        // PIDController does support asymetric, but sparkmax doesn't
+        if ((getI() != 0.0) && (m_izone != 0.0)) {
+            // PIDF integration is normalized +- 1.0
+            super.setIntegratorRange(-m_izone, m_izone);
+        }
     }
 
     public double getIzone() {
-      return m_izone; 
+        return m_izone;
     }
+
     /**
      * Returns the next output of the PID controller.
      *
@@ -73,7 +74,7 @@ public class PIDFController extends PIDController {
      */
     @Override
     public double calculate(double measurement, double setpoint) {
-        return super.calculate(measurement, setpoint) + (m_Kf*setpoint);
+        return super.calculate(measurement, setpoint) + (m_Kf * setpoint);
     }
 
     /**
@@ -102,60 +103,59 @@ public class PIDFController extends PIDController {
 
     /**
      * 
-     * copyTo()  copies this pid's values down to a hardward PID implementation
-     * @param dest  device 
-     * @param slot  control slot on device
+     * copyTo() copies this pid's values down to a hardward PID implementation
      * 
-     * optional smartMax vel and accel limits may be given
-     * @param smartMaxVel  optional, 0.1 [units/s]
-     * @param smartMaxAccel optional  0.01 [units/s^2]
+     * @param dest          device
+     * @param slot          control slot on device
+     * 
+     *                      optional smartMax vel and accel limits may be given
+     * @param smartMaxVel   optional, 0.1 [units/s]
+     * @param smartMaxAccel optional 0.01 [units/s^2]
      */
-     public void copyTo(SparkMaxPIDController dest, int slot) {
+    public void copyTo(SparkPIDController dest, int slot) {
         copyTo(dest, slot, m_smartMaxVel, m_smartMaxAccel);
-     }
+    }
 
-    public void copyTo(SparkMaxPIDController dest, int slot, double smartMaxVel, double smartMaxAccel) {
-      dest.setP(this.getP(), slot);
-      dest.setI(this.getI(), slot);
-      dest.setD(this.getD(), slot);
-      dest.setFF(this.getF(), slot);
-      dest.setIZone(this.getIzone(), slot);
-      dest.setSmartMotionMaxVelocity(smartMaxVel, slot);
-      dest.setSmartMotionMaxAccel(smartMaxAccel, slot);
-      sparkMaxController = dest;
-      m_smartMaxVel = smartMaxVel;
-      m_smartMaxAccel = smartMaxAccel;
+    public void copyTo(SparkPIDController dest, int slot, double smartMaxVel, double smartMaxAccel) {
+        dest.setP(this.getP(), slot);
+        dest.setI(this.getI(), slot);
+        dest.setD(this.getD(), slot);
+        dest.setFF(this.getF(), slot);
+        dest.setIZone(this.getIzone(), slot);
+        dest.setSmartMotionMaxVelocity(smartMaxVel, slot);
+        dest.setSmartMotionMaxAccel(smartMaxAccel, slot);
+        sparkMaxController = dest;
+        m_smartMaxVel = smartMaxVel;
+        m_smartMaxAccel = smartMaxAccel;
     }
 
     // compares an updated PIDF with this one and updates it and the hardware
-    public void copyChangesTo(SparkMaxPIDController dest, int slot, PIDFController updated) {
+    public void copyChangesTo(SparkPIDController dest, int slot, PIDFController updated) {
         // update pid values that have changed
-        if (getP() != updated.getP() ){
+        if (getP() != updated.getP()) {
             setP(updated.getP());
             dest.setP(getP(), slot);
         }
 
-        if (getI() != updated.getI() ){
+        if (getI() != updated.getI()) {
             setI(updated.getI());
             dest.setI(getI(), slot);
         }
 
-        if (getD() != updated.getD() ){
+        if (getD() != updated.getD()) {
             setD(updated.getD());
             dest.setD(getD(), slot);
         }
 
-        if (getF() != updated.getF() ){
+        if (getF() != updated.getF()) {
             setF(updated.getF());
             dest.setFF(getF(), slot);
         }
 
-        if (getIzone() != updated.getIzone() ){
+        if (getIzone() != updated.getIzone()) {
             setIzone(updated.getIzone());
             dest.setIZone(getIzone(), slot);
         }
     }
-
-
 
 }

@@ -5,7 +5,7 @@ import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.REVLibError;
-import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
@@ -37,8 +37,8 @@ public class SwerveModuleMK3 {
   // Rev devices
   private final CANSparkMax driveMotor;
   private final CANSparkMax angleMotor;
-  private final SparkMaxPIDController driveMotorPID;
-  private final SparkMaxPIDController angleMotorPID; // sparkmax PID can only use internal NEO encoders
+  private final SparkPIDController driveMotorPID;
+  private final SparkPIDController angleMotorPID; // sparkmax PID can only use internal NEO encoders
   private final RelativeEncoder angleEncoder; // aka internalAngle
   private final RelativeEncoder driveEncoder;
   // CTRE devices
@@ -58,21 +58,22 @@ public class SwerveModuleMK3 {
   // NetworkTables
   String NTPrefix;
 
-  // m_ -> measurements made every period - public so they can be pulled for network
+  // m_ -> measurements made every period - public so they can be pulled for
+  // network
   // tables...
   double m_internalAngle; // measured Neo unbounded [deg]
   double m_externalAngle; // measured CANCoder bounded +/-180 [deg]
-  double m_velocity;      // measured velocity [wheel's-units/s] [m/s]
-  double m_position;      // measure wheel positon for calibraiton  [m]
-  double m_angle_target;  // desired angle unbounded [deg]
-  double m_vel_target;    // desired velocity [wheel's-units/s]  [m/s]  
+  double m_velocity; // measured velocity [wheel's-units/s] [m/s]
+  double m_position; // measure wheel positon for calibraiton [m]
+  double m_angle_target; // desired angle unbounded [deg]
+  double m_vel_target; // desired velocity [wheel's-units/s] [m/s]
   /**
    * SwerveModuleMK3 -
    * 
    * SmartMax controllers used for angle and velocity motors.
    * 
    * SmartMax Velocity mode is used to close the velocity loop. Units will match
-   * the units of the drive-wheel-diameter. 
+   * the units of the drive-wheel-diameter.
    * 
    * Angle in degrees is controlled using position mode on the SmartMax. The angle
    * positon is not constrainted to +/- 180 degrees because the Neo has 32bit
@@ -99,7 +100,7 @@ public class SwerveModuleMK3 {
     angleMotor = angleMtr;
     absEncoder = absEnc;
     myprefix = prefix;
-    
+
     // cc is the chassis config for all our pathing math
     cc = RobotContainer.RC().robotSpecs.getChassisConfig();
 
@@ -118,7 +119,7 @@ public class SwerveModuleMK3 {
     driveEncoder = driveMotor.getEncoder();
     // set driveEncoder to use units of the wheelDiameter, meters
     driveEncoder.setPositionConversionFactor(Math.PI * cc.wheelDiameter / cc.kDriveGR); // mo-rot to wheel units
-    driveEncoder.setVelocityConversionFactor((Math.PI * cc.wheelDiameter / cc.kDriveGR) / 60.0); // mo-rpm wheel units 
+    driveEncoder.setVelocityConversionFactor((Math.PI * cc.wheelDiameter / cc.kDriveGR) / 60.0); // mo-rpm wheel units
     sleep(100);
     // Angle Motor config
     angleMotor.setInverted(invertAngleMtr);
@@ -183,14 +184,12 @@ public class SwerveModuleMK3 {
   }
 
   // PID accessor for use in Test/Tune Commands
-  public void setDrivePID(PIDFController temp)
-  {
-    temp.copyTo(driveMotorPID, kSlot); 
+  public void setDrivePID(PIDFController temp) {
+    temp.copyTo(driveMotorPID, kSlot);
   }
 
-  public void setAnglePID(PIDFController temp)
-  {
-    temp.copyTo(angleMotorPID, kSlot); 
+  public void setAnglePID(PIDFController temp) {
+    temp.copyTo(angleMotorPID, kSlot);
   }
 
   /**
@@ -208,7 +207,8 @@ public class SwerveModuleMK3 {
     absEncoderConfiguration.withMagnetSensor(new MagnetSensorConfigs());
     absEncoder.getConfigurator().apply(absEncoderConfiguration);
 
-    System.out.println("Module "+myprefix+": Set Offset="+offsetDegrees+". Initial CANCODER absolute angle="+absEncoder.getAbsolutePosition()+", Initial CANCODER angle="+absEncoder.getPosition());
+    System.out.println("Module " + myprefix + ": Set Offset=" + offsetDegrees + ". Initial CANCODER absolute angle="
+        + absEncoder.getAbsolutePosition() + ", Initial CANCODER angle=" + absEncoder.getPosition());
 
     // if different, update
     if (offsetDegrees != absEncoderConfiguration.MagnetSensor.MagnetOffset) {
@@ -216,7 +216,7 @@ public class SwerveModuleMK3 {
       absEncoder.getConfigurator().apply(absEncoderConfiguration);
     }
 
-    System.out.println("Module "+myprefix+": CANCODER Angle after offset programmed="+absEncoder.getPosition());
+    System.out.println("Module " + myprefix + ": CANCODER Angle after offset programmed=" + absEncoder.getPosition());
 
   }
 
@@ -255,7 +255,7 @@ public class SwerveModuleMK3 {
 
     realityCheckSparkMax(angleCmdInvert * pos_deg, temp);
 
-    System.out.println("Module "+myprefix+": NEO post-calibrate angle="+angleEncoder.getPosition());
+    System.out.println("Module " + myprefix + ": NEO post-calibrate angle=" + angleEncoder.getPosition());
 
   }
 
@@ -343,11 +343,9 @@ public class SwerveModuleMK3 {
     }
   }
 
-  public void simulationPeriodic()
-  {
+  public void simulationPeriodic() {
 
   }
-
 
   /**
    * This is the angle being controlled, so it should be thought of as the real
@@ -380,25 +378,25 @@ public class SwerveModuleMK3 {
 
   /**
    * 
-   * @return velocity wheel's units [m] 
+   * @return velocity wheel's units [m]
    */
   public double getVelocity() {
     return m_velocity;
   }
 
- /**
+  /**
    * 
-   * @return velocity wheel's units [m] 
+   * @return velocity wheel's units [m]
    */
   public double getPosition() {
     return m_position;
   }
 
-  //Expose the position with wpi class, [m], [rad]
+  // Expose the position with wpi class, [m], [rad]
   public SwerveModulePosition getSMPosition() {
     return new SwerveModulePosition(m_position, getAngleRot2d());
   }
-  
+
   /**
    * Set the speed + rotation of the swerve module from a SwerveModuleState object
    * 
@@ -406,10 +404,14 @@ public class SwerveModuleMK3 {
    *                     of the module
    */
   public void setDesiredState(SwerveModuleState state) {
-    SwerveModuleState m_state = SwerveModuleState.optimize(state, Rotation2d.fromDegrees(m_internalAngle)); // should favor reversing direction over
-                                                                                // turning > 90 degrees
+    SwerveModuleState m_state = SwerveModuleState.optimize(state, Rotation2d.fromDegrees(m_internalAngle)); // should
+                                                                                                            // favor
+                                                                                                            // reversing
+                                                                                                            // direction
+                                                                                                            // over
+    // turning > 90 degrees
 
-    state = m_state;   //uncomment to use optimized angle command
+    state = m_state; // uncomment to use optimized angle command
     // use position control on angle with INTERNAL encoder, scaled internally for
     // degrees
     m_angle_target = m_state.angle.getDegrees();
@@ -477,20 +479,20 @@ public class SwerveModuleMK3 {
     }
   }
 
-  SparkMaxPIDController getDrivePID(){
+  SparkPIDController getDrivePID() {
     return driveMotorPID;
   }
 
-  SparkMaxPIDController getAnglePID(){
+  SparkPIDController getAnglePID() {
     return angleMotorPID;
   }
 
-  public void setBrakeMode(){
+  public void setBrakeMode() {
     driveMotor.setIdleMode(IdleMode.kBrake);
     angleMotor.setIdleMode(IdleMode.kBrake);
   }
 
-  public void setCoastMode(){
+  public void setCoastMode() {
     driveMotor.setIdleMode(IdleMode.kCoast);
     angleMotor.setIdleMode(IdleMode.kCoast);
   }

@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
-import frc.robot.subsystems.Sensors.PhotonVision;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
@@ -27,7 +26,6 @@ public class RobotContainer {
 
   // Subsystems
   public final HID_Xbox_Subsystem dc;
-  public final PhotonVision photonVision;
   public final Limelight_Subsystem limelight;
   public final Sensors_Subsystem sensors;
   public final SwerveDrivetrain drivetrain;
@@ -52,21 +50,18 @@ public class RobotContainer {
         // Construct sub-systems based on robot Name Specs
         switch (robotSpecs.myRobotName) {
           case CompetitionBot2023:
-            photonVision = null;// new PhotonVision();
             limelight = new Limelight_Subsystem();
             sensors = new Sensors_Subsystem();
             drivetrain = new SwerveDrivetrain();
             break;
     
           case SwerveBot:
-            photonVision = new PhotonVision();
             limelight = new Limelight_Subsystem();
             sensors = new Sensors_Subsystem();
             drivetrain = new SwerveDrivetrain();
             break;
     
           case ChadBot:
-            photonVision = new PhotonVision();
             limelight = new Limelight_Subsystem();
             sensors = new Sensors_Subsystem();
             drivetrain = new SwerveDrivetrain();
@@ -75,7 +70,6 @@ public class RobotContainer {
           case BotOnBoard: // fall through
           case UnknownBot: // fall through
           default:
-            photonVision = null;
             limelight = null;
             sensors = null;
             drivetrain = null;
