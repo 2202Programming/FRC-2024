@@ -335,7 +335,7 @@ public class Sensors_Subsystem extends SubsystemBase {
     // pos.back_left = rot_encoder_bl.getAbsolutePosition(); in phohenix 5 range is
     // (-180,180)
     // https://api.ctr-electronics.com/phoenix6/release/java/com/ctre/phoenix6/hardware/core/CoreCANcoder.html#getPosition()
-    // TODO: REVIEW NEEDED
+    // TODO: REVIEW NEEDED Im not sure if this is going to give as same value as what it used to be...(line368 too)
     pos.back_left = rot_encoder_bl.getAbsolutePosition().getValueAsDouble();
     pos.back_right = rot_encoder_br.getAbsolutePosition().getValueAsDouble();
     pos.front_left = rot_encoder_fl.getAbsolutePosition().getValueAsDouble();
