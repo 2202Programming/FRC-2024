@@ -17,6 +17,10 @@ public class RPMShooter extends Command {
   private double requestedI = 0.0;
   private double requestedD = 0.0;
 
+  private double currentP = 0.0;
+  private double currentI = 0.0;
+  private double currentD = 0.0;
+
   /**
    * Creates a new ExampleCommand.
    *
@@ -40,9 +44,13 @@ public class RPMShooter extends Command {
     SmartDashboard.putNumber("Requested I",requestedI);
     SmartDashboard.putNumber("Requested D",requestedD);
 
-    SmartDashboard.putNumber("Current P",0.0);
-    SmartDashboard.putNumber("Current I",0.0);
-    SmartDashboard.putNumber("Current D",0.0);    
+    currentP = m_shooter.getP();
+    currentI = m_shooter.getI();
+    currentD = m_shooter.getD();
+  
+    SmartDashboard.putNumber("Current P", currentP);
+    SmartDashboard.putNumber("Current I", currentI);
+    SmartDashboard.putNumber("Current D", currentD);    
 
 
   }
@@ -50,10 +58,32 @@ public class RPMShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-     SmartDashboard.putNumber("Current Shooter RPM",m_shooter.getShooterRPM());
-     SmartDashboard.putNumber("Current Motor RPM", m_shooter.getMotorRPM());
-     requestedShooterRPM = SmartDashboard.getNumber("Requested Shooter RPM",0.0);
-     m_shooter.setShooterRPM(requestedShooterRPM);
+    SmartDashboard.putNumber("Current Shooter RPM",m_shooter.getShooterRPM());
+    SmartDashboard.putNumber("Current Motor RPM", m_shooter.getMotorRPM());
+    requestedShooterRPM = SmartDashboard.getNumber("Requested Shooter RPM",0.0);
+     
+    m_shooter.setShooterRPM(requestedShooterRPM);
+
+    requestedP = SmartDashboard.getNumber("Requested P",requestedP);
+    requestedI = SmartDashboard.getNumber("Requested I",requestedI);
+    requestedD = SmartDashboard.getNumber("Requested D",requestedD);
+    
+    currentP = m_shooter.getP();
+    currentI = m_shooter.getI();
+    currentD = m_shooter.getD();
+  
+    SmartDashboard.putNumber("Current P", currentP);
+    SmartDashboard.putNumber("Current I", currentI);
+    SmartDashboard.putNumber("Current D", currentD);  
+    
+    setPIDs();
+    
+  }
+
+  private void setPIDs(){
+    if(currentP != requestedP) m_shooter.setP(requestedP);
+    if(currentI != requestedI) m_shooter.setI(requestedI);
+    if(currentD != requestedD) m_shooter.setD(requestedD);
   }
 
   // Called once the command ends or is interrupted.

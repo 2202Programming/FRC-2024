@@ -36,6 +36,7 @@ public class MotorTriggerOrDash extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    SmartDashboard.putNumber("Current Motor RPM", m_mtr.getMotorRPM());
     SmartDashboard.putNumber("Trigger Percent", m_driverController.getLeftTriggerAxis());
     SmartDashboard.putNumber("Requested Percent", requestedPercent);
     SmartDashboard.putNumber("Motor Percent", m_mtr.getMotorSpeed());
@@ -48,7 +49,8 @@ public class MotorTriggerOrDash extends Command {
 
     currentTriggerPercent = m_driverController.getLeftTriggerAxis();
     currentMotorSpeed = m_mtr.getMotorSpeed();
-
+    SmartDashboard.putNumber("Current Motor RPM", m_mtr.getMotorRPM());
+    
     //if trigger is being pulled, motor should go off trigger instead of smart dashboard request
     if (currentTriggerPercent > 0.01) {
       triggerMode = true;

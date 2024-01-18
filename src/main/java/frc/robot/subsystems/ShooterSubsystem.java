@@ -29,7 +29,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private double kD = 0.0;
 
   public ShooterSubsystem() {
-    motor_config(mtr, false);
+    motor_config(mtr, true);
     currentMotorSpeed = mtr.get();
     shooterPidController = mtr.getPIDController();
     shooterEncoder = mtr.getEncoder();
