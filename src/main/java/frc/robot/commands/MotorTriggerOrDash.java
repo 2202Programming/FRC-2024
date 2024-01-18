@@ -8,12 +8,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class MotorTriggerOrDash extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final CommandXboxController m_driverController;
-  private final ExampleSubsystem m_mtr;
+  private final ShooterSubsystem m_mtr;
   private double requestedPercent;
   private boolean triggerMode = false;
   private double currentTriggerPercent;
@@ -24,7 +25,7 @@ public class MotorTriggerOrDash extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public MotorTriggerOrDash(CommandXboxController driverController, ExampleSubsystem mtr) {
+  public MotorTriggerOrDash(CommandXboxController driverController, ShooterSubsystem mtr) {
     m_driverController = driverController;
     m_mtr = mtr;
     requestedPercent = 0.0;
