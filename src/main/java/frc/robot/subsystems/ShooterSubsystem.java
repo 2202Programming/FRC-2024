@@ -87,6 +87,18 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterPidController.setP(newD);
   }
 
+  public double getP() {
+    return shooterPidController.getP();
+  }
+
+  public double getI() {
+    return shooterPidController.getI();
+  }
+
+  public double getD() {
+    return shooterPidController.getD();
+  }
+
   void motor_config(CANSparkMax mtr, boolean inverted) {
     mtr.clearFaults();
     mtr.restoreFactoryDefaults();
