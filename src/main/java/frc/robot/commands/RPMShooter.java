@@ -13,7 +13,7 @@ public class RPMShooter extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem m_shooter;
   private double requestedShooterRPM = 0.0;
-  private double requestedP = 0.001;
+  private double requestedP = 0.0001;
   private double requestedI = 0.0;
   private double requestedD = 0.0;
 
@@ -77,7 +77,7 @@ public class RPMShooter extends Command {
     SmartDashboard.putNumber("Current D", currentD);  
     
     setPIDs();
-    
+
   }
 
   private void setPIDs(){

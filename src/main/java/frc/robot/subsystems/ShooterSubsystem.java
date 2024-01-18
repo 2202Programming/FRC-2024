@@ -23,7 +23,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private SparkPIDController shooterPidController;
   private RelativeEncoder shooterEncoder;
   private double currentMotorSpeed;
-  private double gearboxRatio = 3.0;
+  private double gearboxRatio = 1.0;
   private double kP = 0.001;
   private double kI = 0.0;
   private double kD = 0.0;
