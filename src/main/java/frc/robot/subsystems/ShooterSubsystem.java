@@ -12,6 +12,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -73,6 +74,29 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public double getShooterRPM(){
     return shooterEncoder.getVelocity()*(1/gearboxRatio);
+  }
+
+  public void setP(double newP){
+    shooterPidController.setP(newP);
+  }
+
+  public void setI(double newI){
+    shooterPidController.setP(newI);
+  }
+  public void setD(double newD){
+    shooterPidController.setP(newD);
+  }
+
+  public double getP() {
+    return shooterPidController.getP();
+  }
+
+  public double getI() {
+    return shooterPidController.getI();
+  }
+
+  public double getD() {
+    return shooterPidController.getD();
   }
 
   void motor_config(CANSparkMax mtr, boolean inverted) {
