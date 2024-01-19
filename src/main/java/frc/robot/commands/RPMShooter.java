@@ -6,13 +6,19 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.ShooterSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class RPMShooter extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem m_shooter;
-  private double requestedShooterRPM = 0.0;
+  private final CommandXboxController m_driverController;
+  private double requestedShooterRPM;
+  private double requestedPercent;
+  private boolean triggerMode = false;
+  private double currentTriggerPercent;
+
   private double requestedP = 0.0001;
   private double requestedI = 0.0;
   private double requestedD = 0.0;
@@ -27,8 +33,10 @@ public class RPMShooter extends Command {
    * @param subsystem The subsystem used by this command.
    */
 
-  public RPMShooter(ShooterSubsystem shooter) {
+  public RPMShooter(CommandXboxController controller, ShooterSubsystem shooter) {
     m_shooter = shooter;
+    m_driverController = controller;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooter);
   }
@@ -36,9 +44,14 @@ public class RPMShooter extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-     SmartDashboard.putNumber("Current Shooter RPM",0.0);
-     SmartDashboard.putNumber("Current Motor RPM",0.0);
-     SmartDashboard.putNumber("Requested Shooter RPM",0.0);
+    requestedPercent = 0.0;
+    requestedShooterRPM = 0.0;
+
+    SmartDashboard.putNumber("Trigger Percent", m_driverController.getLeftTriggerAxis());
+    SmartDashboard.putNumber("Requested Percent", requestedPercent);
+    SmartDashboard.putNumber("Motor Percent", m_shooter.getMotorSpeed());
+    SmartDashboard.putBoolean("Trigger Mode", triggerMode);
+    SmartDashboard.putNumber("Requested Shooter RPM",0.0);
      
     SmartDashboard.putNumber("Requested P",requestedP);
     SmartDashboard.putNumber("Requested I",requestedI);
@@ -58,12 +71,29 @@ public class RPMShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putNumber("Current Shooter RPM",m_shooter.getShooterRPM());
-    SmartDashboard.putNumber("Current Motor RPM", m_shooter.getMotorRPM());
-    requestedShooterRPM = SmartDashboard.getNumber("Requested Shooter RPM",0.0);
-     
-    m_shooter.setShooterRPM(requestedShooterRPM);
 
+    currentTriggerPercent = m_driverController.getLeftTriggerAxis();
+    
+    SmartDashboard.putNumber("Trigger Percent", currentTriggerPercent);
+    SmartDashboard.putNumber("Requested Percent", requestedPercent);
+    SmartDashboard.putNumber("Motor Percent", m_shooter.getMotorSpeed());
+    SmartDashboard.putBoolean("Trigger Mode", triggerMode);
+
+    requestedShooterRPM = SmartDashboard.getNumber("Requested Shooter RPM",0.0);
+    requestedPercent = SmartDashboard.getNumber("Requested Percent", 0.0);
+
+    switch(m_shooter.getShooterMode()){
+      case Trigger: //this mode uses left trigger as motor %
+        m_shooter.setMotorSpeed(currentTriggerPercent);
+        break;
+      case Percent: //this mode uses requested % off smart dashboard as motor %
+        m_shooter.setMotorSpeed(requestedPercent);
+        break;
+      case RPM: //this mode uses requested RPM off smart dashboard in velocity controlled mode
+        m_shooter.setShooterRPM(requestedShooterRPM);
+        break;
+    }
+    
     requestedP = SmartDashboard.getNumber("Requested P",requestedP);
     requestedI = SmartDashboard.getNumber("Requested I",requestedI);
     requestedD = SmartDashboard.getNumber("Requested D",requestedD);

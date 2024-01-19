@@ -6,23 +6,38 @@ package frc.robot.subsystems;
 
 import java.util.spi.CalendarNameProvider;
 
-import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
-  /** Creates a new ExampleSubsystem. */
+
+  public enum ShooterMode {
+    Trigger("Trigger"), Percent("Percent"), RPM("RPM");
+
+    public final String name;
+
+    ShooterMode(String name) {
+      this.name = name;
+    }
+
+    public String toString() {
+      return name;
+   }
+  }
 
     //Instantiations 
   final CANSparkMax mtr = new CANSparkMax(20, CANSparkMax.MotorType.kBrushless);
   private SparkPIDController shooterPidController;
   private RelativeEncoder shooterEncoder;
+  private ShooterMode currentShootingMode;
   private double currentMotorSpeed;
+  private double currentMotorRPM;
   private double gearboxRatio = 1.0;
   private double kP = 0.001;
   private double kI = 0.0;
@@ -36,23 +51,43 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterPidController.setP(kP);
     shooterPidController.setI(kI);
     shooterPidController.setD(kD);
+    currentShootingMode = ShooterMode.RPM;
+    SmartDashboard.putString("Current Shoooting Mode",currentShootingMode.toString());
+    SmartDashboard.putNumber("Current Shooter RPM",0.0);
+    SmartDashboard.putNumber("Current Motor RPM",0.0);
   }
 
-
-  /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
-   *
-   * @return value of some boolean subsystem state, such as a digital sensor.
-   */
-  public boolean exampleCondition() {
-    // Query some boolean state, such as a digital sensor.
-    return false;
-  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    currentMotorRPM = shooterEncoder.getVelocity();
+    SmartDashboard.putString("Current Shoooting Mode",currentShootingMode.toString());
+    SmartDashboard.putNumber("Current Shooter RPM", currentMotorRPM / gearboxRatio);
+    SmartDashboard.putNumber("Current Motor RPM", currentMotorRPM);
 
+  }
+
+  public void setShootingMode(ShooterMode mode){
+    currentShootingMode = mode;
+  }
+
+  public void cycleShootingMode() {
+    if(currentShootingMode == ShooterMode.Trigger) {
+      currentShootingMode = ShooterMode.Percent;
+      return;
+    }
+    if(currentShootingMode == ShooterMode.Percent) { 
+      currentShootingMode = ShooterMode.RPM;
+      return;
+    }
+    if(currentShootingMode == ShooterMode.RPM) 
+      currentShootingMode = ShooterMode.Trigger;
+    return;
+  }
+
+  public ShooterMode getShooterMode() {
+    return currentShootingMode;
   }
 
   public void setMotorSpeed(double motorSpeed){
@@ -69,11 +104,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public double getMotorRPM(){
-    return shooterEncoder.getVelocity();
+    return currentMotorRPM;
   }
 
   public double getShooterRPM(){
-    return shooterEncoder.getVelocity()*(1/gearboxRatio);
+    return currentMotorRPM / gearboxRatio;
   }
 
   public void setP(double newP){

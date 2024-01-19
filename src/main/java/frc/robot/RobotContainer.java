@@ -5,14 +5,10 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.MotorTrigger;
-import frc.robot.commands.MotorTriggerOrDash;
 import frc.robot.commands.RPMShooter;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -54,7 +50,7 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     //m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    m_driverController.b().whileTrue(new RPMShooter(m_shooter));
+    m_driverController.b().onTrue(new InstantCommand(() -> {m_shooter.cycleShootingMode();}));
   }
 
   /**
@@ -64,7 +60,7 @@ public class RobotContainer {
    */
   public Command getTeleCommand() {
     // An example command will be run in autonomous
-    return new MotorTriggerOrDash(m_driverController, m_shooter);
+    return new RPMShooter(m_driverController, m_shooter);
   }
 
   /**
