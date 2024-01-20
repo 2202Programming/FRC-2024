@@ -8,8 +8,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
-
-import edu.wpi.first.math.proto.System;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -99,7 +97,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setShooterRPM(double shooterRPM){
     shooterPidController.setReference(shooterRPM*gearboxRatio, ControlType.kVelocity);
-    //System.out.println("Motor new RPM goal set to: " + shooterRPM*gearboxRatio);
+    SmartDashboard.putNumber("Current Motor RPM Goal",shooterRPM*gearboxRatio);
   }
 
   public double getMotorSpeed(){
