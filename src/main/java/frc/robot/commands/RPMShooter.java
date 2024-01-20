@@ -19,6 +19,8 @@ public class RPMShooter extends Command {
   private double requestedPercent;
   private boolean triggerMode = false;
   private double currentTriggerPercent;
+  private double lastRequestedLeftShooterRPM;
+  private double lastRequestedRightShooterRPM;
 
   private double requestedP = 0.0001;
   private double requestedI = 0.0;
@@ -80,6 +82,9 @@ public class RPMShooter extends Command {
     SmartDashboard.putNumber("Trigger Percent", currentTriggerPercent);
     SmartDashboard.putBoolean("Trigger Mode", triggerMode);
 
+    lastRequestedLeftShooterRPM = requestedLeftShooterRPM;
+    lastRequestedRightShooterRPM = requestedRightShooterRPM;
+
     requestedLeftShooterRPM = SmartDashboard.getNumber("Requested Left Shooter RPM",0.0);
     requestedRightShooterRPM = SmartDashboard.getNumber("Requested Right Shooter RPM",0.0);
     requestedPercent = SmartDashboard.getNumber("Requested Percent", 0.0);
@@ -92,7 +97,9 @@ public class RPMShooter extends Command {
         m_shooter.setMotorSpeed(requestedPercent);
         break;
       case RPM: //this mode uses requested RPM off smart dashboard in velocity controlled mode
-        m_shooter.setShooterRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
+        if ((lastRequestedLeftShooterRPM != requestedLeftShooterRPM) || (lastRequestedRightShooterRPM != requestedRightShooterRPM)) {
+          m_shooter.setShooterRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
+        }
         break;
     }
     
