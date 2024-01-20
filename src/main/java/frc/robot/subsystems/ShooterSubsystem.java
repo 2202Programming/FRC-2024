@@ -50,7 +50,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public ShooterSubsystem() {
     motor_config(shooterMotorLeft, true);
-    motor_config(shooterMotorRight, true);
+    motor_config(shooterMotorRight, false);
     currentLeftMotorOutput = shooterMotorLeft.get();
     shooterLeftPidController = shooterMotorLeft.getPIDController();
     shooterLeftEncoder = shooterMotorLeft.getEncoder();
@@ -83,6 +83,8 @@ public class ShooterSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Current Shooter RPM", currentLeftMotorRPM / gearboxRatio);
     SmartDashboard.putNumber("Current Left Motor RPM", currentLeftMotorRPM);
     SmartDashboard.putNumber("Current Right Motor RPM", currentRightMotorRPM);
+    SmartDashboard.putNumber("Left Motor Percent", getLeftMotorOutput());
+    SmartDashboard.putNumber("Right Motor Percent", getRightMotorOutput());
   }
 
   public void setShootingMode(ShooterMode mode){
@@ -115,14 +117,15 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void setShooterRPM(double shooterLeftRPM, double shooterRightRPM){
     shooterLeftPidController.setReference(shooterLeftRPM*gearboxRatio, ControlType.kVelocity);
-    shooterRightPidController.setReference(shooterLeftRPM*gearboxRatio, ControlType.kVelocity);
+    shooterRightPidController.setReference(shooterRightRPM*gearboxRatio, ControlType.kVelocity);
+    System.out.println("Motor goals changed, left="+shooterLeftRPM*gearboxRatio+", right="+shooterRightRPM*gearboxRatio);
   }
 
-  public double getLeftMotorSpeed(){
+  public double getLeftMotorOutput(){
     return currentLeftMotorOutput;
   }
 
-  public double getRightMotorSpeed(){
+  public double getRightMotorOutput(){
     return currentRightMotorOutput;
   }
 

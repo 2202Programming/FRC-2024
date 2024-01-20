@@ -39,7 +39,7 @@ public class MotorTriggerOrDash extends Command {
     SmartDashboard.putNumber("Current Motor RPM", m_mtr.getMotorRPM());
     SmartDashboard.putNumber("Trigger Percent", m_driverController.getLeftTriggerAxis());
     SmartDashboard.putNumber("Requested Percent", requestedPercent);
-    SmartDashboard.putNumber("Motor Percent", m_mtr.getMotorSpeed());
+    SmartDashboard.putNumber("Motor Percent", m_mtr.getLeftMotorOutput());
     SmartDashboard.putBoolean("Trigger Mode", triggerMode);
   }
 
@@ -48,7 +48,7 @@ public class MotorTriggerOrDash extends Command {
   public void execute() {
 
     currentTriggerPercent = m_driverController.getLeftTriggerAxis();
-    currentMotorSpeed = m_mtr.getMotorSpeed();
+    currentMotorSpeed = m_mtr.getMotorRPM();
     SmartDashboard.putNumber("Current Motor RPM", m_mtr.getMotorRPM());
     
     //if trigger is being pulled, motor should go off trigger instead of smart dashboard request

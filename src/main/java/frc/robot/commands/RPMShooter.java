@@ -51,7 +51,7 @@ public class RPMShooter extends Command {
 
     SmartDashboard.putNumber("Trigger Percent", m_driverController.getLeftTriggerAxis());
     SmartDashboard.putNumber("Requested Percent", requestedPercent);
-    SmartDashboard.putNumber("Left Motor Percent", m_shooter.getLeftMotorSpeed());
+
     SmartDashboard.putBoolean("Trigger Mode", triggerMode);
     SmartDashboard.putNumber("Requested Left Shooter RPM",0.0);
     SmartDashboard.putNumber("Requested Right Shooter RPM",0.0);
