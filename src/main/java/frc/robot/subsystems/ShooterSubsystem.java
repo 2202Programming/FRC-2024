@@ -4,14 +4,11 @@
 
 package frc.robot.subsystems;
 
-import java.util.spi.CalendarNameProvider;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -54,10 +51,14 @@ public class ShooterSubsystem extends SubsystemBase {
     currentLeftMotorOutput = shooterMotorLeft.get();
     shooterLeftPidController = shooterMotorLeft.getPIDController();
     shooterLeftEncoder = shooterMotorLeft.getEncoder();
+    System.out.println("Left Encoder Scaling Factor ="+shooterLeftEncoder.getVelocityConversionFactor());
+    System.out.println("Left Encoder CPR ="+shooterLeftEncoder.getCountsPerRevolution());
 
     shooterRightPidController = shooterMotorRight.getPIDController();
     shooterRightEncoder = shooterMotorRight.getEncoder();
-
+    System.out.println("Right Encoder Scaling Factor ="+shooterRightEncoder.getVelocityConversionFactor());
+    System.out.println("Right Encoder CPR ="+shooterRightEncoder.getCountsPerRevolution());
+    
     shooterLeftPidController.setP(kP);
     shooterLeftPidController.setI(kI);
     shooterLeftPidController.setD(kD);
