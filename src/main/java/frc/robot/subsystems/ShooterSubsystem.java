@@ -4,14 +4,7 @@
 
 package frc.robot.subsystems;
 
-import java.util.spi.CalendarNameProvider;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-
-import edu.wpi.first.math.controller.PIDController;
+import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -32,57 +25,32 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
     //Instantiations 
-  final CANSparkMax shooterMotorLeft = new CANSparkMax(20, CANSparkMax.MotorType.kBrushless);
-  final CANSparkMax shooterMotorRight = new CANSparkMax(21, CANSparkMax.MotorType.kBrushless);
-  private SparkPIDController shooterLeftPidController;
-  private SparkPIDController shooterRightPidController;
-  private RelativeEncoder shooterLeftEncoder;
-  private RelativeEncoder shooterRightEncoder;
+
+  final TalonFX shooterMotorLeft = new TalonFX(10);
+  final TalonFX shooterMotorRight = new TalonFX(11);
+
   private ShooterMode currentShootingMode;
   private double currentLeftMotorOutput;
   private double currentRightMotorOutput;
-  private double currentLeftMotorRPM;
-  private double currentRightMotorRPM;
-  private double gearboxRatio = 1.0;
-  private double kP = 0.001;
-  private double kI = 0.0;
-  private double kD = 0.0;
+
 
   public ShooterSubsystem() {
-    motor_config(shooterMotorLeft, true);
-    motor_config(shooterMotorRight, false);
-    currentLeftMotorOutput = shooterMotorLeft.get();
-    shooterLeftPidController = shooterMotorLeft.getPIDController();
-    shooterLeftEncoder = shooterMotorLeft.getEncoder();
 
-    shooterRightPidController = shooterMotorRight.getPIDController();
-    shooterRightEncoder = shooterMotorRight.getEncoder();
-
-    shooterLeftPidController.setP(kP);
-    shooterLeftPidController.setI(kI);
-    shooterLeftPidController.setD(kD);
-
-    shooterRightPidController.setP(kP);
-    shooterRightPidController.setI(kI);
-    shooterRightPidController.setD(kD);
-
-    currentShootingMode = ShooterMode.RPM;
+    shooterMotorLeft.setInverted(false);
+    shooterMotorRight.setInverted(false);
+    
+    currentShootingMode = ShooterMode.Trigger;
     SmartDashboard.putString("Current Shoooting Mode",currentShootingMode.toString());
     SmartDashboard.putNumber("Current Shooter RPM",0.0);
-    SmartDashboard.putNumber("Current Left Motor RPM",0.0);
-    SmartDashboard.putNumber("Current Right Motor RPM",0.0);
+
   }
 
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    currentLeftMotorRPM = shooterLeftEncoder.getVelocity();
-    currentRightMotorRPM = shooterRightEncoder.getVelocity();
+
     SmartDashboard.putString("Current Shoooting Mode",currentShootingMode.toString());
-    SmartDashboard.putNumber("Current Shooter RPM", currentLeftMotorRPM / gearboxRatio);
-    SmartDashboard.putNumber("Current Left Motor RPM", currentLeftMotorRPM);
-    SmartDashboard.putNumber("Current Right Motor RPM", currentRightMotorRPM);
     SmartDashboard.putNumber("Left Motor Percent", getLeftMotorOutput());
     SmartDashboard.putNumber("Right Motor Percent", getRightMotorOutput());
   }
@@ -115,58 +83,16 @@ public class ShooterSubsystem extends SubsystemBase {
     currentLeftMotorOutput = motorSpeed;
   }
 
-  public void setShooterRPM(double shooterLeftRPM, double shooterRightRPM){
-    shooterLeftPidController.setReference(shooterLeftRPM*gearboxRatio, ControlType.kVelocity);
-    shooterRightPidController.setReference(shooterRightRPM*gearboxRatio, ControlType.kVelocity);
-    System.out.println("Motor goals changed, left="+shooterLeftRPM*gearboxRatio+", right="+shooterRightRPM*gearboxRatio);
-  }
-
   public double getLeftMotorOutput(){
+    currentLeftMotorOutput = shooterMotorLeft.get();
     return currentLeftMotorOutput;
   }
 
   public double getRightMotorOutput(){
+    currentRightMotorOutput = shooterMotorRight.get();
     return currentRightMotorOutput;
   }
 
-  public double getMotorRPM(){
-    return currentLeftMotorRPM;
-  }
 
-  public double getShooterRPM(){
-    return currentLeftMotorRPM / gearboxRatio;
-  }
-
-  public void setP(double newP){
-    shooterLeftPidController.setP(newP);
-    shooterRightPidController.setP(newP);
-  }
-
-  public void setI(double newI){
-    shooterLeftPidController.setP(newI);
-    shooterRightPidController.setP(newI);
-  }
-  public void setD(double newD){
-    shooterLeftPidController.setP(newD);
-    shooterRightPidController.setP(newD);
-  }
-
-  public double getP() {
-    return shooterLeftPidController.getP();
-  }
-
-  public double getI() {
-    return shooterLeftPidController.getI();
-  }
-
-  public double getD() {
-    return shooterLeftPidController.getD();
-  }
-
-  void motor_config(CANSparkMax shooterMotorLeft, boolean inverted) {
-    shooterMotorLeft.clearFaults();
-    shooterMotorLeft.restoreFactoryDefaults();
-    shooterMotorLeft.setInverted(inverted);
- }
 
 }

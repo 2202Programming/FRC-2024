@@ -58,19 +58,6 @@ public class RPMShooter extends Command {
     SmartDashboard.putNumber("Requested Left Shooter RPM",0.0);
     SmartDashboard.putNumber("Requested Right Shooter RPM",0.0);
      
-    SmartDashboard.putNumber("Requested P",requestedP);
-    SmartDashboard.putNumber("Requested I",requestedI);
-    SmartDashboard.putNumber("Requested D",requestedD);
-
-    currentP = m_shooter.getP();
-    currentI = m_shooter.getI();
-    currentD = m_shooter.getD();
-  
-    SmartDashboard.putNumber("Current P", currentP);
-    SmartDashboard.putNumber("Current I", currentI);
-    SmartDashboard.putNumber("Current D", currentD);    
-
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -98,37 +85,21 @@ public class RPMShooter extends Command {
         break;
       case RPM: //this mode uses requested RPM off smart dashboard in velocity controlled mode
         if ((lastRequestedLeftShooterRPM != requestedLeftShooterRPM) || (lastRequestedRightShooterRPM != requestedRightShooterRPM)) {
-          m_shooter.setShooterRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
+          //m_shooter.setShooterRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
         }
         break;
     }
     
-    requestedP = SmartDashboard.getNumber("Requested P",requestedP);
-    requestedI = SmartDashboard.getNumber("Requested I",requestedI);
-    requestedD = SmartDashboard.getNumber("Requested D",requestedD);
-    
-    currentP = m_shooter.getP();
-    currentI = m_shooter.getI();
-    currentD = m_shooter.getD();
-  
-    SmartDashboard.putNumber("Current P", currentP);
-    SmartDashboard.putNumber("Current I", currentI);
-    SmartDashboard.putNumber("Current D", currentD);  
-    
-    setPIDs();
+
 
   }
 
-  private void setPIDs(){
-    if(currentP != requestedP) m_shooter.setP(requestedP);
-    if(currentI != requestedI) m_shooter.setI(requestedI);
-    if(currentD != requestedD) m_shooter.setD(requestedD);
-  }
+
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.setShooterRPM(0.0, 0.0);
+    m_shooter.setMotorSpeed(0.0);
   }
 
   // Returns true when the command should end.
