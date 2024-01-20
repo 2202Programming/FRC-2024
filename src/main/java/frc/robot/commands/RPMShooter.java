@@ -14,7 +14,8 @@ public class RPMShooter extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final ShooterSubsystem m_shooter;
   private final CommandXboxController m_driverController;
-  private double requestedShooterRPM;
+  private double requestedLeftShooterRPM;
+  private double requestedRightShooterRPM;
   private double requestedPercent;
   private boolean triggerMode = false;
   private double currentTriggerPercent;
@@ -45,13 +46,15 @@ public class RPMShooter extends Command {
   @Override
   public void initialize() {
     requestedPercent = 0.0;
-    requestedShooterRPM = 0.0;
+    requestedLeftShooterRPM = 0.0;
+    requestedRightShooterRPM = 0.0;
 
     SmartDashboard.putNumber("Trigger Percent", m_driverController.getLeftTriggerAxis());
     SmartDashboard.putNumber("Requested Percent", requestedPercent);
     SmartDashboard.putNumber("Motor Percent", m_shooter.getMotorSpeed());
     SmartDashboard.putBoolean("Trigger Mode", triggerMode);
-    SmartDashboard.putNumber("Requested Shooter RPM",0.0);
+    SmartDashboard.putNumber("Requested Left Shooter RPM",0.0);
+    SmartDashboard.putNumber("Requested Right Shooter RPM",0.0);
      
     SmartDashboard.putNumber("Requested P",requestedP);
     SmartDashboard.putNumber("Requested I",requestedI);
@@ -77,7 +80,8 @@ public class RPMShooter extends Command {
     SmartDashboard.putNumber("Trigger Percent", currentTriggerPercent);
     SmartDashboard.putBoolean("Trigger Mode", triggerMode);
 
-    requestedShooterRPM = SmartDashboard.getNumber("Requested Shooter RPM",0.0);
+    requestedLeftShooterRPM = SmartDashboard.getNumber("Requested Left Shooter RPM",0.0);
+    requestedRightShooterRPM = SmartDashboard.getNumber("Requested Right Shooter RPM",0.0);
     requestedPercent = SmartDashboard.getNumber("Requested Percent", 0.0);
 
     switch(m_shooter.getShooterMode()){
@@ -88,7 +92,7 @@ public class RPMShooter extends Command {
         m_shooter.setMotorSpeed(requestedPercent);
         break;
       case RPM: //this mode uses requested RPM off smart dashboard in velocity controlled mode
-        m_shooter.setShooterRPM(requestedShooterRPM);
+        m_shooter.setShooterRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
         break;
     }
     
@@ -117,7 +121,7 @@ public class RPMShooter extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.setShooterRPM(0.0);
+    m_shooter.setShooterRPM(0.0, 0.0);
   }
 
   // Returns true when the command should end.
