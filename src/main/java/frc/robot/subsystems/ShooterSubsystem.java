@@ -39,7 +39,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private RelativeEncoder shooterLeftEncoder;
   private RelativeEncoder shooterRightEncoder;
   private ShooterMode currentShootingMode;
-  private double currentMotorSpeed;
+  private double currentLeftMotorOutput;
+  private double currentRightMotorOutput;
   private double currentLeftMotorRPM;
   private double currentRightMotorRPM;
   private double gearboxRatio = 1.0;
@@ -49,8 +50,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public ShooterSubsystem() {
     motor_config(shooterMotorLeft, true);
-    motor_config(shooterMotorRight, false);
-    currentMotorSpeed = shooterMotorLeft.get();
+    motor_config(shooterMotorRight, true);
+    currentLeftMotorOutput = shooterMotorLeft.get();
     shooterLeftPidController = shooterMotorLeft.getPIDController();
     shooterLeftEncoder = shooterMotorLeft.getEncoder();
 
@@ -109,7 +110,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setMotorSpeed(double motorSpeed){
     shooterMotorLeft.set(motorSpeed);
     shooterMotorRight.set(motorSpeed);
-    currentMotorSpeed = motorSpeed;
+    currentLeftMotorOutput = motorSpeed;
   }
 
   public void setShooterRPM(double shooterLeftRPM, double shooterRightRPM){
@@ -117,8 +118,12 @@ public class ShooterSubsystem extends SubsystemBase {
     shooterRightPidController.setReference(shooterLeftRPM*gearboxRatio, ControlType.kVelocity);
   }
 
-  public double getMotorSpeed(){
-    return currentMotorSpeed;
+  public double getLeftMotorSpeed(){
+    return currentLeftMotorOutput;
+  }
+
+  public double getRightMotorSpeed(){
+    return currentRightMotorOutput;
   }
 
   public double getMotorRPM(){
