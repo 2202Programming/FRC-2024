@@ -6,13 +6,13 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class SourceIntake extends SubsystemBase {
-  /** Creates a new SourceIntake. */
-  public SourceIntake() {
+public class Transfer extends SubsystemBase {
+  /** Creates a new Transfer. */
+  public Transfer() {
 
   }
 
-  //TODO: find out methods/behaviors 
+  //TODO: find out methods/behaviors, pneumatics, etc. 
 
   public boolean isNoteReady(){
 
