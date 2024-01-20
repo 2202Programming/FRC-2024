@@ -6,10 +6,18 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class Limelight extends SubsystemBase {
-  /** Creates a new Limelight. */
-  public Limelight() {}
+public class SourceIntake extends SubsystemBase {
+  /** Creates a new SourceIntake. */
+  public SourceIntake() {
 
+  }
+
+  //TODO: find out methods/behaviors 
+
+  public boolean isNoteReady(){
+
+    return false;
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

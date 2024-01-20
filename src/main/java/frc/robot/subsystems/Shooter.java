@@ -8,10 +8,47 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
-  public Shooter() {}
+  public Shooter() {
+    
+    
+  }
+
+  // WIP methods, needs checking - ER
+  public void shoot(){
+
+  }
+
+  public void setSpeed(double speed){
+
+  }
+
+  // TODO: what are the units 4 distance & speed
+
+  public void setDistance(double distance){
+
+  }
+
+  public void setAngle(double angle){
+
+  }
+
+  public boolean isAtSpeed(double tolerance){
+    
+
+    return false;
+
+  }
+
+  public boolean isAtAngle(double tolerance){
+
+
+    return false;
+  }
+
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
 }
