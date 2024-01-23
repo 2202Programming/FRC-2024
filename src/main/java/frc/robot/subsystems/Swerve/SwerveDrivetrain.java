@@ -82,7 +82,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   private final SwerveModuleMK3[] modules;
 
   // used to update postion esimates
-  double kTimeoffset = .1; // [s] measurement delay from photonvis TODO:measure this???
+  double kTimeoffset = .1; // [s] measurement delay from photonvis 
   private final Limelight_Subsystem limelight;
   // Network tables
   private NetworkTable table;
@@ -382,8 +382,6 @@ public class SwerveDrivetrain extends SubsystemBase {
     resetPose(new_pose);
   }
 
-  // TODO: do we REALLY think this is where we need to go? field coords???
-  // resets X,Y, and set current angle to be 0
   public void resetPose() {
     resetPose(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
   }
@@ -574,7 +572,7 @@ public void disableVisionPose(){
 }
 
 }
-// TODO: Move to a TEST/Tuning command - DPL 2/21/22
+// Move to a TEST/Tuning command - DPL 2/21/22
 // private void pidTuning() { //if drivetrain tuning
 
 // // read PID coefficients from SmartDashboard if tuning drivetrain

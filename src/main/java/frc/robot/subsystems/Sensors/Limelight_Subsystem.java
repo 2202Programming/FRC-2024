@@ -131,7 +131,7 @@ public class Limelight_Subsystem extends SubsystemBase {
       if (numAprilTags > 0) {
         bluePose = LimelightHelpers.getBotPose2d_wpiBlue(LL_NAME);
         //if (DriverStation.getAlliance() == Alliance.Blue)
-        if (DriverStation.getAlliance().get() == Alliance.Blue) //TODO: Check this change(WPI uses Optional for Alliance)
+        if (DriverStation.getAlliance().get() == Alliance.Blue)
           teamPose = LimelightHelpers.getBotPose2d_wpiBlue(LL_NAME);
         else
           teamPose = LimelightHelpers.getBotPose2d_wpiRed(LL_NAME);

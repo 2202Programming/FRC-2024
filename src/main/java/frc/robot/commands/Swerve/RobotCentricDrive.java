@@ -2,44 +2,47 @@ package frc.robot.commands.Swerve;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveTrain;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 
-/*
-  Driver controls the robot using field coordinates.
-    X,Y, Rotation
+/* Current driving behavior:
+  Starts in field centric
+  B will toggle between field centric and intake centric
+  Holding right trigger will switch to hub centric until you let go, then it will go back to original mode
+          (either field or intake centric, depending what you started in)
+  If in intake centric and you try to rotate with left joystick, will drop back to field centric mode.
 */
-public class FieldCentricDrive extends Command {
+
+
+public class RobotCentricDrive extends Command {
 
   final SwerveDrivetrain drivetrain;
-  final SwerveDriveKinematics kinematics;
   final HID_Xbox_Subsystem dc;
+  final SwerveDriveKinematics kinematics;
 
   // output to Swerve Drivetrain
   double xSpeed, ySpeed, rot;
-  Rotation2d currrentHeading;
   SwerveModuleState[] output_states;
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   final SlewRateLimiter xspeedLimiter = new SlewRateLimiter(3);
   final SlewRateLimiter yspeedLimiter = new SlewRateLimiter(3);
   final SlewRateLimiter rotLimiter = new SlewRateLimiter(3);
-  
-  public FieldCentricDrive(SwerveDrivetrain drivetrain) {
-    this.dc = RobotContainer.RC().dc;       //driverControls
+
+  double log_counter = 0;
+
+  public RobotCentricDrive(SwerveDrivetrain drivetrain, HID_Xbox_Subsystem dc) {
     this.drivetrain = drivetrain;
     addRequirements(drivetrain);
+    this.dc = dc;
     this.kinematics = drivetrain.getKinematics();
   }
+
 
   @Override
   public void initialize() {
@@ -57,13 +60,7 @@ public class FieldCentricDrive extends Command {
     ySpeed = MathUtil.clamp(ySpeed, -DriveTrain.kMaxSpeed, DriveTrain.kMaxSpeed);
     rot = MathUtil.clamp(rot, -DriveTrain.kMaxAngularSpeed, DriveTrain.kMaxAngularSpeed);
 
-    currrentHeading = drivetrain.getPose().getRotation();
-    //convert field centric speeds to robot centric
-    ChassisSpeeds tempChassisSpeed = (DriverStation.getAlliance().get().equals(Alliance.Blue)) 
-        ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, currrentHeading) 
-        : ChassisSpeeds.fromFieldRelativeSpeeds(-xSpeed, -ySpeed, rot, currrentHeading); // if on red alliance you're looking at robot from opposite. Pose is in blue coordinates so flip if red
-
-    output_states = kinematics.toSwerveModuleStates(tempChassisSpeed);
+    output_states = kinematics.toSwerveModuleStates(new ChassisSpeeds(xSpeed, ySpeed, rot));
   }
 
   @Override

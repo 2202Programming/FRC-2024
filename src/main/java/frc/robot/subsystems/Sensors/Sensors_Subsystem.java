@@ -130,18 +130,6 @@ public class Sensors_Subsystem extends SubsystemBase {
     // alocate sensors
     m_canStatus = new CANStatus();
     m_pigeon = new Pigeon2(CAN.PIGEON_IMU_CAN);
-
-    // set all the CanCoders to 100ms refresh rate to save the can bus
-    // TODO: REVIEW NEEDED I think by default it is set to be 100 for phoenix 6
-    // rot_encoder_bl.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100,
-    // 100);
-    // rot_encoder_br.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100,
-    // 100);
-    // rot_encoder_fl.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100,
-    // 100);
-    // rot_encoder_fr.setStatusFramePeriod(CANCoderStatusFrame.SensorData, 100,
-    // 100);
-
     // setup network table
     table = NetworkTableInstance.getDefault().getTable("Sensors");
     positionTable = NetworkTableInstance.getDefault().getTable(NTStrings.NT_Name_Position);
@@ -334,12 +322,12 @@ public class Sensors_Subsystem extends SubsystemBase {
   public RotationPositions getRotationPositions(RotationPositions pos) {
     // pos.back_left = rot_encoder_bl.getAbsolutePosition(); in phohenix 5 range is
     // (-180,180)
-    // https://api.ctr-electronics.com/phoenix6/release/java/com/ctre/phoenix6/hardware/core/CoreCANcoder.html#getPosition()
-    // TODO: REVIEW NEEDED Im not sure if this is going to give as same value as what it used to be...(line368 too)
-    pos.back_left = rot_encoder_bl.getAbsolutePosition().getValueAsDouble();
-    pos.back_right = rot_encoder_br.getAbsolutePosition().getValueAsDouble();
-    pos.front_left = rot_encoder_fl.getAbsolutePosition().getValueAsDouble();
-    pos.front_right = rot_encoder_fr.getAbsolutePosition().getValueAsDouble();
+    // Phoenix 6 is [-0.5, 0.5) rotations
+    // so multiply this by 360 so that it returns degrees
+    pos.back_left = rot_encoder_bl.getAbsolutePosition().getValueAsDouble() *360.0;
+    pos.back_right = rot_encoder_br.getAbsolutePosition().getValueAsDouble()*360.0;
+    pos.front_left = rot_encoder_fl.getAbsolutePosition().getValueAsDouble()*360.0;
+    pos.front_right = rot_encoder_fr.getAbsolutePosition().getValueAsDouble()*360.0;
 
     return pos;
   }
@@ -361,11 +349,10 @@ public class Sensors_Subsystem extends SubsystemBase {
 
   /**
    * init() - setup cancoder the way we need them.
-   * 
+   * This CANcoder returns value in rotation with phoenix 6 [-0.5, 0.5)
    * @param c
-   * @return CANCoder just initialized
+   * @return CANcoder just initialized
    */
-  // TODO: REVIEW NEEDED
   CANcoder init(CANcoder c) {
     CANcoderConfiguration configs = new CANcoderConfiguration();
     // According to doc this should report absolute position from [-0.5, 0.5)
