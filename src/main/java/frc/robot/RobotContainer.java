@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Swerve.FieldCentricDrive;
+import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
@@ -33,6 +34,7 @@ public class RobotContainer {
   public final Limelight_Subsystem limelight;
   public final Sensors_Subsystem sensors;
   public final SwerveDrivetrain drivetrain;
+  public final BlinkyLights lights;
 
   // singleton accessor for robot public sub-systems
   public static RobotContainer RC() {
@@ -49,6 +51,7 @@ public class RobotContainer {
   public RobotContainer() {
     RobotContainer.rc = this;
     robotSpecs = new RobotSpecs();
+    lights = new BlinkyLights();
     dc = new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
     configureBindings();
     // Construct sub-systems based on robot Name Specs
