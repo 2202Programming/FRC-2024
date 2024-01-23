@@ -4,11 +4,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
+import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
@@ -39,10 +39,6 @@ public class RobotContainer {
     return rc;
   }
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController = new CommandXboxController(
-      OperatorConstants.kDriverControllerPort);
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -50,7 +46,6 @@ public class RobotContainer {
     RobotContainer.rc = this;
     robotSpecs = new RobotSpecs();
     dc = new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
-    configureBindings();
     // Construct sub-systems based on robot Name Specs
     switch (robotSpecs.myRobotName) {
       case CompetitionBot2023:
@@ -80,6 +75,7 @@ public class RobotContainer {
         break;
     }
 
+    configureBindings();
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive(drivetrain));
     }
@@ -100,6 +96,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    dc.Driver().leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
+    dc.Driver().b().onTrue(new AllianceAwareGyroReset(false));
   }
 
   /**
