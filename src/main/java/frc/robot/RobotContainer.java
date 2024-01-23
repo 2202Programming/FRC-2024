@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
@@ -75,29 +74,27 @@ public class RobotContainer {
         break;
     }
 
-    configureBindings();
+    /*Set the commands below */
+    configureBindings(Bindings.DriveTest); // Change this to swich between bindings
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive(drivetrain));
     }
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be
-   * created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
-   * an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
-   * {@link
-   * CommandXboxController
-   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or
-   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-  private void configureBindings() {
-    dc.Driver().leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
-    dc.Driver().b().onTrue(new AllianceAwareGyroReset(false));
+  //enum for bindings add when needed
+  enum Bindings {
+    DriveTest,
+  }
+
+  private void configureBindings(Bindings bindings) {
+    CommandXboxController driver = dc.Driver();
+    CommandXboxController operator = dc.Operator();
+
+    switch (bindings){
+      case DriveTest:
+      driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
+      driver.b().onTrue(new AllianceAwareGyroReset(false));
+    }
   }
 
   /**
