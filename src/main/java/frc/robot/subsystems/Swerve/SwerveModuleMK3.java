@@ -205,16 +205,17 @@ public class SwerveModuleMK3 {
     // adjust magnetic offset in absEncoder, measured constants.
     absEncoderConfiguration = new CANcoderConfiguration();
     absEncoderConfiguration.withMagnetSensor(new MagnetSensorConfigs());
+    absEncoderConfiguration.MagnetSensor.MagnetOffset = offsetDegrees / 360.0;
     absEncoder.getConfigurator().apply(absEncoderConfiguration);
 
     System.out.println("Module " + myprefix + ": Set Offset=" + offsetDegrees + ". Initial CANCODER absolute angle="
         + absEncoder.getAbsolutePosition() + ", Initial CANCODER angle=" + absEncoder.getPosition());
 
     // if different, update
-    if (offsetDegrees != absEncoderConfiguration.MagnetSensor.MagnetOffset) {
-      absEncoderConfiguration.MagnetSensor.MagnetOffset = offsetDegrees;
-      absEncoder.getConfigurator().apply(absEncoderConfiguration);
-    }
+    //if (offsetDegrees != absEncoderConfiguration.MagnetSensor.MagnetOffset) {
+    //  absEncoderConfiguration.MagnetSensor.MagnetOffset = offsetDegrees;
+    //  absEncoder.getConfigurator().apply(absEncoderConfiguration);
+    //}
 
     System.out.println("Module " + myprefix + ": CANCODER Angle after offset programmed=" + absEncoder.getPosition());
 
@@ -229,12 +230,10 @@ public class SwerveModuleMK3 {
     // read absEncoder position, set internal angleEncoder to that value adjust for
     // cmd inversion.
     // Average a couple of samples of the absolute encoder
-    double pos_deg = absEncoder.getAbsolutePosition().getValue();
-    sleep(10);
-    double absPosition = absEncoder.getAbsolutePosition().getValue();
-    pos_deg = (pos_deg + absPosition) / 2.0;
-
-    System.out.println("Module " + myprefix + ": NEO startup angle=" + angleEncoder.getPosition());
+    double pos_deg = absEncoder.getAbsolutePosition().getValue() * 360.0;
+    //sleep(10);
+    //double absPosition = absEncoder.getAbsolutePosition().getValue() * 360.0;
+    //pos_deg = (pos_deg + absPosition) / 2.0;
 
     angleEncoder.setPosition(angleCmdInvert * pos_deg);
     sleep(100); // sparkmax gremlins
@@ -337,7 +336,7 @@ public class SwerveModuleMK3 {
 
     // these are for human consumption, update slower
     if (frameCounter++ == 10) {
-      m_externalAngle = absEncoder.getAbsolutePosition().getValueAsDouble();
+      m_externalAngle = absEncoder.getAbsolutePosition().getValueAsDouble() * 360.0;
       NTUpdate();
       frameCounter = 0;
     }
