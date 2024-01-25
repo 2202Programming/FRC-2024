@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
@@ -97,6 +99,8 @@ public class RobotContainer {
       case DriveTest:
       driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
       driver.b().onTrue(new AllianceAwareGyroReset(false));
+      operator.y().onTrue(new BlinkyLights());
+      operator.x().whileTrue(new InstantCommand(()->{BlinkyLights.GREEN();}));
     }
   }
 }
