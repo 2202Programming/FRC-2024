@@ -159,9 +159,9 @@ public class Sensors_Subsystem extends SubsystemBase {
     for (int i = 0; i < BIAS_SAMPLES; i++) {
       // TODO: REVIEW NEEDED:
       // https://api.ctr-electronics.com/phoenix6/release/java/com/ctre/phoenix6/hardware/Pigeon2.html#getRotation3d()
-      roll_bias += m_pigeon.getRotation3d().getX();// Roll
-      pitch_bias += m_pigeon.getRotation3d().getY();// Pitch
-      yaw_bias += m_pigeon.getRotation3d().getZ();// Yaw
+      roll_bias += m_pigeon.getRotation3d().getX() * 180.0 / Math.PI;// Roll
+      pitch_bias += m_pigeon.getRotation3d().getY() * 180.0/ Math.PI;// Pitch
+      yaw_bias += m_pigeon.getRotation3d().getZ() * 180.0 / Math.PI;// Yaw
       Timer.delay(BIAS_DELAY);
     }
     // save bias value to subtract from live measurements
@@ -173,9 +173,9 @@ public class Sensors_Subsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // CCW positive, inverting here to match all the NavX code previously written.
-    m_yaw = ModMath.fmod360_2(-m_pigeon.getRotation3d().getZ());
-    m_pitch = m_pigeon.getRotation3d().getY() - m_pitch_bias;
-    m_roll = m_pigeon.getRotation3d().getX() - m_roll_bias;
+    m_yaw = ModMath.fmod360_2(-m_pigeon.getRotation3d().getZ() * 180.0 / Math.PI);
+    m_pitch = (m_pigeon.getRotation3d().getY()* 180.0 / Math.PI) - m_pitch_bias;
+    m_roll = (m_pigeon.getRotation3d().getX()*180.0 / Math.PI) - m_roll_bias;
     getRotationPositions(m_rot);
     m_yaw_d = m_xyz_dps[2];
 
