@@ -38,6 +38,9 @@ public final class Constants {
      * FR Encoder: 30
      */
 
+     // CAN IDs for climber
+     public static final int ARM_RIGHT_Motor = 1000; //placeholder
+     public static final int ARM_LEFT_Motor = 100; //placeholder 
      // CAN IDs for DT encoders
      public static final int DT_BL_ENCODER = 28;
      public static final int DT_FL_ENCODER = 29;
