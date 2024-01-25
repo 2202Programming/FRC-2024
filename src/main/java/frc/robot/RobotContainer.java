@@ -4,18 +4,22 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.Lights;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.subsystems.BlinkyLights;
+import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.RobotSpecs;
+import frc.robot.commands.Lights;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -26,7 +30,7 @@ import frc.robot.util.RobotSpecs;
  * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer implements BlinkyLightUser {
   static RobotContainer rc;
   public final RobotSpecs robotSpecs;
 
@@ -99,8 +103,12 @@ public class RobotContainer {
       case DriveTest:
       driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
       driver.b().onTrue(new AllianceAwareGyroReset(false));
-      operator.y().onTrue(new BlinkyLights());
-      operator.x().whileTrue(new InstantCommand(()->{BlinkyLights.GREEN();}));
-    }
+
+
+      driver.x().whileTrue(new Lights(BlinkyLights.GREEN));
+
+
+
   }
+}
 }

@@ -169,7 +169,7 @@ public class BlinkyLights {
 
         // used in commands, Override to your preferences
         default boolean requestBlink() {
-            return false;
+            return true;
         }
 
         default void enableLights() {
