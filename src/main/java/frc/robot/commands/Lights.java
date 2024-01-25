@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 
 public class Lights extends Command  implements BlinkyLightUser{
@@ -20,7 +21,7 @@ public class Lights extends Command  implements BlinkyLightUser{
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-
+    enableLights();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -31,7 +32,6 @@ public class Lights extends Command  implements BlinkyLightUser{
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
   }
 
   // Returns true when the command should end.

@@ -106,6 +106,8 @@ public class RobotContainer implements BlinkyLightUser {
 
 
       driver.x().whileTrue(new Lights(BlinkyLights.GREEN));
+      driver.leftBumper().whileTrue(new Lights(BlinkyLights.RED));
+      driver.y().whileTrue(new Lights(BlinkyLights.WHITE));
 
 
 
