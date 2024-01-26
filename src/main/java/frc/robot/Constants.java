@@ -61,4 +61,7 @@ public final class Constants {
      public static final int DT_FR_DIRECTION = 27;
 
   }
+  public static class PowerOnPos{
+    public static final double arm = 0.0;
+  }
 }

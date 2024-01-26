@@ -29,6 +29,7 @@ import frc.robot.util.VelocityControlled;
  */
 
 public class ArmSS extends SubsystemBase implements VelocityControlled {
+  // mesaure all values below
     final int STALL_CURRENT = 50;
     final int FREE_CURRENT = 20;
     final double ARM_MIN_EXT = 0.0;
@@ -37,9 +38,9 @@ public class ArmSS extends SubsystemBase implements VelocityControlled {
     final double gearRadius = 2.63398 * 2 * Math.PI; // 2.633[cm] is drive gear radius
     final double gearRatio = (1.0 / 75.0);
     final double conversionFactor = gearRadius * gearRatio;
-
+    //measure all above
     // state vars
-    PIDController positionPID_rt = new PIDController(5.0, 0.150, 0.250); // outer position loop
+    PIDController positionPID_rt = new PIDController(5.0, 0.150, 0.250); // outer position loop (all PIDs last year)
     PIDController positionPID_lt = new PIDController(5.0, 0.150, 0.250); // outer position loop
     PIDFController hwVelPID_rt = new PIDFController(0.002141, 0.000055, 0.15, 0.0503);
     PIDFController hwVelPID_lt = new PIDFController(0.002141, 0.000055, 0.15, 0.0503);
@@ -56,11 +57,12 @@ public class ArmSS extends SubsystemBase implements VelocityControlled {
     boolean follow_mode;
 
     // PID and speed constants
+    // measure all below
     double maxVel = 21.0; // [cm/s] 
     double maxAccel = 20.0; // [cm/s^2] Not enforce until smartmode used
     double posTol = 0.50; // [cm]
     double velTol = 0.25; // [cm/s]
-
+    // measure above
     // computed values from position pid
     double pos_error;
 
@@ -92,8 +94,6 @@ public class ArmSS extends SubsystemBase implements VelocityControlled {
     public void periodic() {
         // Synchronization, drive left to follow right
         pos_error = rightArm.getPosition() - leftArm.getPosition();
-        syncCompensation = sync ? syncPID.calculate(leftArm.getPosition(), rightArm.getPosition()) : 0.0;
-        leftArm.periodic(syncCompensation);
         rightArm.periodic(0.0);
     }
 
@@ -114,6 +114,7 @@ public class ArmSS extends SubsystemBase implements VelocityControlled {
     }
 
     public double getMaxVel() {
+      
         // arms should have same vel_limit
         return rightArm.getMaxVel();
     }
@@ -126,7 +127,6 @@ public class ArmSS extends SubsystemBase implements VelocityControlled {
     public void setSetpoint(double extension) {
         leftArm.setSetpoint(extension);
         rightArm.setSetpoint(extension);
-        sync = true;
     }
 
     public void setClamp(double min_pos, double max_pos){
@@ -171,12 +171,10 @@ public class ArmSS extends SubsystemBase implements VelocityControlled {
     // rarely used, testing only since arms are bolted together
     public void setVelocityLeft(double speed) {
         leftArm.setVelocityCmd(speed);
-        sync = false;
     }
 
     public void setVelocityRight(double speed) {
         rightArm.setVelocityCmd(speed);
-        sync = false;
     }
 
     public double getTrim() {
@@ -230,7 +228,6 @@ public class ArmSS extends SubsystemBase implements VelocityControlled {
             var tname = getTableName();
             SmartDashboard.putData(tname + "/positionPID_lt", positionPID_lt);
             SmartDashboard.putData(tname + "/positionPID_rt", positionPID_rt);
-            SmartDashboard.putData(tname + "/syncPID", syncPID);
 
             nt_syncCompensation = table.getEntry("/SyncComp");
 
@@ -251,7 +248,6 @@ public class ArmSS extends SubsystemBase implements VelocityControlled {
         public void ntupdate() {
             // info (get)
             nt_error.setDouble(pos_error);
-            nt_syncCompensation.setDouble(syncCompensation);
 
             // look for updates from NT for editable values
             maxVel = nt_maxVel.getDouble(maxVel);
