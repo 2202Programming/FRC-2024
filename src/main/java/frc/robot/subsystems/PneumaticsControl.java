@@ -4,65 +4,41 @@
 
 package frc.robot.subsystems;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import com.ctre.phoenix.led.Animation;
-import com.ctre.phoenix.led.CANdle;
-import com.ctre.phoenix.led.CANdleConfiguration;
-import com.ctre.phoenix.led.StrobeAnimation;
-
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.util.Color8Bit;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
-import frc.robot.RobotContainer;
-import frc.robot.util.RobotSpecs.RobotNames;
-import frc.robot.Constants.AnalogIn;
 
 public class PneumaticsControl extends SubsystemBase {
-    
- 
-    //instance variables 
-    AnalogInput analog_pressure_sensor;
-    boolean compressor_status;// on or off 
-    double tank_pressure;// psi between 0-120 anything above that is a hazzard 
-    /** Creates a new Pneumatics Pressure Controller. */
 
+    // instance variables
+    Compressor compressor;
+
+    /** Creates a new Pneumatics Pressure Controller. */
     public PneumaticsControl() {
         // Initializes an AnalogInput on port 0
-        analog_pressure_sensor = new AnalogInput(AnalogIn.Pressure_Sensor);
-        compressor_status = false; // assume compressor is off
-        tank_pressure = -1000;// placeholder 
+        compressor = new Compressor(PneumaticsModuleType.REVPH);
     }
 
     @Override
     public void periodic() {
 
-
     }
 
     public double get_tank_pressure() {
-        return -1000.0;
+        return compressor.getPressure();
     }
 
     public boolean get_compressor_status() {
-        return false;
+        return compressor.isEnabled();
     }
 
     public void compressor_on() {
-
+        compressor.enableAnalog(70, 120);
     }
 
     public void compressor_off() {
-
+        compressor.disable();
     }
-
-
 
     /*
      * Todo:
