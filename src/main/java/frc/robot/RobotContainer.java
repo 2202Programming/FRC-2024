@@ -4,47 +4,104 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Limelight_Subsystem;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.Lights;
+import frc.robot.commands.Swerve.AllianceAwareGyroReset;
+import frc.robot.commands.Swerve.FieldCentricDrive;
+import frc.robot.subsystems.BlinkyLights;
+import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
+import frc.robot.commands.Swerve.RobotCentricDrive;
+import frc.robot.subsystems.Sensors.Sensors_Subsystem;
+import frc.robot.subsystems.Swerve.SwerveDrivetrain;
+import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
+import frc.robot.util.RobotSpecs;
+import frc.robot.commands.Lights;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer implements BlinkyLightUser {
+
+  // enum for bindings add when needed
+  public enum Bindings {
+    DriveTest
+  }
+
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final Limelight_Subsystem m_limelight = new Limelight_Subsystem();
+  static RobotContainer rc;
+  public final RobotSpecs robotSpecs;
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  // Subsystems
+  public final HID_Xbox_Subsystem dc;
+  public final Limelight_Subsystem limelight;
+  public final Sensors_Subsystem sensors;
+  public final SwerveDrivetrain drivetrain;
+  public final BlinkyLights lights;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    // Configure the trigger bindings
-    configureBindings();
+  // singleton accessor for robot public sub-systems
+  public static RobotContainer RC() {
+    return rc;
   }
 
   /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
+   * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+  public RobotContainer() {
+    RobotContainer.rc = this;
+    // Quiet some of the noise
+    DriverStation.silenceJoystickConnectionWarning(true);
+
+    robotSpecs = new RobotSpecs();
+    lights = new BlinkyLights();
+    dc = new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
+    // Construct sub-systems based on robot Name Specs
+    switch (robotSpecs.myRobotName) {
+      case CompetitionBot2023:
+        limelight = new Limelight_Subsystem();
+        sensors = new Sensors_Subsystem();
+        drivetrain = new SwerveDrivetrain();
+        break;
+
+      case SwerveBot:
+        limelight = new Limelight_Subsystem();
+        sensors = new Sensors_Subsystem();
+        drivetrain = new SwerveDrivetrain();
+        break;
+
+      case ChadBot:
+        limelight = new Limelight_Subsystem();
+        sensors = new Sensors_Subsystem();
+        drivetrain = new SwerveDrivetrain();
+        break;
+
+      case BotOnBoard: // fall through
+      case UnknownBot: // fall through
+      default:
+        limelight = null;
+        sensors = null;
+        drivetrain = null;
+        break;
+    }
+    /* Set the commands below */
+    configureBindings(Bindings.DriveTest); // Change this to swich between bindings
+    if (drivetrain != null) {
+      drivetrain.setDefaultCommand(new FieldCentricDrive(drivetrain));
+    }
   }
 
   /**
@@ -56,4 +113,25 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return null;
   }
+
+
+  private void configureBindings(Bindings bindings) {
+    CommandXboxController driver = dc.Driver();
+    CommandXboxController operator = dc.Operator();
+
+    switch (bindings){
+      case DriveTest:
+      driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
+      driver.b().onTrue(new AllianceAwareGyroReset(false));
+
+
+      driver.x().whileTrue(new Lights(BlinkyLights.GREEN));
+      driver.leftBumper().whileTrue(new Lights(BlinkyLights.RED));
+      driver.y().whileTrue(new Lights(BlinkyLights.WHITE));
+
+
+
+  }
 }
+}
+
