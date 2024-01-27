@@ -262,6 +262,7 @@ public final class Constants {
     public static final boolean BURN_FLASH = false; // swerve-mk3
     
   }
+  
 
   // PWM assignments on the Rio
   public static final class PWM {
@@ -275,6 +276,7 @@ public final class Constants {
   }
 
   public static final class AnalogIn {
+    public static final int Pressure_Sensor = 0;
     // public static final int MAGAZINE_ANGLE = 0;
   }
 
