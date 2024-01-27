@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.PCM1;
 import frc.robot.Constants.DigitalIO;
+import frc.robot.commands.Lights;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */

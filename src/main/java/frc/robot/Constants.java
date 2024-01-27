@@ -130,10 +130,6 @@ public final class Constants {
     // Acceleration limits
     /// public static final double slewRateMax = 2; //sec limits adjusting slewrate
     // public static final boolean safetyEnabled = false;
-
-     public static final int PCM1 = 900;
-     //Intake
-     public static final int INTAKE_MTR = 200; //placeholder
      // CAN IDs for DT encoders
      public static final int DT_BL_ENCODER = 28;
      public static final int DT_FL_ENCODER = 29;
@@ -221,22 +217,14 @@ public final class Constants {
    */
   public static final class CAN {
     // CAN ID for non-motor devices
-
-    //DL PROBLEM TO WORK WITH OTHER BOTS
-    public static final int PDP = 1; //for rev
-    public static final int PCM1 = 2; //for rev
-
+    public static final int PCM1 = 900;
+     //Intake
+     public static final int INTAKE_MTR = 200; //placeholder
     // drive train CANCoders
     public static final int DT_BL_CANCODER = 28;
     public static final int DT_BR_CANCODER = 31;
     public static final int DT_FR_CANCODER = 30;
     public static final int DT_FL_CANCODER = 7;
-
-    // Intake motor
-    public static final int INTAKE_RIGHT_MTR = 19;
-    public static final int INTAKE_LEFT_MTR = 18;
-    public static final int CARWASH_RIGHT_MTR = 11;
-    public static final int CARWASH_LEFT_MTR = 10;
 
     // drive train drive / angle motors - sparkmax neo
     public static final int DT_FL_DRIVE = 20;
@@ -247,21 +235,7 @@ public final class Constants {
     public static final int DT_BR_ANGLE = 25;
     public static final int DT_FR_DRIVE = 26;
     public static final int DT_FR_ANGLE = 27;
-
-    // Climber Arms
-    public static final int CMB_LEFT_Extend = 34;
-    public static final int CMB_RIGHT_Extend = 35;
-    public static final int CMB_LEFT_Rotate = 36;
-    public static final int CMB_RIGHT_Rotate = 37;
-
-    // Arms
-    public static final int ARM_RIGHT_Motor = 12;
-    public static final int ARM_LEFT_Motor = 13;
-    public static final int ELBOW_Motor = 14;
-    public static final int WRIST_Motor = 15;
-    
-    //Claw
-    public static final int CLAW_WHEEL_MOTOR = 16;
+  
     
     // IMU
     public static final int PIGEON_IMU_CAN = 60;
@@ -271,38 +245,10 @@ public final class Constants {
     
   }
 
-  // PWM assignments on the Rio
-  public static final class PWM {
-    // dpl unused public static final int INTAKE = 0;
-  }
-
-  // Digital IO on the RIO
-  public static final class DigitalIO {
-    public static final int IntakeLightGate = 0;
-    public static final int ClawLightgate = 1;
-  }
-
   public static final class AnalogIn {
     // public static final int MAGAZINE_ANGLE = 0;
   }
 
-  // PWM assignments on the Rio
-  public static final class PCM1 {
-    // Double Solenoid
-    public static final int RT_INTAKE_UP_SOLENOID_PCM = 1; 
-    public static final int RT_INTAKE_DOWN_SOLENOID_PCM = 0; 
-    public static final int LT_INTAKE_UP_SOLENOID_PCM = 5; 
-    public static final int LT_INTAKE_DOWN_SOLENOID_PCM = 4; 
-
-    // claw double Solenoid
-    public static final int CLAW_FWD = 2;
-    public static final int CLAW_REV = 3;
-
-  }
-
-  // if we use a second PCM
-  public static final class PCM2 {
-  }
 
 
 
@@ -355,7 +301,7 @@ public final class Constants {
   //    public static final int DT_FR_DRIVE = 26;
   //    public static final int DT_FR_DIRECTION = 27;
 
-  }
+  
   public final class PCM1{
     public static final int RT_INTAKE_UP_SOLENOID_PCM = 400; 
     public static final int RT_INTAKE_DOWN_SOLENOID_PCM = 500; 
