@@ -105,18 +105,6 @@ public class Limelight_Subsystem extends SubsystemBase {
 
     pipeline = pipelineNTE.getInteger(0);
 
-    if (pipeline == 1) {
-      // LL reflective tape stuff, pull from API or NT
-      x = LimelightHelpers.getTX(LL_NAME);
-      y = LimelightHelpers.getTY(LL_NAME);
-      area = LimelightHelpers.getTA(LL_NAME);
-      target = (tv.getDouble(0) == 0) ? (false) : (true); // tv is only 0.0 or 1.0 per LL docs
-      filteredX = x_iir.calculate(x);
-      filteredArea = area_iir.calculate(area);
-      ledStatus = (leds.getDouble(0) == 3) ? (true) : (false);
-
-    } else if (pipeline == 0) {
-
       // LL apriltags stuff
       LimelightHelpers.LimelightResults llresults = LimelightHelpers.getLatestResults("");
       numAprilTags = llresults.targetingResults.targets_Fiducials.length;
@@ -134,7 +122,7 @@ public class Limelight_Subsystem extends SubsystemBase {
           teamPose = LimelightHelpers.getBotPose2d_wpiRed(LL_NAME);
       }
     }
-  }
+  
 
   public double getVisionTimestamp() {
     return visionTimestamp;
@@ -237,10 +225,6 @@ public class Limelight_Subsystem extends SubsystemBase {
     log_counter++;
     if (log_counter % 20 == 0) {
       NT_hasTarget.setBoolean(target);
-
-      tx.setDouble(x);
-      ty.setDouble(y);
-      ta.setDouble(area);
 
       if (bluePose != null) {
         nt_bluepose_x.setDouble(bluePose.getX());
