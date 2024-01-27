@@ -46,6 +46,9 @@ import frc.robot.Constants.ChassisInversionSpecs;
 
 public class SwerveDrivetrain extends SubsystemBase {
 
+  
+  static final double Bearing_Tol = Math.toRadians(0.5);  //limit bearing
+
   // cc is the chassis config for all our pathing math
   private final ChassisConfig cc = RobotContainer.RC().robotSpecs.getChassisConfig(); // chassis config
   private final WheelOffsets wc = RobotContainer.RC().robotSpecs.getWheelOffset(); // wc = wheel config
@@ -342,11 +345,13 @@ public class SwerveDrivetrain extends SubsystemBase {
 
     updateOdometry(); // upates old_pose and m_pose
 
-    double tol = Math.toRadians(0.5);
     // from -PI to +PI (radians)
+    //TODO -dpl - I am not sure this is right way to get a tolerance/filterd bearing
+    // It is a small change in x/y that needs to be checked  for valid atan2()
+    // really should use Vy/Vx.
     double temp = Math.atan2(m_pose.getY() - old_pose.getY(), m_pose.getX() - old_pose.getX()); 
     // Changed from !=0 to include tol variable
-    if (Math.abs(temp) < tol) { // remove singularity when moving too slow - otherwise lots of jitter
+    if (Math.abs(temp) < Bearing_Tol) { // remove singularity when moving too slow - otherwise lots of jitter
       currentBearing = temp;
       // convert this to degrees in the range -180 to 180
       currentBearing = Math.toDegrees(currentBearing);
