@@ -38,10 +38,9 @@ public final class Constants {
      * FR Encoder: 30
      */
 
-
+     public static final int PCM1 = 900;
      //Intake
-     public static final int INTAKE_LEFT_MTR = 200; //placeholder
-     public static final int INTAKE_RIGHT_MTR = 2000; //placeholder v2
+     public static final int INTAKE_MTR = 200; //placeholder
      // CAN IDs for DT encoders
      public static final int DT_BL_ENCODER = 28;
      public static final int DT_FL_ENCODER = 29;
@@ -62,4 +61,16 @@ public final class Constants {
      public static final int DT_FR_DIRECTION = 27;
 
   }
+  public final class PCM1{
+    public static final int RT_INTAKE_UP_SOLENOID_PCM = 400; 
+    public static final int RT_INTAKE_DOWN_SOLENOID_PCM = 500; 
+    public static final int LT_INTAKE_UP_SOLENOID_PCM = 600; 
+    public static final int LT_INTAKE_DOWN_SOLENOID_PCM = 700; 
+}
+public final class DigitalIO{
+  public static final int IntakeLightGate= 800;
+}
+public static final class Intake_Constants{
+  public static double IntakeMotorDefault = 0.01; //placeholder
+}
 }
