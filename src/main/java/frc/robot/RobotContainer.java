@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Limelight_Subsystem;
+
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -124,6 +127,7 @@ public class RobotContainer implements BlinkyLightUser {
       driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
       driver.b().onTrue(new AllianceAwareGyroReset(false));
 
+      driver.a().onTrue(new PathPlannerAuto("1m Test"));
 
       driver.x().whileTrue(new Lights(BlinkyLights.GREEN));
       driver.leftBumper().whileTrue(new Lights(BlinkyLights.RED));
