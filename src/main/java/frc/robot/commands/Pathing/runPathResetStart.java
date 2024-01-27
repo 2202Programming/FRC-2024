@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 
 
 //This command is a hack to reset our current pose to path start pose
@@ -23,11 +24,11 @@ public class runPathResetStart extends Command {
   private Command pathCommand;
 
   public runPathResetStart() {
-    
   }
 
   @Override
   public void initialize() {
+    RobotContainer.RC().drivetrain.disableVisionPose();
 
     PathPlannerPath path = PathPlannerPath.fromPathFile("test_1m");
     PathPoint startPoint = path.getPoint(0);
@@ -57,5 +58,6 @@ public class runPathResetStart extends Command {
   public void end(boolean interrupted) {
     System.out.println("***RunPathResetStart Ended, current pose:");
     RobotContainer.RC().drivetrain.printPose();
+    RobotContainer.RC().drivetrain.enableVisionPose();
   }
 }

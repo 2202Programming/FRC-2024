@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -129,7 +130,12 @@ public class RobotContainer implements BlinkyLightUser {
         new InstantCommand(RobotContainer.RC().drivetrain::printPose),
         AutoBuilder.followPath(PathPlannerPath.fromPathFile("test_1m")),
         new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
-
+      
+      //driver.rightBumper().onTrue(new SequentialCommandGroup(
+      //  new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+      //  new PathPlannerAuto("path_1"),
+      //  new InstantCommand(RobotContainer.RC().drivetrain::printPose)
+      //));
       driver.rightBumper().onTrue(new runPathResetStart());
 
 
