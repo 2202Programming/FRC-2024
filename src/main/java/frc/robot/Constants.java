@@ -17,7 +17,8 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
   public static final double DT = 0.02; // 20ms framerate 50Hz
-
+  public static final double Tperiod = 0.02; // framerate period 20ms, 50Hz
+  
   public static final class CAN{
      /* 1/20/24
      * CAN IDs:
