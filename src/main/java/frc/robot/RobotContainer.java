@@ -9,8 +9,11 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.Lights;
+import frc.robot.commands.Pathing.runPathResetStart;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
@@ -122,8 +125,12 @@ public class RobotContainer implements BlinkyLightUser {
       driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
       driver.b().onTrue(new AllianceAwareGyroReset(false));
 
-      driver.a().onTrue(new AutoBuilder().followPath(PathPlannerPath.fromPathFile("test_1m")));
-        
+      driver.a().onTrue(new SequentialCommandGroup(
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+        AutoBuilder.followPath(PathPlannerPath.fromPathFile("test_1m")),
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+
+      driver.rightBumper().onTrue(new runPathResetStart());
 
 
       driver.x().whileTrue(new Lights(BlinkyLights.GREEN));
