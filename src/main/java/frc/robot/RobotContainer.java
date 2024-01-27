@@ -4,13 +4,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj.util.Color8Bit;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.Limelight_Subsystem;
-
-import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,14 +13,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.Lights;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
+import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
-import frc.robot.commands.Swerve.RobotCentricDrive;
+import frc.robot.subsystems.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.RobotSpecs;
-import frc.robot.commands.Lights;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -44,7 +39,6 @@ public class RobotContainer implements BlinkyLightUser {
   }
 
   // The robot's subsystems and commands are defined here...
-  private final Limelight_Subsystem m_limelight = new Limelight_Subsystem();
   static RobotContainer rc;
   public final RobotSpecs robotSpecs;
 
@@ -120,6 +114,7 @@ public class RobotContainer implements BlinkyLightUser {
 
   private void configureBindings(Bindings bindings) {
     CommandXboxController driver = dc.Driver();
+    @SuppressWarnings("unused")
     CommandXboxController operator = dc.Operator();
 
     switch (bindings){
@@ -127,7 +122,9 @@ public class RobotContainer implements BlinkyLightUser {
       driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
       driver.b().onTrue(new AllianceAwareGyroReset(false));
 
-      driver.a().onTrue(new PathPlannerAuto("1m Test"));
+      driver.a().onTrue(new AutoBuilder().followPath(PathPlannerPath.fromPathFile("test_1m")));
+        
+
 
       driver.x().whileTrue(new Lights(BlinkyLights.GREEN));
       driver.leftBumper().whileTrue(new Lights(BlinkyLights.RED));
