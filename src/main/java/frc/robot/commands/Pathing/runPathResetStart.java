@@ -18,7 +18,10 @@ import frc.robot.RobotContainer;
 
 //This command is a hack to reset our current pose to path start pose
 //since we can't figure out how to make autobuilder do this
-public class runPathResetStart extends InstantCommand {
+public class runPathResetStart extends Command {
+  
+  private Command pathCommand;
+
   public runPathResetStart() {
     
   }
@@ -33,11 +36,26 @@ public class runPathResetStart extends InstantCommand {
         new Rotation2d(0.0)
     );
 
+    pathCommand = AutoBuilder.followPath(path);
+
     RobotContainer.RC().drivetrain.autoPoseSet(startPose);
     new InstantCommand(RobotContainer.RC().drivetrain::printPose).schedule();
-    AutoBuilder.followPath(path).schedule();
-    new InstantCommand(RobotContainer.RC().drivetrain::printPose).schedule();
+    pathCommand.schedule();
+   }
 
+  @Override
+  public void execute() {
 
+  }
+
+  @Override
+  public boolean isFinished() {
+    return pathCommand.isFinished();
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    System.out.println("***RunPathResetStart Ended, current pose:");
+    RobotContainer.RC().drivetrain.printPose();
   }
 }
