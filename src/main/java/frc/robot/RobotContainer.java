@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Limelight_Subsystem;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
@@ -24,6 +29,9 @@ import frc.robot.util.RobotSpecs;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  // The robot's subsystems and commands are defined here...
+  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final Limelight_Subsystem m_limelight = new Limelight_Subsystem();
   static RobotContainer rc;
   public final RobotSpecs robotSpecs;
 
@@ -36,11 +44,21 @@ public class RobotContainer {
   // singleton accessor for robot public sub-systems
   public static RobotContainer RC() {
     return rc;
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  public RobotContainer() {
+
+    // Quiet some of the noise
+    DriverStation.silenceJoystickConnectionWarning(true);
+
+    // Configure the trigger bindings
+    configureBindings();
   }
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
+  private void configureBindings() {
+    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
   public RobotContainer() {
     RobotContainer.rc = this;
     robotSpecs = new RobotSpecs();
@@ -81,6 +99,14 @@ public class RobotContainer {
     }
   }
 
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public Command getAutonomousCommand() {
+    // An example command will be run in autonomous
+    return null;
   //enum for bindings add when needed
   enum Bindings {
     DriveTest,
