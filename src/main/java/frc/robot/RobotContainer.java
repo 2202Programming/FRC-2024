@@ -5,7 +5,6 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Limelight_Subsystem;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -13,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
-import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
@@ -29,8 +27,13 @@ import frc.robot.util.RobotSpecs;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+  // enum for bindings add when needed
+  public enum Bindings {
+    DriveTest
+  }
+
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Limelight_Subsystem m_limelight = new Limelight_Subsystem();
   static RobotContainer rc;
   public final RobotSpecs robotSpecs;
@@ -44,23 +47,17 @@ public class RobotContainer {
   // singleton accessor for robot public sub-systems
   public static RobotContainer RC() {
     return rc;
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-
-    // Quiet some of the noise
-    DriverStation.silenceJoystickConnectionWarning(true);
-
-    // Configure the trigger bindings
-    configureBindings();
   }
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+
   public RobotContainer() {
     RobotContainer.rc = this;
+    // Quiet some of the noise
+    DriverStation.silenceJoystickConnectionWarning(true);
+
     robotSpecs = new RobotSpecs();
     dc = new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
     // Construct sub-systems based on robot Name Specs
@@ -91,8 +88,7 @@ public class RobotContainer {
         drivetrain = null;
         break;
     }
-
-    /*Set the commands below */
+    /* Set the commands below */
     configureBindings(Bindings.DriveTest); // Change this to swich between bindings
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive(drivetrain));
@@ -107,10 +103,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return null;
-  //enum for bindings add when needed
-  enum Bindings {
-    DriveTest,
   }
+
 
   private void configureBindings(Bindings bindings) {
     CommandXboxController driver = dc.Driver();
@@ -123,3 +117,4 @@ public class RobotContainer {
     }
   }
 }
+

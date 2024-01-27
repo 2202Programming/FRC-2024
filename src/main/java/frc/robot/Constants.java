@@ -44,8 +44,6 @@ public final class Constants {
   // Handy feet to meters
   public static final double FTperM = 3.28084;
   public static final double MperFT = 1.0 / FTperM;
-  public static final double DT = 0.02; // 20ms framerate 50Hz
-  public static final double Tperiod = 0.02; // framerate period 20ms, 50Hz
   public static final int NEO_COUNTS_PER_REVOLUTION = 42;
     public static final class SubsystemConfig {
 
@@ -310,44 +308,44 @@ public final class Constants {
   public static final double DT = 0.02; // 20ms framerate 50Hz
   public static final double Tperiod = 0.02; // framerate period 20ms, 50Hz
   
-  public static final class CAN{
-     /* 1/20/24
-     * CAN IDs:
-     * Corner 3 Drive Motor BL: 22
-     * Corner 3 Direction Motor BL: 23
-     * BL Encoder: 28
-     * 
-     * Corner 2 Drive Motor FL: 20
-     * Corner 2 Direction Motor FL: 21
-     * FL Encoder: 29
-     * 
-     * Corner 4 Drive Motor BR: 24
-     * Corner 4 Direction Motor BR: 25
-     * BR Encoder
-     * 
-     * Corner 1 Direction Motor FR: 27
-     * Corner 1 Drive Motor FR: 26
-     * FR Encoder: 30
-     */
+  // public static final class CAN{
+  //    /* 1/20/24
+  //    * CAN IDs:
+  //    * Corner 3 Drive Motor BL: 22
+  //    * Corner 3 Direction Motor BL: 23
+  //    * BL Encoder: 28
+  //    * 
+  //    * Corner 2 Drive Motor FL: 20
+  //    * Corner 2 Direction Motor FL: 21
+  //    * FL Encoder: 29
+  //    * 
+  //    * Corner 4 Drive Motor BR: 24
+  //    * Corner 4 Direction Motor BR: 25
+  //    * BR Encoder
+  //    * 
+  //    * Corner 1 Direction Motor FR: 27
+  //    * Corner 1 Drive Motor FR: 26
+  //    * FR Encoder: 30
+  //    */
 
-     // CAN IDs for DT encoders
-     public static final int DT_BL_ENCODER = 28;
-     public static final int DT_FL_ENCODER = 29;
-     public static final int DT_FR_ENCODER = 30;
-     public static final int DT_BR_ENCODER = 31;
+  //    // CAN IDs for DT encoders
+  //    public static final int DT_BL_ENCODER = 28;
+  //    public static final int DT_FL_ENCODER = 29;
+  //    public static final int DT_FR_ENCODER = 30;
+  //    public static final int DT_BR_ENCODER = 31;
      
-     // CAN IDs for drivetrain motors
-     public static final int DT_FL_DRIVE = 20;
-     public static final int DT_FL_DIRECTION = 21;
+  //    // CAN IDs for drivetrain motors
+  //    public static final int DT_FL_DRIVE = 20;
+  //    public static final int DT_FL_DIRECTION = 21;
 
-     public static final int DT_BL_DRIVE = 22;
-     public static final int DT_BL_DIRECTION = 23;
+  //    public static final int DT_BL_DRIVE = 22;
+  //    public static final int DT_BL_DIRECTION = 23;
      
-     public static final int DT_BR_DRIVE = 24;
-     public static final int DT_BR_DIRECTION = 25;
+  //    public static final int DT_BR_DRIVE = 24;
+  //    public static final int DT_BR_DIRECTION = 25;
      
-     public static final int DT_FR_DRIVE = 26;
-     public static final int DT_FR_DIRECTION = 27;
+  //    public static final int DT_FR_DRIVE = 26;
+  //    public static final int DT_FR_DIRECTION = 27;
 
-  }
+  // }
 }
