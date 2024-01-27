@@ -252,7 +252,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     // Configure the AutoBuilder last
     AutoBuilder.configureHolonomic(
         this::getPose, // Robot pose supplier
-        this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+        this::autoPoseSet, // Method to reset odometry (will be called if your auto has a starting pose)
         this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
@@ -413,17 +413,18 @@ public class SwerveDrivetrain extends SubsystemBase {
     return modules[modID];
   }
 
-  // todo: eleminate this function, duplicate of resetpose
-  // sets X,Y, and sets current angle (will apply sensors correction)
-  public void setPose(Pose2d new_pose) {
-    resetPose(new_pose);
+
+  public void setZeroPose() {
+    setPose(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
   }
 
-  public void resetPose() {
-    resetPose(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
-  }
+  //hack to find auto reset point
+public void autoPoseSet(Pose2d pose){
+  System.out.println("***Auto is reseting pose to: " + pose);
+  setPose(pose);
+}
 
-  public void resetPose(Pose2d pose) {
+  public void setPose(Pose2d pose) {
     m_pose = pose;
     m_odometry.resetPosition(sensors.getRotation2d(), meas_pos, m_pose);
 
