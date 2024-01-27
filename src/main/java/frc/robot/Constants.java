@@ -38,6 +38,10 @@ public final class Constants {
      * FR Encoder: 30
      */
 
+
+     //Intake
+     public static final int INTAKE_LEFT_MTR = 200; //placeholder
+     public static final int INTAKE_RIGHT_MTR = 2000; //placeholder v2
      // CAN IDs for DT encoders
      public static final int DT_BL_ENCODER = 28;
      public static final int DT_FL_ENCODER = 29;
