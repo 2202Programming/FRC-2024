@@ -18,10 +18,10 @@ public class MoveCollectiveArm extends Command {
     public double armPos;
     public double armMaxVel;
 
-    public Positions(double armPos){
-      this(armPos);
+    public Positions(double armPos, double armMaxVel){
+      this(armPos, armMaxVel);
     }
-    // shouldn't need?
+    // shouldn't need?s
     // public Postions(double armPos, double armVel){
     //   this.armPos = armPos;
     //   this.armMaxVel = armVel;
@@ -62,7 +62,7 @@ public class MoveCollectiveArm extends Command {
     }
   Positions getStart(){
     return new Positions(
-      arm.getPosition());
+      arm.getPosition(), old_arm_max_vel);
   }
 
   // Returns true when the command should end.
