@@ -92,6 +92,7 @@ public class RobotContainer implements BlinkyLightUser {
         sensors = new Sensors_Subsystem();
         drivetrain = new SwerveDrivetrain();
         pneumatics = new PneumaticsControl();
+        pneumatics.compressor_on();
         break;
 
       case ChadBot:
