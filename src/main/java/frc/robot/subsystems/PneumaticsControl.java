@@ -15,7 +15,7 @@ public class PneumaticsControl extends SubsystemBase {
 
     /** Creates a new Pneumatics Pressure Controller. */
     public PneumaticsControl() {
-        // Initializes an AnalogInput on port 0
+        // Initializes an pneumatics Analog Input on port 0
         compressor = new Compressor(PneumaticsModuleType.REVPH);
     }
 
@@ -39,11 +39,4 @@ public class PneumaticsControl extends SubsystemBase {
     public void compressor_off() {
         compressor.disable();
     }
-
-    /*
-     * Todo:
-     * Create Functions - What functionality is required for this class?
-     * Whats are the return type?
-     * Whats are the parameters?
-     */
 }
