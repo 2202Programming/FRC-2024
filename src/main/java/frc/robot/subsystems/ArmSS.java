@@ -95,6 +95,7 @@ public class ArmSS extends SubsystemBase implements VelocityControlled {
         // Synchronization, drive left to follow right
         pos_error = rightArm.getPosition() - leftArm.getPosition();
         rightArm.periodic(0.0);
+        leftArm.periodic(0.0);
     }
 
     @Override

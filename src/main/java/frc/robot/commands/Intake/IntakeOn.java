@@ -10,10 +10,10 @@ import frc.robot.Constants.Intake_Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 
-public class IntakeToggle extends Command {
+public class IntakeOn extends Command {
   /** Creates a new intakeForward. */
-  final Intake intake;
-  public IntakeToggle() {
+  public final Intake intake;
+  public IntakeOn() {
     this.intake = RobotContainer.RC().intake; //fixed when merge
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -31,8 +31,6 @@ public class IntakeToggle extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.intakeOff();
-    intake.retract();
   }
 
   // Returns true when the command should end.

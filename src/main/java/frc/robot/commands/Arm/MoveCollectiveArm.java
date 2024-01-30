@@ -5,11 +5,14 @@
 package frc.robot.commands.Arm;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmSS;
+import frc.robot.subsystems.Intake;
 
 public class MoveCollectiveArm extends Command {
   /** Creates a new MoveCollectiveArm. */
   ArmSS arm = RobotContainer.RC().armSS;
+  Intake intake = RobotContainer.RC().intake;
   Positions start;
   Positions target;
   double old_arm_max_vel;
@@ -17,9 +20,11 @@ public class MoveCollectiveArm extends Command {
   public static class Positions{
     public double armPos;
     public double armMaxVel;
+    public double intake;
 
     public Positions(double armPos, double armMaxVel){
-      this(armPos, armMaxVel);
+      this.armPos = armPos;
+      this.armMaxVel = armMaxVel;
     }
     // shouldn't need?s
     // public Postions(double armPos, double armVel){
@@ -33,11 +38,11 @@ public class MoveCollectiveArm extends Command {
     //   this(src.pos_info);
     // }
   }
-  public MoveCollectiveArm(CollectivePositions Destination) 
-  {
-    this(Destination);
-    // Use addRequirements() here to declare subsystem dependencies.
-  }
+  // public MoveCollectiveArm(CollectivePositions Destination) 
+  // {
+  //   this(Destination);
+  //   // Use addRequirements() here to declare subsystem dependencies.
+  // }
 
   // Called when the command is initially scheduled.
   @Override

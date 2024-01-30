@@ -129,8 +129,6 @@ public final class Constants {
      */
 
      // CAN IDs for climber
-     public static final int ARM_RIGHT_Motor = 1000; //placeholder
-     public static final int ARM_LEFT_Motor = 100; //placeholder 
      // CAN IDs for DT encoders
      public static final int DT_BL_ENCODER = 28;
      public static final int DT_FL_ENCODER = 29;
@@ -217,6 +215,8 @@ public final class Constants {
    * 
    */
   public static final class CAN {
+      public static final int ARM_RIGHT_Motor = 1000; //placeholder
+     public static final int ARM_LEFT_Motor = 100; //placeholder 
     // CAN ID for non-motor devices
     public static final int PCM1 = 900;
      //Intake
@@ -302,7 +302,7 @@ public final class Constants {
   //    public static final int DT_FR_DRIVE = 26;
   //    public static final int DT_FR_DIRECTION = 27;
 
-  }
+  
   public static class PowerOnPos{
     public static final double arm = 0.0;
   }
