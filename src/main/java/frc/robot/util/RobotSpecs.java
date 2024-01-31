@@ -13,7 +13,7 @@ import frc.robot.Constants.WheelOffsets;
 
 public class RobotSpecs {
     public enum RobotNames {
-        //CompetitionBot2024("CompetitionBot2024"), //TODO: add when start working on 2024 bot
+        CompetitionBot2024("CompetitionBot2024"), 
         SwerveBot("SwerveBot"),
         CompetitionBot2023("CompetitionBot2023"),
         ChadBot("ChadBot"),
@@ -50,11 +50,18 @@ public class RobotSpecs {
             myRobotName = RobotNames.CompetitionBot2023;
         }
         // setup to handle any swerve both we have
-        switch (myRobotName) { //TODO: add when start working on 2024 bot
+        switch (myRobotName) {
             case SwerveBot:
                 myWheelOffsets = Constants.DriveTrain.swerveBotOffsets;
                 myChassisConfig = Constants.DriveTrain.swerveBotChassisConfig;
                 mySubsystemConfig = Constants.swerveBotSubsystemConfig;
+                myChassisInversionSpecs = Constants.swerveBotChassisInversionSpecs;
+                break;
+                
+            case CompetitionBot2024://TODO update 
+                myWheelOffsets = Constants.DriveTrain.swerveBotOffsets;
+                myChassisConfig = Constants.DriveTrain.swerveBotChassisConfig;
+                mySubsystemConfig = Constants.comp2024BotSubsystemConfig;
                 myChassisInversionSpecs = Constants.swerveBotChassisInversionSpecs;
                 break;
 

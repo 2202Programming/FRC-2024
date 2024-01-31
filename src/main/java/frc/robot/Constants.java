@@ -50,18 +50,21 @@ public final class Constants {
     //Support for multiple robots on same code base
     public final boolean HAS_INTAKE;
     public final boolean HAS_SHOOTER;
+    public final boolean HAS_ANALOG_PNEUMATICS;
     public final boolean IS_COMPETITION_BOT;
     public final boolean HAS_MAGAZINE;
     public final boolean HAS_CLIMBER;
     public final boolean HAS_POSITIONER;
     public final boolean HAS_DRIVETRAIN;
     public final boolean HAS_LIMELIGHT;
+    
 
-    public SubsystemConfig(boolean HAS_INTAKE, boolean HAS_SHOOTER, boolean IS_COMPETITION_BOT, boolean HAS_MAGAZINE,
+    public SubsystemConfig(boolean HAS_INTAKE, boolean HAS_SHOOTER, boolean HAS_ANALOG_PNEUMATICS, boolean IS_COMPETITION_BOT, boolean HAS_MAGAZINE,
         boolean HAS_CLIMBER,
-        boolean HAS_POSITIONER, boolean HAS_DRIVETRAIN, boolean HAS_LIMELIGHT) {
+        boolean HAS_POSITIONER, boolean HAS_DRIVETRAIN, boolean HAS_LIMELIGHT ) {
       this.HAS_INTAKE = HAS_INTAKE;
       this.HAS_SHOOTER = HAS_SHOOTER;
+      this.HAS_ANALOG_PNEUMATICS = HAS_ANALOG_PNEUMATICS;
       this.IS_COMPETITION_BOT = IS_COMPETITION_BOT;
       this.HAS_MAGAZINE = HAS_MAGAZINE;
       this.HAS_CLIMBER = HAS_CLIMBER;
@@ -180,10 +183,11 @@ public final class Constants {
     new ModuleInversionSpecs(false,false,false), //FL
     new ModuleInversionSpecs(true,false,false), //BR
     new ModuleInversionSpecs(false,false,false)); //BL
-
-  public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig(false,false, false, false, false,      false, true, true);
-  public static final SubsystemConfig chadBotSubsystemConfig = new SubsystemConfig(true, true, false, true, true, true, true, true);
-  public static final SubsystemConfig comp2023BotSubsystemConfig = new SubsystemConfig(true,false,true,false,false,false,true,true);
+  
+  public static final SubsystemConfig comp2024BotSubsystemConfig = new SubsystemConfig(true,true,true, true, false, true, false, true, true);
+  public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig(false,false, false, false, false, false,      false, true, true);
+  public static final SubsystemConfig chadBotSubsystemConfig = new SubsystemConfig(true,true,false, false, true, true, true, true, true);
+  public static final SubsystemConfig comp2023BotSubsystemConfig = new SubsystemConfig(true,false,false,true,false,false,false,true,true);
     //Support for multiple robots on same code base
   public static final class ChassisInversionSpecs{
     public ModuleInversionSpecs FR;
@@ -262,6 +266,7 @@ public final class Constants {
     public static final boolean BURN_FLASH = false; // swerve-mk3
     
   }
+  
 
   // PWM assignments on the Rio
   public static final class PWM {
@@ -275,6 +280,7 @@ public final class Constants {
   }
 
   public static final class AnalogIn {
+    public static final int Pressure_Sensor = 0;
     // public static final int MAGAZINE_ANGLE = 0;
   }
 
