@@ -16,7 +16,6 @@ import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 public class driveToPose extends Command {
 
   private Pose2d targetPose;
-  private Pose2d startPose;
   private SwerveDrivetrain m_Drivetrain;
   private PathConstraints pathConstraints;
 
@@ -32,7 +31,6 @@ public class driveToPose extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    startPose = m_Drivetrain.getPose();
     pathConstraints = new PathConstraints(1.0, 1.0, Units.degreesToRadians(360), Units.degreesToRadians(540));
 
   }
@@ -45,7 +43,8 @@ public class driveToPose extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override

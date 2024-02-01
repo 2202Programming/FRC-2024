@@ -12,7 +12,6 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -29,30 +28,28 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.ChassisConfig;
 import frc.robot.Constants.DriveTrain;
 import frc.robot.Constants.NTStrings;
 import frc.robot.Constants.WheelOffsets;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Limelight_Subsystem;
+import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem.EncoderID;
 import frc.robot.util.ModMath;
-import frc.robot.util.PoseMath;
 import frc.robot.util.VisionWatchdog;
 import frc.robot.Constants.ChassisInversionSpecs;
 
 public class SwerveDrivetrain extends SubsystemBase {
 
-  
-  static final double Bearing_Tol = Math.toRadians(0.5);  //limit bearing
+  static final double Bearing_Tol = Math.toRadians(0.5); // limit bearing
 
   // cc is the chassis config for all our pathing math
   private final ChassisConfig cc = RobotContainer.RC().robotSpecs.getChassisConfig(); // chassis config
   private final WheelOffsets wc = RobotContainer.RC().robotSpecs.getWheelOffset(); // wc = wheel config
-  private final ChassisInversionSpecs is = RobotContainer.RC().robotSpecs.getChassisInversionSpecs(); // is = inversion specs
+  private final ChassisInversionSpecs is = RobotContainer.RC().robotSpecs.getChassisInversionSpecs(); // is = inversion
+                                                                                                      // specs
 
   /**
    *
@@ -71,10 +68,9 @@ public class SwerveDrivetrain extends SubsystemBase {
   );
   private SwerveDriveOdometry m_odometry;
   private Pose2d m_pose;
+  @SuppressWarnings("unused")
   private Pose2d old_pose;
   private Pose2d m_pose_integ; // incorporates vision
-
-  private double maxImagingVelocity = 2.0; //m/s
   private VisionWatchdog watchdog;
 
   private SwerveModuleState[] meas_states; // measured wheel speed & angle
@@ -90,7 +86,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   private final SwerveModuleMK3[] modules;
 
   // used to update postion esimates
-  double kTimeoffset = .1; // [s] measurement delay from photonvis 
+  double kTimeoffset = .1; // [s] measurement delay from photonvis
   private final Limelight_Subsystem limelight;
   // Network tables
   private NetworkTable table;
@@ -135,15 +131,17 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   public final String NT_Name = "DT"; // expose data under DriveTrain table
   private int timer;
-  private double currentBearing = 0;
+  // private double currentBearing = 0;
   private double filteredBearing = 0;
   private double filteredVelocity = 0;
 
   // Creates a new Single-Pole IIR filter
   // Time constant is 0.1 seconds
   // Period is 0.02 seconds - this is the standard FRC main loop period
-  private LinearFilter bearingFilter = LinearFilter.singlePoleIIR(0.1, Constants.DT);
-  private LinearFilter velocityFilter = LinearFilter.singlePoleIIR(0.1, Constants.DT);
+  // private LinearFilter bearingFilter = LinearFilter.singlePoleIIR(0.1,
+  // Constants.DT);
+  // private LinearFilter velocityFilter = LinearFilter.singlePoleIIR(0.1,
+  // Constants.DT);
 
   public final SwerveDrivePoseEstimator m_poseEstimator_ll;
   public final SwerveDrivePoseEstimator m_poseEstimator_pv;
@@ -192,12 +190,12 @@ public class SwerveDrivetrain extends SubsystemBase {
         VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30))); // std x, y heading from vision
 
     m_poseEstimator_pv = new SwerveDrivePoseEstimator(
-      kinematics,
-      sensors.getRotation2d(),
-      meas_pos,
-      new Pose2d(), // initial pose ()
-      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)), // std x,y, heading from odmetry
-      VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30))); // std x, y heading from vision
+        kinematics,
+        sensors.getRotation2d(),
+        meas_pos,
+        new Pose2d(), // initial pose ()
+        VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)), // std x,y, heading from odmetry
+        VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30))); // std x, y heading from vision
 
     m_odometry = new SwerveDriveOdometry(kinematics, sensors.getRotation2d(), meas_pos);
     // cur_states = kinematics.toSwerveModuleStates(new ChassisSpeeds(0, 0, 0));
@@ -264,17 +262,18 @@ public class SwerveDrivetrain extends SubsystemBase {
             4.5, // Max module speed, in m/s
             0.4, // Drive base radius in meters. Distance from robot center to furthest module.
             new ReplanningConfig()), // Default path replanning config. See the API for the options here
-            () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red
+          // alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                  return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-          },
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
         this // Reference to this subsystem to set requirements
     );
 
@@ -321,7 +320,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   }
 
   // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-  public void driveRobotRelative(ChassisSpeeds chassisSpeed){
+  public void driveRobotRelative(ChassisSpeeds chassisSpeed) {
     drive(kinematics.toSwerveModuleStates(chassisSpeed));
   }
 
@@ -345,23 +344,33 @@ public class SwerveDrivetrain extends SubsystemBase {
 
     updateOdometry(); // upates old_pose and m_pose
 
-    // from -PI to +PI (radians)
-    //TODO -dpl - I am not sure this is right way to get a tolerance/filterd bearing
-    // It is a small change in x/y that needs to be checked  for valid atan2()
-    // really should use Vy/Vx.
-    double temp = Math.atan2(m_pose.getY() - old_pose.getY(), m_pose.getX() - old_pose.getX()); 
-    // Changed from !=0 to include tol variable
-    if (Math.abs(temp) < Bearing_Tol) { // remove singularity when moving too slow - otherwise lots of jitter
-      currentBearing = temp;
-      // convert this to degrees in the range -180 to 180
-      currentBearing = Math.toDegrees(currentBearing);
-    }
-    // run bearing through low pass filter
-    filteredBearing = bearingFilter.calculate(currentBearing);
-
-    // velocity assuming period is 0.02 seconds - this is the standard FRC main loop
-    // period
-    filteredVelocity = velocityFilter.calculate(PoseMath.poseDistance(m_pose, old_pose) / 0.02);
+    /*
+     * BEARING STUFFS FROM HERE
+     * 
+     * // from -PI to +PI (radians)
+     * // -dpl - I am not sure this is right way to get a tolerance/filterd
+     * // bearing
+     * // It is a small change in x/y that needs to be checked for valid atan2()
+     * // really should use Vy/Vx.
+     * double temp = Math.atan2(m_pose.getY() - old_pose.getY(), m_pose.getX() -
+     * old_pose.getX());
+     * // Changed from !=0 to include tol variable
+     * if (Math.abs(temp) < Bearing_Tol) { // remove singularity when moving too
+     * slow - otherwise lots of jitter
+     * currentBearing = temp;
+     * // convert this to degrees in the range -180 to 180
+     * currentBearing = Math.toDegrees(currentBearing);
+     * }
+     * // run bearing through low pass filter
+     * filteredBearing = bearingFilter.calculate(currentBearing);
+     * 
+     * // velocity assuming period is 0.02 seconds - this is the standard FRC main
+     * loop
+     * // period
+     * filteredVelocity = velocityFilter.calculate(PoseMath.poseDistance(m_pose,
+     * old_pose) / 0.02);
+     * 
+     */
 
     // updates CAN status data every 4 cycles
     timer++;
@@ -394,8 +403,6 @@ public class SwerveDrivetrain extends SubsystemBase {
       est_pose_integ_y.setDouble(m_pose_integ.getY());
       est_pose_integ_h.setDouble(m_pose_integ.getRotation().getDegrees());
 
-
-
       // if Drivetrain tuning
       // pidTuning();
     }
@@ -422,11 +429,11 @@ public class SwerveDrivetrain extends SubsystemBase {
     setPose(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
   }
 
-  //hack to find auto reset point
-public void autoPoseSet(Pose2d pose){
-  System.out.println("***Auto is reseting pose to: " + pose);
-  setPose(pose);
-}
+  // hack to find auto reset point
+  public void autoPoseSet(Pose2d pose) {
+    System.out.println("***Auto is reseting pose to: " + pose);
+    setPose(pose);
+  }
 
   public void setPose(Pose2d pose) {
     m_pose = pose;
@@ -453,7 +460,7 @@ public void autoPoseSet(Pose2d pose){
         .println("***POSE X:" + m_pose.getX() + ", Y:" + m_pose.getY() + ", Rot:" + m_pose.getRotation().getDegrees());
   }
 
-  // TODO: bearing should be to or from *what*? split out?
+  // bearing should be to or from *what*? split out?
   public double getBearing() {
     return filteredBearing;
   }
@@ -513,33 +520,37 @@ public void autoPoseSet(Pose2d pose){
     old_pose = m_pose;
     m_pose = m_odometry.update(sensors.getRotation2d(), meas_pos);
 
-    // vision  from here down
+    // vision from here down
     if (limelight != null) {
-      m_poseEstimator_ll.update(sensors.getRotation2d(), meas_pos); //this should happen every robot cycle, regardless of vision targets.
+      m_poseEstimator_ll.update(sensors.getRotation2d(), meas_pos); // this should happen every robot cycle, regardless
+                                                                    // of vision targets.
       llPoseEstimatorUpdate();
     }
 
-
-    //only update pose from imaging if max velocity is low enough
-    //get center of robot velocity from sqrt of vX2 + vY2
+    // only update pose from imaging if max velocity is low enough
+    // get center of robot velocity from sqrt of vX2 + vY2
+    // maxImagingVelocity = 2.0; //m/s in case needed
     // if(Math.sqrt(
-    //           Math.pow(kinematics.toChassisSpeeds(meas_states).vxMetersPerSecond,2) +
-    //           Math.pow(kinematics.toChassisSpeeds(meas_states).vyMetersPerSecond,2)) > maxImagingVelocity){
-    //   return;
+    // Math.pow(kinematics.toChassisSpeeds(meas_states).vxMetersPerSecond,2) +
+    // Math.pow(kinematics.toChassisSpeeds(meas_states).vyMetersPerSecond,2)) >
+    // maxImagingVelocity){
+    // return;
     // }
 
-    if ((limelight != null) && (llPose != null) && (limelight.getNumApriltags() > 0)) { //just use LL for now
+    if ((limelight != null) && (llPose != null) && (limelight.getNumApriltags() > 0)) { // just use LL for now
       Pose2d prev_m_Pose = m_pose;
-      if(visionPoseEnabled) {
+      if (visionPoseEnabled) {
         watchdog.update(prev_m_Pose, llPose);
         if (visionPoseUsingRotation) {
-          setPose(llPose); //update robot pose from swervedriveposeestimator, include vision-based rotation
-        }
-        else{
-          setPose(new Pose2d(llPose.getTranslation(), prev_m_Pose.getRotation())); //update robot translation from swervedriveposeestimator, do not update rotation
+          setPose(llPose); // update robot pose from swervedriveposeestimator, include vision-based
+                           // rotation
+        } else {
+          setPose(new Pose2d(llPose.getTranslation(), prev_m_Pose.getRotation())); // update robot translation from
+                                                                                   // swervedriveposeestimator, do not
+                                                                                   // update rotation
         }
       }
-      x_diff = Math.abs(prev_m_Pose.getX() -  m_pose.getX());
+      x_diff = Math.abs(prev_m_Pose.getX() - m_pose.getX());
       y_diff = Math.abs(prev_m_Pose.getY() - m_pose.getY());
       yaw_diff = Math.abs(prev_m_Pose.getRotation().getDegrees() - m_pose.getRotation().getDegrees());
       // vision pose updating NTs
@@ -547,71 +558,73 @@ public void autoPoseSet(Pose2d pose){
       nt_y_diff.setDouble(y_diff);
       nt_yaw_diff.setDouble(yaw_diff);
     }
-    
 
     // WIP use other poseEstimator
-    if (limelight != null)
-    {
+    if (limelight != null) {
       /*
-      if (photonVision.hasAprilTarget() && pvPose != null){
-        Pose2d prev_m_Pose = m_pose;
-        setPose(pvPose); // update main pose with vision integrated pose if we have a target
-        double x_dif = Math.abs(prev_m_Pose.getX() -  m_pose.getX()) / 16.54099;
-        double y_dif = Math.abs(prev_m_Pose.getY() - m_pose.getY()) / 8.002778;
-        System.out.println("***UPDATED BY PV \n -----> X Fixed: " + x_dif + "%   Y Fixed: " + y_dif
-           + "%");
-      }*/
-      // if (limelight.hasAprilTarget() && llPose != null){ // else if with photonvision
-      //   Pose2d prev_m_Pose = m_pose;
-      //   setPose(llPose);
-      //   double x_dif = Math.abs(prev_m_Pose.getX() -  m_pose.getX()) / 16.54099;
-      //   double y_dif = Math.abs(prev_m_Pose.getY() - m_pose.getY()) / 8.002778;
-      //   System.out.println("***UPDATED BY LL \n -----> X: " + x_dif + "%   Y: " + y_dif+ "%   Y Fixed: " + y_dif
-      //       + "%");
+       * if (photonVision.hasAprilTarget() && pvPose != null){
+       * Pose2d prev_m_Pose = m_pose;
+       * setPose(pvPose); // update main pose with vision integrated pose if we have a
+       * target
+       * double x_dif = Math.abs(prev_m_Pose.getX() - m_pose.getX()) / 16.54099;
+       * double y_dif = Math.abs(prev_m_Pose.getY() - m_pose.getY()) / 8.002778;
+       * System.out.println("***UPDATED BY PV \n -----> X Fixed: " + x_dif +
+       * "%   Y Fixed: " + y_dif
+       * + "%");
+       * }
+       */
+      // if (limelight.hasAprilTarget() && llPose != null){ // else if with
+      // photonvision
+      // Pose2d prev_m_Pose = m_pose;
+      // setPose(llPose);
+      // double x_dif = Math.abs(prev_m_Pose.getX() - m_pose.getX()) / 16.54099;
+      // double y_dif = Math.abs(prev_m_Pose.getY() - m_pose.getY()) / 8.002778;
+      // System.out.println("***UPDATED BY LL \n -----> X: " + x_dif + "% Y: " +
+      // y_dif+ "% Y Fixed: " + y_dif
+      // + "%");
       // }
     }
 
   }
 
+  void llPoseEstimatorUpdate() {
 
-  void llPoseEstimatorUpdate(){
-    
     if (limelight.getNumApriltags() > 0) {
       // this should happen only if we have a tag in view
-      // OK if it is run only intermittanly.  Uses latency of vision pose.
+      // OK if it is run only intermittanly. Uses latency of vision pose.
       m_poseEstimator_ll.addVisionMeasurement(limelight.getBluePose(), limelight.getVisionTimestamp());
 
       llPose = m_poseEstimator_ll.getEstimatedPosition();
     }
   }
 
-public Pose2d getLLEstimate() {
-  return new Pose2d(llPose.getTranslation(), llPose.getRotation());
-}
+  public Pose2d getLLEstimate() {
+    return new Pose2d(llPose.getTranslation(), llPose.getRotation());
+  }
 
-public Pose2d getPVEstimate() {
-  return new Pose2d(pvPose.getTranslation(), pvPose.getRotation());
-}
+  public Pose2d getPVEstimate() {
+    return new Pose2d(pvPose.getTranslation(), pvPose.getRotation());
+  }
 
-public void disableVisionPoseRotation() {
-  visionPoseUsingRotation = false;
-  System.out.println("*** Vision pose updating rotation disabled***");
-}
+  public void disableVisionPoseRotation() {
+    visionPoseUsingRotation = false;
+    System.out.println("*** Vision pose updating rotation disabled***");
+  }
 
-public void enableVisionPoseRotation() {
-  visionPoseUsingRotation = true;
-  System.out.println("*** Vision pose updating rotation enabled***");
-}
+  public void enableVisionPoseRotation() {
+    visionPoseUsingRotation = true;
+    System.out.println("*** Vision pose updating rotation enabled***");
+  }
 
-public void enableVisionPose() {
-  visionPoseEnabled = true;
-  System.out.println("*** Vision updating pose enabled***");
-}
+  public void enableVisionPose() {
+    visionPoseEnabled = true;
+    System.out.println("*** Vision updating pose enabled***");
+  }
 
-public void disableVisionPose(){
-  visionPoseEnabled = false;
-  System.out.println("*** Vision updating pose disabled***");
-}
+  public void disableVisionPose() {
+    visionPoseEnabled = false;
+    System.out.println("*** Vision updating pose disabled***");
+  }
 
 }
 // Move to a TEST/Tuning command - DPL 2/21/22

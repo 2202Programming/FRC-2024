@@ -157,8 +157,6 @@ public class Sensors_Subsystem extends SubsystemBase {
   public void calibrate() {
     double roll_bias = 0.0, pitch_bias = 0.0, yaw_bias = 0.0;
     for (int i = 0; i < BIAS_SAMPLES; i++) {
-      // TODO: REVIEW NEEDED:
-      // https://api.ctr-electronics.com/phoenix6/release/java/com/ctre/phoenix6/hardware/Pigeon2.html#getRotation3d()
       roll_bias += m_pigeon.getRotation3d().getX() * 180.0 / Math.PI;// Roll
       pitch_bias += m_pigeon.getRotation3d().getY() * 180.0/ Math.PI;// Pitch
       yaw_bias += m_pigeon.getRotation3d().getZ() * 180.0 / Math.PI;// Yaw

@@ -58,7 +58,7 @@ public class RobotSpecs {
                 myChassisInversionSpecs = Constants.swerveBotChassisInversionSpecs;
                 break;
                 
-            case CompetitionBot2024://TODO update 
+            case CompetitionBot2024:
                 myWheelOffsets = Constants.DriveTrain.swerveBotOffsets;
                 myChassisConfig = Constants.DriveTrain.swerveBotChassisConfig;
                 mySubsystemConfig = Constants.comp2024BotSubsystemConfig;

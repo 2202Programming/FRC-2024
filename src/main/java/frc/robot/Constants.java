@@ -164,7 +164,6 @@ public final class Constants {
         8.14); //confirmed with vince
 
   }
-  //TODO: add this when start working on 2024 bot
   //Support for multiple robots on same code base
   public static final ChassisInversionSpecs swerveBotChassisInversionSpecs = new ChassisInversionSpecs(
     new ModuleInversionSpecs(true,false,false), //FR

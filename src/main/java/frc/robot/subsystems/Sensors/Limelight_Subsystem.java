@@ -20,10 +20,11 @@ public class Limelight_Subsystem extends SubsystemBase {
 
   private NetworkTable table;
   private NetworkTable outputTable;
-  private NetworkTableEntry tx;
-  private NetworkTableEntry ty;
-  private NetworkTableEntry ta;
-  private NetworkTableEntry tv;
+  //private NetworkTableEntry tx;
+  //private NetworkTableEntry ty;
+  //private NetworkTableEntry ta;
+  //private NetworkTableEntry tv;
+
   private NetworkTableEntry leds;
   private NetworkTableEntry booleanLeds;
   private NetworkTableEntry NT_hasTarget;
@@ -33,7 +34,7 @@ public class Limelight_Subsystem extends SubsystemBase {
   private NetworkTableEntry outputTv;
   private NetworkTableEntry pipelineNTE;
   private NetworkTableEntry nt_numApriltags;
-  //private NetworkTableEntry nt_botpose;  //todo: merge in helpers_util
+  // private NetworkTableEntry nt_botpose; //todo: merge in helpers_util
 
   private double x;
   private double filteredX;
@@ -53,15 +54,17 @@ public class Limelight_Subsystem extends SubsystemBase {
 
   private long pipeline;
 
+  @SuppressWarnings("unused")
   private LinearFilter x_iir;
+  @SuppressWarnings("unused")
   private LinearFilter area_iir;
   public final String NT_Name = "Vision"; // expose data under DriveTrain table
   final String NT_Shooter_Name = "Shooter";
   private double filterTC = 0.08; // seconds, 2Hz cutoff T = 1/(2pi*f) was .2hz T=.8
   private int log_counter = 0;
 
-  //private Pose2d megaPose;
-  private Pose2d teamPose = new Pose2d(); //todo hack inits to avoid NPE 4/8/2023
+  // private Pose2d megaPose;
+  private Pose2d teamPose = new Pose2d(); // todo hack inits to avoid NPE 4/8/2023
   private Pose2d bluePose = new Pose2d();
   final private String LL_NAME = "";// "limelight" for if left blank
   private int numAprilTags;
@@ -73,16 +76,13 @@ public class Limelight_Subsystem extends SubsystemBase {
     table = NetworkTableInstance.getDefault().getTable("limelight");
     outputTable = NetworkTableInstance.getDefault().getTable(NT_Name);
 
-    //these are "input" entries, to pull data from LL only
-    tv = table.getEntry("tv"); // target validity (1 or 0)
+    // these are "input" entries, to pull data from LL only
+    //tv = table.getEntry("tv"); // target validity (1 or 0)
     leds = table.getEntry("ledMode");
     booleanLeds = table.getEntry("booleanLeds");
     pipelineNTE = table.getEntry("pipeline");
 
-    //these are "output" entries for user debugging
-    tx = outputTable.getEntry("/LL Tape x"); // -27 degrees to 27 degrees
-    ty = outputTable.getEntry("/LL Tape y"); // -20.5 to 20.5 degrees
-    ta = outputTable.getEntry("/LL Tape area"); 
+    // these are "output" entries for user debugging
     nt_bluepose_x = outputTable.getEntry("/LL Blue Pose X");
     nt_bluepose_y = outputTable.getEntry("/LL Blue Pose Y");
     nt_numApriltags = outputTable.getEntry("/LL_Num_Apriltag");
@@ -90,7 +90,6 @@ public class Limelight_Subsystem extends SubsystemBase {
     outputTv = outputTable.getEntry("/Limelight Valid");
     outputTx = outputTable.getEntry("/Limelight X error");
     disableLED();
-
   }
 
   /*
@@ -109,18 +108,6 @@ public class Limelight_Subsystem extends SubsystemBase {
 
     pipeline = pipelineNTE.getInteger(0);
 
-    if (pipeline == 1) {
-      // LL reflective tape stuff, pull from API or NT
-      x = LimelightHelpers.getTX(LL_NAME);
-      y = LimelightHelpers.getTY(LL_NAME);
-      area = LimelightHelpers.getTA(LL_NAME);
-      target = (tv.getDouble(0) == 0) ? (false) : (true); // tv is only 0.0 or 1.0 per LL docs
-      filteredX = x_iir.calculate(x);
-      filteredArea = area_iir.calculate(area);
-      ledStatus = (leds.getDouble(0) == 3) ? (true) : (false);
-
-    } else if (pipeline == 0) {
-
       // LL apriltags stuff
       LimelightHelpers.LimelightResults llresults = LimelightHelpers.getLatestResults("");
       numAprilTags = llresults.targetingResults.targets_Fiducials.length;
@@ -130,14 +117,15 @@ public class Limelight_Subsystem extends SubsystemBase {
 
       if (numAprilTags > 0) {
         bluePose = LimelightHelpers.getBotPose2d_wpiBlue(LL_NAME);
-        //if (DriverStation.getAlliance() == Alliance.Blue)
-        if (DriverStation.getAlliance().get() == Alliance.Blue)
-          teamPose = LimelightHelpers.getBotPose2d_wpiBlue(LL_NAME);
-        else
+        teamPose = LimelightHelpers.getBotPose2d_wpiBlue(LL_NAME); // assume/default blue for now
+
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent() && alliance.get() == Alliance.Red)
+          //aliance info exists AND is red
           teamPose = LimelightHelpers.getBotPose2d_wpiRed(LL_NAME);
       }
     }
-  }
+  
 
   public double getVisionTimestamp() {
     return visionTimestamp;
@@ -154,6 +142,7 @@ public class Limelight_Subsystem extends SubsystemBase {
   public int getNumApriltags() {
     return numAprilTags;
   }
+
   public boolean hasAprilTarget() {
     return getNumApriltags() > 0;
   }
@@ -239,10 +228,6 @@ public class Limelight_Subsystem extends SubsystemBase {
     log_counter++;
     if (log_counter % 20 == 0) {
       NT_hasTarget.setBoolean(target);
-
-      tx.setDouble(x);
-      ty.setDouble(y);
-      ta.setDouble(area);
 
       if (bluePose != null) {
         nt_bluepose_x.setDouble(bluePose.getX());
