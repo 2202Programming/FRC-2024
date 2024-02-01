@@ -12,28 +12,27 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-
-import frc.robot.subsystems.Sensors.Limelight_Subsystem;
-import frc.robot.subsystems.PneumaticsControl;
-
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
+import frc.robot.commands.utility.DummyIntakeCmd;
+import frc.robot.commands.utility.DummyShooterCmd;
+import frc.robot.subsystems.ArmSS;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
-import frc.robot.commands.utility.DummyShooterCmd;
-import frc.robot.commands.utility.DummyIntakeCmd;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.PneumaticsControl;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.RobotSpecs;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.FloorIntake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -62,8 +61,9 @@ public class RobotContainer implements BlinkyLightUser {
   public final Sensors_Subsystem sensors;
   public final SwerveDrivetrain drivetrain;
   public final BlinkyLights lights;
+  public final Intake intake;
+  public final ArmSS armSS;
   public Shooter shooter;
-  public FloorIntake intake;
 
   // singleton accessor for robot public sub-systems
   public static RobotContainer RC() {
@@ -81,6 +81,8 @@ public class RobotContainer implements BlinkyLightUser {
 
     robotSpecs = new RobotSpecs();
     lights = new BlinkyLights();
+    intake = new Intake();
+    armSS = new ArmSS();
     dc = new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
     // Construct sub-systems based on robot Name Specs
     switch (robotSpecs.myRobotName) {
