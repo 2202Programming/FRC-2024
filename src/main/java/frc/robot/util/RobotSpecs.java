@@ -59,10 +59,13 @@ public class RobotSpecs {
                 break;
                 
             case CompetitionBot2024:
+                myWheelOffsets = Constants.DriveTrain.comp2024BotOffsets;
+                myChassisConfig = Constants.DriveTrain.comp2024BotChassisConfig;
+            case CompetitionBot2024:
                 myWheelOffsets = Constants.DriveTrain.swerveBotOffsets;
                 myChassisConfig = Constants.DriveTrain.swerveBotChassisConfig;
                 mySubsystemConfig = Constants.comp2024BotSubsystemConfig;
-                myChassisInversionSpecs = Constants.swerveBotChassisInversionSpecs;
+                myChassisInversionSpecs = Constants.comp2024BotInversionSpecs;
                 break;
 
             case CompetitionBot2023:  //doofBot
@@ -140,6 +143,8 @@ public class RobotSpecs {
             tempRobotName = RobotNames.BotOnBoard;
         else if (serialNo.compareTo("032381BF") == 0)
             tempRobotName = RobotNames.CompetitionBot2023;
+        else if (serialNo.compareTo("123456") == 0) //TODO: NEED REAL SERIAL NO
+            tempRobotName = RobotNames.CompetitionBot2024;
         else if (serialNo.compareTo("TBD") == 0)  //TODO get serial off 2024 rio
             tempRobotName = RobotNames.CompetitionBot2024;
         else

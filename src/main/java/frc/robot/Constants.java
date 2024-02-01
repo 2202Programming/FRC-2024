@@ -184,9 +184,25 @@ public final class Constants {
         12.8, // confirmed with vince
         8.14); // confirmed with vince
 
-  }  // end Constants.DriveTrain
+    // TODO: For 20424 CompetitionBot ***NOT YET CONFIRMED
+    public static final WheelOffsets comp2024BotOffsets = new WheelOffsets(129.03, -83.94, -57.83, 139.38);
+    public static final ChassisConfig comp2024BotChassisConfig = new ChassisConfig(
+        MperFT * (23.5 / 12.0) / 2.0, 
+        MperFT * (19.5 / 12.0) / 2.0,
+        0.999, // scale [] <= 1.0
+        MperFT * (4.0/12.0), 
+        12.8, 
+        8.14); 
 
-  // Support for multiple robots on same code base
+  }
+  //TODO: confirm this when start working on 2024 bot
+  public static final ChassisInversionSpecs comp2024BotInversionSpecs = new ChassisInversionSpecs(
+    new ModuleInversionSpecs(true,false,false), //FR
+    new ModuleInversionSpecs(false,false,false), //FL
+    new ModuleInversionSpecs(true,false,false), //BR
+    new ModuleInversionSpecs(false,false,false)); //BL
+
+  //Support for multiple robots on same code base
   public static final ChassisInversionSpecs swerveBotChassisInversionSpecs = new ChassisInversionSpecs(
       new ModuleInversionSpecs(true, false, false), // FR
       new ModuleInversionSpecs(false, false, false), // FL
@@ -206,6 +222,17 @@ public final class Constants {
       new ModuleInversionSpecs(false, false, false)); // BL
 
   public static final ChassisInversionSpecs compBotChassisInversionSpecs = new ChassisInversionSpecs(
+    new ModuleInversionSpecs(true,false,false), //FR
+    new ModuleInversionSpecs(false,false,false), //FL
+    new ModuleInversionSpecs(true,false,false), //BR
+    new ModuleInversionSpecs(false,false,false)); //BL
+  
+  public static final SubsystemConfig comp2024BotSubsystemConfig = new SubsystemConfig(false,false,false, true, false, false, false, true, true);
+  public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig(false,false, false, false, false, false,      false, true, true);
+  public static final SubsystemConfig chadBotSubsystemConfig = new SubsystemConfig(true,true,false, false, true, true, true, true, true);
+  public static final SubsystemConfig comp2023BotSubsystemConfig = new SubsystemConfig(true,false,false,true,false,false,false,true,true);
+    //Support for multiple robots on same code base
+  public static final class ChassisInversionSpecs{
       new ModuleInversionSpecs(true, false, false), // FR
       new ModuleInversionSpecs(false, false, false), // FL
       new ModuleInversionSpecs(true, false, false), // BR
