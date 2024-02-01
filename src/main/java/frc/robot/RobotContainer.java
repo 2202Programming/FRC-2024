@@ -24,6 +24,7 @@ import frc.robot.commands.utility.DummyIntakeCmd;
 import frc.robot.commands.utility.DummyShooterCmd;
 import frc.robot.subsystems.ArmSS;
 import frc.robot.subsystems.BlinkyLights;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.PneumaticsControl;

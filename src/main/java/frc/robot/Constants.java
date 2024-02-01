@@ -130,10 +130,13 @@ public final class Constants {
      * public static final int smartCurrentLimit = 35; //amps in SparkMax, inital
      * setting
      */
-    // Acceleration limits
-    /// public static final double slewRateMax = 2; //sec limits adjusting slewrate
-    // public static final boolean safetyEnabled = false;
 
+     // CAN IDs for climber
+     // CAN IDs for DT encoders
+     public static final int DT_BL_ENCODER = 28;
+     public static final int DT_FL_ENCODER = 29;
+     public static final int DT_FR_ENCODER = 30;
+     public static final int DT_BR_ENCODER = 31;
     // SmartMax PID values [kp, ki, kd, kff] - these get sent to hardware controller
     // DEBUG - SET FF first for drive, then add KP
 
@@ -305,6 +308,16 @@ public final class Constants {
   //    public static final int DT_FR_DRIVE = 26;
   //    public static final int DT_FR_DIRECTION = 27;
 
+  
+  public static class PowerOnPos{
+    public static final double arm = 0.0;
+  }
+  
+  public final class PCM1{
+    public static final int RT_INTAKE_UP_SOLENOID_PCM = 400; 
+    public static final int RT_INTAKE_DOWN_SOLENOID_PCM = 500; 
+    public static final int LT_INTAKE_UP_SOLENOID_PCM = 600; 
+    public static final int LT_INTAKE_DOWN_SOLENOID_PCM = 700; 
   // }
   public static class PowerOnPos{
     public static final double arm = 0.0;
