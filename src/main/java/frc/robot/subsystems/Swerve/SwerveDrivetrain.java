@@ -522,11 +522,11 @@ public void autoPoseSet(Pose2d pose){
 
     //only update pose from imaging if max velocity is low enough
     //get center of robot velocity from sqrt of vX2 + vY2
-    if(Math.sqrt(
-              Math.pow(kinematics.toChassisSpeeds(meas_states).vxMetersPerSecond,2) +
-              Math.pow(kinematics.toChassisSpeeds(meas_states).vyMetersPerSecond,2)) > maxImagingVelocity){
-      return;
-    }
+    // if(Math.sqrt(
+    //           Math.pow(kinematics.toChassisSpeeds(meas_states).vxMetersPerSecond,2) +
+    //           Math.pow(kinematics.toChassisSpeeds(meas_states).vyMetersPerSecond,2)) > maxImagingVelocity){
+    //   return;
+    // }
 
     if ((limelight != null) && (llPose != null) && (limelight.getNumApriltags() > 0)) { //just use LL for now
       Pose2d prev_m_Pose = m_pose;

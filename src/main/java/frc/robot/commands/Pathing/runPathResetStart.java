@@ -27,7 +27,6 @@ public class runPathResetStart extends Command {
 
   @Override
   public void initialize() {
-    RobotContainer.RC().drivetrain.disableVisionPose();
 
     PathPlannerPath path = PathPlannerPath.fromPathFile("test_1m");
     PathPoint startPoint = path.getPoint(0);

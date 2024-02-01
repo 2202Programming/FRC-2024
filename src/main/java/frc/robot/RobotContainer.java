@@ -6,8 +6,13 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -126,22 +131,22 @@ public class RobotContainer implements BlinkyLightUser {
       driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
       driver.b().onTrue(new AllianceAwareGyroReset(false));
 
+      //This appears to break if initial pose is too close to path start pose (zero-length path?)
       driver.a().onTrue(new SequentialCommandGroup(
         new InstantCommand(RobotContainer.RC().drivetrain::printPose),
-        AutoBuilder.followPath(PathPlannerPath.fromPathFile("test_1m")),
+        AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("test_1m"), 
+          new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
         new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
-      
-      //driver.rightBumper().onTrue(new SequentialCommandGroup(
-      //  new InstantCommand(RobotContainer.RC().drivetrain::printPose),
-      //  new PathPlannerAuto("path_1"),
-      //  new InstantCommand(RobotContainer.RC().drivetrain::printPose)
-      //));
-      driver.rightBumper().onTrue(new runPathResetStart());
+ 
+      driver.x().onTrue(new SequentialCommandGroup(
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+        AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(1.73,5.38), new Rotation2d(0.0)),
+          new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose)));        
 
-
-      driver.x().whileTrue(new Lights(BlinkyLights.GREEN));
-      driver.leftBumper().whileTrue(new Lights(BlinkyLights.RED));
-      driver.y().whileTrue(new Lights(BlinkyLights.WHITE));
+      //driver.x().whileTrue(new Lights(BlinkyLights.GREEN));
+      //driver.leftBumper().whileTrue(new Lights(BlinkyLights.RED));
+      //driver.y().whileTrue(new Lights(BlinkyLights.WHITE));
 
 
 
