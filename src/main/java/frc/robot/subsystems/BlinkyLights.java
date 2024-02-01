@@ -63,7 +63,7 @@ public class BlinkyLights {
     public void RED (){
         setColor(RED);
     }
-// TODO: CHECK THIS NOAH!!
+
     public void setBlinking(boolean blink) {
         if (blink)
             setBlinking(currentColor);

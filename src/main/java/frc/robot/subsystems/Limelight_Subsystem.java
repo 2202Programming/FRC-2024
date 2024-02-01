@@ -20,10 +20,11 @@ public class Limelight_Subsystem extends SubsystemBase {
 
   private NetworkTable table;
   private NetworkTable outputTable;
-  private NetworkTableEntry tx;
-  private NetworkTableEntry ty;
-  private NetworkTableEntry ta;
-  private NetworkTableEntry tv;
+  //private NetworkTableEntry tx;
+  //private NetworkTableEntry ty;
+  //private NetworkTableEntry ta;
+  //private NetworkTableEntry tv;
+
   private NetworkTableEntry leds;
   private NetworkTableEntry booleanLeds;
   private NetworkTableEntry NT_hasTarget;
@@ -53,7 +54,9 @@ public class Limelight_Subsystem extends SubsystemBase {
 
   private long pipeline;
 
+  @SuppressWarnings("unused")
   private LinearFilter x_iir;
+  @SuppressWarnings("unused")
   private LinearFilter area_iir;
   public final String NT_Name = "Vision"; // expose data under DriveTrain table
   final String NT_Shooter_Name = "Shooter";
@@ -74,7 +77,7 @@ public class Limelight_Subsystem extends SubsystemBase {
     outputTable = NetworkTableInstance.getDefault().getTable(NT_Name);
 
     // these are "input" entries, to pull data from LL only
-    tv = table.getEntry("tv"); // target validity (1 or 0)
+    //tv = table.getEntry("tv"); // target validity (1 or 0)
     leds = table.getEntry("ledMode");
     booleanLeds = table.getEntry("booleanLeds");
     pipelineNTE = table.getEntry("pipeline");

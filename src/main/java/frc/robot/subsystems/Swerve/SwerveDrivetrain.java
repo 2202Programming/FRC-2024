@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems.Swerve;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.VecBuilder;
@@ -21,6 +25,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -40,6 +45,9 @@ import frc.robot.util.VisionWatchdog;
 import frc.robot.Constants.ChassisInversionSpecs;
 
 public class SwerveDrivetrain extends SubsystemBase {
+
+  
+  static final double Bearing_Tol = Math.toRadians(0.5);  //limit bearing
 
   // cc is the chassis config for all our pathing math
   private final ChassisConfig cc = RobotContainer.RC().robotSpecs.getChassisConfig(); // chassis config
@@ -243,6 +251,33 @@ public class SwerveDrivetrain extends SubsystemBase {
      */
 
     offsetDebug();
+
+    // Configure the AutoBuilder last
+    AutoBuilder.configureHolonomic(
+        this::getPose, // Robot pose supplier
+        this::autoPoseSet, // Method to reset odometry (will be called if your auto has a starting pose)
+        this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+            new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+            new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+            4.5, // Max module speed, in m/s
+            0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+            new ReplanningConfig()), // Default path replanning config. See the API for the options here
+            () -> {
+              // Boolean supplier that controls when the path will be mirrored for the red alliance
+              // This will flip the path being followed to the red side of the field.
+              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+              var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                  return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+          },
+        this // Reference to this subsystem to set requirements
+    );
+
   }
 
   private void offsetDebug() {
@@ -285,6 +320,11 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
   }
 
+  // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+  public void driveRobotRelative(ChassisSpeeds chassisSpeed){
+    drive(kinematics.toSwerveModuleStates(chassisSpeed));
+  }
+
   // used for testing
   public void testDrive(double speed, double angle) {
     // output the angle and speed (meters per sec) for each module
@@ -305,11 +345,13 @@ public class SwerveDrivetrain extends SubsystemBase {
 
     updateOdometry(); // upates old_pose and m_pose
 
-    double tol = Math.toRadians(0.5);
     // from -PI to +PI (radians)
+    //TODO -dpl - I am not sure this is right way to get a tolerance/filterd bearing
+    // It is a small change in x/y that needs to be checked  for valid atan2()
+    // really should use Vy/Vx.
     double temp = Math.atan2(m_pose.getY() - old_pose.getY(), m_pose.getX() - old_pose.getX()); 
     // Changed from !=0 to include tol variable
-    if (Math.abs(temp) < tol) { // remove singularity when moving too slow - otherwise lots of jitter
+    if (Math.abs(temp) < Bearing_Tol) { // remove singularity when moving too slow - otherwise lots of jitter
       currentBearing = temp;
       // convert this to degrees in the range -180 to 180
       currentBearing = Math.toDegrees(currentBearing);
@@ -376,17 +418,17 @@ public class SwerveDrivetrain extends SubsystemBase {
     return modules[modID];
   }
 
-  // todo: eleminate this function, duplicate of resetpose
-  // sets X,Y, and sets current angle (will apply sensors correction)
-  public void setPose(Pose2d new_pose) {
-    resetPose(new_pose);
+  public void setZeroPose() {
+    setPose(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
   }
 
-  public void resetPose() {
-    resetPose(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
-  }
+  //hack to find auto reset point
+public void autoPoseSet(Pose2d pose){
+  System.out.println("***Auto is reseting pose to: " + pose);
+  setPose(pose);
+}
 
-  public void resetPose(Pose2d pose) {
+  public void setPose(Pose2d pose) {
     m_pose = pose;
     m_odometry.resetPosition(sensors.getRotation2d(), meas_pos, m_pose);
 
@@ -480,11 +522,11 @@ public class SwerveDrivetrain extends SubsystemBase {
 
     //only update pose from imaging if max velocity is low enough
     //get center of robot velocity from sqrt of vX2 + vY2
-    if(Math.sqrt(
-              Math.pow(kinematics.toChassisSpeeds(meas_states).vxMetersPerSecond,2) +
-              Math.pow(kinematics.toChassisSpeeds(meas_states).vyMetersPerSecond,2)) > maxImagingVelocity){
-      return;
-    }
+    // if(Math.sqrt(
+    //           Math.pow(kinematics.toChassisSpeeds(meas_states).vxMetersPerSecond,2) +
+    //           Math.pow(kinematics.toChassisSpeeds(meas_states).vyMetersPerSecond,2)) > maxImagingVelocity){
+    //   return;
+    // }
 
     if ((limelight != null) && (llPose != null) && (limelight.getNumApriltags() > 0)) { //just use LL for now
       Pose2d prev_m_Pose = m_pose;

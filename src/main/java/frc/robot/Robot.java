@@ -17,7 +17,8 @@ import frc.robot.subsystems.BlinkyLights.BlinkyLightController;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
+  
+  @SuppressWarnings("unused") 
   private RobotContainer m_robotContainer;
 
   /**
