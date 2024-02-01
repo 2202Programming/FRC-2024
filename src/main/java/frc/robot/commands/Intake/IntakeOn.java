@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Intake;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Intake_Constants;
@@ -13,6 +14,7 @@ import frc.robot.subsystems.Intake;
 public class IntakeOn extends Command {
   /** Creates a new intakeForward. */
   public final Intake intake;
+  public double intake_speed;
   public IntakeOn() {
     this.intake = RobotContainer.RC().intake; //fixed when merge
     // Use addRequirements() here to declare subsystem dependencies.
@@ -20,13 +22,15 @@ public class IntakeOn extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.deploy();
-    intake.setMotorSpeed(Intake_Constants.IntakeMotorDefault);
+    SmartDashboard.putNumber("Intake Speed", intake.getMotorSpeed());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  intake_speed = SmartDashboard.getNumber("Intake Speed", 0);
+  intake.setMotorSpeed(intake_speed);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

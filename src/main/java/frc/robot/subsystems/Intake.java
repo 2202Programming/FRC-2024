@@ -21,8 +21,6 @@ public class Intake extends SubsystemBase {
     static final Value RETRACT = Value.kForward;
     final CANSparkMax intake_mtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
     final DigitalInput lightgate = new DigitalInput(DigitalIO.IntakeLightGate);
-    final DoubleSolenoid left_solenoid = new DoubleSolenoid(CAN.PCM1,PneumaticsModuleType.REVPH, PCM1.LT_INTAKE_UP_SOLENOID_PCM, PCM1.LT_INTAKE_DOWN_SOLENOID_PCM);
-    final DoubleSolenoid right_solenoid = new DoubleSolenoid(CAN.PCM1, PneumaticsModuleType.REVPH, PCM1.RT_INTAKE_UP_SOLENOID_PCM, PCM1.RT_INTAKE_DOWN_SOLENOID_PCM);
   public Intake() {
     motor_config(intake_mtr);
   }
@@ -42,19 +40,7 @@ public class Intake extends SubsystemBase {
   public void intakeOff(){
     intake_mtr.set(0);
   }
-  public void deploy(){
-    left_solenoid.set(DEPLOY);
-    right_solenoid.set(DEPLOY);
-  }
-  public void retract(){
-    left_solenoid.set(RETRACT);
-    right_solenoid.set(RETRACT);
-  }
     //Returns the state of the Intake Arm
-    public boolean isDeployed() {
-      return (right_solenoid.get() == DEPLOY); 
-    }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

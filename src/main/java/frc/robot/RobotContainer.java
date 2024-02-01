@@ -24,6 +24,7 @@ import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.RobotSpecs;
+import frc.robot.commands.Intake.IntakeOff;
 import frc.robot.commands.Lights;
 
 /**
@@ -134,6 +135,7 @@ public class RobotContainer implements BlinkyLightUser {
       driver.x().whileTrue(new Lights(BlinkyLights.GREEN));
       driver.leftBumper().whileTrue(new Lights(BlinkyLights.RED));
       driver.y().whileTrue(new Lights(BlinkyLights.WHITE));
+      driver.a().whileTrue(new IntakeOff());
 
 
 
