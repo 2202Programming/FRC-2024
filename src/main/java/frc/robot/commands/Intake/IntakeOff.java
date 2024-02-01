@@ -4,37 +4,29 @@
 
 package frc.robot.commands.Intake;
 
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.Intake_Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 
 public class IntakeOff extends Command {
-  /** Creates a new intakeForward. */
+
+  // This could be an instant command too.
   public final Intake intake;
+
   public IntakeOff() {
-    this.intake = RobotContainer.RC().intake; //fixed when merge
+    this.intake = RobotContainer.RC().intake;
     // Use addRequirements() here to declare subsystem dependencies.
   }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.intakeOff();
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
+    intake.setMotorSpeed(0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true; // we are done after the init() is called
   }
 }
