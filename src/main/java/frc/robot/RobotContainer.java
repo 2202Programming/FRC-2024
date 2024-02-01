@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
@@ -13,6 +14,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.Limelight_Subsystem;
+import frc.robot.subsystems.PneumaticsControl;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -52,6 +61,7 @@ public class RobotContainer implements BlinkyLightUser {
   public final RobotSpecs robotSpecs;
 
   // Subsystems
+  public final PneumaticsControl pneumatics;
   public final HID_Xbox_Subsystem dc;
   public final Limelight_Subsystem limelight;
   public final Sensors_Subsystem sensors;
@@ -78,18 +88,29 @@ public class RobotContainer implements BlinkyLightUser {
     // Construct sub-systems based on robot Name Specs
     switch (robotSpecs.myRobotName) {
       case CompetitionBot2023:
+        pneumatics = null;
         limelight = new Limelight_Subsystem();
         sensors = new Sensors_Subsystem();
         drivetrain = new SwerveDrivetrain();
         break;
 
       case SwerveBot:
+        pneumatics = null;
         limelight = new Limelight_Subsystem();
         sensors = new Sensors_Subsystem();
         drivetrain = new SwerveDrivetrain();
         break;
 
+      case CompetitionBot2024:
+        limelight = new Limelight_Subsystem();
+        sensors = new Sensors_Subsystem();
+        drivetrain = new SwerveDrivetrain();
+        pneumatics = new PneumaticsControl();
+        pneumatics.compressor_on();
+        break;
+
       case ChadBot:
+        pneumatics = null;
         limelight = new Limelight_Subsystem();
         sensors = new Sensors_Subsystem();
         drivetrain = new SwerveDrivetrain();
@@ -98,6 +119,7 @@ public class RobotContainer implements BlinkyLightUser {
       case BotOnBoard: // fall through
       case UnknownBot: // fall through
       default:
+        pneumatics = null;
         limelight = null;
         sensors = null;
         drivetrain = null;
