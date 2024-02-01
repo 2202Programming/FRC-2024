@@ -22,14 +22,18 @@ public class IntakeOn extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    SmartDashboard.putNumber("Intake Speed", intake.getMotorSpeed());
+    intake.setMotorSpeed(Intake_Constants.IntakeMotorDefault);
+    
+    // smart dashboard below
+    // SmartDashboard.putNumber("Intake Speed", intake.getMotorSpeed());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-  intake_speed = SmartDashboard.getNumber("Intake Speed", 0);
-  intake.setMotorSpeed(intake_speed);
+  // smart dashboard below
+  // intake_speed = SmartDashboard.getNumber("Intake Speed", 0);
+  // intake.setMotorSpeed(intake_speed);
   }
 
   // Called once the command ends or is interrupted.

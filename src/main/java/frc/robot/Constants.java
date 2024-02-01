@@ -221,6 +221,7 @@ public final class Constants {
     public static final int PCM1 = 900;
      //Intake
      public static final int INTAKE_MTR = 200; //placeholder
+     public static final int ANGLE_MTR = 1000; //placeholder
     // drive train CANCoders
     public static final int DT_BL_CANCODER = 28;
     public static final int DT_BR_CANCODER = 31;
