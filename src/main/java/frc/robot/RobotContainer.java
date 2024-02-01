@@ -19,11 +19,15 @@ import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.commands.Swerve.RobotCentricDrive;
+import frc.robot.commands.utility.DummyIntakeCmd;
+import frc.robot.commands.utility.DummyShooterCmd;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.RobotSpecs;
 import frc.robot.commands.Lights;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.FloorIntake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -53,7 +57,8 @@ public class RobotContainer implements BlinkyLightUser {
   public final Sensors_Subsystem sensors;
   public final SwerveDrivetrain drivetrain;
   public final BlinkyLights lights;
-
+  public  Shooter shooter;
+  public FloorIntake intake;
   // singleton accessor for robot public sub-systems
   public static RobotContainer RC() {
     return rc;
@@ -132,6 +137,7 @@ public class RobotContainer implements BlinkyLightUser {
   private void configureBindings(Bindings bindings) {
     CommandXboxController driver = dc.Driver();
     CommandXboxController operator = dc.Operator();
+     shooter = new Shooter();
 
     switch (bindings){
       case DriveTest:
@@ -146,6 +152,13 @@ public class RobotContainer implements BlinkyLightUser {
 
 
   }
+  // TODO: replace with real commands - ER
+  
+  operator.rightBumper().onTrue(new DummyShooterCmd(shooter)); // if right bumper is pressed, dummyshooter executes
+  operator.a().onTrue(new DummyIntakeCmd(intake)); // if a is pressed, intakedummy executes
+
+
+
 }
 }
 
