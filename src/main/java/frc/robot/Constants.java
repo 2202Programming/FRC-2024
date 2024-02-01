@@ -255,6 +255,11 @@ public final class Constants {
     public static final int ELBOW_Motor = 14;
     public static final int WRIST_Motor = 15;
     
+    //Nose Roller
+    public static final int NOSE_MOTOR_ANGLE = 140;
+    public static final int NOSE_MOTOR_FIRE = 150;
+    
+    
     //Claw
     public static final int CLAW_WHEEL_MOTOR = 16;
     
