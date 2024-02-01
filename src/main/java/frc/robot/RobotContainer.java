@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathConstraints;
@@ -71,8 +70,9 @@ public class RobotContainer implements BlinkyLightUser {
   public final Sensors_Subsystem sensors;
   public final SwerveDrivetrain drivetrain;
   public final BlinkyLights lights;
-  public  Shooter shooter;
+  public Shooter shooter;
   public FloorIntake intake;
+
   // singleton accessor for robot public sub-systems
   public static RobotContainer RC() {
     return rc;
@@ -147,45 +147,39 @@ public class RobotContainer implements BlinkyLightUser {
     return null;
   }
 
-
   private void configureBindings(Bindings bindings) {
     CommandXboxController driver = dc.Driver();
     @SuppressWarnings("unused")
     CommandXboxController operator = dc.Operator();
-     shooter = new Shooter();
+    shooter = new Shooter();
 
-    switch (bindings){
+    switch (bindings) {
       case DriveTest:
-      driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
-      driver.b().onTrue(new AllianceAwareGyroReset(false));
+        driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
+        driver.b().onTrue(new AllianceAwareGyroReset(false));
 
-      //This appears to break if initial pose is too close to path start pose (zero-length path?)
-      driver.a().onTrue(new SequentialCommandGroup(
-        new InstantCommand(RobotContainer.RC().drivetrain::printPose),
-        AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("test_1m"), 
-          new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
-        new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
- 
-      driver.x().onTrue(new SequentialCommandGroup(
-        new InstantCommand(RobotContainer.RC().drivetrain::printPose),
-        AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(1.73,5.38), new Rotation2d(0.0)),
-          new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
-        new InstantCommand(RobotContainer.RC().drivetrain::printPose)));        
+        // This appears to break if initial pose is too close to path start pose
+        // (zero-length path?)
+        driver.a().onTrue(new SequentialCommandGroup(
+            new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+            AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("test_1m"),
+                new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
+            new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
 
-      //driver.x().whileTrue(new Lights(BlinkyLights.GREEN));
-      //driver.leftBumper().whileTrue(new Lights(BlinkyLights.RED));
-      //driver.y().whileTrue(new Lights(BlinkyLights.WHITE));
+        driver.x().onTrue(new SequentialCommandGroup(
+            new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+            AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(1.73, 5.38), new Rotation2d(0.0)),
+                new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
+            new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
 
+        // driver.x().whileTrue(new Lights(BlinkyLights.GREEN));
+        // driver.leftBumper().whileTrue(new Lights(BlinkyLights.RED));
+        // driver.y().whileTrue(new Lights(BlinkyLights.WHITE));
 
+    }
+    // TODO: replace with real commands - ER
+    operator.rightBumper().onTrue(new DummyShooterCmd(shooter)); // if right bumper is pressed, dummyshooter executes
+    operator.a().onTrue(new DummyIntakeCmd(intake)); // if a is pressed, intakedummy executes
 
   }
-  // TODO: replace with real commands - ER
-  
-  operator.rightBumper().onTrue(new DummyShooterCmd(shooter)); // if right bumper is pressed, dummyshooter executes
-  operator.a().onTrue(new DummyIntakeCmd(intake)); // if a is pressed, intakedummy executes
-
-
-
 }
-}
-
