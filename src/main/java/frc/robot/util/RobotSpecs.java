@@ -15,7 +15,7 @@ public class RobotSpecs {
     public enum RobotNames {
         CompetitionBot2024("CompetitionBot2024"), 
         SwerveBot("SwerveBot"),
-        CompetitionBot2023("CompetitionBot2023"),
+        CompetitionBot2023("DoofBot2023"),
         ChadBot("ChadBot"),
         UnknownBot("UnknownBot"),
         BotOnBoard("BotOnBoard");
@@ -47,7 +47,7 @@ public class RobotSpecs {
 
         // if we are simulated, use the competionBot so we have everything
         if (RobotBase.isSimulation()) {
-            myRobotName = RobotNames.CompetitionBot2023;
+            myRobotName = RobotNames.CompetitionBot2024;
         }
         // setup to handle any swerve both we have
         switch (myRobotName) {
@@ -65,11 +65,11 @@ public class RobotSpecs {
                 myChassisInversionSpecs = Constants.swerveBotChassisInversionSpecs;
                 break;
 
-            case CompetitionBot2023:
-                myWheelOffsets = Constants.DriveTrain.compBotOffsets;
-                myChassisConfig = Constants.DriveTrain.compBotChassisConfig;
-                mySubsystemConfig = Constants.comp2023BotSubsystemConfig;
-                myChassisInversionSpecs = Constants.compBotChassisInversionSpecs;
+            case CompetitionBot2023:  //doofBot
+                myWheelOffsets = Constants.DriveTrain.doofBotOffsets;
+                myChassisConfig = Constants.DriveTrain.doofBotChassisConfig;
+                mySubsystemConfig = Constants.doofBotSubsystemConfig;
+                myChassisInversionSpecs = Constants.doofBotChassisInversionSpecs;
                 break;
 
             case ChadBot:
@@ -140,6 +140,8 @@ public class RobotSpecs {
             tempRobotName = RobotNames.BotOnBoard;
         else if (serialNo.compareTo("032381BF") == 0)
             tempRobotName = RobotNames.CompetitionBot2023;
+        else if (serialNo.compareTo("TBD") == 0)  //TODO get serial off 2024 rio
+            tempRobotName = RobotNames.CompetitionBot2024;
         else
             tempRobotName = RobotNames.UnknownBot;
 

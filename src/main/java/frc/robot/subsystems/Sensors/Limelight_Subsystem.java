@@ -71,8 +71,8 @@ public class Limelight_Subsystem extends SubsystemBase {
   private double visionTimestamp;
 
   public Limelight_Subsystem() {
-    x_iir = LinearFilter.singlePoleIIR(filterTC, Constants.Tperiod);
-    area_iir = LinearFilter.singlePoleIIR(filterTC, Constants.Tperiod);
+    x_iir = LinearFilter.singlePoleIIR(filterTC, Constants.DT);
+    area_iir = LinearFilter.singlePoleIIR(filterTC, Constants.DT);
     table = NetworkTableInstance.getDefault().getTable("limelight");
     outputTable = NetworkTableInstance.getDefault().getTable(NT_Name);
 

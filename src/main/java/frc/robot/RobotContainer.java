@@ -22,7 +22,6 @@ import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.utility.DummyIntakeCmd;
 import frc.robot.commands.utility.DummyShooterCmd;
-import frc.robot.subsystems.ArmSS;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
@@ -62,7 +61,6 @@ public class RobotContainer implements BlinkyLightUser {
   public final SwerveDrivetrain drivetrain;
   public final BlinkyLights lights;
   public final Intake intake;
-  public final ArmSS armSS;
   public Shooter shooter;
 
   // singleton accessor for robot public sub-systems
@@ -82,8 +80,8 @@ public class RobotContainer implements BlinkyLightUser {
     robotSpecs = new RobotSpecs();
     lights = new BlinkyLights();
     intake = new Intake();
-    armSS = new ArmSS();
     dc = new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
+    
     // Construct sub-systems based on robot Name Specs
     switch (robotSpecs.myRobotName) {
       case CompetitionBot2023:
