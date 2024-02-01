@@ -218,10 +218,9 @@ public final class Constants {
    * 
    */
   public static final class CAN {
-      public static final int ARM_RIGHT_Motor = 1000; //placeholder
+    public static final int ARM_RIGHT_Motor = 1000; //placeholder
      public static final int ARM_LEFT_Motor = 100; //placeholder 
-    // CAN ID for non-motor devices
-    public static final int PCM1 = 900;
+    
      //Intake
      public static final int INTAKE_MTR = 200; //placeholder
      public static final int ANGLE_MTR = 1000; //placeholder
@@ -313,15 +312,7 @@ public final class Constants {
     public static final double arm = 0.0;
   }
   
-  public final class PCM1{
-    public static final int RT_INTAKE_UP_SOLENOID_PCM = 400; 
-    public static final int RT_INTAKE_DOWN_SOLENOID_PCM = 500; 
-    public static final int LT_INTAKE_UP_SOLENOID_PCM = 600; 
-    public static final int LT_INTAKE_DOWN_SOLENOID_PCM = 700; 
-  // }
-  public static class PowerOnPos{
-    public static final double arm = 0.0;
-  }
+  
   public final class PCM1{
     public static final int RT_INTAKE_UP_SOLENOID_PCM = 400; 
     public static final int RT_INTAKE_DOWN_SOLENOID_PCM = 500; 
@@ -335,3 +326,4 @@ public static final class Intake_Constants{
   public static double IntakeMotorDefault = 0.01; //placeholder
 }
 }
+
