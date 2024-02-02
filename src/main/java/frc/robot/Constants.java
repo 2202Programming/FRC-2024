@@ -4,8 +4,12 @@
 
 package frc.robot;
 
-import frc.robot.util.ModuleInversionSpecs;
+import frc.robot.subsystems.Swerve.Config.ChassisConfig;
+import frc.robot.subsystems.Swerve.Config.ChassisInversionSpecs;
+import frc.robot.subsystems.Swerve.Config.ModuleInversionSpecs;
+import frc.robot.subsystems.Swerve.Config.WheelOffsets;
 import frc.robot.util.PIDFController;
+import frc.robot.util.SubsystemConfig;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -23,108 +27,12 @@ public final class Constants {
   // nominal system frame rate, DT (delta T)
   public static final double DT = 0.02; // [s] 20ms framerate 50Hz
 
-  public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
-  }
-
-  public static final class DriverControls {
-
-    public enum Id {
-      Driver(0), Operator(1), SwitchBoard(2), Phantom(3);
-
-      public final int value;
-
-      Id(int value) {
-        this.value = value;
-      }
-    }
-
-    public enum DriverMode {
-      Arcade(0), Tank(1), XYRot(2);
-
-      public final int value;
-
-      DriverMode(int value) {
-        this.value = value;
-      }
-    }
-  }
-
   // Handy feet to meters
   public static final double FTperM = 3.28084;
   public static final double MperFT = 1.0 / FTperM;
   public static final int NEO_COUNTS_PER_REVOLUTION = 42;
 
-  public static final class SubsystemConfig {
-
-    // Support for multiple robots on same code base
-    public final boolean HAS_INTAKE;
-    public final boolean HAS_SHOOTER;
-    public final boolean HAS_ANALOG_PNEUMATICS;
-    public final boolean IS_COMPETITION_BOT;
-    public final boolean HAS_MAGAZINE;
-    public final boolean HAS_CLIMBER;
-    public final boolean HAS_POSITIONER;
-    public final boolean HAS_DRIVETRAIN;
-    public final boolean HAS_LIMELIGHT;
-
-    public SubsystemConfig(boolean HAS_INTAKE, boolean HAS_SHOOTER, boolean HAS_ANALOG_PNEUMATICS,
-        boolean IS_COMPETITION_BOT, boolean HAS_MAGAZINE,
-        boolean HAS_CLIMBER,
-        boolean HAS_POSITIONER, boolean HAS_DRIVETRAIN, boolean HAS_LIMELIGHT) {
-      this.HAS_INTAKE = HAS_INTAKE;
-      this.HAS_SHOOTER = HAS_SHOOTER;
-      this.HAS_ANALOG_PNEUMATICS = HAS_ANALOG_PNEUMATICS;
-      this.IS_COMPETITION_BOT = IS_COMPETITION_BOT;
-      this.HAS_MAGAZINE = HAS_MAGAZINE;
-      this.HAS_CLIMBER = HAS_CLIMBER;
-      this.HAS_POSITIONER = HAS_POSITIONER;
-      this.HAS_DRIVETRAIN = HAS_DRIVETRAIN;
-      this.HAS_LIMELIGHT = HAS_LIMELIGHT;
-    }
-  }
-
   /*------------------------Drivetrain-------------------------*/
-  public static final class ChassisConfig {
-
-    // Kinematics model - wheel offsets from center of robot (0, 0)
-    // Left Front given below, symmetry used for others
-    public final double XwheelOffset; // meters, half of X wheelbase
-    public final double YwheelOffset; // meters, half of Y wheelbase
-
-    public final double wheelCorrectionFactor; // percent
-    public final double wheelDiameter; // meters
-    public final double kSteeringGR; // [mo-turns to 1 angle wheel turn]
-    public final double kDriveGR; // [mo-turn to 1 drive wheel turn]
-
-    public ChassisConfig(double XwheelOffset, double YwheelOffset, double wheelCorrectionFactor, double wheelDiameter,
-        double kSteeringGR,
-        double kDriveGR) {
-      this.XwheelOffset = XwheelOffset;
-      this.YwheelOffset = YwheelOffset;
-      this.wheelCorrectionFactor = wheelCorrectionFactor;
-      this.wheelDiameter = wheelDiameter * wheelCorrectionFactor;
-      this.kSteeringGR = kSteeringGR;
-      this.kDriveGR = kDriveGR;
-    }
-  }
-
-  // CANCoder offsets for absolure calibration - stored in the magnet offset of
-  // the CC. [degrees]
-  public static final class WheelOffsets {
-    public final double CC_FL_OFFSET;
-    public final double CC_BL_OFFSET;
-    public final double CC_FR_OFFSET;
-    public final double CC_BR_OFFSET;
-
-    public WheelOffsets(double FL, double BL, double FR, double BR) {
-      this.CC_FL_OFFSET = FL;
-      this.CC_BL_OFFSET = BL;
-      this.CC_FR_OFFSET = FR;
-      this.CC_BR_OFFSET = BR;
-    }
-  }
-
   public static final class DriveTrain {
     // motor constraints
     public static final double motorMaxRPM = 5600; // motor limit
@@ -141,7 +49,6 @@ public final class Constants {
      * setting
      */
 
-    
     // SmartMax PID values [kp, ki, kd, kff] - these get sent to hardware controller
     // DEBUG - SET FF first for drive, then add KP
 
@@ -149,7 +56,6 @@ public final class Constants {
     public static final PIDFController drivePIDF = new PIDFController(0.09 * FTperM, 0.0, 0.0, 0.08076 * FTperM);
     public static final PIDFController anglePIDF = new PIDFController(0.01, 0.0, 0.0, 0.0); // maybe 1.0,0.0,0.1 from
                                                                                             // SDS sample code?
-
     /*
      * Settings for different swerve bot chassis
      */
@@ -172,96 +78,55 @@ public final class Constants {
         MperFT * (4.0 / 12.0), // wheel diameter[m] Comp bot is 4" wheels
         12.8, // confirmed with vince
         8.14); // confirmed with vince
-  
-    // For 2024 CompetitionBot
-    // TODO fix for 2024 these are DOOF's values
-    public static final WheelOffsets compBotOffsets = new WheelOffsets(129.03, -83.94, -57.83, 139.38);
-    public static final ChassisConfig compBotChassisConfig = new ChassisConfig(
-        MperFT * (23.5 / 12.0) / 2.0, // based on CAD in reference_links
-        MperFT * (19.5 / 12.0) / 2.0, // based on CAD in reference_links
-        0.999, // scale [] <= 1.0
-        MperFT * (4.0 / 12.0), // wheel diameter[m] Comp bot is 4" wheels
-        12.8, // confirmed with vince
-        8.14); // confirmed with vince
 
     // TODO: For 20424 CompetitionBot ***NOT YET CONFIRMED
     public static final WheelOffsets comp2024BotOffsets = new WheelOffsets(129.03, -83.94, -57.83, 139.38);
     public static final ChassisConfig comp2024BotChassisConfig = new ChassisConfig(
-        MperFT * (23.5 / 12.0) / 2.0, 
+        MperFT * (23.5 / 12.0) / 2.0,
         MperFT * (19.5 / 12.0) / 2.0,
         0.999, // scale [] <= 1.0
-        MperFT * (4.0/12.0), 
-        12.8, 
-        8.14); 
+        MperFT * (4.0 / 12.0),
+        12.8,
+        8.14);
 
-  }
-  //TODO: confirm this when start working on 2024 bot
-  public static final ChassisInversionSpecs comp2024BotInversionSpecs = new ChassisInversionSpecs(
-    new ModuleInversionSpecs(true,false,false), //FR
-    new ModuleInversionSpecs(false,false,false), //FL
-    new ModuleInversionSpecs(true,false,false), //BR
-    new ModuleInversionSpecs(false,false,false)); //BL
+    // TODO: confirm this when start working on 2024 bot
+    public static final ChassisInversionSpecs comp2024BotInversionSpecs = new ChassisInversionSpecs(
+        new ModuleInversionSpecs(true, false, false), // FR
+        new ModuleInversionSpecs(false, false, false), // FL
+        new ModuleInversionSpecs(true, false, false), // BR
+        new ModuleInversionSpecs(false, false, false)); // BL
 
-  //Support for multiple robots on same code base
-  public static final ChassisInversionSpecs swerveBotChassisInversionSpecs = new ChassisInversionSpecs(
-      new ModuleInversionSpecs(true, false, false), // FR
-      new ModuleInversionSpecs(false, false, false), // FL
-      new ModuleInversionSpecs(true, false, false), // BR
-      new ModuleInversionSpecs(false, false, false)); // BL
+    public static final ChassisInversionSpecs swerveBotChassisInversionSpecs = new ChassisInversionSpecs(
+        new ModuleInversionSpecs(true, false, false), // FR
+        new ModuleInversionSpecs(false, false, false), // FL
+        new ModuleInversionSpecs(true, false, false), // BR
+        new ModuleInversionSpecs(false, false, false)); // BL
 
-  public static final ChassisInversionSpecs chadBotChassisInversionSpecs = new ChassisInversionSpecs(
-      new ModuleInversionSpecs(true, false, false), // FR
-      new ModuleInversionSpecs(false, false, false), // FL
-      new ModuleInversionSpecs(true, false, false), // BR
-      new ModuleInversionSpecs(false, false, false)); // BL
+    public static final ChassisInversionSpecs chadBotChassisInversionSpecs = new ChassisInversionSpecs(
+        new ModuleInversionSpecs(true, false, false), // FR
+        new ModuleInversionSpecs(false, false, false), // FL
+        new ModuleInversionSpecs(true, false, false), // BR
+        new ModuleInversionSpecs(false, false, false)); // BL
 
-  public static final ChassisInversionSpecs doofBotChassisInversionSpecs = new ChassisInversionSpecs(
-      new ModuleInversionSpecs(true, false, false), // FR
-      new ModuleInversionSpecs(false, false, false), // FL
-      new ModuleInversionSpecs(true, false, false), // BR
-      new ModuleInversionSpecs(false, false, false)); // BL
+    public static final ChassisInversionSpecs doofBotChassisInversionSpecs = new ChassisInversionSpecs(
+        new ModuleInversionSpecs(true, false, false), // FR
+        new ModuleInversionSpecs(false, false, false), // FL
+        new ModuleInversionSpecs(true, false, false), // BR
+        new ModuleInversionSpecs(false, false, false)); // BL
 
-  public static final ChassisInversionSpecs compBotChassisInversionSpecs = new ChassisInversionSpecs(
-    new ModuleInversionSpecs(true,false,false), //FR
-    new ModuleInversionSpecs(false,false,false), //FL
-    new ModuleInversionSpecs(true,false,false), //BR
-    new ModuleInversionSpecs(false,false,false)); //BL
-  
-  public static final SubsystemConfig comp2024BotSubsystemConfig = new SubsystemConfig(false,false,false, true, false, false, false, true, true);
-  public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig(false,false, false, false, false, false,      false, true, true);
-  public static final SubsystemConfig chadBotSubsystemConfig = new SubsystemConfig(true,true,false, false, true, true, true, true, true);
-  public static final SubsystemConfig comp2023BotSubsystemConfig = new SubsystemConfig(true,false,false,true,false,false,false,true,true);
-    //Support for multiple robots on same code base
-  public static final class ChassisInversionSpecs{
-      new ModuleInversionSpecs(true, false, false), // FR
-      new ModuleInversionSpecs(false, false, false), // FL
-      new ModuleInversionSpecs(true, false, false), // BR
-      new ModuleInversionSpecs(false, false, false)); // BL
+    // Support for multiple robots on same code base
 
-  public static final SubsystemConfig comp2024BotSubsystemConfig = new SubsystemConfig(true, true, true, true, false,
-      true, false, true, true);
-  public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig(false, false, false, false, false,
-      false, false, true, true);
-  public static final SubsystemConfig chadBotSubsystemConfig = new SubsystemConfig(true, true, false, false, true, true,
-      true, true, true);
-  public static final SubsystemConfig doofBotSubsystemConfig = new SubsystemConfig(true, false, false, true, false,
-      false, false, true, true);
-
-  // Support for multiple robots on same code base
-  public static final class ChassisInversionSpecs {
-    public ModuleInversionSpecs FR;
-    public ModuleInversionSpecs FL;
-    public ModuleInversionSpecs BR;
-    public ModuleInversionSpecs BL;
-
-    public ChassisInversionSpecs(ModuleInversionSpecs FR, ModuleInversionSpecs FL, ModuleInversionSpecs BR,
-        ModuleInversionSpecs BL) {
-      this.FR = FR;
-      this.FL = FL;
-      this.BR = BR;
-      this.BL = BL;
-    }
-  }
+    public static final SubsystemConfig comp2024BotSubsystemConfig = new SubsystemConfig(true, true, true, true, false,
+        true, false, true, true);
+    public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig(false, false, false, false,
+        false,
+        false, false, true, true);
+    public static final SubsystemConfig chadBotSubsystemConfig = new SubsystemConfig(true, true, false, false, true,
+        true,
+        true, true, true);
+    public static final SubsystemConfig doofBotSubsystemConfig = new SubsystemConfig(true, false, false, true, false,
+        false, false, true, true);
+  } // end DriveTrain
 
   /*-------------------------Ports/CAN-------------------------------- */
   /**
@@ -305,7 +170,6 @@ public final class Constants {
 
     // Whether to burn flash or not
     public static final boolean BURN_FLASH = false; // swerve-mk3
-
   }
 
   public static final class AnalogIn {
@@ -313,7 +177,12 @@ public final class Constants {
     // public static final int MAGAZINE_ANGLE = 0;
   }
 
-  public final class PCM1 {    
+  // pnumatics control module 1
+  public final class PCM1 {
+  }
+
+  // pnumatics control module 2
+  public final class PCM2 {
   }
 
   public final class DigitalIO {
@@ -324,13 +193,11 @@ public final class Constants {
     public static double IntakeMotorDefault = 0.01; // placeholder
   }
 
-
   /*-------NT------- */
   public final static class NTStrings {
     public final static String NT_Name_Position = "Position";
   }
 
-  
   // public static final class CAN{
   // /* 1/20/24
   // * CAN IDs:

@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.DriverControls.Id;
+import frc.robot.subsystems.hid.DriverControls.Id;
 import frc.robot.subsystems.hid.SwitchboardController.SBButton;
 
 /**

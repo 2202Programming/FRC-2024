@@ -5,11 +5,10 @@
 package frc.robot.util;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.robot.Constants;
-import frc.robot.Constants.ChassisConfig;
-import frc.robot.Constants.ChassisInversionSpecs;
-import frc.robot.Constants.SubsystemConfig;
-import frc.robot.Constants.WheelOffsets;
+import frc.robot.Constants.DriveTrain;
+import frc.robot.subsystems.Swerve.Config.ChassisConfig;
+import frc.robot.subsystems.Swerve.Config.ChassisInversionSpecs;
+import frc.robot.subsystems.Swerve.Config.WheelOffsets;
 
 public class RobotSpecs {
     public enum RobotNames {
@@ -52,60 +51,44 @@ public class RobotSpecs {
         // setup to handle any swerve both we have
         switch (myRobotName) {
             case SwerveBot:
-                myWheelOffsets = Constants.DriveTrain.swerveBotOffsets;
-                myChassisConfig = Constants.DriveTrain.swerveBotChassisConfig;
-                mySubsystemConfig = Constants.swerveBotSubsystemConfig;
-                myChassisInversionSpecs = Constants.swerveBotChassisInversionSpecs;
+                myWheelOffsets = DriveTrain.swerveBotOffsets;
+                myChassisConfig = DriveTrain.swerveBotChassisConfig;
+                mySubsystemConfig = DriveTrain.swerveBotSubsystemConfig;
+                myChassisInversionSpecs = DriveTrain.swerveBotChassisInversionSpecs;
                 break;
                 
             case CompetitionBot2024:
-                myWheelOffsets = Constants.DriveTrain.comp2024BotOffsets;
-                myChassisConfig = Constants.DriveTrain.comp2024BotChassisConfig;
-            case CompetitionBot2024:
-                myWheelOffsets = Constants.DriveTrain.swerveBotOffsets;
-                myChassisConfig = Constants.DriveTrain.swerveBotChassisConfig;
-                mySubsystemConfig = Constants.comp2024BotSubsystemConfig;
-                myChassisInversionSpecs = Constants.comp2024BotInversionSpecs;
+                myWheelOffsets = DriveTrain.comp2024BotOffsets;
+                myChassisConfig = DriveTrain.comp2024BotChassisConfig;
+                mySubsystemConfig = DriveTrain.comp2024BotSubsystemConfig;
+                myChassisInversionSpecs = DriveTrain.comp2024BotInversionSpecs;
                 break;
 
             case CompetitionBot2023:  //doofBot
-                myWheelOffsets = Constants.DriveTrain.doofBotOffsets;
-                myChassisConfig = Constants.DriveTrain.doofBotChassisConfig;
-                mySubsystemConfig = Constants.doofBotSubsystemConfig;
-                myChassisInversionSpecs = Constants.doofBotChassisInversionSpecs;
+                myWheelOffsets = DriveTrain.doofBotOffsets;
+                myChassisConfig = DriveTrain.doofBotChassisConfig;
+                mySubsystemConfig = DriveTrain.doofBotSubsystemConfig;
+                myChassisInversionSpecs = DriveTrain.doofBotChassisInversionSpecs;
                 break;
 
             case ChadBot:
-                myWheelOffsets = Constants.DriveTrain.chadBotOffsets;
-                myChassisConfig = Constants.DriveTrain.chadBotChassisConfig;
-                mySubsystemConfig = Constants.chadBotSubsystemConfig;
-                myChassisInversionSpecs = Constants.chadBotChassisInversionSpecs;
+                myWheelOffsets = DriveTrain.chadBotOffsets;
+                myChassisConfig = DriveTrain.chadBotChassisConfig;
+                mySubsystemConfig = DriveTrain.chadBotSubsystemConfig;
+                myChassisInversionSpecs = DriveTrain.chadBotChassisInversionSpecs;
                 break;
 
             default:
             case UnknownBot:
             case BotOnBoard:
-                myWheelOffsets = Constants.DriveTrain.swerveBotOffsets;
-                myChassisConfig = Constants.DriveTrain.swerveBotChassisConfig;
-                mySubsystemConfig = Constants.swerveBotSubsystemConfig;
-                myChassisInversionSpecs = Constants.swerveBotChassisInversionSpecs;
+                myWheelOffsets = DriveTrain.swerveBotOffsets;
+                myChassisConfig = DriveTrain.swerveBotChassisConfig;
+                mySubsystemConfig = DriveTrain.swerveBotSubsystemConfig;
+                myChassisInversionSpecs = DriveTrain.swerveBotChassisInversionSpecs;
                 System.out.println("***Non-driving robot,don't expect too much***");
                 break;
         }
-        System.out.println("***I am " + myRobotName + " ***");
-
-        /*
-         * Can't check Team Alliance yet, STILL CONSTRUCTING ROBOT
-         * //getting team Color
-         * color = DriverStation.getAlliance();
-         * if(color == DriverStation.Alliance.Blue){
-         * isBlue = true;
-         * System.out.println("***We are on blue alliance***");
-         * }
-         * else {
-         * isBlue = false;
-         * System.out.println("***We are on red alliance***");
-         */
+        System.out.println("***I am " + myRobotName + " ***");        
     }
 
     public String getRobotNameString() {

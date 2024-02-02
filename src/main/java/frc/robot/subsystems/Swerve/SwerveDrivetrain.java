@@ -29,17 +29,17 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
-import frc.robot.Constants.ChassisConfig;
 import frc.robot.Constants.DriveTrain;
 import frc.robot.Constants.NTStrings;
-import frc.robot.Constants.WheelOffsets;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem.EncoderID;
+import frc.robot.subsystems.Swerve.Config.ChassisConfig;
+import frc.robot.subsystems.Swerve.Config.ChassisInversionSpecs;
+import frc.robot.subsystems.Swerve.Config.WheelOffsets;
 import frc.robot.util.ModMath;
 import frc.robot.util.VisionWatchdog;
-import frc.robot.Constants.ChassisInversionSpecs;
 
 public class SwerveDrivetrain extends SubsystemBase {
 
