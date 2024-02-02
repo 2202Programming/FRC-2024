@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.subsystems.Swerve.Config.CANConfig;
 import frc.robot.subsystems.Swerve.Config.ChassisConfig;
 import frc.robot.subsystems.Swerve.Config.ChassisInversionSpecs;
 import frc.robot.subsystems.Swerve.Config.ModuleInversionSpecs;
@@ -126,6 +127,12 @@ public final class Constants {
         true, true, true);
     public static final SubsystemConfig doofBotSubsystemConfig = new SubsystemConfig(true, false, false, true, false,
         false, false, true, true);
+
+    public static final CANConfig comp2024BotCANConfig = new CANConfig(28,31,30,7,20,21,22,23,24,25,26,27);
+    public static final CANConfig swerveBotCANConfig = new CANConfig(28,31,30,7,20,21,22,23,24,25,26,27);
+    public static final CANConfig chadBotCANConfig = new CANConfig(28,31,30,7,20,21,22,23,24,25,26,27);
+    public static final CANConfig doofBotCANConfig = new CANConfig(28,31,30,7,20,21,22,23,24,25,26,27);
+
   } // end DriveTrain
 
   /*-------------------------Ports/CAN-------------------------------- */

@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.NTStrings;
+import frc.robot.RobotContainer;
 import frc.robot.util.ModMath;
 
 public class Sensors_Subsystem extends SubsystemBase {
@@ -89,10 +90,10 @@ public class Sensors_Subsystem extends SubsystemBase {
   }
 
   // CANcoders - monitor dt angles
-  CANcoder rot_encoder_bl = init(new CANcoder(CAN.DT_BL_CANCODER));
-  CANcoder rot_encoder_br = init(new CANcoder(CAN.DT_BR_CANCODER));
-  CANcoder rot_encoder_fl = init(new CANcoder(CAN.DT_FL_CANCODER));
-  CANcoder rot_encoder_fr = init(new CANcoder(CAN.DT_FR_CANCODER));
+  CANcoder rot_encoder_bl = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().DT_BL_CANCODER));
+  CANcoder rot_encoder_br = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().DT_BR_CANCODER));
+  CANcoder rot_encoder_fl = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().DT_FL_CANCODER));
+  CANcoder rot_encoder_fr = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().DT_FR_CANCODER));
 
   // CAN monitoring
   CANStatus m_canStatus;

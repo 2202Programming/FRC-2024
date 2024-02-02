@@ -35,6 +35,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem.EncoderID;
+import frc.robot.subsystems.Swerve.Config.CANConfig;
 import frc.robot.subsystems.Swerve.Config.ChassisConfig;
 import frc.robot.subsystems.Swerve.Config.ChassisInversionSpecs;
 import frc.robot.subsystems.Swerve.Config.WheelOffsets;
@@ -50,7 +51,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   private final WheelOffsets wc = RobotContainer.RC().robotSpecs.getWheelOffset(); // wc = wheel config
   private final ChassisInversionSpecs is = RobotContainer.RC().robotSpecs.getChassisInversionSpecs(); // is = inversion
                                                                                                       // specs
-
+  private final CANConfig cac = RobotContainer.RC().robotSpecs.getCANConfig();
   /**
    *
    * Modules are in the order of - Front Left, Front Right, Back Left, Back Right
@@ -161,19 +162,19 @@ public class SwerveDrivetrain extends SubsystemBase {
     var MT = CANSparkMax.MotorType.kBrushless;
     modules = new SwerveModuleMK3[] {
         // Front Left
-        new SwerveModuleMK3(new CANSparkMax(CAN.DT_FL_DRIVE, MT), new CANSparkMax(CAN.DT_FL_ANGLE, MT),
+        new SwerveModuleMK3(new CANSparkMax(cac.DT_FL_DRIVE, MT), new CANSparkMax(cac.DT_FL_ANGLE, MT),
             wc.CC_FL_OFFSET, sensors.getCANCoder(EncoderID.FrontLeft), is.FL.kAngleMotorInvert,
             is.FL.kAngleCmdInvert, is.FL.kDriveMotorInvert, "FL"),
         // Front Right
-        new SwerveModuleMK3(new CANSparkMax(CAN.DT_FR_DRIVE, MT), new CANSparkMax(CAN.DT_FR_ANGLE, MT),
+        new SwerveModuleMK3(new CANSparkMax(cac.DT_FR_DRIVE, MT), new CANSparkMax(cac.DT_FR_ANGLE, MT),
             wc.CC_FR_OFFSET, sensors.getCANCoder(EncoderID.FrontRight), is.FR.kAngleMotorInvert,
             is.FR.kAngleCmdInvert, is.FR.kDriveMotorInvert, "FR"),
         // Back Left
-        new SwerveModuleMK3(new CANSparkMax(CAN.DT_BL_DRIVE, MT), new CANSparkMax(CAN.DT_BL_ANGLE, MT),
+        new SwerveModuleMK3(new CANSparkMax(cac.DT_BL_DRIVE, MT), new CANSparkMax(cac.DT_BL_ANGLE, MT),
             wc.CC_BL_OFFSET, sensors.getCANCoder(EncoderID.BackLeft), is.BL.kAngleMotorInvert,
             is.BL.kAngleCmdInvert, is.BL.kDriveMotorInvert, "BL"),
         // Back Right
-        new SwerveModuleMK3(new CANSparkMax(CAN.DT_BR_DRIVE, MT), new CANSparkMax(CAN.DT_BR_ANGLE, MT),
+        new SwerveModuleMK3(new CANSparkMax(cac.DT_BR_DRIVE, MT), new CANSparkMax(cac.DT_BR_ANGLE, MT),
             wc.CC_BR_OFFSET, sensors.getCANCoder(EncoderID.BackRight), is.BR.kAngleMotorInvert,
             is.BR.kAngleCmdInvert, is.BR.kDriveMotorInvert, "BR") };
 

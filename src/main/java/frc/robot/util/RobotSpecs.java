@@ -6,6 +6,7 @@ package frc.robot.util;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants.DriveTrain;
+import frc.robot.subsystems.Swerve.Config.CANConfig;
 import frc.robot.subsystems.Swerve.Config.ChassisConfig;
 import frc.robot.subsystems.Swerve.Config.ChassisInversionSpecs;
 import frc.robot.subsystems.Swerve.Config.WheelOffsets;
@@ -36,6 +37,7 @@ public class RobotSpecs {
     private ChassisConfig myChassisConfig;
     private SubsystemConfig mySubsystemConfig;
     private ChassisInversionSpecs myChassisInversionSpecs;
+    private CANConfig myCANConfig;
 
     public RobotSpecs() {
         this(System.getenv("serialnum"));
@@ -55,6 +57,7 @@ public class RobotSpecs {
                 myChassisConfig = DriveTrain.swerveBotChassisConfig;
                 mySubsystemConfig = DriveTrain.swerveBotSubsystemConfig;
                 myChassisInversionSpecs = DriveTrain.swerveBotChassisInversionSpecs;
+                myCANConfig = DriveTrain.swerveBotCANConfig;
                 break;
                 
             case CompetitionBot2024:
@@ -62,6 +65,7 @@ public class RobotSpecs {
                 myChassisConfig = DriveTrain.comp2024BotChassisConfig;
                 mySubsystemConfig = DriveTrain.comp2024BotSubsystemConfig;
                 myChassisInversionSpecs = DriveTrain.comp2024BotInversionSpecs;
+                myCANConfig = DriveTrain.comp2024BotCANConfig;
                 break;
 
             case CompetitionBot2023:  //doofBot
@@ -69,6 +73,7 @@ public class RobotSpecs {
                 myChassisConfig = DriveTrain.doofBotChassisConfig;
                 mySubsystemConfig = DriveTrain.doofBotSubsystemConfig;
                 myChassisInversionSpecs = DriveTrain.doofBotChassisInversionSpecs;
+                myCANConfig = DriveTrain.doofBotCANConfig;
                 break;
 
             case ChadBot:
@@ -76,6 +81,7 @@ public class RobotSpecs {
                 myChassisConfig = DriveTrain.chadBotChassisConfig;
                 mySubsystemConfig = DriveTrain.chadBotSubsystemConfig;
                 myChassisInversionSpecs = DriveTrain.chadBotChassisInversionSpecs;
+                myCANConfig = DriveTrain.chadBotCANConfig;
                 break;
 
             default:
@@ -85,6 +91,7 @@ public class RobotSpecs {
                 myChassisConfig = DriveTrain.swerveBotChassisConfig;
                 mySubsystemConfig = DriveTrain.swerveBotSubsystemConfig;
                 myChassisInversionSpecs = DriveTrain.swerveBotChassisInversionSpecs;
+                myCANConfig = DriveTrain.swerveBotCANConfig;
                 System.out.println("***Non-driving robot,don't expect too much***");
                 break;
         }
@@ -111,6 +118,10 @@ public class RobotSpecs {
         return myChassisInversionSpecs;
     }
 
+    public CANConfig getCANConfig(){
+        return myCANConfig;
+    }
+
     // takes the roborio serial # and returns the robot name
     public RobotNames getRobotName(String serialNo) {
         RobotNames tempRobotName;
@@ -127,8 +138,6 @@ public class RobotSpecs {
         else if (serialNo.compareTo("032381BF") == 0)
             tempRobotName = RobotNames.CompetitionBot2023;
         else if (serialNo.compareTo("123456") == 0) //TODO: NEED REAL SERIAL NO
-            tempRobotName = RobotNames.CompetitionBot2024;
-        else if (serialNo.compareTo("TBD") == 0)  //TODO get serial off 2024 rio
             tempRobotName = RobotNames.CompetitionBot2024;
         else
             tempRobotName = RobotNames.UnknownBot;
