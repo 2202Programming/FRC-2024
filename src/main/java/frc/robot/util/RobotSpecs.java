@@ -135,7 +135,7 @@ public class RobotSpecs {
             tempRobotName = RobotNames.ChadBot;
         else if (serialNo.compareTo("0312db1a") == 0)
             tempRobotName = RobotNames.BotOnBoard;
-        else if (serialNo.compareTo("032381BF") == 0)
+        else if (serialNo.compareTo("031b7523") == 0)
             tempRobotName = RobotNames.CompetitionBot2023;
         else if (serialNo.compareTo("0326F275") == 0) 
             tempRobotName = RobotNames.CompetitionBot2024;
