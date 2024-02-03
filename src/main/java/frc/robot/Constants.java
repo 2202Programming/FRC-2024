@@ -128,7 +128,7 @@ public final class Constants {
     public static final SubsystemConfig doofBotSubsystemConfig = new SubsystemConfig(true, false, false, true, false,
         false, false, true, true);
 
-    public static final CANConfig comp2024BotCANConfig = new CANConfig(28,31,30,7,20,21,22,23,24,25,26,27);
+    public static final CANConfig comp2024BotCANConfig = new CANConfig(28,31,30,29,24,25,22,23,20,21,26,27);
     public static final CANConfig swerveBotCANConfig = new CANConfig(28,31,30,7,20,21,22,23,24,25,26,27);
     public static final CANConfig chadBotCANConfig = new CANConfig(28,31,30,7,20,21,22,23,24,25,26,27);
     public static final CANConfig doofBotCANConfig = new CANConfig(28,31,30,7,20,21,22,23,24,25,26,27);

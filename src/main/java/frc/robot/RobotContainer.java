@@ -79,49 +79,14 @@ public class RobotContainer implements BlinkyLightUser {
 
     robotSpecs = new RobotSpecs();
     lights = new BlinkyLights();
-    intake = new Intake();
     dc = new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
+    sensors = new Sensors_Subsystem();
+
+    pneumatics = (robotSpecs.getSubsystemConfig().HAS_ANALOG_PNEUMATICS) ? new PneumaticsControl() : null;
+    limelight = (robotSpecs.getSubsystemConfig().HAS_LIMELIGHT) ? new Limelight_Subsystem() : null;
+    drivetrain = (robotSpecs.getSubsystemConfig().HAS_DRIVETRAIN) ? new SwerveDrivetrain() : null;
+    intake = (robotSpecs.getSubsystemConfig().HAS_INTAKE) ? new Intake() : null;
     
-    // Construct sub-systems based on robot Name Specs
-    switch (robotSpecs.myRobotName) {
-      case CompetitionBot2023:
-        pneumatics = null;
-        limelight = new Limelight_Subsystem();
-        sensors = new Sensors_Subsystem();
-        drivetrain = new SwerveDrivetrain();
-        break;
-
-      case SwerveBot:
-        pneumatics = null;
-        limelight = new Limelight_Subsystem();
-        sensors = new Sensors_Subsystem();
-        drivetrain = new SwerveDrivetrain();
-        break;
-
-      case CompetitionBot2024:
-        limelight = new Limelight_Subsystem();
-        sensors = new Sensors_Subsystem();
-        drivetrain = new SwerveDrivetrain();
-        pneumatics = null;
-        //pneumatics.compressor_on();
-        break;
-
-      case ChadBot:
-        pneumatics = null;
-        limelight = new Limelight_Subsystem();
-        sensors = new Sensors_Subsystem();
-        drivetrain = new SwerveDrivetrain();
-        break;
-
-      case BotOnBoard: // fall through
-      case UnknownBot: // fall through
-      default:
-        pneumatics = null;
-        limelight = null;
-        sensors = null;
-        drivetrain = null;
-        break;
-    }
     /* Set the commands below */
     configureBindings(Bindings.DriveTest); // Change this to swich between bindings
     if (drivetrain != null) {
