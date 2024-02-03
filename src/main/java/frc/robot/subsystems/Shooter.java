@@ -173,33 +173,89 @@ public class Shooter extends SubsystemBase {
   // WIP methods, needs checking - ER
   public void shoot(){
 
+    currentShootingMode = ShooterMode.RPM;
+    SmartDashboard.putString("Current Shoooting Mode",currentShootingMode.toString());
+    SmartDashboard.putNumber("Current Shooter RPM",0.0);
+    SmartDashboard.putNumber("Current Left Motor RPM",0.0);
+    SmartDashboard.putNumber("Current Right Motor RPM",0.0);
   }
 
-  public void setSpeed(double speed){
 
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+    currentLeftMotorRPM = shooterLeftEncoder.getVelocity();
+    currentRightMotorRPM = shooterRightEncoder.getVelocity();
+    SmartDashboard.putString("Current Shoooting Mode",currentShootingMode.toString());
+    SmartDashboard.putNumber("Current Shooter RPM", currentLeftMotorRPM / gearboxRatio);
+    SmartDashboard.putNumber("Current Left Motor RPM", currentLeftMotorRPM);
+    SmartDashboard.putNumber("Current Right Motor RPM", currentRightMotorRPM);
+    SmartDashboard.putNumber("Left Motor Percent", getLeftMotorOutput());
+    SmartDashboard.putNumber("Right Motor Percent", getRightMotorOutput());
   }
 
-  // TODO: what are the units 4 distance & speed
-
-  public void setDistance(double distance){
-
+  public void setShootingMode(ShooterMode mode){
+    currentShootingMode = mode;
   }
 
-  public void setAngle(double angle){
-
+  public void cycleShootingMode() {
+    if(currentShootingMode == ShooterMode.Trigger) {
+      currentShootingMode = ShooterMode.Percent;
+      return;
+    }
+    if(currentShootingMode == ShooterMode.Percent) { 
+      currentShootingMode = ShooterMode.RPM;
+      return;
+    }
+    if(currentShootingMode == ShooterMode.RPM) 
+      currentShootingMode = ShooterMode.Trigger;
+    return;
   }
 
-  public boolean isAtSpeed(double tolerance){
-    
-
-    return false;
-
+  public ShooterMode getShooterMode() {
+    return currentShootingMode;
   }
 
-  public boolean isAtAngle(double tolerance){
+  public void setMotorSpeed(double motorSpeed){
+    shooterMotorLeft.set(motorSpeed);
+    shooterMotorRight.set(motorSpeed);
+    currentLeftMotorOutput = motorSpeed;
+  }
 
+  public void setShooterRPM(double shooterLeftRPM, double shooterRightRPM){
+    shooterLeftPidController.setReference(shooterLeftRPM*gearboxRatio, ControlType.kVelocity);
+    shooterRightPidController.setReference(shooterRightRPM*gearboxRatio, ControlType.kVelocity);
+    System.out.println("Motor goals changed, left="+shooterLeftRPM*gearboxRatio+", right="+shooterRightRPM*gearboxRatio);
+  }
 
-    return false;
+  public double getLeftMotorOutput(){
+    return currentLeftMotorOutput;
+  }
+
+  public double getRightMotorOutput(){
+    return currentRightMotorOutput;
+  }
+
+  public double getMotorRPM(){
+    return currentLeftMotorRPM;
+  }
+
+  public double getShooterRPM(){
+    return currentLeftMotorRPM / gearboxRatio;
+  }
+
+  public void setP(double newP){
+    shooterLeftPidController.setP(newP);
+    shooterRightPidController.setP(newP);
+  }
+
+  public void setI(double newI){
+    shooterLeftPidController.setI(newI);
+    shooterRightPidController.setI(newI);
+  }
+  public void setD(double newD){
+    shooterLeftPidController.setD(newD);
+    shooterRightPidController.setD(newD);
   }
 
 }
