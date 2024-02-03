@@ -88,8 +88,8 @@ public final class Constants {
         MperFT * (19.5 / 12.0) / 2.0,
         0.999, // scale [] <= 1.0
         MperFT * (4.0 / 12.0),
-        12.8,
-        8.14);
+        21.428,
+        6.75);
 
     // TODO: confirm this when start working on 2024 bot
     public static final ChassisInversionSpecs comp2024BotInversionSpecs = new ChassisInversionSpecs(
