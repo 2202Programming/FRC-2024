@@ -82,7 +82,7 @@ public final class Constants {
         8.14); // confirmed with vince
 
     // TODO: For 20424 CompetitionBot ***NOT YET CONFIRMED
-    public static final WheelOffsets comp2024BotOffsets = new WheelOffsets(-42.8027, -24.4188 , 65.56644, 41.74812);
+    public static final WheelOffsets comp2024BotOffsets = new WheelOffsets(43.85746387, 24.096825 , -65.21481, -43.066333125);
     public static final ChassisConfig comp2024BotChassisConfig = new ChassisConfig(
         MperFT * (23.5 / 12.0) / 2.0,
         MperFT * (19.5 / 12.0) / 2.0,
@@ -93,10 +93,10 @@ public final class Constants {
 
     // TODO: confirm this when start working on 2024 bot
     public static final ChassisInversionSpecs comp2024BotInversionSpecs = new ChassisInversionSpecs(
-        new ModuleInversionSpecs(true, false, false), // FR
-        new ModuleInversionSpecs(false, false, false), // FL
-        new ModuleInversionSpecs(true, false, false), // BR
-        new ModuleInversionSpecs(false, false, false)); // BL
+        new ModuleInversionSpecs(true, true, false), // FR
+        new ModuleInversionSpecs(false, true, false), // FL
+        new ModuleInversionSpecs(true, true, false), // BR
+        new ModuleInversionSpecs(false, true, false)); // BL
 
     public static final ChassisInversionSpecs swerveBotChassisInversionSpecs = new ChassisInversionSpecs(
         new ModuleInversionSpecs(true, false, false), // FR
