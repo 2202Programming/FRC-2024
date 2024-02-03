@@ -133,7 +133,8 @@ public class RobotContainer implements BlinkyLightUser {
 
       case Comptition:
         // TODO: replace Print/Dummy with real commands when known - ER
-        driver.leftTrigger().whileTrue(new DummyShooterCmd());
+        driver.rightTrigger().whileTrue(new DummyShooterCmd());
+        driver.leftTrigger().onTrue(new PrintCommand("PlaceholderCMD: Align with shooter"));
 
       default:
         break;
@@ -150,14 +151,13 @@ public class RobotContainer implements BlinkyLightUser {
       case DriveTest:
       case Comptition:
         operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
-        operator.x().onTrue(new PrintCommand("PlaceholderCMD: Intake Deploy"));
-        operator.y().onTrue(new PrintCommand("PlaceholderCMD: Intake Retract"));
+        
+        //TODO mentor pls check if right syntax!!
+        operator.x().whileTrue(new PrintCommand("PlaceholderCMD: Intake Deploy"));
+        operator.x().whileFalse(new PrintCommand("PlaceholderCMD: Intake Retract"));
 
-        // i would rather bind deploy and retract to one button but these are the
-        // current preferences of the drive team -ER
-
-        // TODO figure out climber buttons and DT preferences, change once we talk to
-        // them- ER
+        //Drive team mentioned that they want climber buttons on switchboard but i need to find that syntax -ER
+        //WIP THESE BINDINGS ARE NOT AT ALL FINAL
         operator.povUp().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
         operator.povDown().onTrue(new PrintCommand("PlaceholderCMD: Climber Down"));
 
