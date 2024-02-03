@@ -155,6 +155,10 @@ public final class Constants {
    * 
    */
   public static final class CAN {
+     public static final int PDP = 1; //for rev
+     public static final int PCM1 = 2; //for rev
+     public static final int PCM2 = 3; //for rev
+ 
     public static final int ARM_RIGHT_Motor = 1000; // placeholder
     public static final int ARM_LEFT_Motor = 100; // placeholder
 
