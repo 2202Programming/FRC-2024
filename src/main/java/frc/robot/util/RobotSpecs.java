@@ -89,7 +89,7 @@ public class RobotSpecs {
             case BotOnBoard:
                 myWheelOffsets = DriveTrain.swerveBotOffsets;
                 myChassisConfig = DriveTrain.swerveBotChassisConfig;
-                mySubsystemConfig = DriveTrain.swerveBotSubsystemConfig;
+                mySubsystemConfig = DriveTrain.botOnBoardConfig;
                 myChassisInversionSpecs = DriveTrain.swerveBotChassisInversionSpecs;
                 myCANConfig = DriveTrain.swerveBotCANConfig;
                 System.out.println("***Non-driving robot,don't expect too much***");

@@ -129,6 +129,8 @@ public final class Constants {
         true, true, true);
     public static final SubsystemConfig doofBotSubsystemConfig = new SubsystemConfig(true, false, false, true, false,
         false, false, true, true);
+    public static final SubsystemConfig botOnBoardConfig = new SubsystemConfig(false, true, false, false, false, 
+      false, false, false, false);
 
     public static final CANModuleConfig comp2024CAN_FL = new CANModuleConfig(29,24,25);
     public static final CANModuleConfig comp2024CAN_FR = new CANModuleConfig(30,26,27);

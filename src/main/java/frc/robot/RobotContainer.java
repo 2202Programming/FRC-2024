@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
@@ -48,7 +49,7 @@ public class RobotContainer implements BlinkyLightUser {
 
   // enum for bindings add when needed
   public enum Bindings {
-    DriveTest
+    DriveTest, Shooter_test
   }
 
   // The robot's subsystems and commands are defined here...
@@ -101,7 +102,7 @@ public class RobotContainer implements BlinkyLightUser {
     shooter = (robotSpecs.getSubsystemConfig().HAS_SHOOTER) ? new Shooter() : null;
     
     /* Set the commands below */
-    configureBindings(Bindings.DriveTest); // Change this to swich between bindings
+    configureBindings(Bindings.Shooter_test); // Change this to swich between bindings
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive(drivetrain));
     }
@@ -143,6 +144,13 @@ public class RobotContainer implements BlinkyLightUser {
         // driver.x().whileTrue(new Lights(BlinkyLights.GREEN));
         // driver.leftBumper().whileTrue(new Lights(BlinkyLights.RED));
         // driver.y().whileTrue(new Lights(BlinkyLights.WHITE));
+      
+      case Shooter_test:
+        if(shooter != null){
+          shooter.setDefaultCommand(new RPMShooter(operator, shooter));
+        }
+        driver.b().onTrue(new InstantCommand(() -> {shooter.cycleShootingMode();}));
+    }
 
     }
   }
