@@ -61,7 +61,7 @@ public class RobotContainer implements BlinkyLightUser {
   public final SwerveDrivetrain drivetrain;
   public final BlinkyLights lights;
   public final Intake intake;
-  public Shooter shooter;
+  public final Shooter shooter;
 
   // singleton accessor for robot public sub-systems
   public static RobotContainer RC() {
@@ -82,10 +82,12 @@ public class RobotContainer implements BlinkyLightUser {
     dc = new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
     sensors = new Sensors_Subsystem();
 
+    //Use SubsystemConfig to figure out if our current bot has subsytem before trying to initialize it
     pneumatics = (robotSpecs.getSubsystemConfig().HAS_ANALOG_PNEUMATICS) ? new PneumaticsControl() : null;
     limelight = (robotSpecs.getSubsystemConfig().HAS_LIMELIGHT) ? new Limelight_Subsystem() : null;
     drivetrain = (robotSpecs.getSubsystemConfig().HAS_DRIVETRAIN) ? new SwerveDrivetrain() : null;
     intake = (robotSpecs.getSubsystemConfig().HAS_INTAKE) ? new Intake() : null;
+    shooter = (robotSpecs.getSubsystemConfig().HAS_SHOOTER) ? new Shooter() : null;
     
     /* Set the commands below */
     configureBindings(Bindings.DriveTest); // Change this to swich between bindings
@@ -107,7 +109,6 @@ public class RobotContainer implements BlinkyLightUser {
   private void configureBindings(Bindings bindings) {
     CommandXboxController driver = dc.Driver();
     CommandXboxController operator = dc.Operator();
-    shooter = new Shooter();
 
     switch (bindings) {
       case DriveTest:
@@ -133,9 +134,5 @@ public class RobotContainer implements BlinkyLightUser {
         // driver.y().whileTrue(new Lights(BlinkyLights.WHITE));
 
     }
-    // TODO: replace with real commands - ER
-    operator.rightBumper().onTrue(new DummyShooterCmd(shooter)); // if right bumper is pressed, dummyshooter executes
-    operator.a().onTrue(new DummyIntakeCmd(intake)); // if a is pressed, intakedummy executes
-
   }
 }
