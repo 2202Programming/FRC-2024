@@ -56,9 +56,9 @@ public class RobotContainer implements BlinkyLightUser {
   public final RobotSpecs robotSpecs;
 
   // Subsystems
-  public final PowerDistribution pdp;
-  public final PneumaticsControlModule pcm1;
-  public final PneumaticsControlModule pcm2;
+  //public final PowerDistribution pdp;
+  //public final PneumaticsControlModule pcm1;
+  //public final PneumaticsControlModule pcm2;
   public final PneumaticsControl pneumatics;
   public final HID_Xbox_Subsystem dc;
   public final Limelight_Subsystem limelight;
@@ -86,12 +86,12 @@ public class RobotContainer implements BlinkyLightUser {
     lights = new BlinkyLights();
     dc = new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
     sensors = new Sensors_Subsystem();
-    pdp = new PowerDistribution( 0, ModuleType.kRev );
-    pdp.clearStickyFaults();
+    //pdp = new PowerDistribution( 0, ModuleType.kRev );
+    //pdp.clearStickyFaults();
 
     //TODO may need to put into subsystemconfig() object
-    pcm1 = new PneumaticsControlModule(CAN.PCM1);
-    pcm2 = new PneumaticsControlModule(CAN.PCM2);
+    //pcm1 = new PneumaticsControlModule(CAN.PCM1);
+    //pcm2 = new PneumaticsControlModule(CAN.PCM2);
 
     //Use SubsystemConfig to figure out if our current bot has subsytem before trying to initialize it
     pneumatics = (robotSpecs.getSubsystemConfig().HAS_ANALOG_PNEUMATICS) ? new PneumaticsControl() : null;

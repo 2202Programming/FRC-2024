@@ -102,14 +102,14 @@ public class RPMShooter extends Command {
         if ((lastRequestedLeftShooterRPM != requestedLeftShooterRPM) || (lastRequestedRightShooterRPM != requestedRightShooterRPM)) {
           m_shooter.setShooterRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
         }
-          if ((requestedBothShooterRPM > 0)) {
-            if ((requestedBothShooterRPM != requestedLeftShooterRPM) && (requestedBothShooterRPM != requestedRightShooterRPM)) {
-              m_shooter.setShooterRPM(requestedBothShooterRPM, requestedBothShooterRPM);          
-            } else {
-              m_shooter.setShooterRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
-              
-          }
+        if ((requestedBothShooterRPM > 0)) {
+          if ((requestedBothShooterRPM != requestedLeftShooterRPM) && (requestedBothShooterRPM != requestedRightShooterRPM)) {
+            m_shooter.setShooterRPM(requestedBothShooterRPM, requestedBothShooterRPM);          
+          } else {
+            m_shooter.setShooterRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
+            
         }
+      }
         break;
     }
     

@@ -155,9 +155,12 @@ public final class Constants {
    * 
    */
   public static final class CAN {
-     public static final int PDP = 1; //for rev
-     public static final int PCM1 = 2; //for rev
-     public static final int PCM2 = 3; //for rev
+    public static final int PDP = 1; //for rev
+    public static final int PCM1 = 2; //for rev
+    public static final int PCM2 = 3; //for rev
+
+    public static final int SHOOT_L = 15; //temporary
+    public static final int SHOOT_R = 16; //temporary
  
     public static final int ARM_RIGHT_Motor = 1000; // placeholder
     public static final int ARM_LEFT_Motor = 100; // placeholder
@@ -184,9 +187,6 @@ public final class Constants {
     // Nose Roller
     public static final int NOSE_MOTOR_ANGLE = 140;
     public static final int NOSE_MOTOR_FIRE = 150;
-
-    // Claw
-    public static final int CLAW_WHEEL_MOTOR = 16;
 
     // IMU
     public static final int PIGEON_IMU_CAN = 60;

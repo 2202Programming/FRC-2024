@@ -11,6 +11,7 @@ import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CAN;
 
 public class Shooter extends SubsystemBase {
   /** Creates a new Shooter. */
@@ -27,10 +28,9 @@ public class Shooter extends SubsystemBase {
       return name;
    }
   }
-
     //Instantiations 
-  final CANSparkMax shooterMotorLeft = new CANSparkMax(20, CANSparkMax.MotorType.kBrushless);
-  final CANSparkMax shooterMotorRight = new CANSparkMax(21, CANSparkMax.MotorType.kBrushless);
+  final CANSparkMax shooterMotorLeft = new CANSparkMax(CAN.SHOOT_L, CANSparkMax.MotorType.kBrushless);
+  final CANSparkMax shooterMotorRight = new CANSparkMax(CAN.SHOOT_R, CANSparkMax.MotorType.kBrushless);
   private SparkPIDController shooterLeftPidController;
   private SparkPIDController shooterRightPidController;
   private RelativeEncoder shooterLeftEncoder;
