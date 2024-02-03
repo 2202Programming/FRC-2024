@@ -81,7 +81,7 @@ public final class Constants {
         8.14); // confirmed with vince
 
     // TODO: For 20424 CompetitionBot ***NOT YET CONFIRMED
-    public static final WheelOffsets comp2024BotOffsets = new WheelOffsets(129.03, -83.94, -57.83, 139.38);
+    public static final WheelOffsets comp2024BotOffsets = new WheelOffsets(-42.8027, -24.4188 , 65.56644, 41.74812);
     public static final ChassisConfig comp2024BotChassisConfig = new ChassisConfig(
         MperFT * (23.5 / 12.0) / 2.0,
         MperFT * (19.5 / 12.0) / 2.0,
