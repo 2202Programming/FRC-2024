@@ -90,10 +90,10 @@ public class Sensors_Subsystem extends SubsystemBase {
   }
 
   // CANcoders - monitor dt angles
-  CANcoder rot_encoder_bl = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().DT_BL_CANCODER));
-  CANcoder rot_encoder_br = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().DT_BR_CANCODER));
-  CANcoder rot_encoder_fl = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().DT_FL_CANCODER));
-  CANcoder rot_encoder_fr = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().DT_FR_CANCODER));
+  CANcoder rot_encoder_bl = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().BL_MODULE.CANCODER_ID));
+  CANcoder rot_encoder_br = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().BR_MODULE.CANCODER_ID));
+  CANcoder rot_encoder_fl = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().FL_MODULE.CANCODER_ID));
+  CANcoder rot_encoder_fr = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().FR_MODULE.CANCODER_ID));
 
   // CAN monitoring
   CANStatus m_canStatus;

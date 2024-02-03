@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.subsystems.Swerve.Config.CANConfig;
+import frc.robot.subsystems.Swerve.Config.CANModuleConfig;
 import frc.robot.subsystems.Swerve.Config.ChassisConfig;
 import frc.robot.subsystems.Swerve.Config.ChassisInversionSpecs;
 import frc.robot.subsystems.Swerve.Config.ModuleInversionSpecs;
@@ -129,10 +130,20 @@ public final class Constants {
     public static final SubsystemConfig doofBotSubsystemConfig = new SubsystemConfig(true, false, false, true, false,
         false, false, true, true);
 
-    public static final CANConfig comp2024BotCANConfig = new CANConfig(28,31,30,29,24,25,22,23,20,21,26,27);
-    public static final CANConfig swerveBotCANConfig = new CANConfig(28,31,30,7,20,21,22,23,24,25,26,27);
-    public static final CANConfig chadBotCANConfig = new CANConfig(28,31,30,7,20,21,22,23,24,25,26,27);
-    public static final CANConfig doofBotCANConfig = new CANConfig(28,31,30,7,20,21,22,23,24,25,26,27);
+    public static final CANModuleConfig comp2024CAN_FL = new CANModuleConfig(29,24,25);
+    public static final CANModuleConfig comp2024CAN_FR = new CANModuleConfig(30,26,27);
+    public static final CANModuleConfig comp2024CAN_BL = new CANModuleConfig(28,22,23);
+    public static final CANModuleConfig comp2024CAN_BR = new CANModuleConfig(31,20,21);
+
+    public static final CANModuleConfig swerveBotCAN_FL = new CANModuleConfig(7,20,21);
+    public static final CANModuleConfig swerveBotCAN_FR = new CANModuleConfig(30,26,27);
+    public static final CANModuleConfig swerveBotCAN_BL = new CANModuleConfig(28,22,23);
+    public static final CANModuleConfig swerveBotCAN_BR = new CANModuleConfig(31,24,25);
+
+    public static final CANConfig comp2024BotCANConfig = new CANConfig(comp2024CAN_FL, comp2024CAN_FR, comp2024CAN_BL, comp2024CAN_BR);
+    public static final CANConfig swerveBotCANConfig = new CANConfig(swerveBotCAN_FL, swerveBotCAN_FR, swerveBotCAN_BL, swerveBotCAN_BR);
+    public static final CANConfig chadBotCANConfig = new CANConfig(swerveBotCAN_FL, swerveBotCAN_FR, swerveBotCAN_BL, swerveBotCAN_BR);
+    public static final CANConfig doofBotCANConfig = new CANConfig(swerveBotCAN_FL, swerveBotCAN_FR, swerveBotCAN_BL, swerveBotCAN_BR);
 
   } // end DriveTrain
 

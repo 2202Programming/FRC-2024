@@ -3,40 +3,20 @@ package frc.robot.subsystems.Swerve.Config;
  // CAN IDs for swerve drivetrain
 
   public class CANConfig {
-    // drive train CANCoders
-    public final int DT_BL_CANCODER;
-    public final int DT_BR_CANCODER;
-    public final int DT_FR_CANCODER;
-    public final int DT_FL_CANCODER;
 
-    // drive train drive / angle motors - sparkmax neo
-    public final int DT_FL_DRIVE;
-    public final int DT_FL_ANGLE;
-    public final int DT_BL_DRIVE;
-    public final int DT_BL_ANGLE;
-    public final int DT_BR_DRIVE;
-    public final int DT_BR_ANGLE;
-    public final int DT_FR_DRIVE;
-    public final int DT_FR_ANGLE;
+    public final CANModuleConfig FL_MODULE;
+    public final CANModuleConfig FR_MODULE;
+    public final CANModuleConfig BL_MODULE;
+    public final CANModuleConfig BR_MODULE;
 
    /**
-   * CANCONFIG - BLC = back left cancoder.  FLD = Front Left drive motor.  FLA = Front Left angle motor.
+   * CANCONFIG - four CANModuleConfig objects for the four corners
    * 
    */
-    public CANConfig(int BLC, int BRC, int FRC, int FLC, int FLD, int FLA, int BLD, int BLA, int BRD, int BRA, int FRD, int FRA) {
-      this.DT_BL_CANCODER = BLC;
-      this.DT_BR_CANCODER = BRC;
-      this.DT_FL_CANCODER = FLC;
-      this.DT_FR_CANCODER = FRC;
-
-      this.DT_FL_DRIVE = FLD;
-      this.DT_FR_DRIVE = FRD;
-      this.DT_BL_DRIVE = BLD;
-      this.DT_BR_DRIVE = BRD;
-
-      this.DT_FL_ANGLE = FLA;
-      this.DT_BL_ANGLE = BLA;
-      this.DT_FR_ANGLE = FRA;
-      this.DT_BR_ANGLE = BRA;
+    public CANConfig(CANModuleConfig FL_MODULE, CANModuleConfig FR_MODULE, CANModuleConfig BL_MODULE, CANModuleConfig BR_MODULE) {
+      this.FL_MODULE = FL_MODULE;
+      this.FR_MODULE = FR_MODULE;
+      this.BL_MODULE = BL_MODULE;
+      this.BR_MODULE = BR_MODULE;
     }
   }
