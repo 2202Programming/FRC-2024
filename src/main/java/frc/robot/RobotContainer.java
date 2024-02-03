@@ -15,16 +15,16 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
-import frc.robot.commands.utility.DummyIntakeCmd;
 import frc.robot.commands.utility.DummyShooterCmd;
 import frc.robot.subsystems.BlinkyLights;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.PneumaticsControl;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
@@ -46,7 +46,8 @@ public class RobotContainer implements BlinkyLightUser {
 
   // enum for bindings add when needed
   public enum Bindings {
-    DriveTest
+    DriveTest,
+    Comptition
   }
 
   // The robot's subsystems and commands are defined here...
@@ -106,7 +107,7 @@ public class RobotContainer implements BlinkyLightUser {
 
   private void configureBindings(Bindings bindings) {
     CommandXboxController driver = dc.Driver();
-    CommandXboxController operator = dc.Operator();
+
     shooter = new Shooter();
 
     switch (bindings) {
@@ -128,14 +129,39 @@ public class RobotContainer implements BlinkyLightUser {
                 new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
             new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
 
-        // driver.x().whileTrue(new Lights(BlinkyLights.GREEN));
-        // driver.leftBumper().whileTrue(new Lights(BlinkyLights.RED));
-        // driver.y().whileTrue(new Lights(BlinkyLights.WHITE));
+        // break; fall through since these are placeholders on CompBot
 
+      case Comptition:
+        // TODO: replace Print/Dummy with real commands when known - ER
+        driver.leftTrigger().whileTrue(new DummyShooterCmd());
+
+      default:
+        break;
     }
-    // TODO: replace with real commands - ER
-    operator.rightBumper().onTrue(new DummyShooterCmd(shooter)); // if right bumper is pressed, dummyshooter executes
-    operator.a().onTrue(new DummyIntakeCmd(intake)); // if a is pressed, intakedummy executes
+    configureOperator(bindings);
+  }
 
+  private void configureOperator(Bindings bindings) {
+    CommandXboxController operator = dc.Operator();
+
+    switch (bindings) {
+      // all the same for now since they are placeholders -- fall through ok
+      default:
+      case DriveTest:
+      case Comptition:
+        operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
+        operator.x().onTrue(new PrintCommand("PlaceholderCMD: Intake Deploy"));
+        operator.y().onTrue(new PrintCommand("PlaceholderCMD: Intake Retract"));
+
+        // i would rather bind deploy and retract to one button but these are the
+        // current preferences of the drive team -ER
+
+        // TODO figure out climber buttons and DT preferences, change once we talk to
+        // them- ER
+        operator.povUp().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
+        operator.povDown().onTrue(new PrintCommand("PlaceholderCMD: Climber Down"));
+
+        break;
+    }
   }
 }
