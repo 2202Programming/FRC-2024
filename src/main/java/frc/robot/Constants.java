@@ -117,8 +117,9 @@ public final class Constants {
 
     // Support for multiple robots on same code base
 
-    public static final SubsystemConfig comp2024BotSubsystemConfig = new SubsystemConfig(true, true, true, true, false,
-        true, false, true, true);
+    public static final SubsystemConfig comp2024BotSubsystemConfig = new SubsystemConfig(false, false, false, true,
+        false,
+        false, false, true, true);
     public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig(false, false, false, false,
         false,
         false, false, true, true);
