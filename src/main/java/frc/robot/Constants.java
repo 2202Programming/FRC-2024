@@ -181,6 +181,9 @@ public final class Constants {
     public static final int NOSE_MOTOR_ANGLE = 140;
     public static final int NOSE_MOTOR_FIRE = 150;
 
+    // Transfer
+    public static final int TRANSFER_MOTOR = 210; // placeholder
+    
     // Claw
     public static final int CLAW_WHEEL_MOTOR = 16;
 
@@ -206,6 +209,7 @@ public final class Constants {
 
   public final class DigitalIO {
     public static final int IntakeLightGate = 1;
+    public static final int TransferLightGate = 2;
   }
 
   public static final class Intake_Constants {

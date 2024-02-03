@@ -4,12 +4,20 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CAN;
+import frc.robot.Constants.DigitalIO;
+import com.revrobotics.CANSparkMax;
 
 public class Transfer extends SubsystemBase {
+  
+  DigitalInput lightGate = new DigitalInput(DigitalIO.TransferLightGate);
+  CANSparkMax transferMotor;
+
   /** Creates a new Transfer. */
   public Transfer() {
-
+      transferMotor  = new CANSparkMax(CAN.TRANSFER_MOTOR, CANSparkMax.MotorType.kBrushless);
   }
 
   //TODO: find out methods/behaviors, pneumatics, etc. 
