@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -47,6 +48,7 @@ public class RobotContainer implements BlinkyLightUser {
   // enum for bindings add when needed
   public enum Bindings {
     DriveTest, Shooter_test
+    Comptition
   }
 
   // The robot's subsystems and commands are defined here...
@@ -148,7 +150,39 @@ public class RobotContainer implements BlinkyLightUser {
         }
         driver.b().onTrue(new InstantCommand(() -> {shooter.cycleShootingMode();}));
     }
+        // break; fall through since these are placeholders on CompBot
 
+      case Comptition:
+        // TODO: replace Print/Dummy with real commands when known - ER
+        driver.rightTrigger().whileTrue(new DummyShooterCmd());
+        driver.leftTrigger().onTrue(new PrintCommand("PlaceholderCMD: Align with shooter"));
+
+      default:
+        break;
+    }
+    configureOperator(bindings);
+  }
+
+  private void configureOperator(Bindings bindings) {
+    CommandXboxController operator = dc.Operator();
+
+    switch (bindings) {
+      // all the same for now since they are placeholders -- fall through ok
+      default:
+      case DriveTest:
+      case Comptition:
+        operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
+        
+        //TODO mentor pls check if right syntax!!
+        operator.x().whileTrue(new PrintCommand("PlaceholderCMD: Intake Deploy"));
+        operator.x().whileFalse(new PrintCommand("PlaceholderCMD: Intake Retract"));
+
+        //Drive team mentioned that they want climber buttons on switchboard but i need to find that syntax -ER
+        //WIP THESE BINDINGS ARE NOT AT ALL FINAL
+        operator.povUp().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
+        operator.povDown().onTrue(new PrintCommand("PlaceholderCMD: Climber Down"));
+
+        break;
     }
   }
 }
