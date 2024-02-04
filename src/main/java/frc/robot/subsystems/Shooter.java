@@ -29,8 +29,8 @@ public class Shooter extends SubsystemBase {
    }
   }
     //Instantiations 
-  final CANSparkMax shooterMotorLeft = new CANSparkMax(CAN.SHOOT_L, CANSparkMax.MotorType.kBrushless);
-  final CANSparkMax shooterMotorRight = new CANSparkMax(CAN.SHOOT_R, CANSparkMax.MotorType.kBrushless);
+  final CANSparkMax shooterMotorLeft = new CANSparkMax(CAN.SHOOTER_L, CANSparkMax.MotorType.kBrushless);
+  final CANSparkMax shooterMotorRight = new CANSparkMax(CAN.SHOOTER_R, CANSparkMax.MotorType.kBrushless);
   private SparkPIDController shooterLeftPidController;
   private SparkPIDController shooterRightPidController;
   private RelativeEncoder shooterLeftEncoder;

@@ -19,16 +19,13 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
-import frc.robot.subsystems.BlinkyLights;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
-import frc.robot.subsystems.PneumaticsControl;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
@@ -56,22 +53,31 @@ public class RobotContainer implements BlinkyLightUser {
   static RobotContainer rc;
   public final RobotSpecs robotSpecs;
 
-  // Subsystems
-  //public final PowerDistribution pdp;
-  //public final PneumaticsControlModule pcm1;
-  //public final PneumaticsControlModule pcm2;
-  public final PneumaticsControl pneumatics;
+  // Subsystems use locally or in RC() reference
+  //public final PneumaticsControl pneumatics;
   public final HID_Xbox_Subsystem dc;
   public final Limelight_Subsystem limelight;
   public final Sensors_Subsystem sensors;
   public final SwerveDrivetrain drivetrain;
-  public final BlinkyLights lights;
-  public final Intake intake;
-  public final Shooter shooter;
+  //public final BlinkyLights lights;
+  //public final Intake intake;
+  //public final Shooter shooter;
 
   // singleton accessor for robot public sub-systems
   public static RobotContainer RC() {
     return rc;
+  }
+
+  public static Subsystem getSubSys(String name) {
+    return rc.robotSpecs.mySubsystemConfig.getSubsystem(name);
+  }
+  
+  public static <T> Object getSubSys(Class<? extends Subsystem> clz) {
+    return rc.robotSpecs.mySubsystemConfig.getSubsystem(clz.getSimpleName().toUpperCase());
+  }
+  
+  public static boolean hasSubsystem(Class<? extends Subsystem> clz) {
+    return rc.robotSpecs.mySubsystemConfig.hasSubsystem(clz);
   }
 
   /**
@@ -80,27 +86,18 @@ public class RobotContainer implements BlinkyLightUser {
 
   public RobotContainer() {
     RobotContainer.rc = this;
+    robotSpecs = new RobotSpecs();
+    robotSpecs.mySubsystemConfig.constructAll();
+    
     // Quiet some of the noise
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    robotSpecs = new RobotSpecs();
-    lights = new BlinkyLights();
-    dc = new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
-    sensors = new Sensors_Subsystem();
-    //pdp = new PowerDistribution( 0, ModuleType.kRev );
-    //pdp.clearStickyFaults();
+    // get subsystem vars as needed
+    drivetrain =(SwerveDrivetrain) getSubSys("DRIVETRAIN");
+    dc = (HID_Xbox_Subsystem) getSubSys("DC");
+    limelight = (Limelight_Subsystem) getSubSys("LIMELIGHT");
+    sensors = (Sensors_Subsystem) getSubSys("SENSORS");
 
-    //TODO may need to put into subsystemconfig() object
-    //pcm1 = new PneumaticsControlModule(CAN.PCM1);
-    //pcm2 = new PneumaticsControlModule(CAN.PCM2);
-
-    //Use SubsystemConfig to figure out if our current bot has subsytem before trying to initialize it
-    pneumatics = (robotSpecs.getSubsystemConfig().HAS_ANALOG_PNEUMATICS) ? new PneumaticsControl() : null;
-    limelight = (robotSpecs.getSubsystemConfig().HAS_LIMELIGHT) ? new Limelight_Subsystem() : null;
-    drivetrain = (robotSpecs.getSubsystemConfig().HAS_DRIVETRAIN) ? new SwerveDrivetrain() : null;
-    intake = (robotSpecs.getSubsystemConfig().HAS_INTAKE) ? new Intake() : null;
-    shooter = (robotSpecs.getSubsystemConfig().HAS_SHOOTER) ? new Shooter() : null;
-    
     /* Set the commands below */
     configureBindings(Bindings.Shooter_test); // Change this to swich between bindings
     if (drivetrain != null) {

@@ -5,6 +5,7 @@
 package frc.robot.util;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.Configs;
 import frc.robot.Constants.DriveTrain;
 import frc.robot.subsystems.Swerve.Config.CANConfig;
 import frc.robot.subsystems.Swerve.Config.ChassisConfig;
@@ -35,7 +36,7 @@ public class RobotSpecs {
     public RobotNames myRobotName;
     private WheelOffsets myWheelOffsets;
     private ChassisConfig myChassisConfig;
-    private SubsystemConfig mySubsystemConfig;
+    public SubsystemConfig mySubsystemConfig;
     private ChassisInversionSpecs myChassisInversionSpecs;
     private CANConfig myCANConfig;
 
@@ -54,44 +55,44 @@ public class RobotSpecs {
         switch (myRobotName) {
             case SwerveBot:
                 myWheelOffsets = DriveTrain.swerveBotOffsets;
-                myChassisConfig = DriveTrain.swerveBotChassisConfig;
-                mySubsystemConfig = DriveTrain.swerveBotSubsystemConfig;
+                myChassisConfig = DriveTrain.swerveBotChassisConfig;                
                 myChassisInversionSpecs = DriveTrain.swerveBotChassisInversionSpecs;
                 myCANConfig = DriveTrain.swerveBotCANConfig;
+                mySubsystemConfig = Configs.swerveBotSubsystemConfig;
                 break;
                 
             case CompetitionBot2024:
                 myWheelOffsets = DriveTrain.comp2024BotOffsets;
-                myChassisConfig = DriveTrain.comp2024BotChassisConfig;
-                mySubsystemConfig = DriveTrain.comp2024BotSubsystemConfig;
+                myChassisConfig = DriveTrain.comp2024BotChassisConfig;                
                 myChassisInversionSpecs = DriveTrain.comp2024BotInversionSpecs;
                 myCANConfig = DriveTrain.comp2024BotCANConfig;
+                mySubsystemConfig = Configs.comp2024BotSubsystemConfig;
                 break;
 
             case CompetitionBot2023:  //doofBot
                 myWheelOffsets = DriveTrain.doofBotOffsets;
-                myChassisConfig = DriveTrain.doofBotChassisConfig;
-                mySubsystemConfig = DriveTrain.doofBotSubsystemConfig;
+                myChassisConfig = DriveTrain.doofBotChassisConfig;                
                 myChassisInversionSpecs = DriveTrain.doofBotChassisInversionSpecs;
                 myCANConfig = DriveTrain.doofBotCANConfig;
+                mySubsystemConfig = Configs.doofBotSubsystemConfig;
                 break;
 
             case ChadBot:
                 myWheelOffsets = DriveTrain.chadBotOffsets;
                 myChassisConfig = DriveTrain.chadBotChassisConfig;
-                mySubsystemConfig = DriveTrain.chadBotSubsystemConfig;
                 myChassisInversionSpecs = DriveTrain.chadBotChassisInversionSpecs;
                 myCANConfig = DriveTrain.chadBotCANConfig;
+                mySubsystemConfig = Configs.chadBotSubsystemConfig;
                 break;
 
             default:
             case UnknownBot:
             case BotOnBoard:
                 myWheelOffsets = DriveTrain.swerveBotOffsets;
-                myChassisConfig = DriveTrain.swerveBotChassisConfig;
-                mySubsystemConfig = DriveTrain.botOnBoardConfig;
+                myChassisConfig = DriveTrain.swerveBotChassisConfig;                
                 myChassisInversionSpecs = DriveTrain.swerveBotChassisInversionSpecs;
                 myCANConfig = DriveTrain.swerveBotCANConfig;
+                mySubsystemConfig = Configs.botOnBoardSystemConfig;
                 System.out.println("***Non-driving robot,don't expect too much***");
                 break;
         }

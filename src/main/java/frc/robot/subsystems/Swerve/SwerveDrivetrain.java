@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CAN;
 import frc.robot.Constants.DriveTrain;
 import frc.robot.Constants.NTStrings;
 import frc.robot.RobotContainer;
@@ -155,8 +154,8 @@ public class SwerveDrivetrain extends SubsystemBase {
   public final Field2d m_field = new Field2d();
 
   public SwerveDrivetrain() {
-    sensors = RobotContainer.RC().sensors;
-    limelight = RobotContainer.RC().limelight;
+    sensors = (Sensors_Subsystem) RobotContainer.getSubSys("SENSORS");
+    limelight =(Limelight_Subsystem) RobotContainer.getSubSys("LIMELIGHT");
     watchdog = new VisionWatchdog(3.0);
 
     var MT = CANSparkMax.MotorType.kBrushless;

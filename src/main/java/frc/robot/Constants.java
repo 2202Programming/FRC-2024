@@ -11,7 +11,6 @@ import frc.robot.subsystems.Swerve.Config.ChassisInversionSpecs;
 import frc.robot.subsystems.Swerve.Config.ModuleInversionSpecs;
 import frc.robot.subsystems.Swerve.Config.WheelOffsets;
 import frc.robot.util.PIDFController;
-import frc.robot.util.SubsystemConfig;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -118,20 +117,6 @@ public final class Constants {
 
     // Support for multiple robots on same code base
 
-    public static final SubsystemConfig comp2024BotSubsystemConfig = new SubsystemConfig(false, false, false, true,
-        false,
-        false, false, true, true);
-    public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig(false, false, false, false,
-        false,
-        false, false, true, true);
-    public static final SubsystemConfig chadBotSubsystemConfig = new SubsystemConfig(true, true, false, false, true,
-        true,
-        true, true, true);
-    public static final SubsystemConfig doofBotSubsystemConfig = new SubsystemConfig(true, false, false, true, false,
-        false, false, true, true);
-    public static final SubsystemConfig botOnBoardConfig = new SubsystemConfig(false, true, false, false, false, 
-      false, false, false, false);
-
     public static final CANModuleConfig comp2024CAN_FL = new CANModuleConfig(29,24,25);
     public static final CANModuleConfig comp2024CAN_FR = new CANModuleConfig(30,26,27);
     public static final CANModuleConfig comp2024CAN_BL = new CANModuleConfig(28,22,23);
@@ -147,7 +132,9 @@ public final class Constants {
     public static final CANConfig chadBotCANConfig = new CANConfig(swerveBotCAN_FL, swerveBotCAN_FR, swerveBotCAN_BL, swerveBotCAN_BR);
     public static final CANConfig doofBotCANConfig = new CANConfig(swerveBotCAN_FL, swerveBotCAN_FR, swerveBotCAN_BL, swerveBotCAN_BR);
 
-  } // end DriveTrain
+  } // end DriveTrain configs
+
+  
 
   /*-------------------------Ports/CAN-------------------------------- */
   /**
@@ -161,15 +148,9 @@ public final class Constants {
     public static final int PCM1 = 2; //for rev
     public static final int PCM2 = 3; //for rev
 
-    public static final int SHOOT_L = 15; //temporary
-    public static final int SHOOT_R = 16; //temporary
- 
-    public static final int ARM_RIGHT_Motor = 1000; // placeholder
-    public static final int ARM_LEFT_Motor = 100; // placeholder
+    public static final int SHOOTER_L = 15; 
+    public static final int SHOOTER_R = 16; 
 
-    // Intake
-    public static final int INTAKE_MTR = 200; // placeholder
-    public static final int ANGLE_MTR = 1000; // placeholder
     // drive train CANCoders
     public static final int DT_BL_CANCODER = 28;
     public static final int DT_BR_CANCODER = 31;
@@ -186,9 +167,15 @@ public final class Constants {
     public static final int DT_FR_DRIVE = 26;
     public static final int DT_FR_ANGLE = 27;
 
+    public static final int ARM_RIGHT_Motor = 50; // placeholder
+    public static final int ARM_LEFT_Motor = 51; // placeholder
+
+    // Intake
+    public static final int INTAKE_MTR = 52; // placeholder
+    public static final int ANGLE_MTR = 53; // placeholder
     // Nose Roller
-    public static final int NOSE_MOTOR_ANGLE = 140;
-    public static final int NOSE_MOTOR_FIRE = 150;
+    public static final int NOSE_MOTOR_ANGLE = 54;
+    public static final int NOSE_MOTOR_FIRE = 55;
 
     // IMU
     public static final int PIGEON_IMU_CAN = 60;
