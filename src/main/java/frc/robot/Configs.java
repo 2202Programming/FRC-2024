@@ -7,6 +7,7 @@ import frc.robot.Constants.CAN;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
@@ -47,7 +48,8 @@ public class Configs {
       .add(Limelight_Subsystem.class)
       .add(SwerveDrivetrain.class, "DRIVETRAIN") // must be after LL and Sensors
       .add(Intake.class)
-      .add(Shooter.class);
+      .add(Shooter.class)
+      .add(Transfer.class);
 
   // Subsystems and hardware on Tim 2.0
   public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig()

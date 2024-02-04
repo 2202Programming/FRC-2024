@@ -167,6 +167,7 @@ public final class Constants {
     public static final int DT_FR_DRIVE = 26;
     public static final int DT_FR_ANGLE = 27;
 
+    // PLACEHOLDER - use 50 .. 59, max CAN addr is 64
     public static final int ARM_RIGHT_Motor = 50; // placeholder
     public static final int ARM_LEFT_Motor = 51; // placeholder
 
@@ -176,6 +177,9 @@ public final class Constants {
     // Nose Roller
     public static final int NOSE_MOTOR_ANGLE = 54;
     public static final int NOSE_MOTOR_FIRE = 55;
+    
+    // Transfer
+    public static final int TRANSFER_MOTOR = 56; // placeholder
 
     // IMU
     public static final int PIGEON_IMU_CAN = 60;
@@ -199,6 +203,7 @@ public final class Constants {
 
   public final class DigitalIO {
     public static final int IntakeLightGate = 1;
+    public static final int TransferLightGate = 2;
   }
 
   public static final class Intake_Constants {
