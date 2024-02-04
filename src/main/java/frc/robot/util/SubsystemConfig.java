@@ -8,31 +8,33 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 /*
-* SubsystemConfig - handle different flavors of robot 
-* sub-system building.
-*  
+* SubsystemConfig - handle different flavors of robot  sub-system building.
+* Objects will be constructed in order they are added. This is critical for
+* systems like Drivetrain which requires Sensors and maybe Vision to be 
+* available.
+*
+*  See Configs.java for correct usage for different platforms we have.
 */
-
 public class SubsystemConfig {
-
     /* SubsystemDefinition keeps class and subsystem for use in a has map */
-    static class SubsystemDefinition {
-        Class<?> m_Class;
+    static class SubsystemDefinition<T extends Object> {
+        Class<T> m_Class;
         Object m_obj = null;
         Supplier<Object> m_factory = null;
 
         // container for Subsystem Class and instance object
-        SubsystemDefinition(Class<? extends Subsystem> clz) {
+        SubsystemDefinition(Class<T> clz) {
             m_Class = clz;
             m_obj = null;
         }
 
-        SubsystemDefinition(Object obj) {
-            this.m_Class = obj.getClass();
+        @SuppressWarnings("unchecked")
+        SubsystemDefinition(T obj) {
+            this.m_Class = (Class<T>) obj.getClass();
             this.m_obj = obj;
         }
 
-        SubsystemDefinition(Class<?> clz, Supplier<Object> factory) {
+        SubsystemDefinition(Class<T> clz, Supplier<Object> factory) {
             this.m_Class = clz;
             this.m_obj = null;
             this.m_factory = factory;
@@ -42,91 +44,103 @@ public class SubsystemConfig {
          * construct the subsystem using the default constructor.
          */
         void construct() {
+            // already created
             if (m_obj != null)
                 return;
-            if (m_factory == null &&  m_Class.isNestmateOf(Subsystem.class)) {
 
-                System.out.println("Subysystem construct: I don't know how to make a " + m_Class.getName() +
-                        "\n - no factory and not Subsystem class.\n" +
-                        "Continuing with robot construction... good luck!");
-                return; // skip non subsystems
-            }
-
-            // do Factory supplied first
+            // have a Factory supplied lambda
             if (m_factory != null) {
                 m_obj = m_factory.get();
                 return;
             }
 
-            // require a no-args constructor
+            // use a no-args constructor for anything without a factory lambda
             try {
-                // assume no-args constructor, create subsystem instance
+                // Use the no-args constructor to create instance
                 m_obj = m_Class.getDeclaredConstructor().newInstance();
 
             } catch (NoSuchMethodException e) {
-                System.out.println(
-                        "***Subsystem " + m_Class.getName()
-                                + "needs a no-arg constructor... Subsystem not created.***");
+                System.out.println("*** Problem creating " + m_Class.getSimpleName()
+                        + " a no-arg constructor is required.  Object not created. ***");
                 e.printStackTrace();
 
-            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+            } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException
                     | InvocationTargetException e) {
-                System.out.println(
-                        "***Problem creating Subsystem " + m_Class.getName() + "... Subsystem not created.***");
+                // handle other cases that shouldn't happen for Subsystems
+                System.out.println("***Problem creating Object "
+                        + m_Class.getName() + "... Subsystem not created.***");
                 e.printStackTrace();
             }
         }
     }
 
     // map all the robot subsystem by a name
-    LinkedHashMap<String, SubsystemDefinition> m_robot_parts = new LinkedHashMap<>();
+    LinkedHashMap<String, SubsystemDefinition<?>> m_robot_parts = new LinkedHashMap<>();
 
     // only one instance of a class, use UPPER case name of class for instance
-    public SubsystemConfig add(Class<? extends Subsystem> clz) {
-        String name = clz.getSimpleName().toUpperCase();
-        var ssd = new SubsystemDefinition(clz);
-        m_robot_parts.put(name, ssd);
+    public <T> SubsystemConfig add(Class<T> clz) {
+        String name = clz.getSimpleName();
+        var ssd = new SubsystemDefinition<T>(clz);
+        put(name, ssd);
         return this;
     }
 
-    public <T> SubsystemConfig add(Class<? extends Subsystem> clz, String instance_name) {
-        String name = instance_name.toUpperCase();
-        m_robot_parts.put(name, new SubsystemDefinition(clz));
+    public <T> SubsystemConfig add(Class<T> clz, String name) {        
+        put(name, new SubsystemDefinition<T>(clz));
         return this;
     }
 
-    public <T> SubsystemConfig add(Subsystem instance, String instance_name) {
-        String name = instance_name.toUpperCase();
-        m_robot_parts.put(name, new SubsystemDefinition(instance));
+    public <T> SubsystemConfig add(T instance, String name) {        
+        put(name, new SubsystemDefinition<T>(instance));
         return this;
     }
 
-    public <T> SubsystemConfig add(Class<?> clz, String name, Supplier<Object> factory) {
-        m_robot_parts.put(name.toUpperCase(), new SubsystemDefinition(clz, factory));
+    // Facory adds must have a Type and a name
+    public <T> SubsystemConfig add(Class<T> clz, String name, Supplier<Object> factory) {
+        put(name, new SubsystemDefinition<T>(clz, factory));
         return this;
     }
 
     // Only subsystems will be returned
-    public Subsystem getSubsystem(String instance_name) {
+    public Subsystem getSubsystem(String name) {
         // Not sure how to get rid of this warning
-        var ssd = m_robot_parts.get(instance_name);
+        var ssd = get(name);
         return (ssd.m_obj instanceof Subsystem) ? (Subsystem) ssd.m_obj : null;
     }
 
-    // Any robot object will be returned, including Subsystems
-    public Object getObject(String instance_name) {
+    // Only subsystems will be returned
+    @SuppressWarnings("unchecked")
+    public <T extends Subsystem> T getSubsystem(Class<? extends Subsystem> clz) {
         // Not sure how to get rid of this warning
-        var ssd = m_robot_parts.get(instance_name);
-        return ssd.m_obj;
+        String name = clz.getSimpleName();
+        var ssd = get(name);
+        return (ssd.m_obj instanceof Subsystem) ? (T) ssd.m_obj : null;
     }
 
-    public boolean has(String instance_name) {
-        return m_robot_parts.containsKey(instance_name);
+    // Any robot object will be returned, including Subsystems. 
+    // Class name must be unique to the configuration.
+    @SuppressWarnings("unchecked")
+    public <T> T getObject(String name) {
+        var ssd = get(name);
+        return (T) ssd.m_obj;
     }
 
-    public boolean hasSubsystem(Class<? extends Subsystem> clz) {
-        String n = clz.getSimpleName().toUpperCase();
-        return m_robot_parts.containsKey(n);
+    public boolean has(String name) {
+        return m_robot_parts.containsKey(name);
+    }
+
+    // for when it's not a Subsystem, and a factory wasn't used
+    public boolean has(Class<?> clz) {       
+        String n = clz.getSimpleName();
+        return has(n);
+    }
+
+    // for when it must be a subsystem
+    public boolean hasSubsystem(Class<?> clz) {
+        if (!clz.isNestmateOf(Subsystem.class))
+            return false; // clz not Subsystem
+        String n = clz.getSimpleName();
+        return has(n);
     }
 
     /*
@@ -138,11 +152,35 @@ public class SubsystemConfig {
      * are setup.
      */
     public void constructAll() {
-        for (Map.Entry<String, SubsystemDefinition> entry : m_robot_parts.entrySet()) {
-            System.out.println("Constructing " + entry.getKey() + " as instance of " + 
-                entry.getValue().m_Class.getSimpleName());
+        for (Map.Entry<String, SubsystemDefinition<?>> entry : m_robot_parts.entrySet()) {
+            System.out.println("Constructing " + entry.getKey() + " as instance of " +
+                    entry.getValue().m_Class.getSimpleName());
             entry.getValue().construct();
         }
     }
+
+    void put(String name, SubsystemDefinition<?> ssd) {
+        // see if name exist, if so that is a problem as names must be unique
+        if (m_robot_parts.containsKey(name)) {
+            System.out.println("*********************************************\n"
+                    + "SubsystemConfig contains DUPLICATE NAME "
+                    + name + "of Class " + ssd.m_Class.getCanonicalName()
+                    + " duplicate will not be created."
+                    + "*********************************************\n");
+        }
+        m_robot_parts.put(name, ssd);
+    }
+
+     SubsystemDefinition<?> get(String name) {
+        var ssd = m_robot_parts.get(name); 
+        if (ssd != null) return ssd;
+
+        // doesn't exist, fail hard and fast
+        System.out.println("SubsystemConfig: your object " + name + " does not exist.\n"
+        + "Check your Configs.java file\n" 
+        + "Throwing NPE to keep you safe.");
+        throw new NullPointerException();
+    }
+
 
 }

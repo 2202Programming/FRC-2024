@@ -7,6 +7,7 @@ package frc.robot.commands.Shooter;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Shooter;
 
 /** An example command that uses an example subsystem. */
@@ -37,8 +38,8 @@ public class RPMShooter extends Command {
    * @param subsystem The subsystem used by this command.
    */
 
-  public RPMShooter(CommandXboxController controller, Shooter shooter) {
-    m_shooter = shooter;
+  public RPMShooter(CommandXboxController controller) {
+    m_shooter = RobotContainer.getSubsystem(Shooter.class);
     m_driverController = controller;
 
     // Use addRequirements() here to declare subsystem dependencies.

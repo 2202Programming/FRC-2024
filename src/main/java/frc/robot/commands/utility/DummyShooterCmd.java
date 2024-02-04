@@ -17,7 +17,7 @@ public class DummyShooterCmd extends Command {
 
   public DummyShooterCmd() {
 
-    this.shooter = RobotContainer.RC().shooter;
+    this.shooter = RobotContainer.getSubsystem("SHOOTER");
     // protect incase we don't have a shooter
     // addRequirements(shooter);
   }

@@ -13,6 +13,14 @@ import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.SubsystemConfig;
 
+/*
+ * The Subsystems and object in Configs will be created by RobotContainer 
+ * when the robot's serial number is read by RobotSpecs. 
+ * 
+ * All construction is deferred until inside RobotContainer so be careful
+ * with any 'new' operators, they should be wrapped in a lambda. For an example
+ * see PDP below.
+ */
 public class Configs {
 
   // Subsystems and other hardware on 2024 Robot
@@ -26,28 +34,40 @@ public class Configs {
       .add(BlinkyLights.class, "LIGHTS", () -> {
         return new BlinkyLights();
       })
-      .add(Sensors_Subsystem.class, "SENSORS")
-      .add(HID_Xbox_Subsystem.class, "DC", () -> {
-        return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
-      })
       .add(PneumaticsControlModule.class, "PCM1", () -> {
         return new PneumaticsControlModule(CAN.PCM1);
       })
       .add(PneumaticsControlModule.class, "PCM2", () -> {
         return new PneumaticsControlModule(CAN.PCM2);
       })
-      .add(Limelight_Subsystem.class, "LIMELIGHT")
+      .add(HID_Xbox_Subsystem.class, "DC", () -> {
+        return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
+      })
+      .add(Sensors_Subsystem.class)
+      .add(Limelight_Subsystem.class)
+      .add(SwerveDrivetrain.class, "DRIVETRAIN") // must be after LL and Sensors
       .add(Intake.class)
-      .add(Shooter.class)
-      .add(SwerveDrivetrain.class, "DRIVETRAIN");  // must be after LL and Sensors
+      .add(Shooter.class);
 
   // Subsystems and hardware on Tim 2.0
-  public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig();
+  public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig()
+      .add(Sensors_Subsystem.class)
+      .add(Limelight_Subsystem.class)
+      .add(SwerveDrivetrain.class, "DRIVETRAIN");
 
-  public static final SubsystemConfig chadBotSubsystemConfig = new SubsystemConfig();
-  
-  public static final SubsystemConfig doofBotSubsystemConfig = new SubsystemConfig();
-  
-  public static final SubsystemConfig botOnBoardSystemConfig = new SubsystemConfig();
+  // Chad's subsystems and objects
+  public static final SubsystemConfig chadBotSubsystemConfig = new SubsystemConfig()
+      .add(Sensors_Subsystem.class)
+      .add(Limelight_Subsystem.class)
+      .add(SwerveDrivetrain.class, "DRIVETRAIN");
+
+  public static final SubsystemConfig doofBotSubsystemConfig = new SubsystemConfig()
+      .add(Sensors_Subsystem.class)
+      .add(Limelight_Subsystem.class)
+      .add(SwerveDrivetrain.class, "DRIVETRAIN");
+
+  public static final SubsystemConfig botOnBoardSystemConfig = new SubsystemConfig()
+  // .add(null) useful stuff for bot on boards
+  ;
 
 }

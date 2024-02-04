@@ -4,17 +4,17 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 
 public class Shooter extends SubsystemBase {
-  /** Creates a new Shooter. */
+
   public enum ShooterMode {
     Trigger("Trigger"), Percent("Percent"), RPM("RPM");
 
@@ -144,218 +144,6 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setI(double newI){
-    shooterLeftPidController.setP(newI);
-    shooterRightPidController.setP(newI);
-  }
-  public void setD(double newD){
-    shooterLeftPidController.setP(newD);
-    shooterRightPidController.setP(newD);
-  }
-
-  public double getP() {
-    return shooterLeftPidController.getP();
-  }
-
-  public double getI() {
-    return shooterLeftPidController.getI();
-  }
-
-  public double getD() {
-    return shooterLeftPidController.getD();
-  }
-
-  void motor_config(CANSparkMax shooterMotorLeft, boolean inverted) {
-    shooterMotorLeft.clearFaults();
-    shooterMotorLeft.restoreFactoryDefaults();
-    shooterMotorLeft.setInverted(inverted);
- }
-
-  // WIP methods, needs checking - ER
-  public void shoot(){
-
-    currentShootingMode = ShooterMode.RPM;
-    SmartDashboard.putString("Current Shoooting Mode",currentShootingMode.toString());
-    SmartDashboard.putNumber("Current Shooter RPM",0.0);
-    SmartDashboard.putNumber("Current Left Motor RPM",0.0);
-    SmartDashboard.putNumber("Current Right Motor RPM",0.0);
-  }
-
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    currentLeftMotorRPM = shooterLeftEncoder.getVelocity();
-    currentRightMotorRPM = shooterRightEncoder.getVelocity();
-    SmartDashboard.putString("Current Shoooting Mode",currentShootingMode.toString());
-    SmartDashboard.putNumber("Current Shooter RPM", currentLeftMotorRPM / gearboxRatio);
-    SmartDashboard.putNumber("Current Left Motor RPM", currentLeftMotorRPM);
-    SmartDashboard.putNumber("Current Right Motor RPM", currentRightMotorRPM);
-    SmartDashboard.putNumber("Left Motor Percent", getLeftMotorOutput());
-    SmartDashboard.putNumber("Right Motor Percent", getRightMotorOutput());
-  }
-
-  public void setShootingMode(ShooterMode mode){
-    currentShootingMode = mode;
-  }
-
-  public void cycleShootingMode() {
-    if(currentShootingMode == ShooterMode.Trigger) {
-      currentShootingMode = ShooterMode.Percent;
-      return;
-    }
-    if(currentShootingMode == ShooterMode.Percent) { 
-      currentShootingMode = ShooterMode.RPM;
-      return;
-    }
-    if(currentShootingMode == ShooterMode.RPM) 
-      currentShootingMode = ShooterMode.Trigger;
-    return;
-  }
-
-  public ShooterMode getShooterMode() {
-    return currentShootingMode;
-  }
-
-  public void setMotorSpeed(double motorSpeed){
-    shooterMotorLeft.set(motorSpeed);
-    shooterMotorRight.set(motorSpeed);
-    currentLeftMotorOutput = motorSpeed;
-  }
-
-  public void setShooterRPM(double shooterLeftRPM, double shooterRightRPM){
-    shooterLeftPidController.setReference(shooterLeftRPM*gearboxRatio, ControlType.kVelocity);
-    shooterRightPidController.setReference(shooterRightRPM*gearboxRatio, ControlType.kVelocity);
-    System.out.println("Motor goals changed, left="+shooterLeftRPM*gearboxRatio+", right="+shooterRightRPM*gearboxRatio);
-  }
-
-  public double getLeftMotorOutput(){
-    return currentLeftMotorOutput;
-  }
-
-  public double getRightMotorOutput(){
-    return currentRightMotorOutput;
-  }
-
-  public double getMotorRPM(){
-    return currentLeftMotorRPM;
-  }
-
-  public double getShooterRPM(){
-    return currentLeftMotorRPM / gearboxRatio;
-  }
-
-  public void setP(double newP){
-    shooterLeftPidController.setP(newP);
-    shooterRightPidController.setP(newP);
-  }
-
-  public void setI(double newI){
-    shooterLeftPidController.setI(newI);
-    shooterRightPidController.setI(newI);
-  }
-  public void setD(double newD){
-    shooterLeftPidController.setP(newD);
-    shooterRightPidController.setP(newD);
-  }
-
-  public double getP() {
-    return shooterLeftPidController.getP();
-  }
-
-  public double getI() {
-    return shooterLeftPidController.getI();
-  }
-
-  public double getD() {
-    return shooterLeftPidController.getD();
-  }
-
-  void motor_config(CANSparkMax shooterMotorLeft, boolean inverted) {
-    shooterMotorLeft.clearFaults();
-    shooterMotorLeft.restoreFactoryDefaults();
-    shooterMotorLeft.setInverted(inverted);
- }
-
-  // WIP methods, needs checking - ER
-  public void shoot(){
-
-    currentShootingMode = ShooterMode.RPM;
-    SmartDashboard.putString("Current Shoooting Mode",currentShootingMode.toString());
-    SmartDashboard.putNumber("Current Shooter RPM",0.0);
-    SmartDashboard.putNumber("Current Left Motor RPM",0.0);
-    SmartDashboard.putNumber("Current Right Motor RPM",0.0);
-  }
-
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    currentLeftMotorRPM = shooterLeftEncoder.getVelocity();
-    currentRightMotorRPM = shooterRightEncoder.getVelocity();
-    SmartDashboard.putString("Current Shoooting Mode",currentShootingMode.toString());
-    SmartDashboard.putNumber("Current Shooter RPM", currentLeftMotorRPM / gearboxRatio);
-    SmartDashboard.putNumber("Current Left Motor RPM", currentLeftMotorRPM);
-    SmartDashboard.putNumber("Current Right Motor RPM", currentRightMotorRPM);
-    SmartDashboard.putNumber("Left Motor Percent", getLeftMotorOutput());
-    SmartDashboard.putNumber("Right Motor Percent", getRightMotorOutput());
-  }
-
-  public void setShootingMode(ShooterMode mode){
-    currentShootingMode = mode;
-  }
-
-  public void cycleShootingMode() {
-    if(currentShootingMode == ShooterMode.Trigger) {
-      currentShootingMode = ShooterMode.Percent;
-      return;
-    }
-    if(currentShootingMode == ShooterMode.Percent) { 
-      currentShootingMode = ShooterMode.RPM;
-      return;
-    }
-    if(currentShootingMode == ShooterMode.RPM) 
-      currentShootingMode = ShooterMode.Trigger;
-    return;
-  }
-
-  public ShooterMode getShooterMode() {
-    return currentShootingMode;
-  }
-
-  public void setMotorSpeed(double motorSpeed){
-    shooterMotorLeft.set(motorSpeed);
-    shooterMotorRight.set(motorSpeed);
-    currentLeftMotorOutput = motorSpeed;
-  }
-
-  public void setShooterRPM(double shooterLeftRPM, double shooterRightRPM){
-    shooterLeftPidController.setReference(shooterLeftRPM*gearboxRatio, ControlType.kVelocity);
-    shooterRightPidController.setReference(shooterRightRPM*gearboxRatio, ControlType.kVelocity);
-    System.out.println("Motor goals changed, left="+shooterLeftRPM*gearboxRatio+", right="+shooterRightRPM*gearboxRatio);
-  }
-
-  public double getLeftMotorOutput(){
-    return currentLeftMotorOutput;
-  }
-
-  public double getRightMotorOutput(){
-    return currentRightMotorOutput;
-  }
-
-  public double getMotorRPM(){
-    return currentLeftMotorRPM;
-  }
-
-  public double getShooterRPM(){
-    return currentLeftMotorRPM / gearboxRatio;
-  }
-
-  public void setP(double newP){
-    shooterLeftPidController.setP(newP);
-    shooterRightPidController.setP(newP);
-  }
-
-  public void setI(double newI){
     shooterLeftPidController.setI(newI);
     shooterRightPidController.setI(newI);
   }
@@ -363,5 +151,23 @@ public class Shooter extends SubsystemBase {
     shooterLeftPidController.setD(newD);
     shooterRightPidController.setD(newD);
   }
+
+  public double getP() {
+    return shooterLeftPidController.getP();
+  }
+
+  public double getI() {
+    return shooterLeftPidController.getI();
+  }
+
+  public double getD() {
+    return shooterLeftPidController.getD();
+  }
+
+  void motor_config(CANSparkMax mtr, boolean inverted) {
+    mtr.clearFaults();
+    mtr.restoreFactoryDefaults();
+    mtr.setInverted(inverted);
+ }
 
 }

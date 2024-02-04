@@ -17,7 +17,7 @@ public class IntakeOn extends Command {
   boolean use_dashboard = false;
 
   public IntakeOn(double intake_speed) {
-    this.intake = (Intake) RobotContainer.getSubSys("INTAKE");
+    this.intake = (Intake) RobotContainer.getSubsystem("INTAKE");
     this.intake_speed = intake_speed;
   }
 

@@ -13,9 +13,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PneumaticsControlModule;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -26,13 +23,14 @@ import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
+import frc.robot.commands.utility.DummyShooterCmd;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.RobotSpecs;
-import frc.robot.Constants.CAN;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -47,8 +45,7 @@ public class RobotContainer implements BlinkyLightUser {
 
   // enum for bindings add when needed
   public enum Bindings {
-    DriveTest, Shooter_test
-    Comptition
+    DriveTest, Shooter_test, Comptition
   }
 
   // The robot's subsystems and commands are defined here...
@@ -56,28 +53,41 @@ public class RobotContainer implements BlinkyLightUser {
   public final RobotSpecs robotSpecs;
 
   // Subsystems use locally or in RC() reference
-  //public final PneumaticsControl pneumatics;
+  // public final PneumaticsControl pneumatics;
   public final HID_Xbox_Subsystem dc;
   public final Limelight_Subsystem limelight;
   public final Sensors_Subsystem sensors;
   public final SwerveDrivetrain drivetrain;
-  //public final BlinkyLights lights;
-  //public final Intake intake;
-  //public final Shooter shooter;
+  // public final BlinkyLights lights;
+  // public final Intake intake;
+  // public final Shooter shooter;
 
   // singleton accessor for robot public sub-systems
+  //TODO make this @Deprecated
   public static RobotContainer RC() {
     return rc;
   }
 
-  public static Subsystem getSubSys(String name) {
-    return rc.robotSpecs.mySubsystemConfig.getSubsystem(name);
+  // The following methods are unchecked, but the SystemConfig class does
+  // check the types. 
+  // Use the string name when there are multiple instance of the subsystem
+  @SuppressWarnings("unchecked")
+  public static <T> T getSubsystem(String name) {
+    return (T) rc.robotSpecs.mySubsystemConfig.getSubsystem(name);
   }
-  
-  public static <T> Object getSubSys(Class<? extends Subsystem> clz) {
-    return rc.robotSpecs.mySubsystemConfig.getSubsystem(clz.getSimpleName().toUpperCase());
+
+  // Use this when there is only one instance of the Subsystem
+  @SuppressWarnings("unchecked")
+  public static <T extends Subsystem> T getSubsystem(Class<T> clz) {
+    return (T) rc.robotSpecs.mySubsystemConfig.getSubsystem(clz);
   }
-  
+
+  // Use this form when the RobotContainer object is NOT a Subsystem
+  @SuppressWarnings("unchecked")
+  public static <T> T getObject(String name) {
+    return (T) rc.robotSpecs.mySubsystemConfig.getObject(name);
+  }
+
   public static boolean hasSubsystem(Class<? extends Subsystem> clz) {
     return rc.robotSpecs.mySubsystemConfig.hasSubsystem(clz);
   }
@@ -90,15 +100,15 @@ public class RobotContainer implements BlinkyLightUser {
     RobotContainer.rc = this;
     robotSpecs = new RobotSpecs();
     robotSpecs.mySubsystemConfig.constructAll();
-    
+
     // Quiet some of the noise
     DriverStation.silenceJoystickConnectionWarning(true);
 
     // get subsystem vars as needed
-    drivetrain =(SwerveDrivetrain) getSubSys("DRIVETRAIN");
-    dc = (HID_Xbox_Subsystem) getSubSys("DC");
-    limelight = (Limelight_Subsystem) getSubSys("LIMELIGHT");
-    sensors = (Sensors_Subsystem) getSubSys("SENSORS");
+    drivetrain = (SwerveDrivetrain) getSubsystem("DRIVETRAIN");
+    dc = getSubsystem("DC");
+    limelight = getSubsystem(Limelight_Subsystem.class);
+    sensors = getSubsystem(Sensors_Subsystem.class);
 
     /* Set the commands below */
     configureBindings(Bindings.Shooter_test); // Change this to swich between bindings
@@ -117,9 +127,9 @@ public class RobotContainer implements BlinkyLightUser {
     return null;
   }
 
-  private void configureBindings(Bindings bindings) {
+  private
+   void configureBindings(Bindings bindings) {
     CommandXboxController driver = dc.Driver();
-    CommandXboxController operator = dc.Operator();
 
     switch (bindings) {
       case DriveTest:
@@ -139,23 +149,13 @@ public class RobotContainer implements BlinkyLightUser {
             AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(1.73, 5.38), new Rotation2d(0.0)),
                 new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
             new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
-
-        // driver.x().whileTrue(new Lights(BlinkyLights.GREEN));
-        // driver.leftBumper().whileTrue(new Lights(BlinkyLights.RED));
-        // driver.y().whileTrue(new Lights(BlinkyLights.WHITE));
-      
-      case Shooter_test:
-        if(shooter != null){
-          shooter.setDefaultCommand(new RPMShooter(operator, shooter));
-        }
-        driver.b().onTrue(new InstantCommand(() -> {shooter.cycleShootingMode();}));
-    }
-        // break; fall through since these are placeholders on CompBot
+        break;
 
       case Comptition:
         // TODO: replace Print/Dummy with real commands when known - ER
         driver.rightTrigger().whileTrue(new DummyShooterCmd());
         driver.leftTrigger().onTrue(new PrintCommand("PlaceholderCMD: Align with shooter"));
+        break;
 
       default:
         break;
@@ -172,16 +172,26 @@ public class RobotContainer implements BlinkyLightUser {
       case DriveTest:
       case Comptition:
         operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
-        
-        //TODO mentor pls check if right syntax!!
+
+        // TODO mentor pls check if right syntax!!
         operator.x().whileTrue(new PrintCommand("PlaceholderCMD: Intake Deploy"));
         operator.x().whileFalse(new PrintCommand("PlaceholderCMD: Intake Retract"));
 
-        //Drive team mentioned that they want climber buttons on switchboard but i need to find that syntax -ER
-        //WIP THESE BINDINGS ARE NOT AT ALL FINAL
+        // Drive team mentioned that they want climber buttons on switchboard but i need
+        // to find that syntax -ER
+        // WIP THESE BINDINGS ARE NOT AT ALL FINAL
         operator.povUp().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
         operator.povDown().onTrue(new PrintCommand("PlaceholderCMD: Climber Down"));
 
+        break;
+      case Shooter_test:
+        var shooter = getSubsystem(Shooter.class);
+        if (shooter != null) {
+          shooter.setDefaultCommand(new RPMShooter(operator));
+          operator.b().onTrue(new InstantCommand(() -> {
+            shooter.cycleShootingMode();
+          }));
+        }
         break;
     }
   }

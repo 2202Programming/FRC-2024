@@ -154,8 +154,8 @@ public class SwerveDrivetrain extends SubsystemBase {
   public final Field2d m_field = new Field2d();
 
   public SwerveDrivetrain() {
-    sensors = (Sensors_Subsystem) RobotContainer.getSubSys("SENSORS");
-    limelight =(Limelight_Subsystem) RobotContainer.getSubSys("LIMELIGHT");
+    sensors = RobotContainer.getSubsystem(Sensors_Subsystem.class);
+    limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
     watchdog = new VisionWatchdog(3.0);
 
     var MT = CANSparkMax.MotorType.kBrushless;
