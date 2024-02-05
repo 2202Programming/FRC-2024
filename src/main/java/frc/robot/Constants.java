@@ -148,14 +148,21 @@ public final class Constants {
     public static final int PCM1 = 2; //for rev
     public static final int PCM2 = 3; //for rev
 
+    // shooter CAN IDs -- MOTORS
     public static final int SHOOTER_L = 15; 
     public static final int SHOOTER_R = 16; 
+
+    // Intake CAN IDs -- MOTORS
+    public static final int INTAKE_R = 17;
+    public static final int INTAKE_L = 18;
 
     // drive train CANCoders
     public static final int DT_BL_CANCODER = 28;
     public static final int DT_BR_CANCODER = 31;
     public static final int DT_FR_CANCODER = 30;
-    public static final int DT_FL_CANCODER = 7;
+    /* TODO this is the value from the 2023 robot, leaving for testing purposes but
+    real value is 29 and needs to be changed eventually - ER */
+    public static final int DT_FL_CANCODER = 7; 
 
     // drive train drive / angle motors - sparkmax neo
     public static final int DT_FL_DRIVE = 20;
@@ -218,7 +225,7 @@ public final class Constants {
   // public static final class CAN{
   // /* 1/20/24
   // * CAN IDs:
-  // * Corner 3 Drive Motor BL: 22
+  // * Corner 3 Drive Motor BL: 22              
   // * Corner 3 Direction Motor BL: 23
   // * BL Encoder: 28
   // *
