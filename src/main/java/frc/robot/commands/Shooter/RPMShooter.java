@@ -32,17 +32,9 @@ public class RPMShooter extends Command {
   private double currentI = 0.0;
   private double currentD = 0.0;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-
   public RPMShooter(CommandXboxController controller) {
     m_shooter = RobotContainer.getSubsystem(Shooter.class);
     m_driverController = controller;
-
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_shooter);
   }
 
@@ -103,12 +95,13 @@ public class RPMShooter extends Command {
         if ((lastRequestedLeftShooterRPM != requestedLeftShooterRPM) || (lastRequestedRightShooterRPM != requestedRightShooterRPM)) {
           m_shooter.setShooterRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
         }
+        /*this SHOULD set both motors at the same time
+        *TODO: test this*/
         if ((requestedBothShooterRPM > 0)) {
           if ((requestedBothShooterRPM != requestedLeftShooterRPM) && (requestedBothShooterRPM != requestedRightShooterRPM)) {
             m_shooter.setShooterRPM(requestedBothShooterRPM, requestedBothShooterRPM);          
           } else {
             m_shooter.setShooterRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
-            
         }
       }
         break;

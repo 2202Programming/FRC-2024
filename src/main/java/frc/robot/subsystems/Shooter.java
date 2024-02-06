@@ -28,19 +28,26 @@ public class Shooter extends SubsystemBase {
       return name;
    }
   }
-    //Instantiations 
+  // Instantiations 
   final CANSparkMax shooterMotorLeft = new CANSparkMax(CAN.SHOOTER_L, CANSparkMax.MotorType.kBrushless);
   final CANSparkMax shooterMotorRight = new CANSparkMax(CAN.SHOOTER_R, CANSparkMax.MotorType.kBrushless);
+
   private SparkPIDController shooterLeftPidController;
   private SparkPIDController shooterRightPidController;
+
   private RelativeEncoder shooterLeftEncoder;
   private RelativeEncoder shooterRightEncoder;
+
   private ShooterMode currentShootingMode;
+
   private double currentLeftMotorOutput;
   private double currentRightMotorOutput;
+
   private double currentLeftMotorRPM;
   private double currentRightMotorRPM;
+
   private double gearboxRatio = 1.0;
+  
   private double kP = 0.001;
   private double kI = 0.0;
   private double kD = 0.0;
@@ -48,12 +55,14 @@ public class Shooter extends SubsystemBase {
   public Shooter() {
     motor_config(shooterMotorLeft, true);
     motor_config(shooterMotorRight, false);
+
     currentLeftMotorOutput = shooterMotorLeft.get();
     shooterLeftPidController = shooterMotorLeft.getPIDController();
     shooterLeftEncoder = shooterMotorLeft.getEncoder();
     System.out.println("Left Encoder Scaling Factor ="+shooterLeftEncoder.getVelocityConversionFactor());
     System.out.println("Left Encoder CPR ="+shooterLeftEncoder.getCountsPerRevolution());
 
+    currentRightMotorOutput = shooterMotorRight.get();
     shooterRightPidController = shooterMotorRight.getPIDController();
     shooterRightEncoder = shooterMotorRight.getEncoder();
     System.out.println("Right Encoder Scaling Factor ="+shooterRightEncoder.getVelocityConversionFactor());
@@ -77,13 +86,15 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    //This method will be called once per scheduler run
     currentLeftMotorRPM = shooterLeftEncoder.getVelocity();
     currentRightMotorRPM = shooterRightEncoder.getVelocity();
+
     SmartDashboard.putString("Current Shoooting Mode",currentShootingMode.toString());
-    SmartDashboard.putNumber("Current Shooter RPM", currentLeftMotorRPM / gearboxRatio);
+    SmartDashboard.putNumber("Current Shooter RPM", currentLeftMotorRPM / gearboxRatio); //should be 1.0
     SmartDashboard.putNumber("Current Left Motor RPM", currentLeftMotorRPM);
     SmartDashboard.putNumber("Current Right Motor RPM", currentRightMotorRPM);
+    //these currently are not working
     SmartDashboard.putNumber("Left Motor Percent", getLeftMotorOutput());
     SmartDashboard.putNumber("Right Motor Percent", getRightMotorOutput());
   }
@@ -119,7 +130,7 @@ public class Shooter extends SubsystemBase {
   public void setShooterRPM(double shooterLeftRPM, double shooterRightRPM){
     shooterLeftPidController.setReference(shooterLeftRPM*gearboxRatio, ControlType.kVelocity);
     shooterRightPidController.setReference(shooterRightRPM*gearboxRatio, ControlType.kVelocity);
-    System.out.println("Motor goals changed, left="+shooterLeftRPM*gearboxRatio+", right="+shooterRightRPM*gearboxRatio);
+    System.out.println("Motor goals changed, left="+shooterLeftRPM*gearboxRatio+", right="+shooterRightRPM*gearboxRatio); //just debug code, not needed
   }
 
   public double getLeftMotorOutput(){
@@ -132,10 +143,11 @@ public class Shooter extends SubsystemBase {
 
   public double getMotorRPM(){
     return currentLeftMotorRPM;
+    //here for MotorTriggerOrDash, don't know why we aren't just using getLeftMotorOutput
   }
-
+  //PID getters/setters
   public double getShooterRPM(){
-    return currentLeftMotorRPM / gearboxRatio;
+    return currentLeftMotorRPM / gearboxRatio; //should be 1.0
   }
 
   public void setP(double newP){
