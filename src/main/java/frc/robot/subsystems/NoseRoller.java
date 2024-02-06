@@ -14,6 +14,8 @@ import frc.robot.Constants.CAN;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.Constants.DigitalIO;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.utility.WatcherCmd;
 
@@ -23,6 +25,7 @@ public class NoseRoller extends SubsystemBase {
     public CANSparkMax noseFireMotor = new CANSparkMax(CAN.NOSE_MOTOR_FIRE, CANSparkMax.MotorType.kBrushless);
     final PIDFController hwVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0); // inner (hw/vel)
     final PIDController posPID = new PIDController(1.0,0.0, 0.0);
+    final DigitalInput lightgate = new DigitalInput(DigitalIO.RollerLightGate);
     public double initialPosition; //Should be our "0" where the nose roller's rollers are in the poition to take the piece
     public double noseMaxSpeed; //RPM
   
@@ -32,8 +35,11 @@ public class NoseRoller extends SubsystemBase {
 
   }
 
-  public void setMotorsToStart(double speed) {
+  public void setRollerSpeed(double speed) {
     noseFireMotor.set(speed);
+  }
+  public boolean rollerHasNote(){
+    return lightgate.get();
   }
 
   public double getNosePosition() {

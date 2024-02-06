@@ -231,10 +231,16 @@ public final class Constants {
   public final class DigitalIO {
     public static final int IntakeLightGate = 1;
     public static final int TransferLightGate = 2;
+    public static final int RollerLightGate = 3; //placeholder
   }
 
   public static final class Intake_Constants {
     public static double IntakeMotorDefault = 0.01; // placeholder
+  }
+  public static final class Roller_Constants {
+    public static double RollerSpeedDefault = 0.01; //placeholder
+    public static double RollerPosShoot = 20; //placeholder
+    public static double RollerPosDefault = 5; //placeholder
   }
 
   /*-------NT------- */

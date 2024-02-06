@@ -8,6 +8,7 @@ package frc.robot.commands.NoseRoller;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.Roller_Constants;
 import frc.robot.subsystems.NoseRoller;
 /**
 * Automate as much as possible
@@ -24,13 +25,13 @@ import frc.robot.subsystems.NoseRoller;
 public class NoseRollerToggle extends Command {
 /** Creates a new NoseRoller. */
 public final NoseRoller noseRoller;
-double roller_speed;
-double original_pos;
-double pos_cmd;
+// double roller_speed;
+// double pos_cmd;
+
 
 
 public NoseRollerToggle(double pos_cmd) {
-this.pos_cmd = pos_cmd;
+// this.pos_cmd = pos_cmd;
 this.noseRoller = RobotContainer.getSubsystem(NoseRoller.class);
 // Use addRequirements() here to declare subsystem dependencies.
 }
@@ -39,28 +40,36 @@ this.noseRoller = RobotContainer.getSubsystem(NoseRoller.class);
 // Called when the command is initially scheduled.
 @Override
 public void initialize() {
-original_pos = noseRoller.getNosePosition();
+    noseRoller.setNosePosition(Roller_Constants.RollerPosShoot);
 }
 
 
 // Called every time the scheduler runs while the command is scheduled.
 @Override
 public void execute() {
-if(noseRoller.getNosePosition() == pos_cmd){
-noseRoller.setMotorsToStart(roller_speed);
+    if(noseRoller.getNosePosition() == Roller_Constants.RollerPosShoot){
+    noseRoller.setRollerSpeed(Roller_Constants.RollerSpeedDefault);
 }
 }
 
 
 // Called once the command ends or is interrupted.
 @Override
-public void end(boolean interrupted) {}
+public void end(boolean interrupted) {
+    if(interrupted){
+        noseRoller.setRollerSpeed(0.0);
+        noseRoller.setNosePosition(Roller_Constants.RollerPosDefault);
+    }
+}
 
 
 // Returns true when the command should end.
 @Override
 public boolean isFinished() {
-return false;
+    if(!noseRoller.rollerHasNote()){
+        return true;
+    }
+    return false;
 }
 }
 

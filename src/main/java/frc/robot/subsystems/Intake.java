@@ -99,19 +99,4 @@ public class Intake extends SubsystemBase {
   public boolean angleAtSetpoint() {
     return angle_servo.atSetpoint();  //are we there yet?
   }
-
-  /************************************************
-   * 
-   * TODO: Put the light usage in the Command, not subsystem
-   * 
-  // Returns the state of the Intake Arm
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    if (lightgate.get()) {
-      new Lights(BlinkyLights.GREEN);
-    }
-    new Lights(BlinkyLights.RED);
-  }
-  ****************************************************/
 }
