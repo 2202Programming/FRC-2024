@@ -104,7 +104,6 @@ public final class Constants {
     
     // TODO: confirm this when start working on 2024 bot Beta
     public static final ChassisInversionSpecs comp2024BotBetaInversionSpecs = new ChassisInversionSpecs(
-      
         new ModuleInversionSpecs(true, true, false), // FR
         new ModuleInversionSpecs(false, true, false), // FL
         new ModuleInversionSpecs(true, true, false), // BR
@@ -158,9 +157,16 @@ public final class Constants {
    * 
    */
   public static final class CAN {
+    public static final int ROBORIO = 0;  
     public static final int PDP = 1; //for rev
     public static final int PCM1 = 2; //for rev
     public static final int PCM2 = 3; //for rev
+
+    //lights
+    public static final int CANDLE1 = 3;   //TODO: fix collision with PCM2
+    public static final int CANDLE2 = 4;
+    
+    //Warning: CAN 7 is used for CANCoder on swerveBot aka Tim 2.0 
 
     // shooter CAN IDs -- MOTORS
     public static final int SHOOTER_L = 15; 
@@ -170,25 +176,25 @@ public final class Constants {
     public static final int INTAKE_R = 17;
     public static final int INTAKE_L = 18;
 
-    // drive train CANCoders
-    public static final int DT_BL_CANCODER = 28;
-    public static final int DT_BR_CANCODER = 31;
-    public static final int DT_FR_CANCODER = 30;
-    /* TODO this is the value from the 2023 robot, leaving for testing purposes but
-    real value is 29 and needs to be changed eventually - ER */
-    public static final int DT_FL_CANCODER = 7; 
+    // Drive Train IDs 20 - 31
+    // drive train CAN addresses are set above with CANModuleConfig to support different robots
+    // See above CANModuleConfig definitions.
+    //           
+    // Typically:  Drv  Ang CC  Corner
+    //             --   --- --  ----
+    //             20   21  31  BR
+    //             22   23  28  BL
+    //             24   25  29  FL
+    //             26   27  30  FR
+    //
+    // TODO: Triple check these numbers with controller client softare, CTRE and REV
+    //       as the numbers differ from comments at end of this file and there seems
+    //       to be an inconsistent ordering with the CANCoders.
+    //
+    // There are exceptions, check for your ROBOT.
 
-    // drive train drive / angle motors - sparkmax neo
-    public static final int DT_FL_DRIVE = 20;
-    public static final int DT_FL_ANGLE = 21;
-    public static final int DT_BL_DRIVE = 22;
-    public static final int DT_BL_ANGLE = 23;
-    public static final int DT_BR_DRIVE = 24;
-    public static final int DT_BR_ANGLE = 25;
-    public static final int DT_FR_DRIVE = 26;
-    public static final int DT_FR_ANGLE = 27;
-
-    // PLACEHOLDER - use 50 .. 59, max CAN addr is 64
+    // PLACEHOLDERS - use 50 .. 59, max CAN addr is 64
+    // Please move to correct location when ID is assigned
     public static final int ARM_RIGHT_Motor = 50; // placeholder
     public static final int ARM_LEFT_Motor = 51; // placeholder
 

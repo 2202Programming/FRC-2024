@@ -34,9 +34,9 @@ public class FieldCentricDrive extends Command {
   final SlewRateLimiter yspeedLimiter = new SlewRateLimiter(3);
   final SlewRateLimiter rotLimiter = new SlewRateLimiter(3);
   
-  public FieldCentricDrive(SwerveDrivetrain drivetrain) {
-    this.dc = RobotContainer.RC().dc;       //driverControls
-    this.drivetrain = drivetrain;
+  public FieldCentricDrive() {
+    this.dc = RobotContainer.getSubsystem("DC");       //driverControls
+    this.drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
     addRequirements(drivetrain);
     this.kinematics = drivetrain.getKinematics();
   }

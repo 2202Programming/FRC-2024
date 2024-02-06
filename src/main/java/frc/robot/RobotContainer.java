@@ -26,8 +26,6 @@ import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.utility.DummyShooterCmd;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Sensors.Limelight_Subsystem;
-import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.RobotSpecs;
@@ -50,20 +48,12 @@ public class RobotContainer implements BlinkyLightUser {
 
   // The robot's subsystems and commands are defined here...
   static RobotContainer rc;
-  public final RobotSpecs robotSpecs;
-
-  // Subsystems use locally or in RC() reference
-  // public final PneumaticsControl pneumatics;
-  public final HID_Xbox_Subsystem dc;
-  public final Limelight_Subsystem limelight;
-  public final Sensors_Subsystem sensors;
-  public final SwerveDrivetrain drivetrain;
-  // public final BlinkyLights lights;
-  // public final Intake intake;
-  // public final Shooter shooter;
+  final RobotSpecs robotSpecs;
+  final HID_Xbox_Subsystem dc;
+  final SwerveDrivetrain drivetrain;
 
   // singleton accessor for robot public sub-systems
-  //TODO make this @Deprecated
+  @Deprecated
   public static RobotContainer RC() {
     return rc;
   }
@@ -92,6 +82,11 @@ public class RobotContainer implements BlinkyLightUser {
     return rc.robotSpecs.mySubsystemConfig.hasSubsystem(clz);
   }
 
+  public static RobotSpecs getRobotSpecs() {
+    return rc.robotSpecs;
+  }
+
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -105,15 +100,13 @@ public class RobotContainer implements BlinkyLightUser {
     DriverStation.silenceJoystickConnectionWarning(true);
 
     // get subsystem vars as needed
-    drivetrain = (SwerveDrivetrain) getSubsystem("DRIVETRAIN");
+    drivetrain = getSubsystem(SwerveDrivetrain.class);
     dc = getSubsystem("DC");
-    limelight = getSubsystem(Limelight_Subsystem.class);
-    sensors = getSubsystem(Sensors_Subsystem.class);
 
     /* Set the commands below */
     configureBindings(Bindings.Shooter_test); // Change this to swich between bindings
     if (drivetrain != null) {
-      drivetrain.setDefaultCommand(new FieldCentricDrive(drivetrain));
+      drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
   }
 

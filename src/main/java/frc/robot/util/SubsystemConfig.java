@@ -21,11 +21,18 @@ public class SubsystemConfig {
         Class<T> m_Class;
         Object m_obj = null;
         Supplier<Object> m_factory = null;
+        String m_alias = null;
 
         // container for Subsystem Class and instance object
         SubsystemDefinition(Class<T> clz) {
             m_Class = clz;
             m_obj = null;
+        }
+
+        SubsystemDefinition(Class<T> clz, String alias) {
+            m_Class = clz;
+            m_obj = null;
+            m_alias = alias;
         }
 
         @SuppressWarnings("unchecked")
@@ -46,6 +53,10 @@ public class SubsystemConfig {
         void construct() {
             // already created
             if (m_obj != null)
+                return;
+            
+            // alias fixed in constructAll()
+            if (m_alias != null) 
                 return;
 
             // have a Factory supplied lambda
@@ -77,7 +88,24 @@ public class SubsystemConfig {
     // map all the robot subsystem by a name
     LinkedHashMap<String, SubsystemDefinition<?>> m_robot_parts = new LinkedHashMap<>();
 
-    // only one instance of a class, use UPPER case name of class for instance
+    /*
+     * An alias gives an existing Object another name.
+     * 
+     * This is useful for cases where a command can work with different types of Subsystems.
+     * For example, different drivetrains can support pathing or rotation resets, but
+     * should not be tied to a specif class.  DRIVETRAINs may fit this use case.
+     */
+
+    /*
+     * creates an alias name for the given subsystem
+     */
+    public <T> SubsystemConfig addAlias(Class<T> clz, String alias) {
+        String name = clz.getSimpleName();
+        var ssd = new SubsystemDefinition<T>(clz, alias);
+        put(name, ssd);
+        return this;
+    }
+
     public <T> SubsystemConfig add(Class<T> clz) {
         String name = clz.getSimpleName();
         var ssd = new SubsystemDefinition<T>(clz);
@@ -130,8 +158,9 @@ public class SubsystemConfig {
     public <T> T getObjectOrNull(String name) {
        var ssd = m_robot_parts.get(name); 
         return (T) ssd.m_obj;
+    
     }
-  // Only subsystems will be returned
+    // Only subsystems will be returned
     @SuppressWarnings("unchecked")
     public <T extends Subsystem> T getSubsystemOrNull(Class<? extends Subsystem> clz) {
         // Not sure how to get rid of this warning
@@ -170,6 +199,12 @@ public class SubsystemConfig {
             System.out.println("Constructing " + entry.getKey() + " as instance of " +
                     entry.getValue().m_Class.getSimpleName());
             entry.getValue().construct();
+
+            //handle alias which must be defined After the instance is created.
+            var ssd = entry.getValue();
+            if (ssd.m_alias != null) {
+                ssd.m_obj = get(ssd.m_Class.getSimpleName()).m_obj;
+            }
         }
     }
 

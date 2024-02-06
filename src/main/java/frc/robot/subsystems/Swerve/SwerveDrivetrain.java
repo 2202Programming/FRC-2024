@@ -46,11 +46,11 @@ public class SwerveDrivetrain extends SubsystemBase {
   static final double Bearing_Tol = Math.toRadians(0.5); // limit bearing
 
   // cc is the chassis config for all our pathing math
-  private final ChassisConfig cc = RobotContainer.RC().robotSpecs.getChassisConfig(); // chassis config
-  private final WheelOffsets wc = RobotContainer.RC().robotSpecs.getWheelOffset(); // wc = wheel config
-  private final ChassisInversionSpecs is = RobotContainer.RC().robotSpecs.getChassisInversionSpecs(); // is = inversion
+  private final ChassisConfig cc = RobotContainer.getRobotSpecs().getChassisConfig(); // chassis config
+  private final WheelOffsets wc = RobotContainer.getRobotSpecs().getWheelOffset(); // wc = wheel config
+  private final ChassisInversionSpecs is = RobotContainer.getRobotSpecs().getChassisInversionSpecs(); // is = inversion
                                                                                                       // specs
-  private final CANConfig cac = RobotContainer.RC().robotSpecs.getCANConfig();
+  private final CANConfig cac = RobotContainer.getRobotSpecs().getCANConfig();
   /**
    *
    * Modules are in the order of - Front Left, Front Right, Back Left, Back Right

@@ -25,6 +25,7 @@ import frc.robot.Constants.CAN;
 import frc.robot.Constants.NTStrings;
 import frc.robot.RobotContainer;
 import frc.robot.util.ModMath;
+import frc.robot.util.RobotSpecs;
 
 public class Sensors_Subsystem extends SubsystemBase {
   public enum YawSensor {
@@ -90,10 +91,11 @@ public class Sensors_Subsystem extends SubsystemBase {
   }
 
   // CANcoders - monitor dt angles
-  CANcoder rot_encoder_bl = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().BL_MODULE.CANCODER_ID));
-  CANcoder rot_encoder_br = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().BR_MODULE.CANCODER_ID));
-  CANcoder rot_encoder_fl = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().FL_MODULE.CANCODER_ID));
-  CANcoder rot_encoder_fr = init(new CANcoder(RobotContainer.RC().robotSpecs.getCANConfig().FR_MODULE.CANCODER_ID));
+  RobotSpecs rspecs = RobotContainer.getRobotSpecs();
+  CANcoder rot_encoder_bl = init(new CANcoder(rspecs.getCANConfig().BL_MODULE.CANCODER_ID));
+  CANcoder rot_encoder_br = init(new CANcoder(rspecs.getCANConfig().BR_MODULE.CANCODER_ID));
+  CANcoder rot_encoder_fl = init(new CANcoder(rspecs.getCANConfig().FL_MODULE.CANCODER_ID));
+  CANcoder rot_encoder_fr = init(new CANcoder(rspecs.getCANConfig().FR_MODULE.CANCODER_ID));
 
   // CAN monitoring
   CANStatus m_canStatus;
