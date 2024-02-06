@@ -25,7 +25,7 @@ import frc.robot.util.SubsystemConfig;
 public class Configs {
 
   // Subsystems and other hardware on 2024 Robot
-  public static final SubsystemConfig comp2024BotSubsystemConfig = new SubsystemConfig()
+  public static final SubsystemConfig comp2024AlphaBotSubsystemConfig = new SubsystemConfig()
       // deferred construction via Supplier<Object> lambda
       .add(PowerDistribution.class, "PDP", () -> {
         var pdp = new PowerDistribution(CAN.PDP, ModuleType.kRev);
@@ -51,22 +51,51 @@ public class Configs {
       .add(Shooter.class)
       .add(Transfer.class);
 
+   public static final SubsystemConfig comp2024BetaBotSubsystemConfig = new SubsystemConfig()
+      // deferred construction via Supplier<Object> lambda
+      .add(PowerDistribution.class, "PDP", () -> {
+        var pdp = new PowerDistribution(CAN.PDP, ModuleType.kRev);
+        pdp.clearStickyFaults();
+        return pdp;
+      })
+      .add(BlinkyLights.class, "LIGHTS", () -> {
+        return new BlinkyLights();
+      })
+      .add(HID_Xbox_Subsystem.class, "DC", () -> {
+        return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
+      })
+      .add(Sensors_Subsystem.class)
+      .add(Limelight_Subsystem.class)
+      .add(SwerveDrivetrain.class, "DRIVETRAIN") // must be after LL and Sensors
+      .add(Intake.class)
+      .add(Shooter.class)
+      .add(Transfer.class);
+      //TODO: ADD CLIMBER
+      
   // Subsystems and hardware on Tim 2.0
   public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig()
       .add(Sensors_Subsystem.class)
       .add(Limelight_Subsystem.class)
-      .add(SwerveDrivetrain.class, "DRIVETRAIN");
-
+      .add(SwerveDrivetrain.class, "DRIVETRAIN")
+      .add(HID_Xbox_Subsystem.class, "DC", () -> {
+        return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
+      });
+    
   // Chad's subsystems and objects
   public static final SubsystemConfig chadBotSubsystemConfig = new SubsystemConfig()
       .add(Sensors_Subsystem.class)
       .add(Limelight_Subsystem.class)
-      .add(SwerveDrivetrain.class, "DRIVETRAIN");
-
+      .add(SwerveDrivetrain.class, "DRIVETRAIN")
+      .add(HID_Xbox_Subsystem.class, "DC", () -> {
+        return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
+      });
   public static final SubsystemConfig doofBotSubsystemConfig = new SubsystemConfig()
       .add(Sensors_Subsystem.class)
       .add(Limelight_Subsystem.class)
-      .add(SwerveDrivetrain.class, "DRIVETRAIN");
+      .add(SwerveDrivetrain.class, "DRIVETRAIN")
+      .add(HID_Xbox_Subsystem.class, "DC", () -> {
+        return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
+      });
 
   public static final SubsystemConfig botOnBoardSystemConfig = new SubsystemConfig()
   // .add(null) useful stuff for bot on boards

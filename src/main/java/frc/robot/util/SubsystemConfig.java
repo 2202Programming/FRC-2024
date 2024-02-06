@@ -124,7 +124,21 @@ public class SubsystemConfig {
         var ssd = get(name);
         return (T) ssd.m_obj;
     }
-
+    // Any robot object will be returned, including Subsystems. 
+    // Class name must be unique to the configuration.
+    @SuppressWarnings("unchecked")
+    public <T> T getObjectOrNull(String name) {
+       var ssd = m_robot_parts.get(name); 
+        return (T) ssd.m_obj;
+    }
+  // Only subsystems will be returned
+    @SuppressWarnings("unchecked")
+    public <T extends Subsystem> T getSubsystemOrNull(Class<? extends Subsystem> clz) {
+        // Not sure how to get rid of this warning
+        String name = clz.getSimpleName();
+        var ssd = m_robot_parts.get(name); 
+        return (ssd.m_obj instanceof Subsystem) ? (T) ssd.m_obj : null;
+    }
     public boolean has(String name) {
         return m_robot_parts.containsKey(name);
     }

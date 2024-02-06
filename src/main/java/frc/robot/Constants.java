@@ -80,22 +80,36 @@ public final class Constants {
         12.8, // confirmed with vince
         8.14); // confirmed with vince
 
-    // TODO: For 20424 CompetitionBot ***NOT YET CONFIRMED
-    public static final WheelOffsets comp2024BotOffsets = new WheelOffsets(43.85746387, 24.096825 , -65.21481, -43.066333125);
-    public static final ChassisConfig comp2024BotChassisConfig = new ChassisConfig(
+    // TODO: For 2024 CompetitionBotAlpha ***NOT YET CONFIRMED
+    public static final WheelOffsets comp2024AlphaBotOffsets = new WheelOffsets(43.85746387, 24.096825 , -65.21481, -43.066333125);
+    public static final ChassisConfig comp2024AlphaBotChassisConfig = new ChassisConfig(
         MperFT * (23.5 / 12.0) / 2.0,
         MperFT * (19.5 / 12.0) / 2.0,
         0.999, // scale [] <= 1.0
         MperFT * (4.0 / 12.0),
         21.428,
         6.75);
-
-    // TODO: confirm this when start working on 2024 bot
-    public static final ChassisInversionSpecs comp2024BotInversionSpecs = new ChassisInversionSpecs(
+      // TODO: For 2024 CompetitionBotBeta ***NOT YET CONFIRMED
+    public static final WheelOffsets comp2024BetaBotOffsets = comp2024AlphaBotOffsets;
+    public static final ChassisConfig comp2024BotBetaChassisConfig = comp2024AlphaBotChassisConfig;
+    
+    // TODO: confirm this when start working on 2024 bot Alpha
+    public static final ChassisInversionSpecs comp2024BotAlphaInversionSpecs = new ChassisInversionSpecs(
+      
         new ModuleInversionSpecs(true, true, false), // FR
         new ModuleInversionSpecs(false, true, false), // FL
         new ModuleInversionSpecs(true, true, false), // BR
         new ModuleInversionSpecs(false, true, false)); // BL
+
+    
+    // TODO: confirm this when start working on 2024 bot Beta
+    public static final ChassisInversionSpecs comp2024BotBetaInversionSpecs = new ChassisInversionSpecs(
+      
+        new ModuleInversionSpecs(true, true, false), // FR
+        new ModuleInversionSpecs(false, true, false), // FL
+        new ModuleInversionSpecs(true, true, false), // BR
+        new ModuleInversionSpecs(false, true, false)); // BL
+
 
     public static final ChassisInversionSpecs swerveBotChassisInversionSpecs = new ChassisInversionSpecs(
         new ModuleInversionSpecs(true, false, false), // FR
