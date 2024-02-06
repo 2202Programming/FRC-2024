@@ -38,9 +38,6 @@ public class Configs {
       .add(PneumaticsControlModule.class, "PCM1", () -> {
         return new PneumaticsControlModule(CAN.PCM1);
       })
-      .add(PneumaticsControlModule.class, "PCM2", () -> {
-        return new PneumaticsControlModule(CAN.PCM2);
-      })
       .add(HID_Xbox_Subsystem.class, "DC", () -> {
         return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
       })
@@ -105,5 +102,4 @@ public class Configs {
   public static final SubsystemConfig botOnBoardSystemConfig = new SubsystemConfig()
   // .add(null) useful stuff for bot on boards
   ;
-
 }
