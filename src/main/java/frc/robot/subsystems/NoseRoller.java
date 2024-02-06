@@ -11,30 +11,37 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
+import frc.robot.util.NeoServo;
+import frc.robot.util.PIDFController;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.utility.WatcherCmd;
 
 public class NoseRoller extends SubsystemBase {
   /** Creates a new NoseRoller. */
-  public CANSparkMax noseAngleMotor = new CANSparkMax(CAN.NOSE_MOTOR_ANGLE, CANSparkMax.MotorType.kBrushless);
-  public CANSparkMax noseFireMotor = new CANSparkMax(CAN.NOSE_MOTOR_FIRE, CANSparkMax.MotorType.kBrushless);
-  public double initialPosition; // Should be our "0" where the nose roller's rollers are in the poition to take
-                                 // the piece
-  public double noseMaxSpeed; // RPM
-
+    final NeoServo noseAngleMotor;
+    public CANSparkMax noseFireMotor = new CANSparkMax(CAN.NOSE_MOTOR_FIRE, CANSparkMax.MotorType.kBrushless);
+    final PIDFController hwVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0); // inner (hw/vel)
+    final PIDController posPID = new PIDController(1.0,0.0, 0.0);
+    public double initialPosition; //Should be our "0" where the nose roller's rollers are in the poition to take the piece
+    public double noseMaxSpeed; //RPM
+  
+   
   public NoseRoller() {
+    noseAngleMotor = new NeoServo(CAN.NOSE_MOTOR_ANGLE, posPID, hwVelPID, false);
 
   }
 
-  public void setMotorsToStart() {
-
+  public void setMotorsToStart(double speed) {
+    noseFireMotor.set(speed);
   }
 
   public double getNosePosition() {
-    return 0.0;
+    return noseAngleMotor.getPosition();
   }
 
   public void setNosePosition(double pos) {
-
+    noseAngleMotor.setSetpoint(pos);
   }
 
   public void sneeze() {

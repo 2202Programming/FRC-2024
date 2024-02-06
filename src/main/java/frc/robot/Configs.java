@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import frc.robot.Constants.CAN;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.NoseRoller;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
@@ -69,8 +70,7 @@ public class Configs {
       .add(Intake.class)
       .add(Shooter.class)
       .add(Transfer.class)
-      //add(Climber.class)
-      ;
+      .add(NoseRoller.class);
 
   // Subsystems and hardware on Tim 2.0
   public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig()
