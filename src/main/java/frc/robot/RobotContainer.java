@@ -66,10 +66,17 @@ public class RobotContainer implements BlinkyLightUser {
     return (T) rc.robotSpecs.mySubsystemConfig.getSubsystem(name);
   }
 
-  // Use this when there is only one instance of the Subsystem
+  // Use this when there is only one instance of the Subsystem - preferred
   @SuppressWarnings("unchecked")
   public static <T extends Subsystem> T getSubsystem(Class<T> clz) {
     return (T) rc.robotSpecs.mySubsystemConfig.getSubsystem(clz);
+  }
+
+  // Use this when there is only one instance of the Subsystem and can deal with nulls
+  // in the context. It bypasses NPE checks. Know what you are doing.
+  @SuppressWarnings("unchecked")
+  public static <T extends Subsystem> T getSubsystemOrNull(Class<T> clz) {
+    return (T) rc.robotSpecs.mySubsystemConfig.getObjectOrNull(clz.getSimpleName());
   }
 
   // Use this form when the RobotContainer object is NOT a Subsystem

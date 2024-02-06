@@ -157,7 +157,7 @@ public class SubsystemConfig {
     @SuppressWarnings("unchecked")
     public <T> T getObjectOrNull(String name) {
        var ssd = m_robot_parts.get(name); 
-        return (T) ssd.m_obj;
+        return (ssd != null) ? (T) ssd.m_obj : null;
     
     }
     // Only subsystems will be returned

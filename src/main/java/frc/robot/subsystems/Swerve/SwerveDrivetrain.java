@@ -155,7 +155,7 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   public SwerveDrivetrain() {
     sensors = RobotContainer.getSubsystem(Sensors_Subsystem.class);
-    limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
+    limelight = RobotContainer.getSubsystemOrNull(Limelight_Subsystem.class);  //we can deal with no LL
     watchdog = new VisionWatchdog(3.0);
 
     var MT = CANSparkMax.MotorType.kBrushless;
