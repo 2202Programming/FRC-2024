@@ -71,7 +71,7 @@ public class Configs {
       .add(Shooter.class)
       .add(Transfer.class);
       //TODO: ADD CLIMBER
-      
+
   // Subsystems and hardware on Tim 2.0
   public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig()
       .add(Sensors_Subsystem.class)
@@ -85,6 +85,10 @@ public class Configs {
   public static final SubsystemConfig chadBotSubsystemConfig = new SubsystemConfig()
       .add(Sensors_Subsystem.class)
       .add(Limelight_Subsystem.class)
+      .add(Intake.class)
+      .add(Shooter.class)
+      .add(Transfer.class)
+      // Check if there is a class for climber
       .add(SwerveDrivetrain.class, "DRIVETRAIN")
       .add(HID_Xbox_Subsystem.class, "DC", () -> {
         return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
@@ -92,6 +96,7 @@ public class Configs {
   public static final SubsystemConfig doofBotSubsystemConfig = new SubsystemConfig()
       .add(Sensors_Subsystem.class)
       .add(Limelight_Subsystem.class)
+      .add(Intake.class)
       .add(SwerveDrivetrain.class, "DRIVETRAIN")
       .add(HID_Xbox_Subsystem.class, "DC", () -> {
         return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
