@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import frc.robot.Constants.CAN;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.PDB;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
@@ -48,6 +49,7 @@ public class Configs {
       //.add(Shooter.class)
       //.add(Transfer.class)
       //add(Climber.class)
+      .add(PDB.class)
       ;
 
    public static final SubsystemConfig comp2024BetaBotSubsystemConfig = new SubsystemConfig()
