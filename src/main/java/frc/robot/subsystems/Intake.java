@@ -114,7 +114,7 @@ class IntakeWatcherCmd extends WatcherCmd {
 
     @Override
     public String getTableName() {
-      return "Intake";
+      return Intake.this.getName();
     }
 
     public void ntcreate() {
