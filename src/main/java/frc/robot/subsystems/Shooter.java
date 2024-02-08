@@ -9,14 +9,13 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 
 public class Shooter extends SubsystemBase {
 
   public enum ShooterMode {
-    Trigger("Trigger"), Percent("Percent"), RPM("RPM");
+    Trigger("Trigger"), RPM("RPM");
 
     public final String name;
 
@@ -35,6 +34,7 @@ public class Shooter extends SubsystemBase {
   private SparkPIDController shooterLeftPidController;
   private SparkPIDController shooterRightPidController;
 
+  // says unused for some reason? used on lines 61 & 68
   private RelativeEncoder shooterLeftEncoder;
   private RelativeEncoder shooterRightEncoder;
 
@@ -44,9 +44,7 @@ public class Shooter extends SubsystemBase {
   private double currentRightMotorOutput;
 
   private double currentLeftMotorRPM;
-  private double currentRightMotorRPM;
-
-  private double gearboxRatio = 1.0;
+  //private double currentRightMotorRPM; <-- not used currently
   
   private double kP = 0.001;
   private double kI = 0.0;
@@ -59,15 +57,18 @@ public class Shooter extends SubsystemBase {
     currentLeftMotorOutput = shooterMotorLeft.get();
     shooterLeftPidController = shooterMotorLeft.getPIDController();
     shooterLeftEncoder = shooterMotorLeft.getEncoder();
-    System.out.println("Left Encoder Scaling Factor ="+shooterLeftEncoder.getVelocityConversionFactor());
-    System.out.println("Left Encoder CPR ="+shooterLeftEncoder.getCountsPerRevolution());
+    // just more debug code
+    /*System.out.println("Left Encoder Scaling Factor ="+shooterLeftEncoder.getVelocityConversionFactor());
+    System.out.println("Left Encoder CPR ="+shooterLeftEncoder.getCountsPerRevolution());*/
 
     currentRightMotorOutput = shooterMotorRight.get();
     shooterRightPidController = shooterMotorRight.getPIDController();
     shooterRightEncoder = shooterMotorRight.getEncoder();
-    System.out.println("Right Encoder Scaling Factor ="+shooterRightEncoder.getVelocityConversionFactor());
-    System.out.println("Right Encoder CPR ="+shooterRightEncoder.getCountsPerRevolution());
-    
+    // just more debug code
+    /*System.out.println("Right Encoder Scaling Factor ="+shooterRightEncoder.getVelocityConversionFactor());
+    * System.out.println("Right Encoder CPR ="+shooterRightEncoder.getCountsPerRevolution());*/
+    // look in PIDFController object to replace this
+    // work out FeedForward values for this
     shooterLeftPidController.setP(kP);
     shooterLeftPidController.setI(kI);
     shooterLeftPidController.setD(kD);
@@ -77,26 +78,12 @@ public class Shooter extends SubsystemBase {
     shooterRightPidController.setD(kD);
 
     currentShootingMode = ShooterMode.RPM;
-    SmartDashboard.putString("Current Shoooting Mode",currentShootingMode.toString());
-    SmartDashboard.putNumber("Current Shooter RPM",0.0);
-    SmartDashboard.putNumber("Current Left Motor RPM",0.0);
-    SmartDashboard.putNumber("Current Right Motor RPM",0.0);
   }
 
 
   @Override
   public void periodic() {
-    //This method will be called once per scheduler run
-    currentLeftMotorRPM = shooterLeftEncoder.getVelocity();
-    currentRightMotorRPM = shooterRightEncoder.getVelocity();
-
-    SmartDashboard.putString("Current Shoooting Mode",currentShootingMode.toString());
-    SmartDashboard.putNumber("Current Shooter RPM", currentLeftMotorRPM / gearboxRatio); //should be 1.0
-    SmartDashboard.putNumber("Current Left Motor RPM", currentLeftMotorRPM);
-    SmartDashboard.putNumber("Current Right Motor RPM", currentRightMotorRPM);
-    //these currently are not working
-    SmartDashboard.putNumber("Left Motor Percent", getLeftMotorOutput());
-    SmartDashboard.putNumber("Right Motor Percent", getRightMotorOutput());
+    return;
   }
 
   public void setShootingMode(ShooterMode mode){
@@ -105,10 +92,6 @@ public class Shooter extends SubsystemBase {
 
   public void cycleShootingMode() {
     if(currentShootingMode == ShooterMode.Trigger) {
-      currentShootingMode = ShooterMode.Percent;
-      return;
-    }
-    if(currentShootingMode == ShooterMode.Percent) { 
       currentShootingMode = ShooterMode.RPM;
       return;
     }
@@ -128,9 +111,10 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setShooterRPM(double shooterLeftRPM, double shooterRightRPM){
-    shooterLeftPidController.setReference(shooterLeftRPM*gearboxRatio, ControlType.kVelocity);
-    shooterRightPidController.setReference(shooterRightRPM*gearboxRatio, ControlType.kVelocity);
-    System.out.println("Motor goals changed, left="+shooterLeftRPM*gearboxRatio+", right="+shooterRightRPM*gearboxRatio); //just debug code, not needed
+    shooterLeftPidController.setReference(shooterLeftRPM, ControlType.kVelocity);
+    shooterRightPidController.setReference(shooterRightRPM, ControlType.kVelocity);
+    //more test code
+    //System.out.println("Motor goals changed, left="+shooterLeftRPM*gearboxRatio+", right="+shooterRightRPM*gearboxRatio); //just debug code, not needed
   }
 
   public double getLeftMotorOutput(){
@@ -147,7 +131,7 @@ public class Shooter extends SubsystemBase {
   }
   //PID getters/setters
   public double getShooterRPM(){
-    return currentLeftMotorRPM / gearboxRatio; //should be 1.0
+    return currentLeftMotorRPM; //should be 1.0
   }
 
   public void setP(double newP){

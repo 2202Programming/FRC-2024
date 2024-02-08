@@ -4,25 +4,37 @@
 
 package frc.robot.commands.Shooter;
 
+import com.revrobotics.RelativeEncoder;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Shooter;
 
-/** An example command that uses an example subsystem. */
 public class RPMShooter extends Command {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Shooter m_shooter;
   private final CommandXboxController m_driverController;
+
+  private double currentLeftMotorRPM;
+  private double currentRightMotorRPM;
+
+  private RelativeEncoder shooterLeftEncoder;
+  private RelativeEncoder shooterRightEncoder;
+
   private double requestedLeftShooterRPM;
   private double requestedRightShooterRPM;
   private double requestedBothShooterRPM;
-  private double requestedPercent;
+
   private boolean triggerMode = false;
   private double currentTriggerPercent;
+  
   private double lastRequestedLeftShooterRPM;
   private double lastRequestedRightShooterRPM;
+
+
+  private ShooterMode currentShootingMode;
 
   private double requestedP = 0.0001;
   private double requestedI = 0.0;
@@ -31,6 +43,20 @@ public class RPMShooter extends Command {
   private double currentP = 0.0;
   private double currentI = 0.0;
   private double currentD = 0.0;
+
+  public enum ShooterMode {
+    Trigger("Trigger"), RPM("RPM");
+
+    public final String name;
+
+    ShooterMode(String name) {
+      this.name = name;
+    }
+
+    public String toString() {
+      return name;
+   }
+  }
 
   public RPMShooter(CommandXboxController controller) {
     m_shooter = RobotContainer.getSubsystem(Shooter.class);
@@ -41,14 +67,12 @@ public class RPMShooter extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    requestedPercent = 0.0;
     requestedLeftShooterRPM = 0.0;
     requestedRightShooterRPM = 0.0;
 
     SmartDashboard.putNumber("Trigger Percent", m_driverController.getLeftTriggerAxis());
-    SmartDashboard.putNumber("Requested Percent", requestedPercent);
-
     SmartDashboard.putBoolean("Trigger Mode", triggerMode);
+
     SmartDashboard.putNumber("Requested Left Shooter RPM",0.0);
     SmartDashboard.putNumber("Requested Right Shooter RPM",0.0);
      
@@ -70,6 +94,8 @@ public class RPMShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    currentLeftMotorRPM = shooterLeftEncoder.getVelocity();
+    currentRightMotorRPM = shooterRightEncoder.getVelocity();
 
     currentTriggerPercent = m_driverController.getLeftTriggerAxis();
     
@@ -79,17 +105,18 @@ public class RPMShooter extends Command {
     lastRequestedLeftShooterRPM = requestedLeftShooterRPM;
     lastRequestedRightShooterRPM = requestedRightShooterRPM;
 
+    SmartDashboard.putString("Current Shoooting Mode",currentShootingMode.toString());
+    SmartDashboard.putNumber("Current Shooter RPM", currentLeftMotorRPM); //should be 1.0
+    SmartDashboard.putNumber("Current Left Motor RPM", currentLeftMotorRPM);
+    SmartDashboard.putNumber("Current Right Motor RPM", currentRightMotorRPM);
+
     requestedLeftShooterRPM = SmartDashboard.getNumber("Requested Left Shooter RPM",0.0);
     requestedRightShooterRPM = SmartDashboard.getNumber("Requested Right Shooter RPM",0.0);
     requestedBothShooterRPM = SmartDashboard.getNumber("Requested Shooter RPM: ",0.0);
-    requestedPercent = SmartDashboard.getNumber("Requested Percent", 0.0);
 
     switch(m_shooter.getShooterMode()){
       case Trigger: //this mode uses left trigger as motor %
         m_shooter.setMotorSpeed(currentTriggerPercent);
-        break;
-      case Percent: //this mode uses requested % off smart dashboard as motor %
-        m_shooter.setMotorSpeed(requestedPercent);
         break;
       case RPM: //this mode uses requested RPM off smart dashboard in velocity controlled mode
         if ((lastRequestedLeftShooterRPM != requestedLeftShooterRPM) || (lastRequestedRightShooterRPM != requestedRightShooterRPM)) {
