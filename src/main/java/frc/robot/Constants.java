@@ -236,6 +236,8 @@ public final class Constants {
 
   public static final class Intake_Constants {
     public static double IntakeMotorDefault = 0.01; // placeholder
+    public static double AngleMotorDefault = 0.01; //placeholder
+    public static double TransferPosition = 0.02; //placeholder
   }
   public static final class Roller_Constants {
     public static double RollerSpeedDefault = 0.01; //placeholder: Note change namesx
