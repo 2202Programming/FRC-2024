@@ -112,7 +112,7 @@ public class RobotContainer implements BlinkyLightUser {
     dc = getSubsystem("DC");
 
     /* Set the commands below */
-    configureBindings(Bindings.Shooter_test); // Change this to swich between bindings
+    configureBindings(Bindings.Comptition); // Change this to s wich between bindings
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
