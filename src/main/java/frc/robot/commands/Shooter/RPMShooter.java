@@ -34,7 +34,7 @@ public class RPMShooter extends Command {
   private double lastRequestedRightShooterRPM;
 
 
-  private ShooterMode currentShootingMode;
+  private Shooter.ShooterMode currentShootingMode;
 
   private double requestedP = 0.0001;
   private double requestedI = 0.0;
@@ -43,20 +43,6 @@ public class RPMShooter extends Command {
   private double currentP = 0.0;
   private double currentI = 0.0;
   private double currentD = 0.0;
-
-  public enum ShooterMode {
-    Trigger("Trigger"), RPM("RPM");
-
-    public final String name;
-
-    ShooterMode(String name) {
-      this.name = name;
-    }
-
-    public String toString() {
-      return name;
-   }
-  }
 
   public RPMShooter(CommandXboxController controller) {
     m_shooter = RobotContainer.getSubsystem(Shooter.class);
@@ -116,19 +102,19 @@ public class RPMShooter extends Command {
 
     switch(m_shooter.getShooterMode()){
       case Trigger: //this mode uses left trigger as motor %
-        m_shooter.setMotorSpeed(currentTriggerPercent);
+        m_shooter.setSpeed(currentTriggerPercent);
         break;
       case RPM: //this mode uses requested RPM off smart dashboard in velocity controlled mode
         if ((lastRequestedLeftShooterRPM != requestedLeftShooterRPM) || (lastRequestedRightShooterRPM != requestedRightShooterRPM)) {
-          m_shooter.setShooterRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
+          m_shooter.setRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
         }
         /*this SHOULD set both motors at the same time
         *TODO: test this*/
         if ((requestedBothShooterRPM > 0)) {
           if ((requestedBothShooterRPM != requestedLeftShooterRPM) && (requestedBothShooterRPM != requestedRightShooterRPM)) {
-            m_shooter.setShooterRPM(requestedBothShooterRPM, requestedBothShooterRPM);          
+            m_shooter.setRPM(requestedBothShooterRPM, requestedBothShooterRPM);          
           } else {
-            m_shooter.setShooterRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
+            m_shooter.setRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
         }
       }
         break;
@@ -159,7 +145,7 @@ public class RPMShooter extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_shooter.setShooterRPM(0.0, 0.0);
+    m_shooter.setRPM(0.0, 0.0);
   }
 
   // Returns true when the command should end.

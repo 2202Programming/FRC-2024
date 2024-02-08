@@ -11,32 +11,26 @@ import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
+import frc.robot.util.PIDFController;
 
 public class Shooter extends SubsystemBase {
 
+  static final double FACTOR = 1.0; // TODO put real value here
+
   public enum ShooterMode {
-    Trigger("Trigger"), RPM("RPM");
+    Trigger, RPM
+  };
 
-    public final String name;
+  // Instantiations
+  final CANSparkMax leftMtr = new CANSparkMax(CAN.SHOOTER_L, CANSparkMax.MotorType.kBrushless);
+  final CANSparkMax rightMtr = new CANSparkMax(CAN.SHOOTER_R, CANSparkMax.MotorType.kBrushless);
 
-    ShooterMode(String name) {
-      this.name = name;
-    }
-
-    public String toString() {
-      return name;
-   }
-  }
-  // Instantiations 
-  final CANSparkMax shooterMotorLeft = new CANSparkMax(CAN.SHOOTER_L, CANSparkMax.MotorType.kBrushless);
-  final CANSparkMax shooterMotorRight = new CANSparkMax(CAN.SHOOTER_R, CANSparkMax.MotorType.kBrushless);
-
-  private SparkPIDController shooterLeftPidController;
-  private SparkPIDController shooterRightPidController;
+  final SparkPIDController hw_leftPid;
+  final SparkPIDController hw_rightPid;
 
   // says unused for some reason? used on lines 61 & 68
-  private RelativeEncoder shooterLeftEncoder;
-  private RelativeEncoder shooterRightEncoder;
+  final RelativeEncoder leftEncoder;
+  final RelativeEncoder rightEncoder;
 
   private ShooterMode currentShootingMode;
 
@@ -44,58 +38,37 @@ public class Shooter extends SubsystemBase {
   private double currentRightMotorOutput;
 
   private double currentLeftMotorRPM;
-  //private double currentRightMotorRPM; <-- not used currently
-  
-  private double kP = 0.001;
-  private double kI = 0.0;
-  private double kD = 0.0;
+  // private double currentRightMotorRPM; <-- not used currently
+
+  PIDFController pidConsts = new PIDFController(0.001, 0.0, 0.0, 0.0);
 
   public Shooter() {
-    motor_config(shooterMotorLeft, true);
-    motor_config(shooterMotorRight, false);
+    hw_leftPid = motor_config(leftMtr, pidConsts, true);
+    hw_rightPid = motor_config(rightMtr, pidConsts, false);
 
-    currentLeftMotorOutput = shooterMotorLeft.get();
-    shooterLeftPidController = shooterMotorLeft.getPIDController();
-    shooterLeftEncoder = shooterMotorLeft.getEncoder();
-    // just more debug code
-    /*System.out.println("Left Encoder Scaling Factor ="+shooterLeftEncoder.getVelocityConversionFactor());
-    System.out.println("Left Encoder CPR ="+shooterLeftEncoder.getCountsPerRevolution());*/
-
-    currentRightMotorOutput = shooterMotorRight.get();
-    shooterRightPidController = shooterMotorRight.getPIDController();
-    shooterRightEncoder = shooterMotorRight.getEncoder();
-    // just more debug code
-    /*System.out.println("Right Encoder Scaling Factor ="+shooterRightEncoder.getVelocityConversionFactor());
-    * System.out.println("Right Encoder CPR ="+shooterRightEncoder.getCountsPerRevolution());*/
-    // look in PIDFController object to replace this
-    // work out FeedForward values for this
-    shooterLeftPidController.setP(kP);
-    shooterLeftPidController.setI(kI);
-    shooterLeftPidController.setD(kD);
-
-    shooterRightPidController.setP(kP);
-    shooterRightPidController.setI(kI);
-    shooterRightPidController.setD(kD);
-
+    leftEncoder = config_enc(leftMtr);
+    rightEncoder = config_enc(rightMtr);
     currentShootingMode = ShooterMode.RPM;
   }
 
-
   @Override
   public void periodic() {
+    // read encoders each frame, save to var if needed
+    currentLeftMotorOutput = leftEncoder.getVelocity();
+    currentRightMotorOutput = rightEncoder.getVelocity();
     return;
   }
 
-  public void setShootingMode(ShooterMode mode){
+  public void setShootingMode(ShooterMode mode) {
     currentShootingMode = mode;
   }
 
   public void cycleShootingMode() {
-    if(currentShootingMode == ShooterMode.Trigger) {
+    if (currentShootingMode == ShooterMode.Trigger) {
       currentShootingMode = ShooterMode.RPM;
       return;
     }
-    if(currentShootingMode == ShooterMode.RPM) 
+    if (currentShootingMode == ShooterMode.RPM)
       currentShootingMode = ShooterMode.Trigger;
     return;
   }
@@ -104,66 +77,78 @@ public class Shooter extends SubsystemBase {
     return currentShootingMode;
   }
 
-  public void setMotorSpeed(double motorSpeed){
-    shooterMotorLeft.set(motorSpeed);
-    shooterMotorRight.set(motorSpeed);
-    currentLeftMotorOutput = motorSpeed;
+  @Deprecated
+  public void setSpeed(double foo) {}
+
+  public void setRPM(double leftRPM, double rightRPM) {
+    hw_leftPid.setReference(leftRPM, ControlType.kVelocity);
+    hw_rightPid.setReference(rightRPM, ControlType.kVelocity);
+    // more test code
+    // System.out.println("Motor goals changed,
+    // left="+leftRPM*gearboxRatio+", right="+rightRPM*gearboxRatio);
+    // //just debug code, not needed
   }
 
-  public void setShooterRPM(double shooterLeftRPM, double shooterRightRPM){
-    shooterLeftPidController.setReference(shooterLeftRPM, ControlType.kVelocity);
-    shooterRightPidController.setReference(shooterRightRPM, ControlType.kVelocity);
-    //more test code
-    //System.out.println("Motor goals changed, left="+shooterLeftRPM*gearboxRatio+", right="+shooterRightRPM*gearboxRatio); //just debug code, not needed
-  }
-
-  public double getLeftMotorOutput(){
+  public double getLeftMotorOutput() {
     return currentLeftMotorOutput;
   }
 
-  public double getRightMotorOutput(){
+  public double getRightMotorOutput() {
     return currentRightMotorOutput;
   }
 
-  public double getMotorRPM(){
+
+  public double getMotorRPM() {
     return currentLeftMotorRPM;
-    //here for MotorTriggerOrDash, don't know why we aren't just using getLeftMotorOutput
-  }
-  //PID getters/setters
-  public double getShooterRPM(){
-    return currentLeftMotorRPM; //should be 1.0
+    // here for MotorTriggerOrDash, don't know why we aren't just using
+    // getLeftMotorOutput
   }
 
-  public void setP(double newP){
-    shooterLeftPidController.setP(newP);
-    shooterRightPidController.setP(newP);
+  // PID getters/setters
+  public double getRPM() {
+    return currentLeftMotorRPM; // should be 1.0
   }
 
-  public void setI(double newI){
-    shooterLeftPidController.setI(newI);
-    shooterRightPidController.setI(newI);
+  public void setP(double newP) {
+    hw_leftPid.setP(newP);
+    hw_rightPid.setP(newP);
   }
-  public void setD(double newD){
-    shooterLeftPidController.setD(newD);
-    shooterRightPidController.setD(newD);
+
+  public void setI(double newI) {
+    hw_leftPid.setI(newI);
+    hw_rightPid.setI(newI);
+  }
+
+  public void setD(double newD) {
+    hw_leftPid.setD(newD);
+    hw_rightPid.setD(newD);
   }
 
   public double getP() {
-    return shooterLeftPidController.getP();
+    return hw_leftPid.getP();
   }
 
   public double getI() {
-    return shooterLeftPidController.getI();
+    return hw_leftPid.getI();
   }
 
   public double getD() {
-    return shooterLeftPidController.getD();
+    return hw_leftPid.getD();
   }
 
-  void motor_config(CANSparkMax mtr, boolean inverted) {
+  SparkPIDController motor_config(CANSparkMax mtr, PIDFController pid, boolean inverted) {
     mtr.clearFaults();
     mtr.restoreFactoryDefaults();
+    var mtrpid = mtr.getPIDController();
+    pid.copyChangesTo(mtrpid, 0, pid);
     mtr.setInverted(inverted);
- }
+    return mtrpid;
+  }
 
+  RelativeEncoder config_enc(CANSparkMax mtr) {
+    var enc = rightMtr.getEncoder();
+    enc.setPositionConversionFactor(FACTOR);
+    enc.setVelocityConversionFactor(FACTOR / 60.0);
+    return enc;
+  }
 }

@@ -58,11 +58,11 @@ public class MotorTriggerOrDash extends Command {
 
     if(triggerMode){
       //set motor to be left trigger %
-      m_mtr.setMotorSpeed(m_driverController.getLeftTriggerAxis());
+      m_mtr.setSpeed(m_driverController.getLeftTriggerAxis());
     }
     else{ //trigger isn't activated, use smart dashboard to guide motor speed
       if (Math.abs(currentMotorSpeed - requestedPercent) > 0.01){ //there is a difference betweent the requested motor speed and current motor speed
-        m_mtr.setMotorSpeed(requestedPercent);
+        m_mtr.setSpeed(requestedPercent);
       }
     }
 
