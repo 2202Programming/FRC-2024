@@ -13,8 +13,8 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.DigitalIO;
@@ -29,8 +29,8 @@ public class Intake extends SubsystemBase {
   public double intake_speed = 0.0;
   public double r_speed = 0.0;
   public double l_speed = 0.0;
-  
-  // Intake Angle, a servo 
+
+  // Intake Angle, a servo
   final NeoServo angle_servo;
   final PIDController positionPID = new PIDController(0.0, 0.0, 0.0); // outer (pos)
 
@@ -101,9 +101,14 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean angleAtSetpoint() {
-    return angle_servo.atSetpoint();  //are we there yet?
+    return angle_servo.atSetpoint(); // are we there yet?
   }
-class IntakeWatcherCmd extends WatcherCmd {
+
+  public Command getWatcher() {
+    return new IntakeWatcherCmd();
+  }
+
+  class IntakeWatcherCmd extends WatcherCmd {
     NetworkTableEntry nt_lightgate;
     NetworkTableEntry nt_angleVel;
     NetworkTableEntry nt_kP;
@@ -118,7 +123,7 @@ class IntakeWatcherCmd extends WatcherCmd {
     }
 
     public void ntcreate() {
-      NetworkTable table = NetworkTableInstance.getDefault().getTable("test");
+      NetworkTable table = getTable();
       nt_lightgate = table.getEntry("lightgate");
       nt_angleVel = table.getEntry("angleVel");
       nt_kP = table.getEntry("kP");
@@ -126,7 +131,6 @@ class IntakeWatcherCmd extends WatcherCmd {
       nt_kD = table.getEntry("kD");
       nt_wheelVel = table.getEntry("wheelVel");
       nt_anglePos = table.getEntry("anglePos");
-
 
       // default value for mutables
       // example nt_maxArbFF.setDouble(maxArbFF);

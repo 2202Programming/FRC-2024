@@ -14,6 +14,7 @@ import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.SubsystemConfig;
+import edu.wpi.first.wpilibj2.command.Command;
 
 /*
  * The Subsystems and object in Configs will be created by RobotContainer 
@@ -46,6 +47,8 @@ public class Configs {
 //      .add(Limelight_Subsystem.class)
       .add(SwerveDrivetrain.class) // must be after LL and Sensors
       .add(Intake.class)
+      .add(Command.class, "IntakeWatcher", () -> {
+        return RobotContainer.getSubsystem(Intake.class).getWatcher(); })
       .add(Shooter.class)
       .add(Transfer.class)
       //add(Climber.class)
