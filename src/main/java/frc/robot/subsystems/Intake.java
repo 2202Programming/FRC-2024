@@ -20,7 +20,6 @@ import frc.robot.Constants.DigitalIO;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Intake extends SubsystemBase {
   final double FACTOR = 100.0; // TODO set this correctly for intake speed - note vel [cm/s]

@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.Intake.IntakeToggle;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
@@ -155,6 +156,7 @@ public class RobotContainer implements BlinkyLightUser {
         // TODO: replace Print/Dummy with real commands when known - ER
         driver.rightTrigger().whileTrue(new DummyShooterCmd());
         driver.leftTrigger().onTrue(new PrintCommand("PlaceholderCMD: Align with shooter"));
+        driver.x().whileTrue(new IntakeToggle());
         break;
 
       default:
