@@ -13,6 +13,7 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
@@ -117,7 +118,7 @@ class IntakeWatcherCmd extends WatcherCmd {
     }
 
     public void ntcreate() {
-      NetworkTable table = getTable();
+      NetworkTable table = NetworkTableInstance.getDefault().getTable("test");
       nt_lightgate = table.getEntry("lightgate");
       nt_angleVel = table.getEntry("angleVel");
       nt_kP = table.getEntry("kP");
