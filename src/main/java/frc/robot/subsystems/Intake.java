@@ -11,12 +11,16 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.DigitalIO;
+import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Intake extends SubsystemBase {
   final double FACTOR = 100.0; // TODO set this correctly for intake speed - note vel [cm/s]
@@ -99,4 +103,48 @@ public class Intake extends SubsystemBase {
   public boolean angleAtSetpoint() {
     return angle_servo.atSetpoint();  //are we there yet?
   }
+class IntakeWatcherCmd extends WatcherCmd {
+    NetworkTableEntry nt_lightgate;
+    NetworkTableEntry nt_angleVel;
+    NetworkTableEntry nt_kP;
+    NetworkTableEntry nt_kI;
+    NetworkTableEntry nt_kD;
+    NetworkTableEntry nt_wheelVel;
+    NetworkTableEntry nt_anglePos;
+
+    @Override
+    public String getTableName() {
+      return Intake.this.getName();
+    }
+
+    public void ntcreate() {
+      NetworkTable table = getTable();
+      nt_lightgate = table.getEntry("lightgate");
+      nt_angleVel = table.getEntry("angleVel");
+      nt_kP = table.getEntry("kP");
+      nt_kI = table.getEntry("kI");
+      nt_kD = table.getEntry("kD");
+      nt_wheelVel = table.getEntry("wheelVel");
+      nt_anglePos = table.getEntry("anglePos");
+
+
+      // default value for mutables
+      // example nt_maxArbFF.setDouble(maxArbFF);
+    }
+
+    public void ntupdate() {
+      nt_lightgate.setBoolean(hasNote());
+      nt_angleVel.setDouble(getAnglePosition());
+      nt_kP.setDouble(hwMotorVelPID.getP());
+      nt_kI.setDouble(hwMotorVelPID.getI());
+      nt_kD.setDouble(hwMotorVelPID.getD());
+      nt_wheelVel.setDouble(getMotorSpeed());
+      nt_anglePos.setDouble(getAnglePosition());
+
+      // get mutable values
+      // example maxArbFF = nt_maxArbFF.getDouble(maxArbFF);
+
+    }
+  } // watcher command
+
 }

@@ -19,7 +19,7 @@ import frc.robot.subsystems.Intake;
  * or maybe hold Note to deliver through nose-roller.
  * 
  * Basic operation:
- * 1: Driver hits button
+ * 1: Driver holds button
  * 2: Set the intake speed to the desired speed
  * 3: set the intake angle to the desired angle (floor pick up angle)
  * Blink lights RED or TBD when looking for a NOTE
@@ -29,11 +29,13 @@ import frc.robot.subsystems.Intake;
  * 
  * 4b. If a note is detected, wait x amount of time to position Note
  * and set the wheel speed to 0. This holds it for next step.
- * Bring the angle to the transfer position
+ * This makes sure that the note is secure by waiting x amt of time after lightgate detects
  * Blink Lights GREEN when we have the note
+ * Bring the angle to the transfer position
  * 
  * 4c. If note is detected but then is "undetected"
  * after time of it being gone just give up.
+ * 
  * Blink Lights RED if we lose the note.
  * 
  * 
@@ -50,7 +52,7 @@ public class IntakeOn extends Command implements BlinkyLightUser {
   double count = 0;
 
   public IntakeOn(double intake_speed, double angle_cmd) {
-    this.intake = RobotContainer.getSubsystem(Intake.class);
+        this.intake = RobotContainer.getSubsystem(Intake.class);
     this.intake_speed = intake_speed;
     this.angle_cmd = angle_cmd;
   }
@@ -91,6 +93,7 @@ public class IntakeOn extends Command implements BlinkyLightUser {
     }
     // blinky lights controlled in
 
+    // maybe unneeded code
     if (count > DONE_COUNT) {
       intake.setMotorSpeed(0.0);
     }
@@ -119,6 +122,7 @@ public class IntakeOn extends Command implements BlinkyLightUser {
 
     // driver gave up or we have the note
     if (interrupted || count < DONE_COUNT) {
+      //note: why is this not just transfer pos anyway?? - is this if statement needed or just no matter what we set to transfer pos
       intake.setAngleSetpoint(original_pos);
     } else {
       intake.setAngleSetpoint(Intake_Constants.TransferPosition);
