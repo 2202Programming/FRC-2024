@@ -50,14 +50,6 @@ public class NoseRoller extends SubsystemBase {
     noseAngleMotor.setSetpoint(pos);
   }
 
-  public void sneeze() {
-    noseFireMotor.set(1.0); // this should proboably not fire at max speed. Proboably
-  }
-
-  public void sniffle() {
-    noseFireMotor.set(0.0);
-  }
-
   public boolean isGateBlocked() { // if we even have a gate?
     return false;
   }

@@ -238,7 +238,7 @@ public final class Constants {
     public static double IntakeMotorDefault = 0.01; // placeholder
   }
   public static final class Roller_Constants {
-    public static double RollerSpeedDefault = 0.01; //placeholder
+    public static double RollerSpeedDefault = 0.01; //placeholder: Note change namesx
     public static double RollerPosShoot = 20; //placeholder
     public static double RollerPosDefault = 5; //placeholder
   }
