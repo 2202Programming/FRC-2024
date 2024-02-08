@@ -12,20 +12,31 @@ import com.revrobotics.CANSparkMax;
 
 public class Transfer extends SubsystemBase {
   
-  DigitalInput lightGate = new DigitalInput(DigitalIO.TransferLightGate);
+  DigitalInput lightGate = new DigitalInput(DigitalIO.TRANSFER_LIGHT_GATE);
   CANSparkMax transferMotor;
 
   /** Creates a new Transfer. */
   public Transfer() {
-      transferMotor  = new CANSparkMax(CAN.TRANSFER_MOTOR, CANSparkMax.MotorType.kBrushless);
+      transferMotor = new CANSparkMax(CAN.TRANSFER_MOTOR, CANSparkMax.MotorType.kBrushless);
   }
 
   //TODO: find out methods/behaviors, pneumatics, etc. 
 
-  public boolean isNoteReady(){
-
-    return false;
+  public boolean isLightGateBlocked(){
+    return lightGate.get(); 
   }
+  public void transferMotorOn() {
+    transferMotor.set(1);
+  }
+  // Motor speed will likely need to be changed
+  public void transferMotorOff() {
+    transferMotor.set(0);
+  }
+  public void transferMotorReverse() {
+    transferMotor.set(-1);
+  }
+  // This motor speed will also probably need to be changed too, but make sure it is still a negative number
+  // This method would be used to spit the note back out if it gets jammed, but might not be necessary
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

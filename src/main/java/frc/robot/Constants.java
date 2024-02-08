@@ -209,7 +209,7 @@ public final class Constants {
 
   public final class DigitalIO {
     public static final int IntakeLightGate = 1;
-    public static final int TransferLightGate = 2;
+    public static final int TRANSFER_LIGHT_GATE = 2;
   }
 
   public static final class Intake_Constants {
