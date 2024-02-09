@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.DigitalIO;
+import frc.robot.Constants.Intake_Constants;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
@@ -32,7 +33,7 @@ public class Intake extends SubsystemBase {
 
   // Intake Angle, a servo
   final NeoServo angle_servo;
-  final PIDController positionPID = new PIDController(0.0, 0.0, 0.0); // outer (pos)
+  final PIDController positionPID = new PIDController(1.0, 0.0, 0.0); // outer (pos)
 
   // Intake roller motor
   final CANSparkMax intake_mtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
@@ -45,6 +46,12 @@ public class Intake extends SubsystemBase {
   final DigitalInput lightgate = new DigitalInput(DigitalIO.IntakeLightGate);
 
   public Intake() {
+    final int STALL_CURRENT = 15;
+    final int FREE_CURRENT = 5;
+    final int maxVel = 100;
+    final int maxAccel = 20;
+    final int posTol = 1;
+    final int velTol = 3;
     // servo controls angle of intake arm
     angle_servo = new NeoServo(CAN.ANGLE_MTR, positionPID, hwAngleVelPID, false); // should be invert false
 
@@ -60,11 +67,11 @@ public class Intake extends SubsystemBase {
     intake_mtr.burnFlash();
 
     /// Servo setup for angle_servo
-    angle_servo.setConversionFactor(0.0) // TODO: add below later when we actually need values - NR 1/31/24
-        // .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
-        // .setVelocityHW_PID(maxVel, maxAccel)
-        // .setTolerance(posTol, velTol)
-        // .setMaxVelocity(maxVel)
+    angle_servo.setConversionFactor(1.0) // TODO: change to actual values
+         .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
+         .setVelocityHW_PID(maxVel, maxAccel)
+         .setTolerance(posTol, velTol)
+         .setMaxVelocity(maxVel)
         .burnFlash();
   }
 
@@ -81,7 +88,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void setAngleSetpoint(double position) {
-    angle_servo.setSetpoint(position);
+    angle_servo.setSetpoint(Intake_Constants.AnglePosition);
   }
 
   public double getAngleSetpoint() {
@@ -106,6 +113,11 @@ public class Intake extends SubsystemBase {
 
   public Command getWatcher() {
     return new IntakeWatcherCmd();
+  }
+
+  public void periodic(){
+    this.angle_servo.periodic();
+
   }
 
   class IntakeWatcherCmd extends WatcherCmd {
@@ -138,7 +150,7 @@ public class Intake extends SubsystemBase {
 
     public void ntupdate() {
       nt_lightgate.setBoolean(hasNote());
-      nt_angleVel.setDouble(getAnglePosition());
+      nt_angleVel.setDouble(getAngleSpeed());
       nt_kP.setDouble(hwMotorVelPID.getP());
       nt_kI.setDouble(hwMotorVelPID.getI());
       nt_kD.setDouble(hwMotorVelPID.getD());
