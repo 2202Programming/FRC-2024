@@ -17,6 +17,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants;
+import frc.robot.Constants.CAN;
 import frc.robot.Constants.DriveTrain;
 import frc.robot.subsystems.Swerve.Config.ChassisConfig;
 import frc.robot.RobotContainer;
@@ -104,9 +105,11 @@ public class SwerveModuleMK3 {
     // cc is the chassis config for all our pathing math
     cc = RobotContainer.getRobotSpecs().getChassisConfig();
 
-    // Always restore factory defaults - it removes gremlins
-    driveMotor.restoreFactoryDefaults();
-    angleMotor.restoreFactoryDefaults();
+    // Always restore factory defaults at least once for new sparks - it removes gremlins
+    driveMotor.restoreFactoryDefaults(CAN.BURN_FLASH);
+    sleep(CAN.BURN_FLASH ? 1000 : 0); // only need if flash is true
+    angleMotor.restoreFactoryDefaults(CAN.BURN_FLASH);
+    sleep(CAN.BURN_FLASH ? 1000 : 0); // only need if flash is true
 
     // account for command sign differences if needed
     angleCmdInvert = (invertAngleCmd) ? -1.0 : 1.0;
