@@ -239,6 +239,7 @@ public final class Constants {
     public static double AngleMotorDefault = 0.01; //placeholder
     public static double AnglePosition = 100; //placeholder
     public static double TransferPosition = 0.02; //placeholder
+    public static double DefaultLimitSwitchPos = 10.0; //placeholder
   }
   public static final class Roller_Constants {
     public static double RollerSpeedDefault = 0.01; //placeholder: Note change namesx

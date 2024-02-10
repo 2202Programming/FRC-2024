@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.Intake.IntakeDefaultPos;
 import frc.robot.commands.Intake.IntakeToggle;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
@@ -162,6 +163,7 @@ public class RobotContainer implements BlinkyLightUser {
         driver.y().whileTrue(new InstantCommand(() -> {
         intake.setAngleVelocity(0.3);
         }));
+        driver.a().whileTrue(new IntakeDefaultPos());
         // when used can uncomment to set nose roller
         // driver.a().whileTrue(new InstantCommand(() -> {
         // noseRoller.setNoseVelocity(1.0);

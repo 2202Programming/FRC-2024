@@ -6,6 +6,13 @@ import com.revrobotics.CANSparkBase.ControlType;
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+/*
+ * Either we have the same setup everytime
+ * Otherwise, call IntakeDefaultPos to go to limit switch pos
+ * this then sets the limit switch pos to a number (probably 0)
+ * every time
+ */
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -25,7 +32,9 @@ import frc.robot.util.PIDFController;
 
 public class Intake extends SubsystemBase {
   final double FACTOR = 100.0; // TODO set this correctly for intake speed - note vel [cm/s]
-
+  final double AngleConversionFactor = 10.0; //TODO Find value that works (10:1 first gear, will add more gears)
+  final double lower_clamp = 1.0; //TODO find both ofc
+  final double upper_clamp = 15.0;
   /** Creates a new Intake. */
   public double intake_speed = 0.0;
   public double r_speed = 0.0;
@@ -33,49 +42,53 @@ public class Intake extends SubsystemBase {
 
   // Intake Angle, a servo
   final NeoServo angle_servo;
-  final PIDController positionPID = new PIDController(1.0, 0.0, 0.0); // outer (pos)
-
-  // Intake roller motor
-  final CANSparkMax intake_mtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
   final PIDFController hwAngleVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0); // inner (hw/vel)
-  final PIDFController hwMotorVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0); // velocity mode
+  final PIDController anglePositionPID = new PIDController(1.0, 0.0, 0.0); // outer (pos)
+  // Intake roller motor
+  final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
   final SparkPIDController intakeMtrPid;
   final RelativeEncoder intakeMtrEncoder;
 
   // lightgate tell us when we have a game piece (aka a Note)
   final DigitalInput lightgate = new DigitalInput(DigitalIO.IntakeLightGate);
 
-  public Intake() {
-    final int STALL_CURRENT = 15;
-    final int FREE_CURRENT = 5;
-    final int maxVel = 5;
-    final int maxAccel = 1;
-    final int posTol = 1;
-    final int velTol = 3;
+  //limit switch 
+  DigitalInput limitSwitch = new DigitalInput(0); //find value
+
+  public Intake() { //TODO: Get values
+    final int STALL_CURRENT = 15; //[amp]
+    final int FREE_CURRENT = 5; //[amp]
+    final double maxVel = 5.0; // [deg/s]
+    final double maxAccel = 5.0; // [deg/s^2]
+    final double posTol = 3.0; // [deg]
+    final double velTol = 1.0; //[deg/s]
     // servo controls angle of intake arm
-    angle_servo = new NeoServo(CAN.ANGLE_MTR, positionPID, hwAngleVelPID, false); // should be invert false
+    angle_servo = new NeoServo(CAN.ANGLE_MTR, anglePositionPID, hwAngleVelPID, false); // TODO: find invert
 
     // use velocity control on intake motor
-    intake_mtr.clearFaults();
-    intake_mtr.restoreFactoryDefaults();
-    intakeMtrPid = intake_mtr.getPIDController();
-    intakeMtrEncoder = intake_mtr.getEncoder();
+    intakeMtr.clearFaults();
+    intakeMtr.restoreFactoryDefaults();
+    intakeMtrPid = intakeMtr.getPIDController();
+    intakeMtrEncoder = intakeMtr.getEncoder();
     intakeMtrEncoder.setPositionConversionFactor(FACTOR);
-    intakeMtrEncoder.setVelocityConversionFactor(FACTOR / 60.0);
+    intakeMtrEncoder.setVelocityConversionFactor(FACTOR / 60.0); // min to sec
     // configure hardware pid with our values
-    hwMotorVelPID.copyTo(intake_mtr.getPIDController(), 0);
-    intake_mtr.burnFlash();
+    hwAngleVelPID.copyTo(intakeMtr.getPIDController(), 0);
+    intakeMtr.burnFlash();
 
     /// Servo setup for angle_servo
-    angle_servo.setConversionFactor(1.0) // TODO: change to actual values
+    angle_servo.setConversionFactor((180.0 / Math.PI) / AngleConversionFactor) //[deg]
          .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
          .setVelocityHW_PID(maxVel, maxAccel)
          .setTolerance(posTol, velTol)
          .setMaxVelocity(maxVel)
         .burnFlash();
+
+
+      this.setAngleClamp(lower_clamp, upper_clamp);  
   }
 
-  public void setMotorSpeed(double speed) {
+  public void setIntakeSpeed(double speed) {
     intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
   }
 
@@ -83,21 +96,28 @@ public class Intake extends SubsystemBase {
     return lightgate.get();
   }
 
-  public double getMotorSpeed() {
+  public double getIntakeRollerSpeed() {
     return intakeMtrEncoder.getVelocity();
   }
-
+  /* [deg] */
   public void setAngleSetpoint(double position) {
-    angle_servo.setSetpoint(Intake_Constants.AnglePosition);
+    angle_servo.setSetpoint(position); 
   }
-
+/* [deg] */
   public double getAngleSetpoint() {
     return angle_servo.getSetpoint();
   }
-
+/* [deg] */
   public double getAnglePosition() {
     return angle_servo.getPosition();
   }
+  public void setAnglePosition(double pos){
+    angle_servo.setPosition(pos);
+  }
+  /* [deg/s]
+   * Switches angle servo to velcoity mode
+   * TESTING ONLY
+   */
   public void setAngleVelocity(double speed){
     angle_servo.setVelocityCmd(speed);
   }
@@ -106,12 +126,15 @@ public class Intake extends SubsystemBase {
     return angle_servo.getVelocity();
   }
 
-  public void setAngleClamp(double min_ext, double max_ext) { // limit switch values?
+  public void setAngleClamp(double min_ext, double max_ext) {
     angle_servo.setClamp(min_ext, max_ext);
   }
 
   public boolean angleAtSetpoint() {
     return angle_servo.atSetpoint(); // are we there yet?
+  }
+  public boolean atLimitSwitch(){
+    return limitSwitch.get();
   }
 
   public Command getWatcher() {
@@ -154,10 +177,10 @@ public class Intake extends SubsystemBase {
     public void ntupdate() {
       nt_lightgate.setBoolean(hasNote());
       nt_angleVel.setDouble(getAngleSpeed());
-      nt_kP.setDouble(hwMotorVelPID.getP());
-      nt_kI.setDouble(hwMotorVelPID.getI());
-      nt_kD.setDouble(hwMotorVelPID.getD());
-      nt_wheelVel.setDouble(getMotorSpeed());
+      nt_kP.setDouble(hwAngleVelPID.getP());
+      nt_kI.setDouble(hwAngleVelPID.getI());
+      nt_kD.setDouble(hwAngleVelPID.getD());
+      nt_wheelVel.setDouble(getIntakeRollerSpeed());
       nt_anglePos.setDouble(getAnglePosition());
 
       // get mutable values

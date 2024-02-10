@@ -86,7 +86,7 @@ public class IntakeToggle extends Command implements BlinkyLightUser {
         } else {
             original_pos = intake.getAnglePosition();
             intake.setAngleSetpoint(Intake_Constants.AnglePosition);
-            intake.setMotorSpeed(Intake_Constants.IntakeMotorDefault);
+            intake.setIntakeSpeed(Intake_Constants.IntakeMotorDefault);
         }
     }
 
