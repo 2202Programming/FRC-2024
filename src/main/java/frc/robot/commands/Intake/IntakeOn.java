@@ -17,7 +17,7 @@ public class IntakeOn extends Command {
   boolean use_dashboard = false;
 
   public IntakeOn(double intake_speed) {
-    this.intake = RobotContainer.RC().intake; // fixed when merge
+    this.intake = RobotContainer.getSubsystem(Intake.class);
     this.intake_speed = intake_speed;
   }
 

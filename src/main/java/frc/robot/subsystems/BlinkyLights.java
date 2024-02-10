@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.util.RobotSpecs.RobotNames;
+import frc.robot.Constants.CAN;
 
 public class BlinkyLights {
     //Some common colors
@@ -38,11 +39,13 @@ public class BlinkyLights {
 
     /** Creates a new BlinkyLights. */
     public BlinkyLights() {
-        amIReal = ((RobotContainer.RC().robotSpecs.myRobotName == RobotNames.CompetitionBot2023) && !Robot.isSimulation());
+        amIReal = ((RobotContainer.getRobotSpecs().myRobotName == RobotNames.CompetitionBot2023) &&
+         !Robot.isSimulation());
+
         if (amIReal) {
             System.out.println("***I have blinkylights, I must be one of the cool robots.");
-            candle_l = new CANdle(3);
-            candle_r = new CANdle(4);
+            candle_l = new CANdle(CAN.CANDLE1);
+            candle_r = new CANdle(CAN.CANDLE2);
             candle_l.configAllSettings(new CANdleConfiguration());
             candle_r.configAllSettings(new CANdleConfiguration());
 

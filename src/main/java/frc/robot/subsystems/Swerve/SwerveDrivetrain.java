@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CAN;
 import frc.robot.Constants.DriveTrain;
 import frc.robot.Constants.NTStrings;
 import frc.robot.RobotContainer;
@@ -47,11 +46,11 @@ public class SwerveDrivetrain extends SubsystemBase {
   static final double Bearing_Tol = Math.toRadians(0.5); // limit bearing
 
   // cc is the chassis config for all our pathing math
-  private final ChassisConfig cc = RobotContainer.RC().robotSpecs.getChassisConfig(); // chassis config
-  private final WheelOffsets wc = RobotContainer.RC().robotSpecs.getWheelOffset(); // wc = wheel config
-  private final ChassisInversionSpecs is = RobotContainer.RC().robotSpecs.getChassisInversionSpecs(); // is = inversion
+  private final ChassisConfig cc = RobotContainer.getRobotSpecs().getChassisConfig(); // chassis config
+  private final WheelOffsets wc = RobotContainer.getRobotSpecs().getWheelOffset(); // wc = wheel config
+  private final ChassisInversionSpecs is = RobotContainer.getRobotSpecs().getChassisInversionSpecs(); // is = inversion
                                                                                                       // specs
-  private final CANConfig cac = RobotContainer.RC().robotSpecs.getCANConfig();
+  private final CANConfig cac = RobotContainer.getRobotSpecs().getCANConfig();
   /**
    *
    * Modules are in the order of - Front Left, Front Right, Back Left, Back Right
@@ -155,8 +154,8 @@ public class SwerveDrivetrain extends SubsystemBase {
   public final Field2d m_field = new Field2d();
 
   public SwerveDrivetrain() {
-    sensors = RobotContainer.RC().sensors;
-    limelight = RobotContainer.RC().limelight;
+    sensors = RobotContainer.getSubsystem(Sensors_Subsystem.class);
+    limelight = RobotContainer.getSubsystemOrNull(Limelight_Subsystem.class);  //we can deal with no LL
     watchdog = new VisionWatchdog(3.0);
 
     var MT = CANSparkMax.MotorType.kBrushless;

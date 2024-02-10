@@ -4,16 +4,17 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CAN;
 
 public class Shooter extends SubsystemBase {
-  /** Creates a new Shooter. */
+
   public enum ShooterMode {
     Trigger("Trigger"), Percent("Percent"), RPM("RPM");
 
@@ -27,10 +28,9 @@ public class Shooter extends SubsystemBase {
       return name;
    }
   }
-
     //Instantiations 
-  final CANSparkMax shooterMotorLeft = new CANSparkMax(20, CANSparkMax.MotorType.kBrushless);
-  final CANSparkMax shooterMotorRight = new CANSparkMax(21, CANSparkMax.MotorType.kBrushless);
+  final CANSparkMax shooterMotorLeft = new CANSparkMax(CAN.SHOOTER_L, CANSparkMax.MotorType.kBrushless);
+  final CANSparkMax shooterMotorRight = new CANSparkMax(CAN.SHOOTER_R, CANSparkMax.MotorType.kBrushless);
   private SparkPIDController shooterLeftPidController;
   private SparkPIDController shooterRightPidController;
   private RelativeEncoder shooterLeftEncoder;
@@ -144,12 +144,12 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setI(double newI){
-    shooterLeftPidController.setP(newI);
-    shooterRightPidController.setP(newI);
+    shooterLeftPidController.setI(newI);
+    shooterRightPidController.setI(newI);
   }
   public void setD(double newD){
-    shooterLeftPidController.setP(newD);
-    shooterRightPidController.setP(newD);
+    shooterLeftPidController.setD(newD);
+    shooterRightPidController.setD(newD);
   }
 
   public double getP() {
@@ -164,42 +164,10 @@ public class Shooter extends SubsystemBase {
     return shooterLeftPidController.getD();
   }
 
-  void motor_config(CANSparkMax shooterMotorLeft, boolean inverted) {
-    shooterMotorLeft.clearFaults();
-    shooterMotorLeft.restoreFactoryDefaults();
-    shooterMotorLeft.setInverted(inverted);
+  void motor_config(CANSparkMax mtr, boolean inverted) {
+    mtr.clearFaults();
+    mtr.restoreFactoryDefaults();
+    mtr.setInverted(inverted);
  }
-
-  // WIP methods, needs checking - ER
-  public void shoot(){
-
-  }
-
-  public void setSpeed(double speed){
-
-  }
-
-  // TODO: what are the units 4 distance & speed
-
-  public void setDistance(double distance){
-
-  }
-
-  public void setAngle(double angle){
-
-  }
-
-  public boolean isAtSpeed(double tolerance){
-    
-
-    return false;
-
-  }
-
-  public boolean isAtAngle(double tolerance){
-
-
-    return false;
-  }
 
 }

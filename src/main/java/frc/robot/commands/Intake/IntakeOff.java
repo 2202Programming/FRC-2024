@@ -14,7 +14,7 @@ public class IntakeOff extends Command {
   public final Intake intake;
 
   public IntakeOff() {
-    this.intake = RobotContainer.RC().intake;
+    this.intake = RobotContainer.getSubsystem(Intake.class);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

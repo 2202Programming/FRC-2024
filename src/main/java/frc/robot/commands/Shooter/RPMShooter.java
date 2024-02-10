@@ -1,13 +1,13 @@
-package frc.robot.commands.Shooter;
-
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+package frc.robot.commands.Shooter;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Shooter;
 
 /** An example command that uses an example subsystem. */
@@ -17,6 +17,7 @@ public class RPMShooter extends Command {
   private final CommandXboxController m_driverController;
   private double requestedLeftShooterRPM;
   private double requestedRightShooterRPM;
+  private double requestedBothShooterRPM;
   private double requestedPercent;
   private boolean triggerMode = false;
   private double currentTriggerPercent;
@@ -37,8 +38,8 @@ public class RPMShooter extends Command {
    * @param subsystem The subsystem used by this command.
    */
 
-  public RPMShooter(CommandXboxController controller, Shooter shooter) {
-    m_shooter = shooter;
+  public RPMShooter(CommandXboxController controller) {
+    m_shooter = RobotContainer.getSubsystem(Shooter.class);
     m_driverController = controller;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -88,6 +89,7 @@ public class RPMShooter extends Command {
 
     requestedLeftShooterRPM = SmartDashboard.getNumber("Requested Left Shooter RPM",0.0);
     requestedRightShooterRPM = SmartDashboard.getNumber("Requested Right Shooter RPM",0.0);
+    requestedBothShooterRPM = SmartDashboard.getNumber("Requested Shooter RPM: ",0.0);
     requestedPercent = SmartDashboard.getNumber("Requested Percent", 0.0);
 
     switch(m_shooter.getShooterMode()){
@@ -101,6 +103,14 @@ public class RPMShooter extends Command {
         if ((lastRequestedLeftShooterRPM != requestedLeftShooterRPM) || (lastRequestedRightShooterRPM != requestedRightShooterRPM)) {
           m_shooter.setShooterRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
         }
+        if ((requestedBothShooterRPM > 0)) {
+          if ((requestedBothShooterRPM != requestedLeftShooterRPM) && (requestedBothShooterRPM != requestedRightShooterRPM)) {
+            m_shooter.setShooterRPM(requestedBothShooterRPM, requestedBothShooterRPM);          
+          } else {
+            m_shooter.setShooterRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
+            
+        }
+      }
         break;
     }
     

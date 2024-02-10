@@ -11,7 +11,6 @@ import frc.robot.subsystems.Swerve.Config.ChassisInversionSpecs;
 import frc.robot.subsystems.Swerve.Config.ModuleInversionSpecs;
 import frc.robot.subsystems.Swerve.Config.WheelOffsets;
 import frc.robot.util.PIDFController;
-import frc.robot.util.SubsystemConfig;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -81,22 +80,35 @@ public final class Constants {
         12.8, // confirmed with vince
         8.14); // confirmed with vince
 
-    // TODO: For 20424 CompetitionBot ***NOT YET CONFIRMED
-    public static final WheelOffsets comp2024BotOffsets = new WheelOffsets(-42.8027, -24.4188 , 65.56644, 41.74812);
-    public static final ChassisConfig comp2024BotChassisConfig = new ChassisConfig(
+    // TODO: For 2024 CompetitionBotAlpha ***NOT YET CONFIRMED
+    public static final WheelOffsets comp2024AlphaBotOffsets = new WheelOffsets(43.85746387, 24.096825 , -65.21481, -43.066333125);
+    public static final ChassisConfig comp2024AlphaBotChassisConfig = new ChassisConfig(
         MperFT * (23.5 / 12.0) / 2.0,
         MperFT * (19.5 / 12.0) / 2.0,
         0.999, // scale [] <= 1.0
         MperFT * (4.0 / 12.0),
-        12.8,
-        8.14);
+        21.428,
+        6.75);
+      // TODO: For 2024 CompetitionBotBeta ***NOT YET CONFIRMED
+    public static final WheelOffsets comp2024BetaBotOffsets = comp2024AlphaBotOffsets;
+    public static final ChassisConfig comp2024BotBetaChassisConfig = comp2024AlphaBotChassisConfig;
+    
+    // TODO: confirm this when start working on 2024 bot Alpha
+    public static final ChassisInversionSpecs comp2024BotAlphaInversionSpecs = new ChassisInversionSpecs(
+      
+        new ModuleInversionSpecs(true, true, false), // FR
+        new ModuleInversionSpecs(false, true, false), // FL
+        new ModuleInversionSpecs(true, true, false), // BR
+        new ModuleInversionSpecs(false, true, false)); // BL
 
-    // TODO: confirm this when start working on 2024 bot
-    public static final ChassisInversionSpecs comp2024BotInversionSpecs = new ChassisInversionSpecs(
-        new ModuleInversionSpecs(true, false, false), // FR
-        new ModuleInversionSpecs(false, false, false), // FL
-        new ModuleInversionSpecs(true, false, false), // BR
-        new ModuleInversionSpecs(false, false, false)); // BL
+    
+    // TODO: confirm this when start working on 2024 bot Beta
+    public static final ChassisInversionSpecs comp2024BotBetaInversionSpecs = new ChassisInversionSpecs(
+        new ModuleInversionSpecs(true, true, false), // FR
+        new ModuleInversionSpecs(false, true, false), // FL
+        new ModuleInversionSpecs(true, true, false), // BR
+        new ModuleInversionSpecs(false, true, false)); // BL
+
 
     public static final ChassisInversionSpecs swerveBotChassisInversionSpecs = new ChassisInversionSpecs(
         new ModuleInversionSpecs(true, false, false), // FR
@@ -118,18 +130,6 @@ public final class Constants {
 
     // Support for multiple robots on same code base
 
-    public static final SubsystemConfig comp2024BotSubsystemConfig = new SubsystemConfig(false, false, false, true,
-        false,
-        false, false, true, true);
-    public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig(false, false, false, false,
-        false,
-        false, false, true, true);
-    public static final SubsystemConfig chadBotSubsystemConfig = new SubsystemConfig(true, true, false, false, true,
-        true,
-        true, true, true);
-    public static final SubsystemConfig doofBotSubsystemConfig = new SubsystemConfig(true, false, false, true, false,
-        false, false, true, true);
-
     public static final CANModuleConfig comp2024CAN_FL = new CANModuleConfig(29,24,25);
     public static final CANModuleConfig comp2024CAN_FR = new CANModuleConfig(30,26,27);
     public static final CANModuleConfig comp2024CAN_BL = new CANModuleConfig(28,22,23);
@@ -145,7 +145,9 @@ public final class Constants {
     public static final CANConfig chadBotCANConfig = new CANConfig(swerveBotCAN_FL, swerveBotCAN_FR, swerveBotCAN_BL, swerveBotCAN_BR);
     public static final CANConfig doofBotCANConfig = new CANConfig(swerveBotCAN_FL, swerveBotCAN_FR, swerveBotCAN_BL, swerveBotCAN_BR);
 
-  } // end DriveTrain
+  } // end DriveTrain configs
+
+  
 
   /*-------------------------Ports/CAN-------------------------------- */
   /**
@@ -155,31 +157,56 @@ public final class Constants {
    * 
    */
   public static final class CAN {
-    public static final int ARM_RIGHT_Motor = 1000; // placeholder
-    public static final int ARM_LEFT_Motor = 100; // placeholder
+    public static final int ROBORIO = 0;  
+    public static final int PDP = 1; //for rev
+    public static final int PCM1 = 2; //for rev
+    public static final int PCM2 = 3; //for rev
+
+    //lights
+    public static final int CANDLE1 = 3;   //TODO: fix collision with PCM2
+    public static final int CANDLE2 = 4;
+    
+    //Warning: CAN 7 is used for CANCoder on swerveBot aka Tim 2.0 
+
+    // shooter CAN IDs -- MOTORS
+    public static final int SHOOTER_L = 15; 
+    public static final int SHOOTER_R = 16; 
+
+    // Intake CAN IDs -- MOTORS
+    public static final int INTAKE_R = 17;
+    public static final int INTAKE_L = 18;
+
+    // Drive Train IDs 20 - 31
+    // drive train CAN addresses are set above with CANModuleConfig to support different robots
+    // See above CANModuleConfig definitions.
+    //           
+    // Typically:  Drv  Ang CC  Corner
+    //             --   --- --  ----
+    //             20   21  31  BR
+    //             22   23  28  BL
+    //             24   25  29  FL
+    //             26   27  30  FR
+    //
+    // TODO: Triple check these numbers with controller client softare, CTRE and REV
+    //       as the numbers differ from comments at end of this file and there seems
+    //       to be an inconsistent ordering with the CANCoders.
+    //
+    // There are exceptions, check for your ROBOT.
+
+    // PLACEHOLDERS - use 50 .. 59, max CAN addr is 64
+    // Please move to correct location when ID is assigned
+    public static final int ARM_RIGHT_Motor = 50; // placeholder
+    public static final int ARM_LEFT_Motor = 51; // placeholder
 
     // Intake
-    public static final int INTAKE_MTR = 200; // placeholder
-    public static final int ANGLE_MTR = 1000; // placeholder
-    // drive train CANCoders
-    public static final int DT_BL_CANCODER = 28;
-    public static final int DT_BR_CANCODER = 31;
-    public static final int DT_FR_CANCODER = 30;
-    public static final int DT_FL_CANCODER = 7;
-
-    // drive train drive / angle motors - sparkmax neo
-    public static final int DT_FL_DRIVE = 20;
-    public static final int DT_FL_ANGLE = 21;
-    public static final int DT_BL_DRIVE = 22;
-    public static final int DT_BL_ANGLE = 23;
-    public static final int DT_BR_DRIVE = 24;
-    public static final int DT_BR_ANGLE = 25;
-    public static final int DT_FR_DRIVE = 26;
-    public static final int DT_FR_ANGLE = 27;
-
+    public static final int INTAKE_MTR = 52; // placeholder
+    public static final int ANGLE_MTR = 53; // placeholder
     // Nose Roller
-    public static final int NOSE_MOTOR_ANGLE = 140;
-    public static final int NOSE_MOTOR_FIRE = 150;
+    public static final int NOSE_MOTOR_ANGLE = 54;
+    public static final int NOSE_MOTOR_FIRE = 55;
+    
+    // Transfer
+    public static final int TRANSFER_MOTOR = 56; // placeholder
 
     // Transfer
     public static final int TRANSFER_MOTOR = 210; // placeholder
@@ -224,7 +251,7 @@ public final class Constants {
   // public static final class CAN{
   // /* 1/20/24
   // * CAN IDs:
-  // * Corner 3 Drive Motor BL: 22
+  // * Corner 3 Drive Motor BL: 22              
   // * Corner 3 Direction Motor BL: 23
   // * BL Encoder: 28
   // *

@@ -10,6 +10,12 @@ import frc.robot.Constants.CAN;
 import frc.robot.Constants.DigitalIO;
 import com.revrobotics.CANSparkMax;
 
+/*
+ * NOTE:
+ * All commented out shuffleboard pieces will be fixed when a motor is added to the transfer piece.
+ */
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class Transfer extends SubsystemBase {
   
   DigitalInput lightGate = new DigitalInput(DigitalIO.TRANSFER_LIGHT_GATE);
@@ -20,7 +26,7 @@ public class Transfer extends SubsystemBase {
       transferMotor = new CANSparkMax(CAN.TRANSFER_MOTOR, CANSparkMax.MotorType.kBrushless);
   }
 
-  //TODO: find out methods/behaviors, pneumatics, etc. 
+  // TODO: find out methods/behaviors, pneumatics, etc.
 
   public boolean isLightGateBlocked(){
     return lightGate.get(); 
@@ -40,5 +46,76 @@ public class Transfer extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    transferMotorRPM = transferEncoder.getVelocity();
+    // SmartDashboard.putString("Transfer Control
+    // Mode",currentTransferShootingMode.toString());
+    // SmartDashboard.putNumber("Current Transfer RPM", transferMotorRPM /
+    // gearboxRatio);
+    // SmartDashboard.putNumber("Current Transfer Motor RPM", transferMotorRPM);
+    // SmartDashboard.putNumber("Transfer Motor Percent", transferMotorOutput);
+  }
+
+  public void setShootingMode(TransferShootingMode mode) {
+    currentTransferShootingMode = mode;
+  }
+
+  public void cycleShootingMode() {
+    if (currentTransferShootingMode == TransferShootingMode.Trigger) {
+      currentTransferShootingMode = TransferShootingMode.Percent;
+      return;
+    }
+    if (currentTransferShootingMode == TransferShootingMode.Percent) {
+      currentTransferShootingMode = TransferShootingMode.RPM;
+      return;
+    }
+    if (currentTransferShootingMode == TransferShootingMode.RPM)
+      currentTransferShootingMode = TransferShootingMode.Trigger;
+    return;
+  }
+
+  public TransferShootingMode getShooterMode() {
+    return currentTransferShootingMode;
+  }
+
+  public double transferMotorOutput() {
+    return transferMotorOutput;
+  }
+
+  public double transferMotorRPM() {
+    return transferMotorRPM;
+  }
+
+  public double transferRPM() {
+    return transferMotorRPM / gearboxRatio;
+  }
+
+  public void setP(double newP) {
+    transferPidController.setP(newP);
+  }
+
+  public void setI(double newI) {
+    transferPidController.setP(newI);
+  }
+
+  public void setD(double newD) {
+    transferPidController.setP(newD);
+  }
+
+  public double getP() {
+    return transferPidController.getP();
+  }
+
+  public double getI() {
+    return transferPidController.getI();
+  }
+
+  public double getD() {
+    return transferPidController.getD();
+  }
+
+  void motor_config(CANSparkMax transferMotor, boolean inverted) {
+    transferMotor.clearFaults();
+    transferMotor.restoreFactoryDefaults();
+    transferMotor.setInverted(inverted);
   }
 }

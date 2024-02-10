@@ -5,37 +5,34 @@
 package frc.robot.commands.utility;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Shooter;
 
+//TODO replace all dummy commands with real code not this pls -er
 
 public class DummyShooterCmd extends Command {
   /** Creates a new DummyShooterCmd. */
-  
+
   public Shooter shooter;
 
+  public DummyShooterCmd() {
 
-  public DummyShooterCmd(Shooter shooter) {
-    // Use addRequirements() here to declare subsystem dependencies.
-    this.shooter = shooter;
-    addRequirements(shooter);
+    this.shooter = RobotContainer.getSubsystem(Shooter.class);
+    // protect incase we don't have a shooter
+    // addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    Commands.print("yay shooter button works! :3");
+    System.out.println("Shooter is on, if we had one! :3");
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    System.out.println("Shooter is off ");
+  }
 
   // Returns true when the command should end.
   @Override

@@ -23,7 +23,7 @@ public class driveToPose extends Command {
   public driveToPose(Pose2d targetPose) {
 
     this.targetPose = targetPose;
-    m_Drivetrain = RobotContainer.RC().drivetrain;
+    m_Drivetrain = RobotContainer.getSubsystem("DRIVETRAIN");
     addRequirements(m_Drivetrain);
 
   }

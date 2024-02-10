@@ -102,7 +102,7 @@ public class SwerveModuleMK3 {
     myprefix = prefix;
 
     // cc is the chassis config for all our pathing math
-    cc = RobotContainer.RC().robotSpecs.getChassisConfig();
+    cc = RobotContainer.getRobotSpecs().getChassisConfig();
 
     // Always restore factory defaults - it removes gremlins
     driveMotor.restoreFactoryDefaults();
