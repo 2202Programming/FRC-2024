@@ -21,8 +21,6 @@ public class IntakeDefaultPos extends Command implements BlinkyLightUser {
         this.intake = RobotContainer.getSubsystem(Intake.class);
     }
 
-    
-
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {

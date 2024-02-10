@@ -6,11 +6,15 @@ package frc.robot.commands.Shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Transfer;
 
 public class ShooterToggle extends Command {
   /** Creates a new ShooterToggle. */
   public final Shooter shooter;
+  public final Intake intake;
+  public final Transfer transfer;
   final boolean pneumatics = false; // YES FOR SUSSEX NO AFTER???
   final int DELAY = 10; // figure out this number
   int count = 0;
@@ -19,6 +23,8 @@ public class ShooterToggle extends Command {
   //final Intake intake; //TODO: When merge, check for hasNote - Probably move to subsystem
   public ShooterToggle() {
     this.shooter = RobotContainer.getSubsystem(Shooter.class);
+    this.intake = RobotContainer.getSubsystem(Intake.class);
+    this.transfer = RobotContainer.getSubsystem(Transfer.class);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -26,17 +32,16 @@ public class ShooterToggle extends Command {
   @Override
   public void initialize() {
     RPM_dropped = false;
-   // if(shooter.hasNote()){
+   if(intake.hasNote()){
     shooter.setRPM(0.5, 0.5); //make these constants (0.5 placeholder)
- // } when this is added to subsystem
-
+  }
   } 
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(shooter.isAtRPM()){
-      // shooter.transferMotorOn(); TODO: Once merge, comment this in
+    if(shooter.isAtRPM() && intake.angleAtSetpoint()){
+      transfer.transferMotorOn();
     }
   }
 
