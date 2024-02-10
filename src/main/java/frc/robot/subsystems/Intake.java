@@ -53,7 +53,8 @@ public class Intake extends SubsystemBase {
   final DigitalInput lightgate = new DigitalInput(DigitalIO.IntakeLightGate);
 
   //limit switch 
-  DigitalInput limitSwitch = new DigitalInput(0); //find value
+  DigitalInput limitSwitchUp = new DigitalInput(0); 
+  DigitalInput limitSwitchDown = new DigitalInput(1);
 
   public Intake() { //TODO: Get values
     final int STALL_CURRENT = 15; //[amp]
@@ -134,7 +135,7 @@ public class Intake extends SubsystemBase {
     return angle_servo.atSetpoint(); // are we there yet?
   }
   public boolean atLimitSwitch(){
-    return limitSwitch.get();
+    return limitSwitchUp.get(); //do we need to check the other???
   }
 
   public Command getWatcher() {
