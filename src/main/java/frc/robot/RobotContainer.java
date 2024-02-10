@@ -19,12 +19,13 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.RandomLightsCmd;
+import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.utility.DummyShooterCmd;
-import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
@@ -39,7 +40,7 @@ import frc.robot.util.RobotSpecs;
  * the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer implements BlinkyLightUser {
+public class RobotContainer {
 
   // enum for bindings add when needed
   public enum Bindings {
@@ -84,6 +85,12 @@ public class RobotContainer implements BlinkyLightUser {
   public static <T> T getObject(String name) {
     return (T) rc.robotSpecs.mySubsystemConfig.getObject(name);
   }
+  
+  // Use this form when the RobotContainer object is NOT a Subsystem, and you can deal with nulls
+  @SuppressWarnings("unchecked")
+  public static <T> T getObjectOrNull(String name) {
+    return (T) rc.robotSpecs.mySubsystemConfig.getObjectOrNull(name);
+  }
 
   public static boolean hasSubsystem(Class<? extends Subsystem> clz) {
     return rc.robotSpecs.mySubsystemConfig.hasSubsystem(clz);
@@ -103,10 +110,14 @@ public class RobotContainer implements BlinkyLightUser {
     robotSpecs = new RobotSpecs();
     robotSpecs.mySubsystemConfig.constructAll();
 
+    // Testing, but also to drive the drivers nuts...
+    Command random_lights = new RandomLightsCmd();
+    random_lights.schedule();
+
     // Quiet some of the noise
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    // get subsystem vars as needed
+    // get subsystem vars as needed for bindings 
     drivetrain = getSubsystem(SwerveDrivetrain.class);
     dc = getSubsystem("DC");
 
@@ -149,6 +160,9 @@ public class RobotContainer implements BlinkyLightUser {
             AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(1.73, 5.38), new Rotation2d(0.0)),
                 new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
             new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+
+        //Start any watcher commands
+        new PDPMonitorCmd();    // auto scheduled, runs when disabled
         break;
 
       case Comptition:

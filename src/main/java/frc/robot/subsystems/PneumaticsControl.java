@@ -4,39 +4,54 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.PneumaticHub;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CAN;
 
 public class PneumaticsControl extends SubsystemBase {
 
     // instance variables
-    Compressor compressor;
+    PneumaticHub m_PneumaticHub;
 
-    /** Creates a new Pneumatics Pressure Controller. */
+    private final int PRESSURE_SENSOR1 = 0; //analong pressure sensor
+    private double minPressure = 70;
+    private double maxPressure = 120;
+
+    /** Creates a new Pneumatics Controller. */
     public PneumaticsControl() {
-        // Initializes an pneumatics Analog Input on port 0
-        compressor = new Compressor(PneumaticsModuleType.REVPH);
+        // NOTE
+        // new PneumaticsControlModule(CAN.PCM1) causes CAN token errors
+        m_PneumaticHub = new PneumaticHub(CAN.PCM1);
+        compressor_on();
     }
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Compressor Pressure 1", get_tank_pressure(PRESSURE_SENSOR1)); //temp, move to smart logging later
+    }
 
+    public double get_tank_pressure(int channel) {
+        return m_PneumaticHub.getPressure(channel);
     }
 
     public double get_tank_pressure() {
-        return compressor.getPressure();
+        return m_PneumaticHub.getPressure(PRESSURE_SENSOR1);
     }
 
     public boolean get_compressor_status() {
-        return compressor.isEnabled();
+        return m_PneumaticHub.getCompressor();
     }
 
     public void compressor_on() {
-        compressor.enableAnalog(70, 120);
+        m_PneumaticHub.enableCompressorAnalog(minPressure,maxPressure);
+    }
+
+    public void compressor_on(double min, double max) {
+        m_PneumaticHub.enableCompressorAnalog(min,max);
     }
 
     public void compressor_off() {
-        compressor.disable();
+        m_PneumaticHub.disableCompressor();
     }
 }
