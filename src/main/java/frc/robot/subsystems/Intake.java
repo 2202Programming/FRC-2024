@@ -98,6 +98,9 @@ public class Intake extends SubsystemBase {
   public double getAnglePosition() {
     return angle_servo.getPosition();
   }
+  public void setAngleVelocity(double speed){
+    angle_servo.setVelocityCmd(speed);
+  }
 
   public double getAngleSpeed() {
     return angle_servo.getVelocity();

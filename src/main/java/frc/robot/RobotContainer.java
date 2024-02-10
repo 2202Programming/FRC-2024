@@ -26,6 +26,7 @@ import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.utility.DummyShooterCmd;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
@@ -41,7 +42,6 @@ import frc.robot.util.RobotSpecs;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer implements BlinkyLightUser {
-
   // enum for bindings add when needed
   public enum Bindings {
     DriveTest, Shooter_test, Comptition
@@ -153,10 +153,14 @@ public class RobotContainer implements BlinkyLightUser {
         break;
 
       case Comptition:
+      var intake = getSubsystem(Intake.class);
         // TODO: replace Print/Dummy with real commands when known - ER
         driver.rightTrigger().whileTrue(new DummyShooterCmd());
         driver.leftTrigger().onTrue(new PrintCommand("PlaceholderCMD: Align with shooter"));
         driver.x().whileTrue(new IntakeToggle());
+        driver.y().whileTrue(new InstantCommand(() -> {
+          intake.setAngleVelocity(1.0);
+        }));
         break;
 
       default:

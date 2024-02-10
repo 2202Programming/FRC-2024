@@ -51,7 +51,7 @@ public class IntakeToggle extends Command implements BlinkyLightUser {
   // double angle_cmd;
   double original_pos = 0;
   double count = 0;
-
+  boolean vel_change = false;
   public IntakeToggle() {
     this.intake = RobotContainer.getSubsystem(Intake.class);
   }
@@ -78,9 +78,14 @@ public class IntakeToggle extends Command implements BlinkyLightUser {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if(vel_change){
+      intake.setAngleVelocity(1.0);
+    }
+    else{
     original_pos = intake.getAnglePosition();
     intake.setAngleSetpoint(Intake_Constants.AnglePosition);
     intake.setMotorSpeed(Intake_Constants.IntakeMotorDefault);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
