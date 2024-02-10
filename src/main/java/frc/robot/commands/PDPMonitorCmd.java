@@ -15,7 +15,7 @@ public class PDPMonitorCmd extends WatcherCmd {
   NetworkTableEntry nt_angle_I;
 
   public PDPMonitorCmd() {
-    pdp = RobotContainer.getObject("PDP");
+    pdp = RobotContainer.getObjectOrNull("PDP");
   }
 
   @Override
@@ -35,6 +35,7 @@ public class PDPMonitorCmd extends WatcherCmd {
 
   @Override
   public void ntupdate() {
+    if (pdp == null) return;
     nt_total_power.setDouble(pdp.getTotalPower());
     nt_temperature.setDouble(pdp.getTemperature());
     nt_voltage.setDouble(pdp.getVoltage());
