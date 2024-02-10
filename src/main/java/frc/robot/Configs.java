@@ -32,9 +32,9 @@ public class Configs {
         pdp.clearStickyFaults();
         return pdp;
       })
-      .add(BlinkyLights.class, "LIGHTS", () -> {
-        return new BlinkyLights();
-      })
+     // .add(BlinkyLights.class, "LIGHTS", () -> {
+     //   return new BlinkyLights();
+     // })
       .add(PneumaticsControlModule.class, "PCM1", () -> {
         return new PneumaticsControlModule(CAN.PCM1);
       })
@@ -57,9 +57,10 @@ public class Configs {
         pdp.clearStickyFaults();
         return pdp;
       })
-      .add(BlinkyLights.class, "LIGHTS", () -> {
-        return new BlinkyLights();
-      })
+      // DEBUG chassis without candles
+     // .add(BlinkyLights.class, "LIGHTS", () -> {
+     //   return new BlinkyLights();
+     // })
       .add(HID_Xbox_Subsystem.class, "DC", () -> {
         return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
       })
