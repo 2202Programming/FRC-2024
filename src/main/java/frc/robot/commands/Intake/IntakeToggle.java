@@ -5,7 +5,6 @@
 package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Intake_Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.BlinkyLights;
@@ -40,7 +39,7 @@ import frc.robot.subsystems.Intake;
  *
  *
  */
-public class IntakeToggle extends Command implements BlinkyLightUser {
+public class IntakeToggle extends BlinkyLightUser {
     final static int DONE_COUNT = 100; // frames we expect to have note before finished
 
     /** Creates a new intakeForward. */

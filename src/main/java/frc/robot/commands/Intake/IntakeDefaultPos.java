@@ -5,14 +5,13 @@
 package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Intake_Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Intake;
 
-public class IntakeDefaultPos extends Command implements BlinkyLightUser {
+public class IntakeDefaultPos extends  BlinkyLightUser {
 
     /** Creates a new intakeForward. */
     public final Intake intake;
