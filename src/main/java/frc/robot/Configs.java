@@ -33,26 +33,23 @@ public class Configs {
         pdp.clearStickyFaults();
         return pdp;
       })
-     // .add(BlinkyLights.class, "LIGHTS", () -> {
-     //   return new BlinkyLights();
-     // })
+      .add(BlinkyLights.class, "LIGHTS")
       // .add(PneumaticsControlModule.class, "PCM1", () -> {
       //   return new PneumaticsControlModule(CAN.PCM1); // this causes CAN token errors??
       // })
-      .add(PneumaticsControl.class)
       .add(HID_Xbox_Subsystem.class, "DC", () -> {
         return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
       })
       .add(Sensors_Subsystem.class)
       .add(Limelight_Subsystem.class)
       .add(SwerveDrivetrain.class) // must be after LL and Sensors
-      //.add(Intake.class)
-      //.add(Shooter.class)
-      //.add(Transfer.class)
-      //add(Climber.class)
-      ;
+  // .add(Intake.class)
+  // .add(Shooter.class)
+  // .add(Transfer.class)
+  // add(Climber.class)
+  ;
 
-   public static final SubsystemConfig comp2024BetaBotSubsystemConfig = new SubsystemConfig()
+  public static final SubsystemConfig comp2024BetaBotSubsystemConfig = new SubsystemConfig()
       // deferred construction via Supplier<Object> lambda
       .add(PowerDistribution.class, "PDP", () -> {
         var pdp = new PowerDistribution(CAN.PDP, ModuleType.kRev);
@@ -60,9 +57,9 @@ public class Configs {
         return pdp;
       })
       // DEBUG chassis without candles
-     // .add(BlinkyLights.class, "LIGHTS", () -> {
-     //   return new BlinkyLights();
-     // })
+      // .add(BlinkyLights.class, "LIGHTS", () -> {
+      // return new BlinkyLights();
+      // })
       .add(HID_Xbox_Subsystem.class, "DC", () -> {
         return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
       })
@@ -72,8 +69,8 @@ public class Configs {
       .add(Intake.class)
       .add(Shooter.class)
       .add(Transfer.class)
-      //add(Climber.class)
-      ;
+  // add(Climber.class)
+  ;
 
   // Subsystems and hardware on Tim 2.0
   public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig()
@@ -82,9 +79,8 @@ public class Configs {
       .add(SwerveDrivetrain.class)
       .add(HID_Xbox_Subsystem.class, "DC", () -> {
         return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
-      })
-      ;
-    
+      });
+
   // Chad's subsystems and objects
   public static final SubsystemConfig chadBotSubsystemConfig = new SubsystemConfig()
       .add(Sensors_Subsystem.class)
@@ -92,8 +88,7 @@ public class Configs {
       .add(SwerveDrivetrain.class) // must be after LL and Sensors
       .add(HID_Xbox_Subsystem.class, "DC", () -> {
         return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
-      })
-      ;
+      });
 
   public static final SubsystemConfig doofBotSubsystemConfig = new SubsystemConfig()
       .add(Sensors_Subsystem.class)
@@ -101,9 +96,7 @@ public class Configs {
       .add(HID_Xbox_Subsystem.class, "DC", () -> {
         return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
       })
-      .add(SwerveDrivetrain.class)
-      ;
-      
+      .add(SwerveDrivetrain.class);
 
   public static final SubsystemConfig botOnBoardSystemConfig = new SubsystemConfig()
   // .add(null) useful stuff for bot on boards

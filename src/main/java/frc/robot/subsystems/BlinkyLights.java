@@ -17,13 +17,18 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.CAN;
 
-public class BlinkyLights {
+public class BlinkyLights extends SubsystemBase {
+    // variables and constants
     static final int TO = 50; // [ms] timeout for comms
 
     // candle frame update rate, larger saves on CAN BUS
     static final int FrameStatusTime = 200; // [ms]
+
+    private static BlinkyLightUser currentUser = null;
 
     // Some common colors
     static public Color8Bit BLACK = new Color8Bit(0, 0, 0);
@@ -36,45 +41,31 @@ public class BlinkyLights {
     // State vars
     CANdle candle_l;
     CANdle candle_r;
-    double brightness;
     Color8Bit currentColor;
-    boolean amIReal;
 
-    // make sure we have one user to service any calls
-    static BlinkyLightUser defaultUser = new BlinkyLightUser() {
-        @Override
-        public Color8Bit colorProvider() {
-            return ORANGE;
-        }
-        // other overides could go here for the default
-    };
+    final BlinkyLightUser defaultUser;
 
-    /** Creates a new BlinkyLights. */
+    // constructor
     public BlinkyLights() {
-        BlinkyLightController.setDefaultUser(defaultUser);
+        defaultUser = new BlinkyLightUser(this) {
+            @Override
+            public Color8Bit colorProvider() {
+                return ORANGE;
+            }
+        };
+        //configure hardware
         candle_l = new CANdle(CAN.CANDLE1);
         candle_r = new CANdle(CAN.CANDLE2);
+        config(candle_l);
+        config(candle_r);
 
-        // see if there is a bus voltage, if so we must be real
-        amIReal = (candle_l.get5VRailVoltage() > 1.0);
-        amIReal = true;
-
-        if (amIReal) {
-            System.out.println("***I have blinkylights, I must be one of the cool robots.");
-            config(candle_l);
-            config(candle_r);
-
-            BlinkyLightController.controlledLights = this;
-            setBrightness(1.0);
-
-        } else {
-            // no lights
-            candle_l = null;
-            candle_r = null;
-            System.out.println("***I have no blinkylights :( ... setting up poser methods");
-        }
+        //set to default user's requests
+        setCurrentUser(defaultUser);
+        setColor(currentUser.colorProvider());
+        setBrightness(1.0);
     }
 
+    // blinkylights config
     void config(CANdle cdl) {
         final var StatusFrame = CANdleStatusFrame.CANdleStatusFrame_Status_1_General;
 
@@ -92,11 +83,45 @@ public class BlinkyLights {
         cdl.setControlFramePeriod(CANdleControlFrame.CANdle_Control_2_ModulatedVBatOut, FrameStatusTime);
     }
 
+    // methods
+    public void setCurrentUser(BlinkyLightUser user) {
+        currentUser = user;
+    };
+
+    public void release() {
+        currentUser = defaultUser;
+        setColor(ORANGE);
+    }
+
+    /* Static methods to intercept robot state changes */
+    public void onRobotInit() {
+        currentUser.onRobotInit();
+    };
+
+    public void onDisabledPeriodic() {
+        // always do our alliance colors
+        setAllianceColors();
+    }
+
+    public void onAutomousdInit() {
+        currentUser.onAutomousInit();
+    };
+
+    public void onTeleopInit() {
+        currentUser.onTeleopInit();
+    };
+
+    public void onTestInit() {
+        currentUser.onTestInit();
+    };
+
+    public void onTestPeriodic() {
+        currentUser.onTestInit();
+    };
+
     void setColor(Color8Bit color) {
-        if (amIReal) {
-            candle_l.setLEDs(color.red, color.green, color.blue);
-            candle_r.setLEDs(color.red, color.green, color.blue);
-        }
+        candle_l.setLEDs(color.red, color.green, color.blue);
+        candle_r.setLEDs(color.red, color.green, color.blue);
         currentColor = color;
     }
 
@@ -108,28 +133,22 @@ public class BlinkyLights {
     }
 
     void setBlinking(Color8Bit color) {
-        if (amIReal) {
-            Animation animation = new StrobeAnimation(color.red, color.green, color.blue, 0, 0.5, 8);
-            candle_l.animate(animation, 0);
-            candle_r.animate(animation, 0);
-        }
+        Animation animation = new StrobeAnimation(color.red, color.green, color.blue, 0, 0.5, 8);
+        candle_l.animate(animation, 0);
+        candle_r.animate(animation, 0);
     }
 
     void stopBlinking() {
-        if (amIReal) {
-            candle_l.clearAnimation(0);
-            candle_r.clearAnimation(0);
-        }
+        candle_l.clearAnimation(0);
+        candle_r.clearAnimation(0);
     }
 
     /*
      * Brightness on a scale from 0-1, with 1 being max brightness
      */
     void setBrightness(double brightness) {
-        if (amIReal) {
-            candle_l.configBrightnessScalar(brightness);
-            candle_r.configBrightnessScalar(brightness);
-        }
+        candle_l.configBrightnessScalar(brightness);
+        candle_r.configBrightnessScalar(brightness);
     }
 
     public void setAllianceColors() {
@@ -156,17 +175,25 @@ public class BlinkyLights {
     }
 
     static boolean differentColors(Color8Bit c1, Color8Bit c2) {
-        return (c1.red != c2.red) ||
-                (c1.green != c2.green) ||
-                (c1.blue != c2.blue);
+        return (c1.red != c2.red) || (c1.green != c2.green) || (c1.blue != c2.blue);
     }
-
 
     /**
      * BlinkyLightUser a command for controllering of the lights
      */
     // commands and sub-systems
     public static class BlinkyLightUser extends Command {
+
+        final BlinkyLights lights;
+
+        public BlinkyLightUser() {
+            lights = RobotContainer.getObjectOrNull("LIGHTS");
+        }
+
+        BlinkyLightUser(BlinkyLights lights) {
+            this.lights = lights;
+        }
+
         public void onRobotInit() {
         };
 
@@ -191,133 +218,61 @@ public class BlinkyLights {
 
         public void enableLights() {
             // user is a Command, setup a parallel cmd to get the color info
-            var watchCmd = new BlinkyLightController.UserWatcherCommand(this);
-            watchCmd.schedule();
-        }
-    }
-
-    //TODO make a real subsystem?
-    // static because there can be only one controller for now
-    // tracks who is using the lights and runs the allianceColor during
-    // disabled periodic.
-    public static class BlinkyLightController {
-        protected static BlinkyLights controlledLights = null;
-        private static BlinkyLightUser defaultUser = null;
-        private static BlinkyLightUser currentUser = defaultUser;
-
-        public static void setDefaultUser(BlinkyLightUser default_user) {
-            defaultUser = default_user;
-            setCurrentUser(default_user);
-        }
-
-        public static void setCurrentUser(BlinkyLightUser user) {
-            currentUser = user;
-        };
-
-        public static void release() {
-            currentUser = defaultUser;
-            if (controlledLights != null) {
-                controlledLights.setColor(ORANGE);
-            }
-        };
-
-        /* Static methods to intercept robot state changes */
-        public static void onRobotInit() {
-            currentUser.onRobotInit();
-        };
-
-        public static void onDisabledPeriodic() {
-            // always do our alliance colors
-            if (controlledLights != null)
-                controlledLights.setAllianceColors();
-        }
-
-        public static void onAutomousdInit() {
-            currentUser.onAutomousInit();
-        };
-
-        public static void onTeleopInit() {
-            currentUser.onTeleopInit();
-        };
-
-        public static void onTestInit() {
-            currentUser.onTestInit();
-        };
-
-        public static void onTestPeriodic() {
-            currentUser.onTestInit();
-        };
-
-        static class UserWatcherCommand extends Command {
-            Color8Bit currentColor;
-            boolean blinkState;
-            final BlinkyLightUser myUser; // a command that is using the lights
-            final Command watcherCmd; // a watcher to get values to the CANdles periodically
-
-            UserWatcherCommand(BlinkyLightUser user) {
-                myUser = user;
-                watcherCmd = this;
+            if (lights != null) {
+                var watchCmd = lights.new UserWatcherCommand(this);
+                watchCmd.schedule();
             }
 
-            UserWatcherCommand() {
-                myUser = null;
-                watcherCmd = this;
+        }
+    } // blinkylights user
+
+    class UserWatcherCommand extends Command {
+        Color8Bit currentColor;
+        boolean blinkState;
+        final BlinkyLightUser myUser; // a command that is using the lights
+        final Command watcherCmd; // a watcher to get values to the CANdles periodically
+
+        UserWatcherCommand(BlinkyLightUser user) {
+            myUser = user;
+            watcherCmd = this;
+            currentColor = user.colorProvider();
+        }
+
+        /*
+         * Reads providers and send to CANDles.
+         * 
+         * This can could be setup to happen less frequently
+         */
+        @Override
+        public void execute() {
+            Color8Bit newColor = myUser.colorProvider();
+
+            // avoid CAN bus traffic if color isn't changing
+            if (!currentColor.equals(newColor)) {
+                currentColor = newColor;
+                setColor(currentColor);
             }
-
-            /*
-             * Pulls initial values from the BLUser
-             */
-            @Override
-            public void initialize() {
-                setCurrentUser(myUser);
-                if (controlledLights == null)
-                    return;
-
-                currentColor = myUser.colorProvider();
-                controlledLights.setColor(currentColor);
+            if (myUser.requestBlink() != blinkState) {
                 blinkState = myUser.requestBlink();
-                controlledLights.setBlinking(blinkState);
-            }
-
-            /*
-             * Reads providers and send to CANDles.
-             * 
-             * This can could be setup to happen less frequently
-             */
-            @Override
-            public void execute() {
-                Color8Bit newColor = myUser.colorProvider();
-                if (controlledLights == null)
-                    return;
-
-                // avoid CAN bus traffic if color isn't changing
-                if (!currentColor.equals(newColor)) {
-                    currentColor = newColor;
-                    controlledLights.setColor(currentColor);
-                }
-                if (myUser.requestBlink() != blinkState) {
-                    blinkState = myUser.requestBlink();
-                    controlledLights.setBlinking(blinkState);
-                }
-            }
-
-            // watcher should always be able to
-            @Override
-            public boolean runsWhenDisabled() {
-                return myUser.runsWhenDisabled();
-            }
-
-            @Override
-            public void end(boolean interrupted) {
-                release();
-            }
-
-            @Override
-            public boolean isFinished() {
-                // run until my parent command is done
-                return !myUser.isScheduled();
+                setBlinking(blinkState);
             }
         }
 
+        // watcher should always be able to
+        @Override
+        public boolean runsWhenDisabled() {
+            return myUser.runsWhenDisabled();
+        }
+
+        @Override
+        public void end(boolean interrupted) {
+            release();
+        }
+
+        @Override
+        public boolean isFinished() {
+            // run until my parent command is done
+            return !myUser.isScheduled();
+        }
     }
-}// static class BlinkyLightController
+}
