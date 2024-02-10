@@ -42,7 +42,7 @@ public class NoseRollerToggle extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (noseRoller.getNosePosition() == Roller_Constants.RollerPosShoot) {
+        if (Math.abs(noseRoller.getNosePosition() - Roller_Constants.RollerPosShoot) < 0.1) {
             noseRoller.setRollerSpeed(Roller_Constants.RollerSpeedDefault);
         }
     }

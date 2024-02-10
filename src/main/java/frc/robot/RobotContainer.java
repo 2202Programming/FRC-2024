@@ -27,6 +27,7 @@ import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.utility.DummyShooterCmd;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.NoseRoller;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
@@ -60,7 +61,7 @@ public class RobotContainer implements BlinkyLightUser {
   }
 
   // The following methods are unchecked, but the SystemConfig class does
-  // check the types. 
+  // check the types.
   // Use the string name when there are multiple instance of the subsystem
   @SuppressWarnings("unchecked")
   public static <T> T getSubsystem(String name) {
@@ -73,7 +74,8 @@ public class RobotContainer implements BlinkyLightUser {
     return (T) rc.robotSpecs.mySubsystemConfig.getSubsystem(clz);
   }
 
-  // Use this when there is only one instance of the Subsystem and can deal with nulls
+  // Use this when there is only one instance of the Subsystem and can deal with
+  // nulls
   // in the context. It bypasses NPE checks. Know what you are doing.
   @SuppressWarnings("unchecked")
   public static <T extends Subsystem> T getSubsystemOrNull(Class<T> clz) {
@@ -94,7 +96,6 @@ public class RobotContainer implements BlinkyLightUser {
     return rc.robotSpecs;
   }
 
-
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -112,7 +113,7 @@ public class RobotContainer implements BlinkyLightUser {
     dc = getSubsystem("DC");
 
     /* Set the commands below */
-    configureBindings(Bindings.Comptition); // Change this to s wich between bindings
+    configureBindings(Bindings.Comptition); // Change this to switch between bindings
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
@@ -128,8 +129,7 @@ public class RobotContainer implements BlinkyLightUser {
     return null;
   }
 
-  private
-   void configureBindings(Bindings bindings) {
+  private void configureBindings(Bindings bindings) {
     CommandXboxController driver = dc.Driver();
 
     switch (bindings) {
@@ -153,14 +153,19 @@ public class RobotContainer implements BlinkyLightUser {
         break;
 
       case Comptition:
-      var intake = getSubsystem(Intake.class);
+        var intake = getSubsystem(Intake.class);
+        // var noseRoller = getSubsystem(NoseRoller.class);
         // TODO: replace Print/Dummy with real commands when known - ER
         driver.rightTrigger().whileTrue(new DummyShooterCmd());
         driver.leftTrigger().onTrue(new PrintCommand("PlaceholderCMD: Align with shooter"));
         driver.x().whileTrue(new IntakeToggle());
         driver.y().whileTrue(new InstantCommand(() -> {
-          intake.setAngleVelocity(1.0);
+        intake.setAngleVelocity(1.0);
         }));
+        // when used can uncomment to set nose roller
+        // driver.a().whileTrue(new InstantCommand(() -> {
+        // noseRoller.setNoseVelocity(1.0);
+        // }));
         break;
 
       default:

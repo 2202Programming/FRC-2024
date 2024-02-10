@@ -26,7 +26,7 @@ public class NoseRoller extends SubsystemBase {
   final PIDController posPID = new PIDController(1.0, 0.0, 0.0);
   final DigitalInput lightgate = new DigitalInput(DigitalIO.RollerLightGate);
   public double initialPosition; // Should be our "0" where the nose roller's rollers are in the poition to take
-                                 // the piece
+  // the piece
   public double noseMaxSpeed; // RPM
 
   public NoseRoller() {
@@ -48,6 +48,10 @@ public class NoseRoller extends SubsystemBase {
 
   public void setNosePosition(double pos) {
     noseAngleMotor.setSetpoint(pos);
+  }
+
+  public void setNoseVelocity(double vel) {
+    noseAngleMotor.setVelocityCmd(vel);
   }
 
   public boolean isGateBlocked() { // if we even have a gate?
