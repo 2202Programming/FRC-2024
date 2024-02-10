@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import frc.robot.Constants.CAN;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.PneumaticsControl;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
@@ -31,6 +32,7 @@ public class Configs {
         pdp.clearStickyFaults();
         return pdp;
       })
+      .add(PneumaticsControl.class)
       .add(BlinkyLights.class, "LIGHTS")
       .add(HID_Xbox_Subsystem.class, "DC", () -> {
         return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
