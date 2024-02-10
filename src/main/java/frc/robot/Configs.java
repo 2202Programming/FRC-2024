@@ -44,7 +44,7 @@ public class Configs {
         return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
       })
       .add(Sensors_Subsystem.class)
-//      .add(Limelight_Subsystem.class)
+      .add(Limelight_Subsystem.class)
       .add(SwerveDrivetrain.class) // must be after LL and Sensors
       .add(Intake.class)
       .add(Command.class, "IntakeWatcher", () -> {

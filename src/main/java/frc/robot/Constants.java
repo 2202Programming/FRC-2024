@@ -207,6 +207,9 @@ public final class Constants {
     
     // Transfer
     public static final int TRANSFER_MOTOR = 56; // placeholder
+    
+    // Claw
+    public static final int CLAW_WHEEL_MOTOR = 16;
 
     // IMU
     public static final int PIGEON_IMU_CAN = 60;
@@ -230,7 +233,7 @@ public final class Constants {
 
   public final class DigitalIO {
     public static final int IntakeLightGate = 1;
-    public static final int TransferLightGate = 2;
+    public static final int TRANSFER_LIGHT_GATE = 2;
     public static final int RollerLightGate = 3; //placeholder
   }
 
@@ -245,6 +248,11 @@ public final class Constants {
     public static double RollerSpeedDefault = 0.01; //placeholder: Note change namesx
     public static double RollerPosShoot = 20; //placeholder
     public static double RollerPosDefault = 5; //placeholder
+  }
+  public static final class Transfer_Constants{ //placeholder
+    public static final double TRANSFER_MOTOR_ON = 0.5;
+    public static final double TRANSFER_MOTOR_OFF = 0.0;
+    public static final double TRANSFER_MOTOR_REVERSE = -0.5;
   }
 
   /*-------NT------- */
