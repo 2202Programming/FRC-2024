@@ -48,8 +48,8 @@ public class Intake extends SubsystemBase {
   public Intake() {
     final int STALL_CURRENT = 15;
     final int FREE_CURRENT = 5;
-    final int maxVel = 100;
-    final int maxAccel = 20;
+    final int maxVel = 5;
+    final int maxAccel = 1;
     final int posTol = 1;
     final int velTol = 3;
     // servo controls angle of intake arm

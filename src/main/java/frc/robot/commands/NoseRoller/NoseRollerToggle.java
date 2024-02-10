@@ -24,6 +24,7 @@ import frc.robot.subsystems.NoseRoller;
 public class NoseRollerToggle extends Command {
     /** Creates a new NoseRoller. */
     public final NoseRoller noseRoller;
+    boolean turned_on;
     // double roller_speed;
     // double pos_cmd;
 
@@ -37,13 +38,15 @@ public class NoseRollerToggle extends Command {
     @Override
     public void initialize() {
         noseRoller.setNosePosition(Roller_Constants.RollerPosShoot);
+        turned_on = false;
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (Math.abs(noseRoller.getNosePosition() - Roller_Constants.RollerPosShoot) < 0.1) {
+        if (noseRoller.isAtAngle() && !turned_on) {
             noseRoller.setRollerSpeed(Roller_Constants.RollerSpeedDefault);
+            turned_on = true;
         }
     }
 

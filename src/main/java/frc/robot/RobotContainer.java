@@ -160,7 +160,7 @@ public class RobotContainer implements BlinkyLightUser {
         driver.leftTrigger().onTrue(new PrintCommand("PlaceholderCMD: Align with shooter"));
         driver.x().whileTrue(new IntakeToggle());
         driver.y().whileTrue(new InstantCommand(() -> {
-        intake.setAngleVelocity(1.0);
+        intake.setAngleVelocity(0.3);
         }));
         // when used can uncomment to set nose roller
         // driver.a().whileTrue(new InstantCommand(() -> {

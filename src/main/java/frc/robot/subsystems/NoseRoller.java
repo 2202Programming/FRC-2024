@@ -57,6 +57,9 @@ public class NoseRoller extends SubsystemBase {
   public boolean isGateBlocked() { // if we even have a gate?
     return false;
   }
+  public boolean isAtAngle(){
+    return noseAngleMotor.atSetpoint();
+  }
 
   // access to get internal watcher command
   public Command getWatcher() {
