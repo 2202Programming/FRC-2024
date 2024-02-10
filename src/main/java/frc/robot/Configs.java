@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import frc.robot.Constants.CAN;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.NoseRoller;
 import frc.robot.subsystems.PneumaticsControl;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
@@ -13,6 +14,7 @@ import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.SubsystemConfig;
+import edu.wpi.first.wpilibj2.command.Command;
 
 /*
  * The Subsystems and object in Configs will be created by RobotContainer 
@@ -40,11 +42,13 @@ public class Configs {
       .add(Sensors_Subsystem.class)
       .add(Limelight_Subsystem.class)
       .add(SwerveDrivetrain.class) // must be after LL and Sensors
-  // .add(Intake.class)
-  // .add(Shooter.class)
-  // .add(Transfer.class)
-  // add(Climber.class)
-  ;
+      .add(Intake.class)
+      .add(Command.class, "IntakeWatcher", () -> {
+        return RobotContainer.getSubsystem(Intake.class).getWatcher(); })
+      .add(Shooter.class)
+      .add(Transfer.class)
+      //add(Climber.class)
+      ;
 
   public static final SubsystemConfig comp2024BetaBotSubsystemConfig = new SubsystemConfig()
       // deferred construction via Supplier<Object> lambda
@@ -62,8 +66,7 @@ public class Configs {
       .add(Intake.class)
       .add(Shooter.class)
       .add(Transfer.class)
-  // add(Climber.class)
-  ;
+      .add(NoseRoller.class);
 
   // Subsystems and hardware on Tim 2.0
   public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig()
