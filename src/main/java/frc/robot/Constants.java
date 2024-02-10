@@ -207,9 +207,6 @@ public final class Constants {
     
     // Transfer
     public static final int TRANSFER_MOTOR = 56; // placeholder
-
-    // Transfer
-    public static final int TRANSFER_MOTOR = 210; // placeholder
     
     // Claw
     public static final int CLAW_WHEEL_MOTOR = 16;
@@ -241,6 +238,11 @@ public final class Constants {
 
   public static final class Intake_Constants {
     public static double IntakeMotorDefault = 0.01; // placeholder
+  }
+  public static final class Transfer_Constants{ //placeholder
+    public static final double TRANSFER_MOTOR_ON = 0.5;
+    public static final double TRANSFER_MOTOR_OFF = 0.0;
+    public static final double TRANSFER_MOTOR_REVERSE = -0.5;
   }
 
   /*-------NT------- */
