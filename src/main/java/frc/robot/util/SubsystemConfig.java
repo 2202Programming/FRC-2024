@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.RobotContainer;
 
 /*
 * SubsystemConfig - handle different flavors of robot  sub-system building.
@@ -84,10 +85,12 @@ public class SubsystemConfig {
             }
         }
     }
+    // Robot name filled in when constructing
+    static String robot_name = "TBD";
 
     // map all the robot subsystem by a name
     LinkedHashMap<String, SubsystemDefinition<?>> m_robot_parts = new LinkedHashMap<>();
-
+   
     /*
      * An alias gives an existing Object another name.
      * 
@@ -195,8 +198,16 @@ public class SubsystemConfig {
      * are setup.
      */
     public void constructAll() {
+        
+        // robot being built is?
+        robot_name = RobotContainer.getRobotSpecs().getRobotNameString();
+
+        //wait for Phoenix library initialization on other threads to complete
+        System.out.println("Waiting 5 seconds for other threads to initialize, then constructing: " + robot_name);
+        sleep(5000);
+        System.out.println("Constructing " + robot_name);
         for (Map.Entry<String, SubsystemDefinition<?>> entry : m_robot_parts.entrySet()) {
-            System.out.println("Constructing " + entry.getKey() + " as instance of " +
+            System.out.println("    Constructing " + entry.getKey() + " as instance of " +
                     entry.getValue().m_Class.getSimpleName());
             entry.getValue().construct();
 
@@ -212,7 +223,7 @@ public class SubsystemConfig {
         // see if name exist, if so that is a problem as names must be unique
         if (m_robot_parts.containsKey(name)) {
             System.out.println("*********************************************\n"
-                    + "SubsystemConfig contains DUPLICATE NAME "
+                    + "SubsystemConfig warning: Configs.java contains DUPLICATE NAME "
                     + name + "of Class " + ssd.m_Class.getCanonicalName()
                     + " duplicate will not be created."
                     + "*********************************************\n");
@@ -225,11 +236,17 @@ public class SubsystemConfig {
         if (ssd != null) return ssd;
 
         // doesn't exist, fail hard and fast
-        System.out.println("SubsystemConfig: your object " + name + " does not exist.\n"
+        System.out.println("SubsystemConfig Error: your object " + name + " does not exist.\n"
         + "Check your Configs.java file\n" 
         + "Throwing NPE to keep you safe.");
         throw new NullPointerException();
     }
 
-
+    static void sleep(long ms) {
+        try {
+          Thread.sleep(ms);
+        } catch (Exception e) {
+        }
+      }
+    
 }
