@@ -49,11 +49,11 @@ public class Intake extends SubsystemBase {
   final RelativeEncoder intakeMtrEncoder;
 
   // lightgate tell us when we have a game piece (aka a Note)
-  final DigitalInput lightgate = new DigitalInput(DigitalIO.IntakeLightGate);
+  final DigitalInput lightgate = new DigitalInput(DigitalIO.Intake_Note);
 
   //limit switch 
-  DigitalInput limitSwitchUp = new DigitalInput(0); 
-  DigitalInput limitSwitchDown = new DigitalInput(1);
+  DigitalInput limitSwitchUp = new DigitalInput(DigitalIO.Intake_Up); 
+  DigitalInput limitSwitchDown = new DigitalInput(DigitalIO.Intake_Down);
 
   public Intake() { //TODO: Get values
     final int STALL_CURRENT = 15; //[amp]

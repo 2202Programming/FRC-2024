@@ -232,9 +232,13 @@ public final class Constants {
   }
 
   public final class DigitalIO {
-    public static final int IntakeLightGate = 1;
-    public static final int TRANSFER_LIGHT_GATE = 2;
-    public static final int RollerLightGate = 3; //placeholder
+    //TODO lots of placeholders - confirm with electical what we really have
+    public static final int Intake_Up = 0; //placeholder
+    public static final int Intake_Down = 1; //placeholder
+    public static final int Intake_Note = 2;  //placeholder
+    public static final int TRANSFER_LIGHT_GATE = 3; //placeholder
+    public static final int RollerLightGate = 4; //placeholder
+    
   }
 
   public static final class Intake_Constants {
