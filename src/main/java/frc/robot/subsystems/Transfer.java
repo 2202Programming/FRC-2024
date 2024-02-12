@@ -14,7 +14,7 @@ import com.revrobotics.CANSparkMax;
 
 public class Transfer extends SubsystemBase {
   
-  DigitalInput lightGate = new DigitalInput(DigitalIO.TRANSFER_LIGHT_GATE);
+  DigitalInput lightgate = new DigitalInput(DigitalIO.TRANSFER_LIGHT_GATE);
   CANSparkMax transferMotor;
 
   /** Creates a new Transfer. */
@@ -24,8 +24,8 @@ public class Transfer extends SubsystemBase {
 
   //TODO: find out methods/behaviors, pneumatics, etc. 
 
-  public boolean isLightGateBlocked(){
-    return lightGate.get(); 
+  public boolean hasNote() {
+    return lightgate.get();
   }
   public void transferMotorOn() {
     transferMotor.set(Transfer_Constants.TRANSFER_MOTOR_ON);

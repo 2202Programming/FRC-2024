@@ -4,20 +4,24 @@
 
 package frc.robot.commands.Shooter; 
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
+import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 
-public class ShooterToggle extends Command {
+public class ShooterToggle extends BlinkyLightUser {
   /** Creates a new ShooterToggle. */
   public final Shooter shooter;
   public final Intake intake;
   public final Transfer transfer;
+  public final int DONE_COUNT = 10;
+  int count_lightgate;
   final boolean pneumatics = false; // YES FOR SUSSEX NO AFTER???
   final int DELAY = 10; // figure out this number
-  int count = 0;
+  int count;
   boolean RPM_dropped;
 
   //final Intake intake; //TODO: When merge, check for hasNote - Probably move to subsystem
@@ -32,7 +36,9 @@ public class ShooterToggle extends Command {
   @Override
   public void initialize() {
     RPM_dropped = false;
-   if(intake.hasNote()){
+    count_lightgate = 0;
+    count = 0;
+   if(transfer.hasNote()){
     shooter.setRPM(0.5, 0.5); //make these constants (0.5 placeholder)
   }
   } 
@@ -44,6 +50,21 @@ public class ShooterToggle extends Command {
       transfer.transferMotorOn();
     }
   }
+      /*
+     * Control the blinkylights based on our Note possession.
+     *
+     * Green when we have it, red otherwise
+     */
+    @Override
+    public Color8Bit colorProvider() {
+        // make sure not is safely in our possession before going back
+        return (count >= DONE_COUNT) ? BlinkyLights.GREEN : BlinkyLights.RED;
+    };
+
+    @Override
+    public boolean requestBlink() {
+        return false; // we want solid lights
+    }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -55,6 +76,7 @@ public class ShooterToggle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    count_lightgate = (transfer.hasNote()) ? count++ : 0; // count frames with note
     if(Math.abs(shooter.getRPM() - shooter.getDesiredRPM()) > 100){
       RPM_dropped = true;
     } if(RPM_dropped){

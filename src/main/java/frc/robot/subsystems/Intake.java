@@ -49,7 +49,7 @@ public class Intake extends SubsystemBase {
   final RelativeEncoder intakeMtrEncoder;
 
   // lightgate tell us when we have a game piece (aka a Note)
-  final DigitalInput lightgate = new DigitalInput(DigitalIO.Intake_Note);
+  // final DigitalInput lightgate = new DigitalInput(DigitalIO.Intake_Note);
 
   //limit switch 
   DigitalInput limitSwitchUp = new DigitalInput(DigitalIO.Intake_Up); 
@@ -92,9 +92,9 @@ public class Intake extends SubsystemBase {
     intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
   }
 
-  public boolean hasNote() {
-    return lightgate.get();
-  }
+  // public boolean hasNote() {
+  //   return lightgate.get();
+  // }
 
   public double getIntakeRollerSpeed() {
     return intakeMtrEncoder.getVelocity();
@@ -147,7 +147,7 @@ public class Intake extends SubsystemBase {
   }
 
   class IntakeWatcherCmd extends WatcherCmd {
-    NetworkTableEntry nt_lightgate;
+    // NetworkTableEntry nt_lightgate;
     NetworkTableEntry nt_angleVel;
     NetworkTableEntry nt_kP;
     NetworkTableEntry nt_kI;
@@ -162,7 +162,7 @@ public class Intake extends SubsystemBase {
 
     public void ntcreate() {
       NetworkTable table = getTable();
-      nt_lightgate = table.getEntry("lightgate");
+      // nt_lightgate = table.getEntry("lightgate");
       nt_angleVel = table.getEntry("angleVel");
       nt_kP = table.getEntry("kP");
       nt_kI = table.getEntry("kI");
@@ -175,7 +175,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void ntupdate() {
-      nt_lightgate.setBoolean(hasNote());
+      // nt_lightgate.setBoolean();
       nt_angleVel.setDouble(getAngleSpeed());
       nt_kP.setDouble(hwAngleVelPID.getP());
       nt_kI.setDouble(hwAngleVelPID.getI());
