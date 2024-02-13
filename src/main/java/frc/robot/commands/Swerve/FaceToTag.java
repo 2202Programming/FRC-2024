@@ -25,7 +25,7 @@ public class FaceToTag extends Command {
   SwerveModuleState[] vision_out;
   ChassisSpeeds zero_cs = new ChassisSpeeds(0.0, 0.0, 0.0);
 
-  // PID for retroreflective-based heading to a target
+  // TODO: CHECK This value
   PIDController centeringPid;
   double centering_kP = 2.0;
   double centering_kI = 0.0;
@@ -64,15 +64,6 @@ public class FaceToTag extends Command {
     drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
 
     addRequirements(drivetrain);
-
-    // end if not seeing desired tag
-    LimelightTarget_Fiducial[] tags = limelight.getAprilTagsFromHelper();
-    for (LimelightTarget_Fiducial tag : tags) {
-      if (tag.fiducialID == TagID) {
-        end(true);
-        break;
-      }
-    }
 
     centeringPid = new PIDController(centering_kP, centering_kI, centering_kD);
     centeringPid.setTolerance(pos_tol, vel_tol);
@@ -118,7 +109,7 @@ public class FaceToTag extends Command {
       }
     }
     if (hasTarget) {// this should be true all the time unless the tag is lost
-      // TODO: CHECK right not it is assuming that camera is in center
+      // TODO: CHECK right now it is assuming that camera is in center
       // need a position of robot to get distance from the tag to calculate the
       // desired angle to face the tag with offset
       // I dont know if we want to use the robot Pose but that is the only way if

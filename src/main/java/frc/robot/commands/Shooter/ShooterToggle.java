@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Shooter;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
@@ -11,16 +12,20 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
 
 public class ShooterToggle extends Command {
-  /** Creates a new ShooterToggle. */
   public final Shooter shooter;
   public final Intake intake;
   public final Transfer transfer;
   final boolean pneumatics = false; // YES FOR SUSSEX NO AFTER???
   final int DELAY = 20; // figure out this number
-  int count = 0;
+  final int shooterTolerance = 100;
+  Timer timer = new Timer();
   boolean RPM_dropped;
   int aprilTarget;
-
+  private boolean startedShooting;
+  
+  /**
+   * Wait until shooter is at desired RPM and then start the transfer motor.
+   */
   public ShooterToggle() {
     this.shooter = RobotContainer.getSubsystem(Shooter.class);
     this.intake = RobotContainer.getSubsystem(Intake.class);
@@ -30,6 +35,7 @@ public class ShooterToggle extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    startedShooting = false;
     RPM_dropped = false;
     if (intake.hasNote()) {
       shooter.setRPM(0.5, 0.5);
@@ -41,8 +47,9 @@ public class ShooterToggle extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (shooter.isAtRPM(100) && intake.angleAtSetpoint()) {// Check the RPM tolerance
+    if (shooter.isAtRPM(shooterTolerance) && intake.angleAtSetpoint() && !startedShooting) {// Check the RPM tolerance
       transfer.transferMotorOn();
+      timer.restart();
     }
   }
 
@@ -56,13 +63,11 @@ public class ShooterToggle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs(shooter.getRPM() - shooter.getDesiredRPM()) > 100) {
+    if (Math.abs(shooter.getRPM() - shooter.getDesiredRPM()) > shooterTolerance) {
       RPM_dropped = true;
     }
-    if (RPM_dropped) {
-      count++;
-    }
-    if (count > DELAY) {
+    //TODO:Just have this dealay for now, when we get sensors on add the sensor check
+    if (timer.hasElapsed(DELAY)) {
       return true;
     } else {
       return false;

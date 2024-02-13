@@ -6,23 +6,96 @@ package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.RobotContainer;
 import frc.robot.commands.Shooter.ShooterToggle;
 import frc.robot.commands.Swerve.FaceToTag;
+import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 
 public class AutoShooting extends SequentialCommandGroup {
-  int tagID;
+
+  private Limelight_Subsystem limelight;
+
   /**
-   * Creates a new AutoShooting. 
+   * Alliance aware sequence command to face to the target and shoot the notes.
+   * If not seeing tags on target, command will be canceled.
+   * 
+   * @param target Enum target to shoot at.
    */
-  public AutoShooting() {
-    if(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue){
-      tagID = 7;
+  public AutoShooting(ShootingTarget target) {
+    limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
+    double tagID = determineTag(target);
+    if (checkForTarget(tagID)) {
+      addCommands(new FaceToTag(tagID));
+      // get Position here and feed it to the ShooterToggle to adjust the RPM
+      addCommands(new ShooterToggle());
     }
-    else{
-      tagID = 4;
+  }
+  /**
+   * Determine the tag to face based on the alliance and the target.
+   * @param target operator pick from three
+   * @return tagID to face
+   */
+  private double determineTag(ShootingTarget target) {
+    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+      // on Blue Alliance
+      if (target == ShootingTarget.Speaker) {
+        return 7;
+      } else if (target == ShootingTarget.Amp) {
+        return 6;
+      } else {// TODO LATER ADD CODE TO DECIDE TAG BASED ON LIMELIGHT
+
+        LimelightTarget_Fiducial[] tags = limelight.getAprilTagsFromHelper();
+        for (LimelightTarget_Fiducial tag : tags) {
+          if (tag.fiducialID == 14) {
+            return 14;
+          } else if (tag.fiducialID == 15) {
+            return 15;
+          } else if (tag.fiducialID == 16) {
+            return 16;
+          }
+        }
+      }
+    } else {
+      // on Red Alliance
+      if (target == ShootingTarget.Speaker) {
+        return 4;
+      } else if (target == ShootingTarget.Amp) {
+        return 5;
+      } else {
+        LimelightTarget_Fiducial[] tags = limelight.getAprilTagsFromHelper();
+        for (LimelightTarget_Fiducial tag : tags) {
+          if (tag.fiducialID == 11) {
+            return 11;
+          } else if (tag.fiducialID == 12) {
+            return 12;
+          } else if (tag.fiducialID == 13) {
+            return 13;
+          }
+        }
+      }
     }
-    addCommands(new FaceToTag(tagID));
-    //get Position here and feed it to the ShooterToggle to adjust the RPM
-    addCommands(new ShooterToggle());
+    return 17;// DNE
+  }
+
+  /**
+   * Check if limelight can see the target.
+   * @param tagID tagID to check for in limelight
+   * @return {@code true} if the target is found in limelight, {@code false} if not.
+   */
+  private boolean checkForTarget(double tagID) {
+    LimelightTarget_Fiducial[] tags = limelight.getAprilTagsFromHelper();
+    for (LimelightTarget_Fiducial tag : tags) {
+      if (tag.fiducialID == tagID) {
+        return true;
+      }
     }
+    return false;
+  }
+
+  public enum ShootingTarget {
+    Speaker,
+    Amp,
+    Trap
+  }
 }

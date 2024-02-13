@@ -29,6 +29,7 @@ import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.auto.AutoShooting;
+import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 import frc.robot.commands.utility.DummyShooterCmd;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -127,7 +128,7 @@ public class RobotContainer {
     dc = getSubsystem("DC");
 
     /* Set the commands below */
-    configureBindings(Bindings.Comptition); // Change this to switch between bindings
+    configureBindings(Bindings.auto_shooter_test); // Change this to switch between bindings
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
@@ -188,7 +189,9 @@ public class RobotContainer {
       
       case auto_shooter_test:
         driver.a().onTrue(new FaceToTag(4));
-        driver.b().onTrue(new AutoShooting());
+        driver.povDown().onTrue(new AutoShooting(ShootingTarget.Speaker));
+        driver.povUp().onTrue(new AutoShooting(ShootingTarget.Trap));
+        driver.povRight().onTrue(new AutoShooting(ShootingTarget.Amp));
         break;
       
       default:
