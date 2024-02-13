@@ -43,7 +43,7 @@ public class DTMonitorCmd extends WatcherCmd {
     NetworkTable table = getTable();
     var tname = getTableName();
     // use smartdashboard for complex object
-    //SmartDashboard.putData(tname + "/drive PIDF", DriveTrain.drivePIDF);
+    SmartDashboard.putData(tname + "/drive PIDF", DriveTrain.drivePIDF);
 
     currentX = table.getEntry("current x");
     currentY = table.getEntry("current y");
