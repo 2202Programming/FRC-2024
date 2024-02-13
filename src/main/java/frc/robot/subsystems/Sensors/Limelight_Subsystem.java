@@ -165,6 +165,9 @@ public class Limelight_Subsystem extends SubsystemBase {
     }
     return tagIDs;
   }
+  public LimelightTarget_Fiducial[] getAprilTagsFromHelper(){
+    return LimelightHelpers.getLatestResults("").targetingResults.targets_Fiducials;
+  }
 
   public double getFilteredArea() {
     return filteredArea;

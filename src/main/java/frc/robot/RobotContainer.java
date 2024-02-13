@@ -25,8 +25,10 @@ import frc.robot.commands.Intake.IntakeDefaultPos;
 import frc.robot.commands.Intake.IntakeToggle;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
+import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
+import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.utility.DummyShooterCmd;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -47,7 +49,7 @@ public class RobotContainer {
 
   // enum for bindings add when needed
   public enum Bindings {
-    DriveTest, Shooter_test, Comptition
+    DriveTest, Shooter_test, Comptition, auto_shooter_test
   }
 
   // The robot's subsystems and commands are defined here...
@@ -183,7 +185,12 @@ public class RobotContainer {
         // noseRoller.setNoseVelocity(1.0);
         // }));
         break;
-
+      
+      case auto_shooter_test:
+        driver.a().onTrue(new FaceToTag(4));
+        driver.b().onTrue(new AutoShooting());
+        break;
+      
       default:
         break;
     }

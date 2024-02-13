@@ -76,8 +76,8 @@ public class Shooter extends SubsystemBase {
       currentShootingMode = ShooterMode.Trigger;
     return;
   }
-  public boolean isAtRPM(){
-    return Math.abs(desiredMotorRPM - getLeftMotorOutput()) < 0.1; // find the method to do it, hack for now
+  public boolean isAtRPM(int tolerance){
+    return Math.abs(desiredMotorRPM - getLeftMotorOutput()) < tolerance; // find the method to do it, hack for now
   }
 
   public ShooterMode getShooterMode() {
