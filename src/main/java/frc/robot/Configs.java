@@ -11,6 +11,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
+import frc.robot.subsystems.Swerve.DTMonitorCmd;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.SubsystemConfig;
@@ -45,6 +46,8 @@ public class Configs {
       .add(Intake.class)
       .add(Command.class, "IntakeWatcher", () -> {
         return RobotContainer.getSubsystem(Intake.class).getWatcher(); })
+      .add(Command.class, "DT_Monitor", () -> {
+        return new DTMonitorCmd();})
       .add(Shooter.class)
       .add(Transfer.class)
       //add(Climber.class)
