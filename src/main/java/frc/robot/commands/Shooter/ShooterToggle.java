@@ -9,22 +9,38 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
+import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 
 public class ShooterToggle extends Command {
   /** Creates a new ShooterToggle. */
   public final Shooter shooter;
   public final Intake intake;
   public final Transfer transfer;
+  public final Limelight_Subsystem limelight;
   final boolean pneumatics = false; // YES FOR SUSSEX NO AFTER???
   final int DELAY = 10; // figure out this number
   int count = 0;
   boolean RPM_dropped;
+  int aprilTarget;
 
   //final Intake intake; //TODO: When merge, check for hasNote - Probably move to subsystem
-  public ShooterToggle() {
+  public ShooterToggle(String target) {
     this.shooter = RobotContainer.getSubsystem(Shooter.class);
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
+    this.limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
+    switch (target) {
+      case "speaker":
+        aprilTarget = 0;//We need the array from the list of possible april tags
+        break;
+      case "amp":
+
+        break;
+        
+      case "trap":
+
+        break;
+    }
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -32,8 +48,11 @@ public class ShooterToggle extends Command {
   @Override
   public void initialize() {
     RPM_dropped = false;
-   if(intake.hasNote()){
-    shooter.setRPM(0.5, 0.5); //make these constants (0.5 placeholder)
+   if(intake.hasNote() && limelight.getNumApriltags()>0){
+    shooter.setRPM(0.5, 0.5); 
+    //make these constants (0.5 placeholder)
+  } else {
+    isFinished();
   }
   } 
 
