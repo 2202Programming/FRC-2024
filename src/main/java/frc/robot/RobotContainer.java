@@ -154,13 +154,19 @@ public class RobotContainer {
         driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.b().onTrue(new AllianceAwareGyroReset(false));
 
-        // This appears to break if initial pose is too close to path start pose
-        // (zero-length path?)
-        driver.a().onTrue(new SequentialCommandGroup(
-            new InstantCommand(RobotContainer.RC().drivetrain::printPose),
-            AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("test_1m"),
-                new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
-            new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+      //This appears to break if initial pose is too close to path start pose (zero-length path?)
+      driver.x().onTrue(new SequentialCommandGroup(
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+        AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("blue1"), 
+          new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+
+      driver.b().onTrue(new SequentialCommandGroup(
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+        AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("red1"), 
+          new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+       
 
         driver.x().onTrue(new SequentialCommandGroup(
             new InstantCommand(RobotContainer.RC().drivetrain::printPose),

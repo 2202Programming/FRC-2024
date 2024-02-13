@@ -1,0 +1,164 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 15.305386764619682,
+        "y": 6.4924483695121245
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 15.088314022781894,
+        "y": 6.748988882593149
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 14.180555284187493,
+        "y": 6.788456653836385
+      },
+      "prevControl": {
+        "x": 15.019245423106232,
+        "y": 6.699654168539107
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "Shoot",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 2.0
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Spin shooter motors"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Stop shooter",
+      "waypointRelativePos": 0.35,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Stop shooter motors"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Pickup 1",
+      "waypointRelativePos": 0.8,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Intake down"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Spin intake motors"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Stop intake and shoot",
+      "waypointRelativePos": 1.0,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "parallel",
+              "data": {
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "Intake up"
+                    }
+                  },
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "Stop intake motors"
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Spin shooter motors"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 5.0
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Stop shooter motors"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 160.34617594194668,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 129.20720350496802,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}
