@@ -117,7 +117,7 @@ public class IntakeToggle extends BlinkyLightUser {
     public void end(boolean interrupted) {
         // if driver releases button go back to safe position, or if we have the note
         // safely in our possession, go to safe position
-        intake.setAngleSetpoint(Intake_Constants.TransferPosition);
+        intake.setAngleSetpoint(Intake_Constants.MovementPosition);
     }
 
     // Returns true when the command should end, we end when count hits DONE_COUNT
