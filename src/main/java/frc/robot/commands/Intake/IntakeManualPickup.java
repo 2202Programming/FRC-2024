@@ -37,7 +37,7 @@ import frc.robot.subsystems.Intake;
  *
  *
  */
-public class IntakeToggle extends BlinkyLightUser {
+public class IntakeManualPickup extends BlinkyLightUser {
     final static int DONE_COUNT = 100; // frames we expect to have note before finished
 
     /** Creates a new intakeForward. */
@@ -49,7 +49,7 @@ public class IntakeToggle extends BlinkyLightUser {
     double count = 0;
     boolean vel_change = false;
 
-    public IntakeToggle() {
+    public IntakeManualPickup() {
         this.intake = RobotContainer.getSubsystem(Intake.class);
     }
 
@@ -82,7 +82,7 @@ public class IntakeToggle extends BlinkyLightUser {
             intake.setAngleVelocity(1.0);
         } else {
             original_pos = intake.getAnglePosition();
-            intake.setAngleSetpoint(Intake_Constants.AnglePosition);
+            intake.setAngleSetpoint(Intake_Constants.PickupPosition);
             intake.setIntakeSpeed(Intake_Constants.IntakeMotorDefault);
         }
     }
@@ -117,7 +117,7 @@ public class IntakeToggle extends BlinkyLightUser {
     public void end(boolean interrupted) {
         // if driver releases button go back to safe position, or if we have the note
         // safely in our possession, go to safe position
-        intake.setAngleSetpoint(Intake_Constants.MovementPosition);
+        intake.setAngleSetpoint(Intake_Constants.DrivingPosition);
     }
 
     // Returns true when the command should end, we end when count hits DONE_COUNT

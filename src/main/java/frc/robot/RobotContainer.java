@@ -21,8 +21,8 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
-import frc.robot.commands.Intake.IntakeDefaultPos;
-import frc.robot.commands.Intake.IntakeToggle;
+import frc.robot.commands.Intake.IntakeCalibrateRetractedPos;
+import frc.robot.commands.Intake.IntakeManualPickup;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
@@ -173,11 +173,11 @@ public class RobotContainer {
         // TODO: replace Print/Dummy with real commands when known - ER
         driver.rightTrigger().whileTrue(new DummyShooterCmd());
         driver.leftTrigger().onTrue(new PrintCommand("PlaceholderCMD: Align with shooter"));
-        driver.x().whileTrue(new IntakeToggle());
+        driver.x().whileTrue(new IntakeManualPickup());
         driver.y().whileTrue(new InstantCommand(() -> {
         intake.setAngleVelocity(0.3);
         }));
-        driver.a().whileTrue(new IntakeDefaultPos());
+        driver.a().whileTrue(new IntakeCalibrateRetractedPos());
         // when used can uncomment to set nose roller
         // driver.a().whileTrue(new InstantCommand(() -> {
         // noseRoller.setNoseVelocity(1.0);

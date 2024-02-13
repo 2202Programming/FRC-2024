@@ -11,19 +11,21 @@ import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Intake;
 
-public class IntakeDefaultPos extends  BlinkyLightUser {
+public class IntakeCalibrateRetractedPos extends  BlinkyLightUser {
+    //Safe speed for moving to limit switch
+    final static double AngleVelocity = 5.0; //[deg/s] 
 
     /** Creates a new intakeForward. */
     public final Intake intake;
 
-    public IntakeDefaultPos() {
+    public IntakeCalibrateRetractedPos() {
         this.intake = RobotContainer.getSubsystem(Intake.class);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        intake.setAngleVelocity(0.3);
+        intake.setAngleVelocity(AngleVelocity);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -32,9 +34,7 @@ public class IntakeDefaultPos extends  BlinkyLightUser {
     }
 
     /*
-     * Control the blinkylights based on our Note possession.
-     *
-     * Green when we have it, red otherwise
+     * Control the blinkylights based on being at calibration point or not.
      */
     @Override
     public Color8Bit colorProvider() {
@@ -50,19 +50,13 @@ public class IntakeDefaultPos extends  BlinkyLightUser {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-      intake.setAngleVelocity(0.0);
+      intake.setAngleVelocity(0.0);      
+      intake.setAnglePosition(Intake_Constants.DrivingPosition);
     }
 
     // Returns true when the command should end, we end when count hits DONE_COUNT
     @Override
     public boolean isFinished() {
-        if(intake.atLimitSwitch()){
-          intake.setAnglePosition(Intake_Constants.DefaultLimitSwitchPos);
-          return true;
-        }
-        else{
-       return false;
-        }
-      
+        return intake.atLimitSwitch();      
     }
 }
