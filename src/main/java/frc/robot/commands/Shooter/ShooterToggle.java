@@ -21,10 +21,12 @@ public class ShooterToggle extends Command {
   boolean RPM_dropped;
   int aprilTarget;
   private boolean startedShooting;
-  
+
   /**
    * Wait until shooter is at desired RPM and then start the transfer motor.
+   * Switch to ShooterSequence after test. Do this before adding pneumatics
    */
+  @Deprecated
   public ShooterToggle() {
     this.shooter = RobotContainer.getSubsystem(Shooter.class);
     this.intake = RobotContainer.getSubsystem(Intake.class);
@@ -65,7 +67,8 @@ public class ShooterToggle extends Command {
     if (!shooter.isAtRPM(shooterTolerance)) {
       RPM_dropped = true;
     }
-    //TODO:Just have this dealay for now, when we get sensors on add the sensor check
+    // TODO:Just have this dealay for now, when we get sensors on add the sensor
+    // check
     if (timer.hasElapsed(DELAY)) {
       return true;
     } else {
