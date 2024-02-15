@@ -51,6 +51,8 @@ import frc.robot.util.RobotSpecs;
  */
 public class RobotContainer {
 
+  private final SendableChooser<Command> autoChooser;
+
   // enum for bindings add when needed
   public enum Bindings {
     DriveTest, Shooter_test, Comptition, auto_shooter_test
@@ -136,6 +138,8 @@ public class RobotContainer {
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
+
+    autoChooser = AutoBuilder.buildAutoChooser();
   }
 
   /**
