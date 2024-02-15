@@ -258,6 +258,9 @@ public final class Constants {
     public static final double TRANSFER_MOTOR_OFF = 0.0;
     public static final double TRANSFER_MOTOR_REVERSE = -0.5;
   }
+  public static final class Shooter_Constants{//placeholder
+    public static final double ShooterDefaultSpeed = 0.5;
+  }
 
   /*-------NT------- */
   public final static class NTStrings {
