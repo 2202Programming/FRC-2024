@@ -24,7 +24,7 @@ public class Transfer extends SubsystemBase {
 
   //TODO: find out methods/behaviors, pneumatics, etc. 
 
-  public boolean isLightGateBlocked(){
+  public boolean hasNote(){
     return lightGate.get(); 
   }
   public void transferMotorOn() {

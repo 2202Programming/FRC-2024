@@ -37,7 +37,7 @@ public class ShooterToggle extends Command {
   public void initialize() {
     startedShooting = false;
     RPM_dropped = false;
-    if (intake.hasNote()) {
+    if (transfer.hasNote()) {
       shooter.setRPM(0.5, 0.5);
     } else {
       end(true);
