@@ -25,6 +25,16 @@ public class DTMonitorCmd extends WatcherCmd {
   NetworkTableEntry velocityBL;
   NetworkTableEntry velocityBR;
 
+  NetworkTableEntry FL_pos;
+  NetworkTableEntry FR_pos;
+  NetworkTableEntry BL_pos;
+  NetworkTableEntry BR_pos;
+
+  NetworkTableEntry radiansPerSecond;
+  NetworkTableEntry xMetersPerSec;
+  NetworkTableEntry yMetersPerSec;
+
+
   // accessors - if this gets annoying move inside
   final SwerveDrivetrain sdt;
   final SwerveModuleMK3 modules[] = new SwerveModuleMK3[4];
@@ -40,25 +50,34 @@ public class DTMonitorCmd extends WatcherCmd {
 
   @Override
   public void ntcreate() {
-    NetworkTable table = getTable();
+    NetworkTable MonitorTable = getTable();
     var tname = getTableName();
     // use smartdashboard for complex object
     SmartDashboard.putData(tname + "/drive PIDF", DriveTrain.drivePIDF);
 
-    currentX = table.getEntry("current x");
-    currentY = table.getEntry("current y");
-    currentHeading = table.getEntry("current heading");
+    currentX = MonitorTable.getEntry("current x");
+    currentY = MonitorTable.getEntry("current y");
+    currentHeading = MonitorTable.getEntry("current heading");
 
-    velocityFL = table.getEntry("drive FL velocity");
-    velocityFR = table.getEntry("drive FR velocity");
-    velocityBL = table.getEntry("drive BL velocity");
-    velocityBR = table.getEntry("drive BR velocity");
+    velocityFL = MonitorTable.getEntry("drive FL velocity");
+    velocityFR = MonitorTable.getEntry("drive FR velocity");
+    velocityBL = MonitorTable.getEntry("drive BL velocity");
+    velocityBR = MonitorTable.getEntry("drive BR velocity");
+
+    FL_pos = MonitorTable.getEntry("front left position");
+    FR_pos = MonitorTable.getEntry("front right position");
+    BL_pos = MonitorTable.getEntry("back left position");
+    BR_pos = MonitorTable.getEntry("back right position");
+
+    radiansPerSecond = MonitorTable.getEntry("chassis radians sec");
+    xMetersPerSec = MonitorTable.getEntry("velocity x meters sec");
+    yMetersPerSec = MonitorTable.getEntry("velocity y meters sec");
+
   }
 
   @Override
   public void ntupdate() {
     // DriveTrain.drivePIDF should be handled via SmartDash buildable
-
     // read values from swerve drivetrain as needed using accesors
     var m_pose = sdt.getPose();
 
@@ -76,10 +95,18 @@ public class DTMonitorCmd extends WatcherCmd {
     velocityBL.setDouble(modules[2].getVelocity());
     velocityBR.setDouble(modules[3].getVelocity());
 
+    FL_pos.setDouble(modules[0].getPosition());
+    FR_pos.setDouble(modules[1].getPosition());
+    BL_pos.setDouble(modules[2].getPosition());
+    BR_pos.setDouble(modules[3].getPosition());
+
     // robot coordinates - speeds
     var speeds = sdt.getChassisSpeeds();
+    radiansPerSecond.setDouble(speeds.omegaRadiansPerSecond * 57.3);
+    xMetersPerSec.setDouble(speeds.vxMetersPerSecond);
+    yMetersPerSec.setDouble(speeds.vyMetersPerSecond);
 
-    // todo speeds.vxMetersPerSecond
+    // todo speeds.vxMetersPerSecond 
     // speeds.vyMetersPerSecond
     // speeds.omegaRadiansPerSecond
 

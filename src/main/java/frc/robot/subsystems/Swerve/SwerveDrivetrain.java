@@ -88,6 +88,7 @@ public class SwerveDrivetrain extends SubsystemBase {
   // used to update postion esimates
   double kTimeoffset = .1; // [s] measurement delay from photonvis
   private final Limelight_Subsystem limelight;
+  // TODO eventually get rid of all NT junk and put into cmd, TALK TO KOMEI AND MR L BEFORE DOING SO - ER
   // Network tables
   private NetworkTable table;
   private NetworkTable postionTable;
