@@ -80,7 +80,6 @@ public final class Constants {
         12.8, // confirmed with vince
         8.14); // confirmed with vince
 
-    // TODO: For 2024 CompetitionBotAlpha ***NOT YET CONFIRMED
     public static final WheelOffsets comp2024AlphaBotOffsets = new WheelOffsets(43.85746387, 24.096825 , -65.21481, -43.066333125);
     public static final ChassisConfig comp2024AlphaBotChassisConfig = new ChassisConfig(
         MperFT * (23.5 / 12.0) / 2.0,
@@ -93,7 +92,6 @@ public final class Constants {
     public static final WheelOffsets comp2024BetaBotOffsets = comp2024AlphaBotOffsets;
     public static final ChassisConfig comp2024BotBetaChassisConfig = comp2024AlphaBotChassisConfig;
     
-    // TODO: confirm this when start working on 2024 bot Alpha
     public static final ChassisInversionSpecs comp2024BotAlphaInversionSpecs = new ChassisInversionSpecs(
       
         new ModuleInversionSpecs(true, true, false), // FR

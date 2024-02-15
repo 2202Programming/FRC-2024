@@ -15,7 +15,6 @@ public class ShooterToggle extends Command {
   public final Shooter shooter;
   public final Intake intake;
   public final Transfer transfer;
-  final boolean pneumatics = false; // YES FOR SUSSEX NO AFTER???
   final int DELAY = 20; // figure out this number
   final int shooterTolerance = 100;
   Timer timer = new Timer();
@@ -63,7 +62,7 @@ public class ShooterToggle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs(shooter.getRPM() - shooter.getDesiredRPM()) > shooterTolerance) {
+    if (!shooter.isAtRPM(shooterTolerance)) {
       RPM_dropped = true;
     }
     //TODO:Just have this dealay for now, when we get sensors on add the sensor check

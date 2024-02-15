@@ -25,7 +25,6 @@ public class FaceToTag extends Command {
   SwerveModuleState[] vision_out;
   ChassisSpeeds zero_cs = new ChassisSpeeds(0.0, 0.0, 0.0);
 
-  // TODO: CHECK This value
   PIDController centeringPid;
   double centering_kP = 2.5; //Can be increased more a little bit but too much makes it giggly when its far
   double centering_kI = 3.0;

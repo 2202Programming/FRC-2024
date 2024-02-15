@@ -7,7 +7,6 @@ package frc.robot.commands.auto;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
-import frc.robot.commands.Shooter.ShooterToggle;
 import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
@@ -28,12 +27,14 @@ public class AutoShooting extends SequentialCommandGroup {
     if (checkForTarget(tagID)) {
       addCommands(new FaceToTag(tagID));
       // get Position here and feed it to the ShooterToggle to adjust the RPM
-      //TODO: UNCOmment this avoiding error
-      //addCommands(new ShooterToggle());
+      // TODO: Uncomment this avoiding error with 2023 bot
+      // addCommands(new ShooterToggle());
     }
   }
+
   /**
    * Determine the tag to face based on the alliance and the target.
+   * 
    * @param target operator pick from three
    * @return tagID to face
    */
@@ -44,7 +45,7 @@ public class AutoShooting extends SequentialCommandGroup {
         return 7;
       } else if (target == ShootingTarget.Amp) {
         return 6;
-      } else {// TODO LATER ADD CODE TO DECIDE TAG BASED ON LIMELIGHT
+      } else {
 
         LimelightTarget_Fiducial[] tags = limelight.getAprilTagsFromHelper();
         for (LimelightTarget_Fiducial tag : tags) {
@@ -81,8 +82,10 @@ public class AutoShooting extends SequentialCommandGroup {
 
   /**
    * Check if limelight can see the target.
+   * 
    * @param tagID tagID to check for in limelight
-   * @return {@code true} if the target is found in limelight, {@code false} if not.
+   * @return {@code true} if the target is found in limelight, {@code false} if
+   *         not.
    */
   private boolean checkForTarget(double tagID) {
     LimelightTarget_Fiducial[] tags = limelight.getAprilTagsFromHelper();

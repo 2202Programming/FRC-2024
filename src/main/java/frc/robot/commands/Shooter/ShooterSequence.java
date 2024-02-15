@@ -24,25 +24,13 @@ public class ShooterSequence extends BlinkyLightUser {
   /** Creates a new ShooterSequence. */
   final Shooter shooter;
   final Transfer transfer;
-  double count;
+  double count;  
+  Phase phase;
   final double DONE_COUNT = 20; //placeholder
   public enum Phase{
-    HasNote("HasNote"),
-    ShooterMotorOn("ShooterMotorOn"),
-    TransferMotorOn("TransferMotorOn"),
-    Finished("Finished");
-
-
-    String name;
-    
-    private Phase(String name){
-      this.name = name;
-    }
-    public String toString(){
-      return name;
-    }
+    HasNote,ShooterMotorOn,TransferMotorOn,Finished;
   }
-  Phase phase;
+
   public ShooterSequence() {
     this.shooter = RobotContainer.getSubsystem(Shooter.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
@@ -76,7 +64,7 @@ public class ShooterSequence extends BlinkyLightUser {
       }
       break;
       case ShooterMotorOn:
-      if(shooter.getRPM() == Shooter_Constants.ShooterDefaultSpeed){
+      if(shooter.isAtRPM(100)){
         transfer.transferMotorOn();
         phase = Phase.TransferMotorOn;
       }
