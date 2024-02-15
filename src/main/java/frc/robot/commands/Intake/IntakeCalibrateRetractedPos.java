@@ -39,7 +39,7 @@ public class IntakeCalibrateRetractedPos extends  BlinkyLightUser {
     @Override
     public Color8Bit colorProvider() {
         // make sure not is safely in our possession before going back
-        return (intake.atLimitSwitch()) ? BlinkyLights.GREEN : BlinkyLights.RED;
+        return (intake.atForwardLimitSwitch()) ? BlinkyLights.GREEN : BlinkyLights.RED;
     };
 
     @Override
@@ -57,6 +57,6 @@ public class IntakeCalibrateRetractedPos extends  BlinkyLightUser {
     // Returns true when the command should end, we end when count hits DONE_COUNT
     @Override
     public boolean isFinished() {
-        return intake.atLimitSwitch();      
+        return intake.atForwardLimitSwitch();      
     }
 }
