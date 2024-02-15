@@ -12,8 +12,11 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
+import frc.robot.Constants.PCM1;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.PIDFController;
 
@@ -31,17 +34,17 @@ public class Shooter extends SubsystemBase {
   double desiredMotorRPM;
   final SparkPIDController hw_leftPid;
   final SparkPIDController hw_rightPid;
-
   // says unused for some reason? used on lines 61 & 68
   final RelativeEncoder leftEncoder;
   final RelativeEncoder rightEncoder;
-
+  private final DoubleSolenoid shooterAngle;
   private ShooterMode currentShootingMode;
 
   private double currentLeftMotorOutput;
   private double currentRightMotorOutput;
 
   private double currentLeftMotorRPM;
+
   // private double currentRightMotorRPM; <-- not used currently
 
   PIDFController pidConsts = new PIDFController(0.001, 0.0, 0.0, 0.0);
@@ -53,6 +56,7 @@ public class Shooter extends SubsystemBase {
     leftEncoder = config_enc(leftMtr);
     rightEncoder = config_enc(rightMtr);
     currentShootingMode = ShooterMode.RPM;
+    shooterAngle = new DoubleSolenoid(PneumaticsModuleType.REVPH, PCM1.Forward, PCM1.Reverse);
   }
 
   @Override
@@ -145,6 +149,14 @@ public class Shooter extends SubsystemBase {
 
   public double getD() {
     return hw_leftPid.getD();
+  }
+
+  public void deployPneumatics(){
+    shooterAngle.set(DoubleSolenoid.Value.kForward);
+  }
+  
+  public void retractPneumatics(){
+    shooterAngle.set(DoubleSolenoid.Value.kReverse);
   }
 
   SparkPIDController motor_config(CANSparkMax mtr, PIDFController pid, boolean inverted) {

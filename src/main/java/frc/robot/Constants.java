@@ -224,11 +224,13 @@ public final class Constants {
   }
 
   // pnumatics control module 1
-  public final class PCM1 {
+  public static final class PCM1 {
+    public static final int Forward = 0;// TODO: UPDATE
+    public static final int Reverse = 0;
   }
 
   // pnumatics control module 2
-  public final class PCM2 {
+  public static final class PCM2 {
   }
 
   public final class DigitalIO {
