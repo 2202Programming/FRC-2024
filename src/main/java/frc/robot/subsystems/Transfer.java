@@ -11,15 +11,29 @@ import frc.robot.Constants.DigitalIO;
 import frc.robot.Constants.Transfer_Constants;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
 
 public class Transfer extends SubsystemBase {
   
   DigitalInput lightgate = new DigitalInput(DigitalIO.TRANSFER_LIGHT_GATE);
-  CANSparkMax transferMotor;
+  CANSparkMax transferMtr;
+   final SparkPIDController transferMtrPid;
+  final RelativeEncoder transferMtrEncoder;
 
   /** Creates a new Transfer. */
   public Transfer() {
-      transferMotor = new CANSparkMax(CAN.TRANSFER_MOTOR, CANSparkMax.MotorType.kBrushless);
+    final double radius = 1.27 * 2 * Math.PI; //1.27 radius in cm
+    final double gear_ratio = 35.0;
+    final double conversionFactor = radius * gear_ratio;
+      transferMtr = new CANSparkMax(CAN.TRANSFER_MOTOR, CANSparkMax.MotorType.kBrushless);
+    transferMtr.clearFaults();
+    transferMtr.restoreFactoryDefaults();
+    transferMtrPid = transferMtr.getPIDController();
+    transferMtrEncoder = transferMtr.getEncoder();
+    transferMtrEncoder.setPositionConversionFactor(conversionFactor);
+    transferMtrEncoder.setVelocityConversionFactor(conversionFactor / 60.0); // min to sec
+    transferMtr.burnFlash();
   }
 
   //TODO: find out methods/behaviors, pneumatics, etc. 
@@ -27,18 +41,18 @@ public class Transfer extends SubsystemBase {
   public boolean hasNote() {
     return lightgate.get();
   }
-  public void transferMotorOn() {
-    transferMotor.set(Transfer_Constants.TRANSFER_MOTOR_ON);
+  public void transferMtrOn() {
+    transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_ON);
   }
   // Motor speed will likely need to be changed
-  public void transferMotorOff() {
-    transferMotor.set(Transfer_Constants.TRANSFER_MOTOR_OFF);
+  public void transferMtrOff() {
+    transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_OFF);
   }
-  public void transferMotorReverse() {
-    transferMotor.set(Transfer_Constants.TRANSFER_MOTOR_REVERSE);
+  public void transferMtrReverse() {
+    transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_REVERSE);
   }
   public double getTransferVelocity(){
-    return transferMotor.get();
+    return transferMtr.get();
   }
   // This motor speed will also probably need to be changed too, but make sure it is still a negative number
   // This method would be used to spit the note back out if it gets jammed, but might not be necessary

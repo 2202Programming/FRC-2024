@@ -80,7 +80,7 @@ public class IntakeSequence extends BlinkyLightUser {
       case IntakeDown:
         intake.setAnglePosition(Intake_Constants.AngleFloorPos);
         intake.setIntakeSpeed(Intake_Constants.IntakeMotorDefault);
-        transfer.transferMotorOn();
+        transfer.transferMtrOn();
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:
@@ -103,7 +103,7 @@ public class IntakeSequence extends BlinkyLightUser {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    transfer.transferMotorOff();
+    transfer.transferMtrOff();
     intake.setIntakeSpeed(Intake_Constants.IntakeMotorDefault);
     intake.setAnglePosition(Intake_Constants.DrivingPosition);
   }

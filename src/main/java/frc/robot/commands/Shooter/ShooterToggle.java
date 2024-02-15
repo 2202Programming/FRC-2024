@@ -47,7 +47,7 @@ public class ShooterToggle extends BlinkyLightUser {
   @Override
   public void execute() {
     if(shooter.isAtRPM() && intake.angleAtSetpoint()){
-      transfer.transferMotorOn();
+      transfer.transferMtrOn();
     }
   }
       /*

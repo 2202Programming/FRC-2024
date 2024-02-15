@@ -31,8 +31,8 @@ import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
 public class Intake extends SubsystemBase {
-  final double FACTOR = 100.0; // TODO set this correctly for intake speed - note vel [cm/s]
-  final double AngleConversionFactor = 10.0; //TODO Find value that works (10:1 first gear, will add more gears)
+  final double wheelGearRatio = 10.0; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean anything or just gear raito works? (the comment before)
+  final double AngleGearRatio = 100.0; //Gear ratio 
   final double lower_clamp = 1.0; //TODO find both ofc
   final double upper_clamp = 15.0;
   /** Creates a new Intake. */
@@ -42,7 +42,7 @@ public class Intake extends SubsystemBase {
 
   // Intake Angle, a servo
   final NeoServo angle_servo;
-  final PIDFController hwAngleVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0); // inner (hw/vel)
+  final PIDFController hwAngleVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0); // inner (hw/vel) go up and divide by 2
   final PIDController anglePositionPID = new PIDController(1.0, 0.0, 0.0); // outer (pos)
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
@@ -73,14 +73,14 @@ public class Intake extends SubsystemBase {
     intakeMtr.restoreFactoryDefaults();
     intakeMtrPid = intakeMtr.getPIDController();
     intakeMtrEncoder = intakeMtr.getEncoder();
-    intakeMtrEncoder.setPositionConversionFactor(FACTOR);
-    intakeMtrEncoder.setVelocityConversionFactor(FACTOR / 60.0); // min to sec
+    intakeMtrEncoder.setPositionConversionFactor(wheelGearRatio);
+    intakeMtrEncoder.setVelocityConversionFactor(wheelGearRatio / 60.0); // min to sec
     // configure hardware pid with our values
-    hwAngleVelPID.copyTo(intakeMtr.getPIDController(), 0);
     intakeMtr.burnFlash();
 
     /// Servo setup for angle_servo
-    angle_servo.setConversionFactor((180.0 / Math.PI) / AngleConversionFactor) //[deg]
+    hwAngleVelPID.copyTo(angle_servo.getController().getPIDController(), 0);
+    angle_servo.setConversionFactor((180.0 / Math.PI) / AngleGearRatio) //[deg]
          .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
          .setVelocityHW_PID(maxVel, maxAccel)
          .setTolerance(posTol, velTol)
