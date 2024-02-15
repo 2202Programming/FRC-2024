@@ -27,16 +27,16 @@ public class FaceToTag extends Command {
 
   // TODO: CHECK This value
   PIDController centeringPid;
-  double centering_kP = 2.0;
-  double centering_kI = 0.0;
-  double centering_kD = 0.0;
-  double centeringPidOutput = 0.0;
+  double centering_kP = 2.5; //Can be increased more a little bit but too much makes it giggly when its far
+  double centering_kI = 3.0;
+  double centering_kD = 0;
+  double centeringPidOutput = 2.0;
 
   Rotation2d currentAngle;
   double min_rot_rate = 6.0;
 
   final double vel_tol = 2.0;
-  final double pos_tol = 2.0;
+  final double pos_tol = 1.0;
   final double max_rot_rate = 60.0; // [deg/s]
 
   final double high_tape_Y = 21.0;
@@ -47,14 +47,17 @@ public class FaceToTag extends Command {
   boolean lastValidity = false;
   boolean currentValidity = false;
   private Timer timer;
-  private int validityCount = 0;
   private boolean valid_tag = false;
   private double TagID;
   private final SwerveDriveKinematics kinematics;
   private SwerveModuleState[] no_turn_states;
+  private boolean hasTarget = true;
 
   /**
-   * Creates a new FaceToTag.
+   * Code that angle itself so that it is facing toward tag
+   * Make sure to check tag is in view by code before running
+   * have same checkForTarget method in parents for this command.
+   * This should have been able to solved by having it in initialize but it is going to give us bug due to cycle call of isFinished.
    * 
    * @param TagID AprilTag ID to face
    */
@@ -77,6 +80,9 @@ public class FaceToTag extends Command {
   @Override
   public void initialize() {
     timer.restart();
+    if (!checkForTarget(TagID)) {// Avoid error time lag of running isFinished()
+      hasTarget = false;
+    }
     System.out.println("FaceToTag: initialize, initial heading: " + drivetrain.getPose().getRotation().getDegrees());
   }
 
@@ -84,14 +90,12 @@ public class FaceToTag extends Command {
   @Override
   public void execute() {
     SwerveModuleState[] output;
-    lastValidity = currentValidity;
-    currentValidity = limelight.valid();
-    validityCount = (currentValidity) ? validityCount + 1 : 0;
-    if (validityCount > 5) {// calculate every 5 frames
-      calculate();
-      valid_tag = true;
+    if(!hasTarget){//To avoid error if not seeing tag
+      return;
     }
 
+    calculate();
+    valid_tag = true;
     output = (valid_tag) ? vision_out : no_turn_states;
     drivetrain.drive(output);
   }
@@ -101,6 +105,7 @@ public class FaceToTag extends Command {
     LimelightTarget_Fiducial[] tags = limelight.getAprilTagsFromHelper();
     double tagXfromCenter = 0;
     boolean hasTarget = false;
+
     for (LimelightTarget_Fiducial tag : tags) {
       if (tag.fiducialID == TagID) {
         tagXfromCenter = tag.tx;
@@ -109,11 +114,7 @@ public class FaceToTag extends Command {
       }
     }
     if (hasTarget) {// this should be true all the time unless the tag is lost
-      // TODO: CHECK right now it is assuming that camera is in center
-      // need a position of robot to get distance from the tag to calculate the
-      // desired angle to face the tag with offset
-      // I dont know if we want to use the robot Pose but that is the only way if
-      // limelight is not in the center of the robot
+
       centeringPidOutput = centeringPid.calculate(tagXfromCenter, 0.0);
       double min_rot = Math.signum(centeringPidOutput) * min_rot_rate;
       rot = MathUtil.clamp(centeringPidOutput + min_rot, -max_rot_rate, max_rot_rate) / 57.3; // convert to radians
@@ -135,6 +136,23 @@ public class FaceToTag extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return centeringPid.atSetpoint() || timer.hasElapsed(3.0);// end if it takes more than 3 sec
+    return centeringPid.atSetpoint() || timer.hasElapsed(5.0);// end if it takes more than 3 sec checkForTarget to make sure
+  }
+
+  /**
+   * Check if limelight can see the target.
+   * 
+   * @param tagID tagID to check for in limelight
+   * @return {@code true} if the target is found in limelight, {@code false} if
+   *         not.
+   */
+  private boolean checkForTarget(double tagID) {
+    LimelightTarget_Fiducial[] tags = limelight.getAprilTagsFromHelper();
+    for (LimelightTarget_Fiducial tag : tags) {
+      if (tag.fiducialID == tagID) {
+        return true;
+      }
+    }
+    return false;
   }
 }

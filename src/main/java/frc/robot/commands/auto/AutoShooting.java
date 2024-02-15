@@ -28,7 +28,8 @@ public class AutoShooting extends SequentialCommandGroup {
     if (checkForTarget(tagID)) {
       addCommands(new FaceToTag(tagID));
       // get Position here and feed it to the ShooterToggle to adjust the RPM
-      addCommands(new ShooterToggle());
+      //TODO: UNCOmment this avoiding error
+      //addCommands(new ShooterToggle());
     }
   }
   /**
