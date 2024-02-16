@@ -23,6 +23,7 @@ import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.IntakeCalibrateRetractedPos;
 import frc.robot.commands.Intake.IntakeManualPickup;
+import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
@@ -89,8 +90,9 @@ public class RobotContainer {
   public static <T> T getObject(String name) {
     return (T) rc.robotSpecs.mySubsystemConfig.getObject(name);
   }
-  
-  // Use this form when the RobotContainer object is NOT a Subsystem, and you can deal with nulls
+
+  // Use this form when the RobotContainer object is NOT a Subsystem, and you can
+  // deal with nulls
   @SuppressWarnings("unchecked")
   public static <T> T getObjectOrNull(String name) {
     return (T) rc.robotSpecs.mySubsystemConfig.getObjectOrNull(name);
@@ -120,7 +122,7 @@ public class RobotContainer {
     // Quiet some of the noise
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    // get subsystem vars as needed for bindings 
+    // get subsystem vars as needed for bindings
     drivetrain = getSubsystem(SwerveDrivetrain.class);
     dc = getSubsystem("DC");
 
@@ -163,8 +165,8 @@ public class RobotContainer {
                 new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
             new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
 
-        //Start any watcher commands
-        new PDPMonitorCmd();    // auto scheduled, runs when disabled
+        // Start any watcher commands
+        new PDPMonitorCmd(); // auto scheduled, runs when disabled
         break;
 
       case Comptition:
@@ -173,10 +175,11 @@ public class RobotContainer {
         // TODO: replace Print/Dummy with real commands when known - ER
         driver.rightTrigger().whileTrue(new DummyShooterCmd());
         driver.leftTrigger().onTrue(new PrintCommand("PlaceholderCMD: Align with shooter"));
-        driver.x().whileTrue(new IntakeManualPickup());
+        // driver.x().whileTrue(new IntakeSequence());
         driver.y().whileTrue(new InstantCommand(() -> {
-        intake.setAngleVelocity(0.3);
+          intake.setAngleVelocity(0.3);
         }));
+        driver.x().whileTrue(new IntakeCalibrateRetractedPos());
         driver.a().whileTrue(new IntakeCalibrateRetractedPos());
         // when used can uncomment to set nose roller
         // driver.a().whileTrue(new InstantCommand(() -> {

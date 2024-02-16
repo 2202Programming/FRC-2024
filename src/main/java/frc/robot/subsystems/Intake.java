@@ -31,9 +31,10 @@ import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
 public class Intake extends SubsystemBase {
-  final double wheelGearRatio = 10.0; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean anything or just gear raito works? (the comment before)
-  final double AngleGearRatio = 100.0; //Gear ratio 
-  final double lower_clamp = 1.0; //TODO find both ofc
+  final double wheelGearRatio = 10.0; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean
+                                      // anything or just gear raito works? (the comment before)
+  final double AngleGearRatio = 100.0; // Gear ratio
+  final double lower_clamp = 1.0; // TODO find both ofc
   final double upper_clamp = 15.0;
   /** Creates a new Intake. */
   public double intake_speed = 0.0;
@@ -52,20 +53,20 @@ public class Intake extends SubsystemBase {
   // lightgate tell us when we have a game piece (aka a Note)
   // final DigitalInput lightgate = new DigitalInput(DigitalIO.Intake_Note);
 
-  //limit switch 
+  // limit switch
   SparkLimitSwitch m_forwardLimit;
   SparkLimitSwitch m_reverseLimit;
   // Digital IO limit switches if we use
-  // DigitalInput limitSwitchUp = new DigitalInput(DigitalIO.Intake_Up); 
+  // DigitalInput limitSwitchUp = new DigitalInput(DigitalIO.Intake_Up);
   // DigitalInput limitSwitchDown = new DigitalInput(DigitalIO.Intake_Down);
 
-  public Intake() { //TODO: Get values
-    final int STALL_CURRENT = 15; //[amp]
-    final int FREE_CURRENT = 5; //[amp]
+  public Intake() { // TODO: Get values
+    final int STALL_CURRENT = 15; // [amp]
+    final int FREE_CURRENT = 5; // [amp]
     final double maxVel = 5.0; // [deg/s]
     final double maxAccel = 5.0; // [deg/s^2]
     final double posTol = 3.0; // [deg]
-    final double velTol = 1.0; //[deg/s]
+    final double velTol = 1.0; // [deg/s]
     // servo controls angle of intake arm
     angle_servo = new NeoServo(CAN.ANGLE_MTR, anglePositionPID, hwAngleVelPID, false); // TODO: find invert
     // use velocity control on intake motor
@@ -80,20 +81,32 @@ public class Intake extends SubsystemBase {
 
     /// Servo setup for angle_servo
     hwAngleVelPID.copyTo(angle_servo.getController().getPIDController(), 0);
-    angle_servo.setConversionFactor((180.0 / Math.PI) / AngleGearRatio) //[deg]
-         .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
-         .setVelocityHW_PID(maxVel, maxAccel)
-         .setTolerance(posTol, velTol)
-         .setMaxVelocity(maxVel)
+    angle_servo.setConversionFactor((180.0 / Math.PI) / AngleGearRatio) // [deg]
+        .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
+        .setVelocityHW_PID(maxVel, maxAccel)
+        .setTolerance(posTol, velTol)
+        .setMaxVelocity(maxVel)
         .burnFlash();
 
+    this.setAngleClamp(lower_clamp, upper_clamp);
 
-      this.setAngleClamp(lower_clamp, upper_clamp);  
-        
-    //limit switch
-    m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); //TODO: Find out if it's normally closed or open
-    m_reverseLimit = angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); //TODO: Verify that this get is a set
-    //limit switches should be enabled on default, bottom two lines are just in case right now
+    // limit switch
+    m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); // TODO:
+                                                                                                               // Find
+                                                                                                               // out if
+                                                                                                               // it's
+                                                                                                               // normally
+                                                                                                               // closed
+                                                                                                               // or
+                                                                                                               // open
+    m_reverseLimit = angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); // TODO:
+                                                                                                               // Verify
+                                                                                                               // that
+                                                                                                               // this
+                                                                                                               // get is
+                                                                                                               // a set
+    // limit switches should be enabled on default, bottom two lines are just in
+    // case right now
     m_forwardLimit.enableLimitSwitch(true);
     m_reverseLimit.enableLimitSwitch(true);
   }
@@ -103,32 +116,38 @@ public class Intake extends SubsystemBase {
   }
 
   // public boolean hasNote() {
-  //   return lightgate.get();
+  // return lightgate.get();
   // }
 
   public double getIntakeRollerSpeed() {
     return intakeMtrEncoder.getVelocity();
   }
+
   /* [deg] */
   public void setAngleSetpoint(double position) {
-    angle_servo.setSetpoint(position); 
+    angle_servo.setSetpoint(position);
   }
-/* [deg] */
+
+  /* [deg] */
   public double getAngleSetpoint() {
     return angle_servo.getSetpoint();
   }
-/* [deg] */
+
+  /* [deg] */
   public double getAnglePosition() {
     return angle_servo.getPosition();
   }
-  public void setAnglePosition(double pos){
+
+  public void setAnglePosition(double pos) {
     angle_servo.setPosition(pos);
   }
-  /* [deg/s]
+
+  /*
+   * [deg/s]
    * Switches angle servo to velcoity mode
    * TESTING ONLY
    */
-  public void setAngleVelocity(double speed){
+  public void setAngleVelocity(double speed) {
     angle_servo.setVelocityCmd(speed);
   }
 
@@ -143,10 +162,12 @@ public class Intake extends SubsystemBase {
   public boolean angleAtSetpoint() {
     return angle_servo.atSetpoint(); // are we there yet?
   }
-  public boolean atForwardLimitSwitch(){
-    return m_forwardLimit.isPressed(); //do we need to check the other???
+
+  public boolean atForwardLimitSwitch() {
+    return m_forwardLimit.isPressed(); // do we need to check the other???
   }
-  public boolean atReverseLimitSwitch(){
+
+  public boolean atReverseLimitSwitch() {
     return m_reverseLimit.isPressed();
   }
 
@@ -154,7 +175,7 @@ public class Intake extends SubsystemBase {
     return new IntakeWatcherCmd();
   }
 
-  public void periodic(){
+  public void periodic() {
     this.angle_servo.periodic();
 
   }

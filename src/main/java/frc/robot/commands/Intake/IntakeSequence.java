@@ -104,7 +104,7 @@ public class IntakeSequence extends BlinkyLightUser {
   @Override
   public void end(boolean interrupted) {
     transfer.transferMtrOff();
-    intake.setIntakeSpeed(Intake_Constants.IntakeMotorDefault);
+    intake.setIntakeSpeed(0.0);
     intake.setAnglePosition(Intake_Constants.DrivingPosition);
   }
 
