@@ -141,7 +141,7 @@ public class NeoServo implements VelocityControlled {
         setMaxVel(maxVelocity);
         return this;
     }
-    public CANSparkMax getCAN(){
+    public CANSparkMax getController(){
         return ctrl;
     }
 
