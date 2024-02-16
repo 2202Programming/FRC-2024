@@ -195,14 +195,14 @@ public final class Constants {
     // Please move to correct location when ID is assigned
 
     // Intake
-    public static final int INTAKE_MTR = 17; // placeholder
-    public static final int ANGLE_MTR = 18; // placeholder
+    public static final int INTAKE_MTR = 18; 
+    public static final int ANGLE_MTR = 17; 
     // Nose Roller
     public static final int NOSE_MOTOR_ANGLE = 54;
     public static final int NOSE_MOTOR_FIRE = 55;
 
     // Transfer
-    public static final int TRANSFER_MOTOR = 19; // placeholder
+    public static final int TRANSFER_MOTOR = 19; 
 
     // Claw
     public static final int CLAW_WHEEL_MOTOR = 16;

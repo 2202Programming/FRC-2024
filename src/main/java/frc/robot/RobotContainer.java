@@ -24,6 +24,7 @@ import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.IntakeCalibrateRetractedPos;
 import frc.robot.commands.Intake.IntakeManualPickup;
 import frc.robot.commands.Intake.IntakeSequence;
+import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
@@ -175,12 +176,11 @@ public class RobotContainer {
         // TODO: replace Print/Dummy with real commands when known - ER
         driver.rightTrigger().whileTrue(new DummyShooterCmd());
         driver.leftTrigger().onTrue(new PrintCommand("PlaceholderCMD: Align with shooter"));
-        // driver.x().whileTrue(new IntakeSequence());
+        driver.x().whileTrue(new IntakeSequence());
         driver.y().whileTrue(new InstantCommand(() -> {
           intake.setAngleVelocity(0.3);
         }));
-        driver.x().whileTrue(new IntakeCalibrateRetractedPos());
-        driver.a().whileTrue(new IntakeCalibrateRetractedPos());
+        driver.a().whileTrue(new IntakeTest());
         // when used can uncomment to set nose roller
         // driver.a().whileTrue(new InstantCommand(() -> {
         // noseRoller.setNoseVelocity(1.0);

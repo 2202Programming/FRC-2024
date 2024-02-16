@@ -112,7 +112,8 @@ public class Intake extends SubsystemBase {
   }
 
   public void setIntakeSpeed(double speed) {
-    intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
+    intakeMtr.set(speed);
+    // intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
   }
 
   // public boolean hasNote() {
