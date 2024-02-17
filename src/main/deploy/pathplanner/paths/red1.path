@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot",
+      "name": "shoot",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
@@ -47,7 +47,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Spin shooter motors"
+                "name": "shoot"
               }
             }
           ]
@@ -72,7 +72,7 @@
       }
     },
     {
-      "name": "Pickup 1",
+      "name": "pickup",
       "waypointRelativePos": 0.8,
       "command": {
         "type": "parallel",

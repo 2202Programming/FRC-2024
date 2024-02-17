@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -28,6 +29,7 @@ import frc.robot.commands.Intake.IntakeManualPickup;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Shooter.RPMShooter;
+import frc.robot.commands.Shooter.ShooterToggle;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
@@ -140,6 +142,9 @@ public class RobotContainer {
     }
 
     autoChooser = AutoBuilder.buildAutoChooser();
+
+    NamedCommands.registerCommand("pickup", new IntakeToggle());
+    NamedCommands.registerCommand("shoot", new ShooterToggle());
   }
 
   /**
