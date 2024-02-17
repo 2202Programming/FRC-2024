@@ -142,7 +142,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("pickup", new IntakeSequence());
     NamedCommands.registerCommand("lineup shooter", new AutoShooting(ShootingTarget.Speaker));
     NamedCommands.registerCommand("shoot", new ShooterSequence());
-    NamedCommands.registerCommand("wait 2", new WaitCommand(2));
+    NamedCommands.registerCommand("wait", new WaitCommand(2));
   }
 
   /**
