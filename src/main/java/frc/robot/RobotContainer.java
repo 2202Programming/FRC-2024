@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -13,6 +14,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -21,13 +24,18 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
-import frc.robot.commands.Intake.IntakeDefaultPos;
-import frc.robot.commands.Intake.IntakeToggle;
+import frc.robot.commands.Intake.IntakeCalibrateRetractedPos;
+import frc.robot.commands.Intake.IntakeManualPickup;
+import frc.robot.commands.Intake.IntakeSequence;
+import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Shooter.RPMShooter;
+import frc.robot.commands.Shooter.ShooterToggle;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
+import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
-import frc.robot.commands.utility.DummyShooterCmd;
+import frc.robot.commands.auto.AutoShooting;
+import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
@@ -45,9 +53,11 @@ import frc.robot.util.RobotSpecs;
  */
 public class RobotContainer {
 
+  private final SendableChooser<Command> autoChooser;
+
   // enum for bindings add when needed
   public enum Bindings {
-    DriveTest, Shooter_test, Comptition
+    DriveTest, Shooter_test, Comptition, auto_shooter_test
   }
 
   // The robot's subsystems and commands are defined here...
@@ -89,8 +99,9 @@ public class RobotContainer {
   public static <T> T getObject(String name) {
     return (T) rc.robotSpecs.mySubsystemConfig.getObject(name);
   }
-  
-  // Use this form when the RobotContainer object is NOT a Subsystem, and you can deal with nulls
+
+  // Use this form when the RobotContainer object is NOT a Subsystem, and you can
+  // deal with nulls
   @SuppressWarnings("unchecked")
   public static <T> T getObjectOrNull(String name) {
     return (T) rc.robotSpecs.mySubsystemConfig.getObjectOrNull(name);
@@ -120,15 +131,20 @@ public class RobotContainer {
     // Quiet some of the noise
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    // get subsystem vars as needed for bindings 
+    // get subsystem vars as needed for bindings
     drivetrain = getSubsystem(SwerveDrivetrain.class);
     dc = getSubsystem("DC");
 
     /* Set the commands below */
-    configureBindings(Bindings.Comptition); // Change this to switch between bindings
+    configureBindings(Bindings.auto_shooter_test); // Change this to switch between bindings
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+
+    NamedCommands.registerCommand("pickup", new IntakeToggle());
+    NamedCommands.registerCommand("shoot", new ShooterToggle());
   }
 
   /**
@@ -137,8 +153,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return null;
+    return autoChooser.getSelected();
   }
 
   private void configureBindings(Bindings bindings) {
@@ -149,13 +164,19 @@ public class RobotContainer {
         driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.b().onTrue(new AllianceAwareGyroReset(false));
 
-        // This appears to break if initial pose is too close to path start pose
-        // (zero-length path?)
-        driver.a().onTrue(new SequentialCommandGroup(
-            new InstantCommand(RobotContainer.RC().drivetrain::printPose),
-            AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("test_1m"),
-                new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
-            new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+      //This appears to break if initial pose is too close to path start pose (zero-length path?)
+      driver.x().onTrue(new SequentialCommandGroup(
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+        AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("blue1"), 
+          new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+
+      driver.b().onTrue(new SequentialCommandGroup(
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+        AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("red1"), 
+          new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+       
 
         driver.x().onTrue(new SequentialCommandGroup(
             new InstantCommand(RobotContainer.RC().drivetrain::printPose),
@@ -163,27 +184,34 @@ public class RobotContainer {
                 new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
             new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
 
-        //Start any watcher commands
-        new PDPMonitorCmd();    // auto scheduled, runs when disabled
+        // Start any watcher commands
+        new PDPMonitorCmd(); // auto scheduled, runs when disabled
         break;
 
       case Comptition:
         var intake = getSubsystem(Intake.class);
         // var noseRoller = getSubsystem(NoseRoller.class);
         // TODO: replace Print/Dummy with real commands when known - ER
-        driver.rightTrigger().whileTrue(new DummyShooterCmd());
+        //driver.rightTrigger().whileTrue(new DummyShooterCmd());
         driver.leftTrigger().onTrue(new PrintCommand("PlaceholderCMD: Align with shooter"));
-        driver.x().whileTrue(new IntakeToggle());
+        driver.x().whileTrue(new IntakeSequence());
         driver.y().whileTrue(new InstantCommand(() -> {
-        intake.setAngleVelocity(0.3);
+          intake.setAngleVelocity(0.3);
         }));
-        driver.a().whileTrue(new IntakeDefaultPos());
+        driver.a().whileTrue(new IntakeTest());
         // when used can uncomment to set nose roller
         // driver.a().whileTrue(new InstantCommand(() -> {
         // noseRoller.setNoseVelocity(1.0);
         // }));
         break;
-
+      
+      case auto_shooter_test:
+        driver.a().onTrue(new FaceToTag(4));
+        driver.povDown().onTrue(new AutoShooting(ShootingTarget.Speaker));
+        driver.povUp().onTrue(new AutoShooting(ShootingTarget.Trap));
+        driver.povRight().onTrue(new AutoShooting(ShootingTarget.Amp));
+        break;
+      
       default:
         break;
     }
@@ -200,7 +228,6 @@ public class RobotContainer {
       case Comptition:
         operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
 
-        // TODO mentor pls check if right syntax!!
         operator.x().whileTrue(new PrintCommand("PlaceholderCMD: Intake Deploy"));
         operator.x().whileFalse(new PrintCommand("PlaceholderCMD: Intake Retract"));
 
@@ -214,10 +241,7 @@ public class RobotContainer {
       case Shooter_test:
         var shooter = getSubsystem(Shooter.class);
         if (shooter != null) {
-          shooter.setDefaultCommand(new RPMShooter(operator));
-          operator.b().onTrue(new InstantCommand(() -> {
-            shooter.cycleShootingMode();
-          }));
+          shooter.setDefaultCommand(new RPMShooter());
         }
         break;
     }

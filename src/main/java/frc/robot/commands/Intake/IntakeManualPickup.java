@@ -4,10 +4,8 @@
 
 package frc.robot.commands.Intake;
 
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.Constants.Intake_Constants;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Intake;
 
@@ -39,7 +37,7 @@ import frc.robot.subsystems.Intake;
  *
  *
  */
-public class IntakeToggle extends BlinkyLightUser {
+public class IntakeManualPickup extends BlinkyLightUser {
     final static int DONE_COUNT = 100; // frames we expect to have note before finished
 
     /** Creates a new intakeForward. */
@@ -51,7 +49,7 @@ public class IntakeToggle extends BlinkyLightUser {
     double count = 0;
     boolean vel_change = false;
 
-    public IntakeToggle() {
+    public IntakeManualPickup() {
         this.intake = RobotContainer.getSubsystem(Intake.class);
     }
 
@@ -84,7 +82,7 @@ public class IntakeToggle extends BlinkyLightUser {
             intake.setAngleVelocity(1.0);
         } else {
             original_pos = intake.getAnglePosition();
-            intake.setAngleSetpoint(Intake_Constants.AnglePosition);
+            intake.setAngleSetpoint(Intake_Constants.PickupPosition);
             intake.setIntakeSpeed(Intake_Constants.IntakeMotorDefault);
         }
     }
@@ -98,34 +96,34 @@ public class IntakeToggle extends BlinkyLightUser {
         // }
     }
 
-    /*
-     * Control the blinkylights based on our Note possession.
-     *
-     * Green when we have it, red otherwise
-     */
-    @Override
-    public Color8Bit colorProvider() {
-        // make sure not is safely in our possession before going back
-        return (count >= DONE_COUNT) ? BlinkyLights.GREEN : BlinkyLights.RED;
-    };
+    // /*
+    //  * Control the blinkylights based on our Note possession.
+    //  *
+    //  * Green when we have it, red otherwise
+    //  */
+    // @Override
+    // public Color8Bit colorProvider() {
+    //     // make sure not is safely in our possession before going back
+    //     return (count >= DONE_COUNT) ? BlinkyLights.GREEN : BlinkyLights.RED;
+    // };
 
-    @Override
-    public boolean requestBlink() {
-        return false; // we want solid lights
-    }
+    // @Override
+    // public boolean requestBlink() {
+    //     return false; // we want solid lights
+    // }
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
         // if driver releases button go back to safe position, or if we have the note
         // safely in our possession, go to safe position
-        intake.setAngleSetpoint(Intake_Constants.TransferPosition);
+        intake.setAngleSetpoint(Intake_Constants.DrivingPosition);
     }
 
     // Returns true when the command should end, we end when count hits DONE_COUNT
     @Override
     public boolean isFinished() {
-        count = (intake.hasNote()) ? count++ : 0; // count frames with note
+        // count = (intake.hasNote()) ? count++ : 0; // count frames with note
         // leaves in driver control
         return false;
         // return (count >= DONE_COUNT); done when we hit the count - if we want to go

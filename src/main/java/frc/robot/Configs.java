@@ -44,11 +44,15 @@ public class Configs {
       .add(SwerveDrivetrain.class) // must be after LL and Sensors
       .add(Intake.class)
       .add(Command.class, "IntakeWatcher", () -> {
-        return RobotContainer.getSubsystem(Intake.class).getWatcher(); })
+        return RobotContainer.getSubsystem(Intake.class).getWatcher();
+      })
       .add(Shooter.class)
       .add(Transfer.class)
-      //add(Climber.class)
-      ;
+      .add(Command.class, "TransferWatcher", () -> {
+        return RobotContainer.getSubsystem(Transfer.class).getWatcher();
+      });
+  // add(Climber.class)
+  
 
   public static final SubsystemConfig comp2024BetaBotSubsystemConfig = new SubsystemConfig()
       // deferred construction via Supplier<Object> lambda
