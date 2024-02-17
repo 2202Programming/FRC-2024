@@ -158,10 +158,9 @@ public final class Constants {
     public static final int ROBORIO = 0;
     public static final int PDP = 1; // for rev
     public static final int PCM1 = 2; // for rev
-    public static final int PCM2 = 3; // for rev
 
     // lights
-    public static final int CANDLE1 = 3; // TODO: fix collision with PCM2
+    public static final int CANDLE1 = 3; 
     public static final int CANDLE2 = 4;
 
     // Warning: CAN 7 is used for CANCoder on swerveBot aka Tim 2.0
