@@ -57,6 +57,7 @@ public class IntakeCalibrateForwardPos extends  BlinkyLightUser {
     // Returns true when the command should end, we end when count hits DONE_COUNT
     @Override
     public boolean isFinished() {
-        return intake.atForwardLimitSwitch();      
+        return false;
+        // return intake.atForwardLimitSwitch();      
     }
 }

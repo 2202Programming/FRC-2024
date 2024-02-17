@@ -250,7 +250,7 @@ public final class Constants {
   }
 
   public static final class Transfer_Constants { // placeholder
-    public static final double TRANSFER_MOTOR_ON = 0.5;
+    public static final double TRANSFER_MOTOR_ON = 0.8;
     public static final double TRANSFER_MOTOR_OFF = 0.0;
     public static final double TRANSFER_MOTOR_REVERSE = -0.5;
   }

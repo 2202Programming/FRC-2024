@@ -31,11 +31,12 @@ import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
 public class Intake extends SubsystemBase {
-  final double wheelGearRatio = 10.0; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean
-                                      // anything or just gear raito works? (the comment before)
+  final double wheelGearRatio = 1.0; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean
+               
+  // anything or just gear raito works? (the comment before)
   final double AngleGearRatio = 100.0; // Gear ratio
-  final double lower_clamp = 1.0; // TODO find both ofc
-  final double upper_clamp = 15.0;
+  final double lower_clamp = -100.0; // TODO find both ofc
+  final double upper_clamp = 100.0;
   /** Creates a new Intake. */
   public double intake_speed = 0.0;
   public double r_speed = 0.0;
@@ -43,7 +44,7 @@ public class Intake extends SubsystemBase {
 
   // Intake Angle, a servo
   final NeoServo angle_servo;
-  final PIDFController hwAngleVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0); // inner (hw/vel) go up and divide by 2
+  final PIDFController hwAngleVelPID = new PIDFController(0.002141, 0.0, 0.0, 0.0503); // inner (hw/vel) go up and divide by 2
   final PIDController anglePositionPID = new PIDController(1.0, 0.0, 0.0); // outer (pos)
   final PIDFController intakeVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0);
   // Intake roller motor
@@ -73,6 +74,7 @@ public class Intake extends SubsystemBase {
     // use velocity control on intake motor
     intakeMtr.clearFaults();
     intakeMtr.restoreFactoryDefaults();
+    intakeMtr.setInverted(true);
     intakeMtrPid = intakeMtr.getPIDController();
     intakeMtrEncoder = intakeMtr.getEncoder();
     intakeMtrEncoder.setPositionConversionFactor(wheelGearRatio);
@@ -94,8 +96,8 @@ public class Intake extends SubsystemBase {
     this.setAngleClamp(lower_clamp, upper_clamp);
 
     // limit switch
-    m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); // TODO: Find out if it's normally closed or open
-    m_reverseLimit = angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); // TODO: Verify that this get is a set
+    m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen); // TODO: Find out if it's normally closed or open
+    m_reverseLimit = angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen); // TODO: Verify that this get is a set
     // limit switches should be enabled on default, bottom two lines are just in
     // case right now
     m_forwardLimit.enableLimitSwitch(true);
@@ -103,8 +105,8 @@ public class Intake extends SubsystemBase {
   }
 
   public void setIntakeSpeed(double speed) {
-    // intakeMtr.set(speed);
-    intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
+    intakeMtr.set(speed);
+    // intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
   }
 
   // public boolean hasNote() {

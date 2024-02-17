@@ -10,19 +10,19 @@ import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Intake;
 
 
-public class IntakeTest extends BlinkyLightUser {
+public class e extends BlinkyLightUser {
 
     /** Creates a new intakeForward. */
     public final Intake intake;
 
-    public IntakeTest() {
+    public e() {
         this.intake = RobotContainer.getSubsystem(Intake.class);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        intake.setIntakeSpeed(0.25);
+        intake.setIntakeSpeed(0.8);
     }
 
     // Called every time the scheduler runs while the command is scheduled.

@@ -36,22 +36,22 @@ public class Configs {
       })
       .add(PneumaticsControl.class)
       .add(BlinkyLights.class, "LIGHTS")
-      .add(HID_Xbox_Subsystem.class, "DC", () -> {
-        return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
-      })
-      .add(Sensors_Subsystem.class)
-      .add(Limelight_Subsystem.class)
-      .add(SwerveDrivetrain.class) // must be after LL and Sensors
-      .add(Intake.class)
-      .add(Command.class, "IntakeWatcher", () -> {
-        return RobotContainer.getSubsystem(Intake.class).getWatcher();
-      })
-      .add(Shooter.class)
+       .add(HID_Xbox_Subsystem.class, "DC", () -> {
+         return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
+       })
+        .add(Sensors_Subsystem.class)
+        .add(Limelight_Subsystem.class)
+       .add(SwerveDrivetrain.class) // must be after LL and Sensors
+       .add(Intake.class)
+        .add(Command.class, "IntakeWatcher", () -> {
+          return RobotContainer.getSubsystem(Intake.class).getWatcher();
+       })
+      //  .add(Shooter.class)
       .add(Transfer.class)
-      .add(Command.class, "TransferWatcher", () -> {
-        return RobotContainer.getSubsystem(Transfer.class).getWatcher();
-      });
-  // add(Climber.class)
+       .add(Command.class, "TransferWatcher", () -> {
+         return RobotContainer.getSubsystem(Transfer.class).getWatcher();
+       })
+      ;
   
 
   public static final SubsystemConfig comp2024BetaBotSubsystemConfig = new SubsystemConfig()

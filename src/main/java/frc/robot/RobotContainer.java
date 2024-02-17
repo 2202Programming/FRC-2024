@@ -21,10 +21,13 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
+import frc.robot.commands.Intake.IntakeCalibrateForwardPos;
 import frc.robot.commands.Intake.IntakeCalibrateRetractedPos;
 import frc.robot.commands.Intake.IntakeManualPickup;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
+import frc.robot.commands.Intake.TransferTest;
+import frc.robot.commands.Intake.e;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FaceToTag;
@@ -130,7 +133,7 @@ public class RobotContainer {
     dc = getSubsystem("DC");
 
     /* Set the commands below */
-    configureBindings(Bindings.auto_shooter_test); // Change this to switch between bindings
+    configureBindings(Bindings.Comptition); // Change this to switch between bindings
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
@@ -173,20 +176,11 @@ public class RobotContainer {
         break;
 
       case Comptition:
-        var intake = getSubsystem(Intake.class);
-        // var noseRoller = getSubsystem(NoseRoller.class);
-        // TODO: replace Print/Dummy with real commands when known - ER
-        //driver.rightTrigger().whileTrue(new DummyShooterCmd());
-        driver.leftTrigger().onTrue(new PrintCommand("PlaceholderCMD: Align with shooter"));
-        driver.x().whileTrue(new IntakeSequence());
-        driver.y().whileTrue(new InstantCommand(() -> {
-          intake.setAngleVelocity(0.3);
-        }));
+        driver.x().whileTrue(new e());
+        driver.y().whileTrue(new IntakeCalibrateRetractedPos());
+        driver.leftBumper().whileTrue(new IntakeCalibrateForwardPos());
         driver.a().whileTrue(new IntakeTest());
-        // when used can uncomment to set nose roller
-        // driver.a().whileTrue(new InstantCommand(() -> {
-        // noseRoller.setNoseVelocity(1.0);
-        // }));
+        driver.b().whileTrue(new TransferTest());
         break;
       
       case auto_shooter_test:

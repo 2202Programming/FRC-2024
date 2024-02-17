@@ -57,6 +57,6 @@ public class IntakeCalibrateRetractedPos extends  BlinkyLightUser {
     // Returns true when the command should end, we end when count hits DONE_COUNT
     @Override
     public boolean isFinished() {
-        return intake.atReverseLimitSwitch();      
+        return false;      
     }
 }

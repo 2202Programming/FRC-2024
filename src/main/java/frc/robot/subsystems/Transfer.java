@@ -27,39 +27,42 @@ public class Transfer extends SubsystemBase {
   CANSparkMax transferMtr;
   final SparkPIDController transferMtrPid;
   final RelativeEncoder transferMtrEncoder;
-  final PIDFController transferPID = new PIDFController(1.0, 0.0, 0.0, 0.0);
+  final PIDFController transferPID = new PIDFController(0.0, 0.0, 0.0, 1.0);
 
   /** Creates a new Transfer. */
   public Transfer() {
     final double radius = 1.27 * 2 * Math.PI; // 1.27 radius in cm
     final double gear_ratio = 35.0;
-    final double conversionFactor = radius * gear_ratio;
-    transferPID.copyTo(transferMtr.getPIDController(), 0);
+    double conversionFactor = radius / gear_ratio;
+    conversionFactor = 1.0;
     transferMtr = new CANSparkMax(CAN.TRANSFER_MOTOR, CANSparkMax.MotorType.kBrushless);
     transferMtr.clearFaults();
     transferMtr.restoreFactoryDefaults();
+    transferMtr.setInverted(true);
+
     transferMtrPid = transferMtr.getPIDController();
     transferMtrEncoder = transferMtr.getEncoder();
     transferMtrEncoder.setPositionConversionFactor(conversionFactor);
     transferMtrEncoder.setVelocityConversionFactor(conversionFactor / 60.0); // min to sec
+    transferPID.copyTo(transferMtrPid, 0);
     transferMtr.burnFlash();
   }
 
   // TODO: find out methods/behaviors, pneumatics, etc.
 
   public boolean hasNote() {
-    return lightgate.get();
+    return !lightgate.get();
   }
 
   public void transferMtrOn() {
-    transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_ON, ControlType.kVelocity, 0);
-    // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_ON);
+    // transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_ON, ControlType.kVelocity, 0);
+    transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_ON);
   }
 
-  // Motor speed will likely need to be changed
+  // Motor speed will likely need to be chan
   public void transferMtrOff() {
-    transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_OFF, ControlType.kVelocity, 0);
-    // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_OFF);
+    // transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_OFF, ControlType.kVelocity, 0);
+     transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_OFF);
   }
 
   public void transferMtrReverse() {
@@ -68,7 +71,7 @@ public class Transfer extends SubsystemBase {
   }
 
   public double getTransferVelocity() {
-    return transferMtr.get();
+    return transferMtrEncoder.getVelocity();
   }
 
   public Command getWatcher() {
