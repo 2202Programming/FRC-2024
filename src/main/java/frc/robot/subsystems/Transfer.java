@@ -13,7 +13,6 @@ import frc.robot.Constants.CAN;
 import frc.robot.Constants.DigitalIO;
 import frc.robot.Constants.Transfer_Constants;
 import frc.robot.commands.utility.WatcherCmd;
-import frc.robot.subsystems.Intake.IntakeWatcherCmd;
 import frc.robot.util.PIDFController;
 
 import com.revrobotics.CANSparkMax;
@@ -23,17 +22,26 @@ import com.revrobotics.CANSparkBase.ControlType;
 
 public class Transfer extends SubsystemBase {
 
+  //constants for geometry of transfer
+  final static double radius = 1.27 * 2 * Math.PI; // 1.27 radius in cm
+  final static double gearRatio = 1.0 / 35.0; // 35 motor turns -> 1 roller shaft turn
+  final static double conversionFactor = radius * gearRatio;  // [cm/rotations]
+
+  // calc Kff for vel control from measured (RPS / %pwr)
+  final static double  Kff =  (1.0 - .25) / (186.0 - 46.0);
+  final PIDFController transferPID = new PIDFController(0.0, 0.0, 0.0, Kff);
+
   DigitalInput lightgate = new DigitalInput(DigitalIO.TRANSFER_LIGHT_GATE);
   CANSparkMax transferMtr;
   final SparkPIDController transferMtrPid;
   final RelativeEncoder transferMtrEncoder;
-  final PIDFController transferPID = new PIDFController(0.0, 0.0, 0.0, 1.0);
+
+  // state vars
+  boolean has_note = false;
+  boolean prev_sense_note = false;
 
   /** Creates a new Transfer. */
   public Transfer() {
-    final double radius = 1.27 * 2 * Math.PI; // 1.27 radius in cm
-    final double gearRatio = 35.0;
-    final double conversionFactor = radius / gearRatio;
     transferMtr = new CANSparkMax(CAN.TRANSFER_MOTOR, CANSparkMax.MotorType.kBrushless);
     transferMtr.clearFaults();
     transferMtr.restoreFactoryDefaults();
@@ -46,21 +54,40 @@ public class Transfer extends SubsystemBase {
     transferMtr.burnFlash();
   }
 
-  // TODO: find out methods/behaviors, pneumatics, etc.
-
-  public boolean hasNote() {
+  /*
+   * true when note is blocking light gate
+   */
+  boolean senseNote() {
     return !lightgate.get();
   }
 
+  /*
+   * true - note passed light gate and then cleared past gate
+   * commands should stop motor on hasNote() == true.
+   */
+  public boolean hasNote() {
+    return has_note;
+  }
+
+  /*
+   * sets if we have a note or not for powerup or initization in commands
+   */
+  public void setHasNote(boolean note_state) {
+      has_note = note_state;
+      prev_sense_note = false;
+  }
+
   public void transferMtrOn() {
-    // transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_ON, ControlType.kVelocity, 0);
+    // transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_ON,
+    // ControlType.kVelocity, 0);
     transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_ON);
   }
 
   // Motor speed will likely need to be chan
   public void transferMtrOff() {
-    // transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_OFF, ControlType.kVelocity, 0);
-     transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_OFF);
+    // transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_OFF,
+    // ControlType.kVelocity, 0);
+    transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_OFF);
   }
 
   public void transferMtrReverse() {
@@ -76,19 +103,26 @@ public class Transfer extends SubsystemBase {
     return new TransferWatcherCmd();
   }
 
-  // This motor speed will also probably need to be changed too, but make sure it
-  // is still a negative number
-  // This method would be used to spit the note back out if it gets jammed, but
-  // might not be necessary
+  /*
+   * watch gate during periodic so the hasNote() is accurate
+   */
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    // watch gate for high to low change, we have the note where we want it
+    if (senseNote()){
+      prev_sense_note = true;
+    }
+    else if (prev_sense_note) {
+      has_note = true;   // saw it then didn't, so we move past we have it
+    }
+
   }
 
   class TransferWatcherCmd extends WatcherCmd {
     // NetworkTableEntry nt_lightgate;
     NetworkTableEntry nt_lightgate;
     NetworkTableEntry nt_transferVel;
+    NetworkTableEntry nt_have_note;
 
     @Override
     public String getTableName() {
@@ -97,9 +131,9 @@ public class Transfer extends SubsystemBase {
 
     public void ntcreate() {
       NetworkTable table = getTable();
-      // nt_lightgate = table.getEntry("lightgate");
-      nt_lightgate = table.getEntry("lightgate");
+      nt_lightgate = table.getEntry("senseNote");
       nt_transferVel = table.getEntry("transferVel");
+      nt_have_note = table.getEntry("haveNote");
 
       // default value for mutables
       // example nt_maxArbFF.setDouble(maxArbFF);
@@ -107,8 +141,9 @@ public class Transfer extends SubsystemBase {
 
     public void ntupdate() {
       // nt_lightgate.setBoolean();
-      nt_lightgate.setBoolean(hasNote());
+      nt_lightgate.setBoolean(senseNote());
       nt_transferVel.setDouble(getTransferVelocity());
+      nt_have_note.setBoolean(hasNote());
 
       // get mutable values
       // example maxArbFF = nt_maxArbFF.getDouble(maxArbFF);

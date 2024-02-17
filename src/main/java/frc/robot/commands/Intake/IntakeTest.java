@@ -4,7 +4,6 @@
 
 package frc.robot.commands.Intake;
 
-import frc.robot.Constants.Intake_Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Intake;

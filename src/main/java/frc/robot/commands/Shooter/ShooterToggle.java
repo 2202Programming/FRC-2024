@@ -5,14 +5,11 @@
 package frc.robot.commands.Shooter;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.util.Color8Bit;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
-import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 
 public class ShooterToggle extends Command {
   public final Shooter shooter;
