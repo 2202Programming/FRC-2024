@@ -21,13 +21,13 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
+import frc.robot.commands.Intake.AngleForward;
 import frc.robot.commands.Intake.IntakeCalibrateForwardPos;
 import frc.robot.commands.Intake.IntakeCalibrateRetractedPos;
 import frc.robot.commands.Intake.IntakeManualPickup;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Intake.TransferTest;
-import frc.robot.commands.Intake.e;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FaceToTag;
@@ -176,7 +176,7 @@ public class RobotContainer {
         break;
 
       case Comptition:
-        driver.x().whileTrue(new e());
+        driver.x().whileTrue(new AngleForward());
         driver.y().whileTrue(new IntakeCalibrateRetractedPos());
         driver.leftBumper().whileTrue(new IntakeCalibrateForwardPos());
         driver.a().whileTrue(new IntakeTest());

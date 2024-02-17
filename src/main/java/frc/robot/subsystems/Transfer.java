@@ -32,14 +32,12 @@ public class Transfer extends SubsystemBase {
   /** Creates a new Transfer. */
   public Transfer() {
     final double radius = 1.27 * 2 * Math.PI; // 1.27 radius in cm
-    final double gear_ratio = 35.0;
-    double conversionFactor = radius / gear_ratio;
-    conversionFactor = 1.0;
+    final double gearRatio = 35.0;
+    final double conversionFactor = radius / gearRatio;
     transferMtr = new CANSparkMax(CAN.TRANSFER_MOTOR, CANSparkMax.MotorType.kBrushless);
     transferMtr.clearFaults();
     transferMtr.restoreFactoryDefaults();
     transferMtr.setInverted(true);
-
     transferMtrPid = transferMtr.getPIDController();
     transferMtrEncoder = transferMtr.getEncoder();
     transferMtrEncoder.setPositionConversionFactor(conversionFactor);

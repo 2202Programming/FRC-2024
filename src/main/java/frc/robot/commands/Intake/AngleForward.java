@@ -10,12 +10,12 @@ import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Intake;
 
 
-public class e extends BlinkyLightUser {
+public class AngleForward extends BlinkyLightUser {
 
     /** Creates a new intakeForward. */
     public final Intake intake;
 
-    public e() {
+    public AngleForward() {
         this.intake = RobotContainer.getSubsystem(Intake.class);
     }
 

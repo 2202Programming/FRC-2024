@@ -31,7 +31,7 @@ import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
 public class Intake extends SubsystemBase {
-  final double wheelGearRatio = 1.0; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean
+  final double wheelGearRatio = 0.1; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean
                
   // anything or just gear raito works? (the comment before)
   final double AngleGearRatio = 100.0; // Gear ratio
