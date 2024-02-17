@@ -38,6 +38,7 @@ public class Transfer extends SubsystemBase {
   // state vars
   boolean has_note = false;
   boolean prev_sense_note = false;
+  double speed_cmd; //for monitoring
 
   /** Creates a new Transfer. */
   public Transfer() {
@@ -81,6 +82,7 @@ public class Transfer extends SubsystemBase {
    */
   public void setSpeed(double speed) {
      transferMtrPid.setReference(speed, ControlType.kVelocity, 0);
+     this.speed_cmd = speed;
     // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_ON);
   }
 
@@ -124,8 +126,10 @@ public class Transfer extends SubsystemBase {
   class TransferWatcherCmd extends WatcherCmd {
     // NetworkTableEntry nt_lightgate;
     NetworkTableEntry nt_lightgate;
-    NetworkTableEntry nt_transferVel;
+    NetworkTableEntry nt_Vel;
+    NetworkTableEntry nt_velcmd;
     NetworkTableEntry nt_have_note;
+    NetworkTableEntry nt_pid;
 
     @Override
     public String getTableName() {
@@ -135,18 +139,22 @@ public class Transfer extends SubsystemBase {
     public void ntcreate() {
       NetworkTable table = getTable();
       nt_lightgate = table.getEntry("senseNote");
-      nt_transferVel = table.getEntry("transferVel");
+      nt_Vel = table.getEntry("velMeas");
+      nt_velcmd = table.getEntry("velCmd");
       nt_have_note = table.getEntry("haveNote");
+      nt_pid = table.getEntry("KFF");
 
       // default value for mutables
       // example nt_maxArbFF.setDouble(maxArbFF);
     }
 
     public void ntupdate() {
-      // nt_lightgate.setBoolean();
       nt_lightgate.setBoolean(senseNote());
-      nt_transferVel.setDouble(getTransferVelocity());
+      nt_Vel.setDouble(getTransferVelocity());
+      nt_velcmd.setDouble(speed_cmd);
       nt_have_note.setBoolean(hasNote());
+
+      nt_pid.setDouble( transferMtrPid.getFF() );
 
       // get mutable values
       // example maxArbFF = nt_maxArbFF.getDouble(maxArbFF);

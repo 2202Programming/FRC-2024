@@ -36,7 +36,7 @@ public class Configs {
         return pdp;
       })
       .add(PneumaticsControl.class)
-      .add(BlinkyLights.class, "LIGHTS")
+//      .add(BlinkyLights.class, "LIGHTS")
       .add(HID_Xbox_Subsystem.class, "DC", () -> {
         return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
       })
