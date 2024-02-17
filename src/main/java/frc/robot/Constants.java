@@ -82,8 +82,8 @@ public final class Constants {
 
     public static final WheelOffsets comp2024AlphaBotOffsets = new WheelOffsets(43.85746387, 24.096825 , -65.21481, -43.066333125);
     public static final ChassisConfig comp2024AlphaBotChassisConfig = new ChassisConfig(
-        MperFT * (23.5 / 12.0) / 2.0,
-        MperFT * (19.5 / 12.0) / 2.0,
+        MperFT * (25 / 12.0) / 2.0,
+        MperFT * (20.75 / 12.0) / 2.0,
         0.999, // scale [] <= 1.0
         MperFT * (4.0 / 12.0),
         21.428,
