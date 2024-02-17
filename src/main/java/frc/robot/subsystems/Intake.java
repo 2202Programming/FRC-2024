@@ -29,24 +29,24 @@ import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
 public class Intake extends SubsystemBase {
-  final double wheelGearRatio = 0.1; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean
+  final double PowerOnPos = 0.0; //[deg]
+  final double MaxExtendPos = 90.0; //[deg]
+
+  final double wheelGearRatio = 1.0; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean
                
   // anything or just gear raito works? (the comment before)
   final double AngleGearRatio = 100.0; // Gear ratio
-  final double lower_clamp = -100.0; // TODO find both ofc
-  final double upper_clamp = 100.0;
   /** Creates a new Intake. */
   public double intake_speed = 0.0;
-  public double r_speed = 0.0;
-  public double l_speed = 0.0;
-
+ 
   // Intake Angle, a servo
   final NeoServo angle_servo;
   final PIDFController hwAngleVelPID = new PIDFController(0.002141, 0.0, 0.0, 0.0503); // inner (hw/vel) go up and divide by 2
-  final PIDController anglePositionPID = new PIDController(1.0, 0.0, 0.0); // outer (pos)
-  final PIDFController intakeVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0);
+  final PIDController anglePositionPID = new PIDController(1.0, 0.0, 0.0);  // outer (pos)
+  
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
+  final PIDFController intakeVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0);  //wip - use pwr for sussex
   final SparkPIDController intakeMtrPid;
   final RelativeEncoder intakeMtrEncoder;
 
@@ -69,6 +69,7 @@ public class Intake extends SubsystemBase {
     final double velTol = 1.0; // [deg/s]
     // servo controls angle of intake arm
     angle_servo = new NeoServo(CAN.ANGLE_MTR, anglePositionPID, hwAngleVelPID, false); // TODO: find invert
+
     // use velocity control on intake motor
     intakeMtr.clearFaults();
     intakeMtr.restoreFactoryDefaults();
@@ -91,13 +92,13 @@ public class Intake extends SubsystemBase {
         .setMaxVelocity(maxVel)
         .burnFlash();
 
-    this.setAngleClamp(lower_clamp, upper_clamp);
+    // power on   
+    setAnglePosition(PowerOnPos);
+    angle_servo.setClamp(PowerOnPos -10.0 , MaxExtendPos + 5.0);
 
-    // limit switch
-    m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen); // TODO: Find out if it's normally closed or open
-    m_reverseLimit = angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen); // TODO: Verify that this get is a set
-    // limit switches should be enabled on default, bottom two lines are just in
-    // case right now
+    // limit switch config
+    m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen); 
+    m_reverseLimit = angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen); 
     m_forwardLimit.enableLimitSwitch(true);
     m_reverseLimit.enableLimitSwitch(true);
   }
@@ -146,11 +147,7 @@ public class Intake extends SubsystemBase {
   public double getAngleSpeed() {
     return angle_servo.getVelocity();
   }
-
-  public void setAngleClamp(double min_ext, double max_ext) {
-    angle_servo.setClamp(min_ext, max_ext);
-  }
-
+  
   public boolean angleAtSetpoint() {
     return angle_servo.atSetpoint(); // are we there yet?
   }
