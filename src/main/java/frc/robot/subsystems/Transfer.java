@@ -23,14 +23,14 @@ public class Transfer extends SubsystemBase {
 
   //constants for geometry of transfer
   final static double radius = 1.27 * 2.0 * Math.PI; // 1.27 radius in cm
-  final static double gearRatio = 1.0 / 35.0; // 35 motor turns -> 1 roller shaft turn
+  final static double gearRatio = 1.0 / 35.0; // 35 motor turns -> 1 roller shaft turn [verified gr]
   final static double conversionFactor = radius * gearRatio;  // [cm/rotations]
 
   static final double MIN_SPEED=-1.0, MAX_SPEED=1.0; //example looks like Pct Pwr
 
   // calc Kff for vel control from measured (RPS / %pwr)
-  final static double  Kff =  (1.0 - .25) / (186.0 - 46.0);
-  final PIDFController transferPID = new PIDFController(0.0, 0.0, 0.0, Kff);
+  final static double  Kff =  (1.0 / 43.2);   //full pwr gave 43.2 [cm/s]
+  final PIDFController transferPID = new PIDFController(0.015, 0.0, 0.0, Kff);
 
   DigitalInput lightgate = new DigitalInput(DigitalIO.TRANSFER_LIGHT_GATE);
   CANSparkMax transferMtr;
@@ -55,6 +55,8 @@ public class Transfer extends SubsystemBase {
     transferPID.copyTo(transferMtrPid, 0);
     transferMtrPid.setOutputRange(MIN_SPEED, MAX_SPEED, 0);
     transferMtr.burnFlash();
+
+    transferMtrEncoder.setPosition(0.0);
   }
 
   /*
@@ -132,7 +134,7 @@ public class Transfer extends SubsystemBase {
     NetworkTableEntry nt_Vel;
     NetworkTableEntry nt_velcmd;
     NetworkTableEntry nt_have_note;
-    NetworkTableEntry nt_pid;
+    NetworkTableEntry nt_pos;
 
     @Override
     public String getTableName() {
@@ -145,7 +147,7 @@ public class Transfer extends SubsystemBase {
       nt_Vel = table.getEntry("velMeas");
       nt_velcmd = table.getEntry("velCmd");
       nt_have_note = table.getEntry("haveNote");
-      nt_pid = table.getEntry("KFF");
+      nt_pos  = table.getEntry("pos_");
 
       // default value for mutables
       // example nt_maxArbFF.setDouble(maxArbFF);
@@ -157,7 +159,7 @@ public class Transfer extends SubsystemBase {
       nt_velcmd.setDouble(speed_cmd);
       nt_have_note.setBoolean(hasNote());
 
-      nt_pid.setDouble( transferMtrPid.getFF() );
+      nt_pos.setDouble( transferMtrEncoder.getPosition() );
 
       // get mutable values
       // example maxArbFF = nt_maxArbFF.getDouble(maxArbFF);

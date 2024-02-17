@@ -179,7 +179,7 @@ public class RobotContainer {
         driver.y().whileTrue(new IntakeCalibrateRetractedPos());
         driver.leftBumper().whileTrue(new IntakeCalibrateForwardPos());
         driver.a().whileTrue(new IntakeTest());
-        driver.b().whileTrue(new TransferTest(0.5));
+        driver.b().whileTrue(new TransferTest(25.0));
         break;
       
       case auto_shooter_test:
