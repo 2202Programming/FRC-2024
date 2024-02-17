@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.Swerve;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,10 +35,19 @@ public class DTMonitorCmd extends WatcherCmd {
   NetworkTableEntry xMetersPerSec;
   NetworkTableEntry yMetersPerSec;
 
+  NetworkTableEntry est_pose_od_x;
+  NetworkTableEntry est_pose_od_y;
+  NetworkTableEntry est_pose_od_h;
+  NetworkTableEntry est_pose_integ_x;
+  NetworkTableEntry est_pose_integ_y;
+  NetworkTableEntry est_pose_integ_h;
+
 
   // accessors - if this gets annoying move inside
   final SwerveDrivetrain sdt;
   final SwerveModuleMK3 modules[] = new SwerveModuleMK3[4];
+  Pose2d nt_pose;
+  Pose2d nt_pose_integ; // incorperates vision
 
   public DTMonitorCmd() {
     sdt = RobotContainer.getSubsystem(SwerveDrivetrain.class);
@@ -73,6 +83,12 @@ public class DTMonitorCmd extends WatcherCmd {
     xMetersPerSec = MonitorTable.getEntry("velocity x meters sec");
     yMetersPerSec = MonitorTable.getEntry("velocity y meters sec");
 
+    est_pose_od_x = MonitorTable.getEntry("est_od_x");
+    est_pose_od_y = MonitorTable.getEntry("est_od_y");
+    est_pose_od_h = MonitorTable.getEntry("est_od_h");
+    est_pose_integ_x = MonitorTable.getEntry("est_int_x");
+    est_pose_integ_y = MonitorTable.getEntry("est_int_y");
+    est_pose_integ_h = MonitorTable.getEntry("est_int_h");
   }
 
   @Override
@@ -106,10 +122,13 @@ public class DTMonitorCmd extends WatcherCmd {
     xMetersPerSec.setDouble(speeds.vxMetersPerSecond);
     yMetersPerSec.setDouble(speeds.vyMetersPerSecond);
 
-    // todo speeds.vxMetersPerSecond 
-    // speeds.vyMetersPerSecond
-    // speeds.omegaRadiansPerSecond
+    est_pose_od_x.setDouble(nt_pose.getX());
+    est_pose_od_y.setDouble(nt_pose.getY());
+    est_pose_od_h.setDouble(nt_pose.getRotation().getDegrees());
+
+    est_pose_integ_x.setDouble(nt_pose_integ.getX());
+    est_pose_integ_y.setDouble(nt_pose_integ.getY());
+    est_pose_integ_h.setDouble(nt_pose_integ.getRotation().getDegrees());
 
   }
-
 }
