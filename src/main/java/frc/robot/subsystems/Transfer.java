@@ -22,9 +22,11 @@ import frc.robot.util.PIDFController;
 public class Transfer extends SubsystemBase {
 
   //constants for geometry of transfer
-  final static double radius = 1.27 * 2 * Math.PI; // 1.27 radius in cm
+  final static double radius = 1.27 * 2.0 * Math.PI; // 1.27 radius in cm
   final static double gearRatio = 1.0 / 35.0; // 35 motor turns -> 1 roller shaft turn
   final static double conversionFactor = radius * gearRatio;  // [cm/rotations]
+
+  static final double MIN_SPEED=-1.0, MAX_SPEED=1.0; //example looks like Pct Pwr
 
   // calc Kff for vel control from measured (RPS / %pwr)
   final static double  Kff =  (1.0 - .25) / (186.0 - 46.0);
@@ -51,6 +53,7 @@ public class Transfer extends SubsystemBase {
     transferMtrEncoder.setPositionConversionFactor(conversionFactor);
     transferMtrEncoder.setVelocityConversionFactor(conversionFactor / 60.0); // min to sec
     transferPID.copyTo(transferMtrPid, 0);
+    transferMtrPid.setOutputRange(MIN_SPEED, MAX_SPEED, 0);
     transferMtr.burnFlash();
   }
 
