@@ -28,6 +28,7 @@ public class Shooter extends SubsystemBase {
   final SparkPIDController hw_rightPid;
   final RelativeEncoder leftEncoder;
   final RelativeEncoder rightEncoder;
+  final double FACTOR = 1.0;
 
   private final DoubleSolenoid shooterAngle;
 
@@ -42,8 +43,8 @@ public class Shooter extends SubsystemBase {
     hw_leftPid = motor_config(leftMtr, pidConsts, true);
     hw_rightPid = motor_config(rightMtr, pidConsts, false);
 
-    leftEncoder = leftMtr.getEncoder();
-    rightEncoder = rightMtr.getEncoder();
+    leftEncoder = config_encoder(leftMtr);
+    rightEncoder = config_encoder(rightMtr);
     shooterAngle = new DoubleSolenoid(PneumaticsModuleType.REVPH, PCM1.Forward, PCM1.Reverse);
   }
 
@@ -98,7 +99,12 @@ public class Shooter extends SubsystemBase {
     mtr.setInverted(inverted);
     return mtrpid;
   }
-  
+  RelativeEncoder config_encoder(CANSparkMax mtr) {
+    RelativeEncoder enc = mtr.getEncoder();
+    enc.setPositionConversionFactor(FACTOR);
+    enc.setVelocityConversionFactor(FACTOR / 60.0);
+    return enc;
+  }
 
   // Network tables
   class ShooterWatcherCmd extends WatcherCmd {
