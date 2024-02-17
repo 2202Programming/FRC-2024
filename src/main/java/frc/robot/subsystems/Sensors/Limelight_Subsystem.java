@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
 
 public class Limelight_Subsystem extends SubsystemBase {
   /** Creates a new Limelight_Subsystem. */
@@ -153,6 +154,19 @@ public class Limelight_Subsystem extends SubsystemBase {
 
   public double getFilteredX() {
     return filteredX;
+  }
+  
+  public double[] getAprilTagID(){
+    LimelightTarget_Fiducial[] apriltag = 
+    LimelightHelpers.getLatestResults("").targetingResults.targets_Fiducials;
+    double[] tagIDs = new double[apriltag.length];
+    for(int i = 0; i < apriltag.length; i++){
+      tagIDs[i] = apriltag[i].fiducialID;
+    }
+    return tagIDs;
+  }
+  public LimelightTarget_Fiducial[] getAprilTagsFromHelper(){
+    return LimelightHelpers.getLatestResults("").targetingResults.targets_Fiducials;
   }
 
   public double getFilteredArea() {

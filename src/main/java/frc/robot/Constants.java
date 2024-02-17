@@ -80,9 +80,7 @@ public final class Constants {
         12.8, // confirmed with vince
         8.14); // confirmed with vince
 
-    // TODO: For 2024 CompetitionBotAlpha ***NOT YET CONFIRMED
-    public static final WheelOffsets comp2024AlphaBotOffsets = new WheelOffsets(43.85746387, 24.096825, -65.21481,
-        -43.066333125);
+    public static final WheelOffsets comp2024AlphaBotOffsets = new WheelOffsets(43.85746387, 24.096825 , -65.21481, -43.066333125);
     public static final ChassisConfig comp2024AlphaBotChassisConfig = new ChassisConfig(
         MperFT * (23.5 / 12.0) / 2.0,
         MperFT * (19.5 / 12.0) / 2.0,
@@ -93,8 +91,7 @@ public final class Constants {
     // TODO: For 2024 CompetitionBotBeta ***NOT YET CONFIRMED
     public static final WheelOffsets comp2024BetaBotOffsets = comp2024AlphaBotOffsets;
     public static final ChassisConfig comp2024BotBetaChassisConfig = comp2024AlphaBotChassisConfig;
-
-    // TODO: confirm this when start working on 2024 bot Alpha
+    
     public static final ChassisInversionSpecs comp2024BotAlphaInversionSpecs = new ChassisInversionSpecs(
 
         new ModuleInversionSpecs(true, true, false), // FR
@@ -220,11 +217,13 @@ public final class Constants {
   }
 
   // pnumatics control module 1
-  public final class PCM1 {
+  public static final class PCM1 {
+    public static final int Forward = 0;// TODO: UPDATE
+    public static final int Reverse = 0;
   }
 
   // pnumatics control module 2
-  public final class PCM2 {
+  public static final class PCM2 {
   }
 
   public final class DigitalIO {
@@ -254,6 +253,9 @@ public final class Constants {
     public static final double TRANSFER_MOTOR_ON = 0.5;
     public static final double TRANSFER_MOTOR_OFF = 0.0;
     public static final double TRANSFER_MOTOR_REVERSE = -0.5;
+  }
+  public static final class Shooter_Constants{//placeholder
+    public static final double ShooterDefaultSpeed = 0.5;
   }
 
   /*-------NT------- */

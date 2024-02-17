@@ -27,9 +27,11 @@ import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
+import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
-import frc.robot.commands.utility.DummyShooterCmd;
+import frc.robot.commands.auto.AutoShooting;
+import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
@@ -49,7 +51,7 @@ public class RobotContainer {
 
   // enum for bindings add when needed
   public enum Bindings {
-    DriveTest, Shooter_test, Comptition
+    DriveTest, Shooter_test, Comptition, auto_shooter_test
   }
 
   // The robot's subsystems and commands are defined here...
@@ -128,7 +130,7 @@ public class RobotContainer {
     dc = getSubsystem("DC");
 
     /* Set the commands below */
-    configureBindings(Bindings.Comptition); // Change this to switch between bindings
+    configureBindings(Bindings.auto_shooter_test); // Change this to switch between bindings
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
@@ -174,7 +176,7 @@ public class RobotContainer {
         var intake = getSubsystem(Intake.class);
         // var noseRoller = getSubsystem(NoseRoller.class);
         // TODO: replace Print/Dummy with real commands when known - ER
-        driver.rightTrigger().whileTrue(new DummyShooterCmd());
+        //driver.rightTrigger().whileTrue(new DummyShooterCmd());
         driver.leftTrigger().onTrue(new PrintCommand("PlaceholderCMD: Align with shooter"));
         driver.x().whileTrue(new IntakeSequence());
         driver.y().whileTrue(new InstantCommand(() -> {
@@ -186,7 +188,14 @@ public class RobotContainer {
         // noseRoller.setNoseVelocity(1.0);
         // }));
         break;
-
+      
+      case auto_shooter_test:
+        driver.a().onTrue(new FaceToTag(4));
+        driver.povDown().onTrue(new AutoShooting(ShootingTarget.Speaker));
+        driver.povUp().onTrue(new AutoShooting(ShootingTarget.Trap));
+        driver.povRight().onTrue(new AutoShooting(ShootingTarget.Amp));
+        break;
+      
       default:
         break;
     }
@@ -203,7 +212,6 @@ public class RobotContainer {
       case Comptition:
         operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
 
-        // TODO mentor pls check if right syntax!!
         operator.x().whileTrue(new PrintCommand("PlaceholderCMD: Intake Deploy"));
         operator.x().whileFalse(new PrintCommand("PlaceholderCMD: Intake Retract"));
 
@@ -217,10 +225,7 @@ public class RobotContainer {
       case Shooter_test:
         var shooter = getSubsystem(Shooter.class);
         if (shooter != null) {
-          shooter.setDefaultCommand(new RPMShooter(operator));
-          operator.b().onTrue(new InstantCommand(() -> {
-            shooter.cycleShootingMode();
-          }));
+          shooter.setDefaultCommand(new RPMShooter());
         }
         break;
     }
