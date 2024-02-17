@@ -29,7 +29,7 @@ import frc.robot.commands.Intake.TransferTest;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FaceToTag;
-import frc.robot.commands.Swerve.FieldCentricDrive;
+//todo re-enable after testing import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
@@ -51,7 +51,8 @@ public class RobotContainer {
 
   // enum for bindings add when needed
   public enum Bindings {
-    DriveTest, Shooter_test, Comptition, auto_shooter_test
+    Competition,
+    DriveTest, Shooter_test, IntakeTesting, auto_shooter_test
   }
 
   // The robot's subsystems and commands are defined here...
@@ -130,9 +131,9 @@ public class RobotContainer {
     dc = getSubsystem("DC");
 
     /* Set the commands below */
-    configureBindings(Bindings.Comptition); // Change this to switch between bindings
+    configureBindings(Bindings.IntakeTesting); // Change this to switch between bindings
     if (drivetrain != null) {
-      drivetrain.setDefaultCommand(new FieldCentricDrive());
+     //todo - reenable for comp drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
   }
 
@@ -151,6 +152,7 @@ public class RobotContainer {
 
     switch (bindings) {
       case DriveTest:
+      case Competition:
         driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.b().onTrue(new AllianceAwareGyroReset(false));
 
@@ -172,12 +174,12 @@ public class RobotContainer {
         new PDPMonitorCmd(); // auto scheduled, runs when disabled
         break;
 
-      case Comptition:
+      case IntakeTesting:
         driver.x().whileTrue(new AngleForward());
         driver.y().whileTrue(new IntakeCalibrateRetractedPos());
         driver.leftBumper().whileTrue(new IntakeCalibrateForwardPos());
         driver.a().whileTrue(new IntakeTest());
-        driver.b().whileTrue(new TransferTest());
+        driver.b().whileTrue(new TransferTest(0.5));
         break;
       
       case auto_shooter_test:
@@ -200,7 +202,7 @@ public class RobotContainer {
       // all the same for now since they are placeholders -- fall through ok
       default:
       case DriveTest:
-      case Comptition:
+      case Competition:
         operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
 
         operator.x().whileTrue(new PrintCommand("PlaceholderCMD: Intake Deploy"));

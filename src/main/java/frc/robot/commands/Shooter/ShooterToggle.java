@@ -7,6 +7,7 @@ package frc.robot.commands.Shooter;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.Constants.Transfer_Constants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
@@ -49,7 +50,7 @@ public class ShooterToggle extends Command {
   @Override
   public void execute() {
     if (shooter.isAtRPM(shooterTolerance) && intake.angleAtSetpoint() && !startedShooting) {// Check the RPM tolerance
-      transfer.transferMtrOn();
+      transfer.setSpeed(Transfer_Constants.TRANSFER_MOTOR_ON);
       timer.restart();
     }
   }
@@ -58,7 +59,7 @@ public class ShooterToggle extends Command {
   @Override
   public void end(boolean interrupted) {
     shooter.setRPM(0, 0);
-    transfer.transferMtrOff();
+    transfer.setSpeed(0.0);
   }
 
   // Returns true when the command should end.

@@ -10,31 +10,31 @@ import frc.robot.subsystems.Transfer;
 
 public class TransferTest extends Command {
   /** Creates a new TransferTest. */
-  public final Transfer transfer;
-  public TransferTest() {
-    // Use addRequirements() here to declare subsystem dependencies.
+  final Transfer transfer;
+  final double speed; 
+
+  public TransferTest(double speed) {
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
+    this.speed = speed;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    transfer.transferMtrOn();
+    transfer.setHasNote(false);
+    transfer.setSpeed(speed);
   }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    transfer.transferMtrOff();
+    transfer.setSpeed(0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return transfer.hasNote();
+    //return false;
   }
 }

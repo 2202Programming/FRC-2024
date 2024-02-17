@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -11,14 +16,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.DigitalIO;
-import frc.robot.Constants.Transfer_Constants;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.PIDFController;
-
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
 
 public class Transfer extends SubsystemBase {
 
@@ -77,24 +76,28 @@ public class Transfer extends SubsystemBase {
       prev_sense_note = false;
   }
 
-  public void transferMtrOn() {
-    // transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_ON,
-    // ControlType.kVelocity, 0);
-    transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_ON);
+  /*
+   * speed [cm/s]
+   */
+  public void setSpeed(double speed) {
+     transferMtrPid.setReference(speed, ControlType.kVelocity, 0);
+    // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_ON);
   }
 
+  /*
   // Motor speed will likely need to be chan
   public void transferMtrOff() {
     // transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_OFF,
     // ControlType.kVelocity, 0);
-    transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_OFF);
+   // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_OFF);
   }
 
+ /*
   public void transferMtrReverse() {
     transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_REVERSE, ControlType.kVelocity, 0);
     // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_REVERSE);
   }
-
+*/
   public double getTransferVelocity() {
     return transferMtrEncoder.getVelocity();
   }

@@ -7,6 +7,7 @@ package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.Intake_Constants;
+import frc.robot.Constants.Transfer_Constants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.BlinkyLights;
@@ -80,7 +81,7 @@ public class IntakeSequence extends BlinkyLightUser {
       case IntakeDown:
         intake.setAnglePosition(Intake_Constants.AngleFloorPos);
         intake.setIntakeSpeed(Intake_Constants.IntakeMotorDefault);
-        transfer.transferMtrOn();
+        transfer.setSpeed(Transfer_Constants.TRANSFER_MOTOR_ON);
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:
@@ -103,7 +104,7 @@ public class IntakeSequence extends BlinkyLightUser {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    transfer.transferMtrOff();
+    transfer.setSpeed(0.0);
     intake.setIntakeSpeed(0.0);
     intake.setAnglePosition(Intake_Constants.DrivingPosition);
   }

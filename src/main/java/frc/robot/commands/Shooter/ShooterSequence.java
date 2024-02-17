@@ -7,6 +7,7 @@ package frc.robot.commands.Shooter;
 import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.Constants.Shooter_Constants;
+import frc.robot.Constants.Transfer_Constants;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.BlinkyLights;
@@ -65,7 +66,7 @@ public class ShooterSequence extends BlinkyLightUser {
       break;
       case ShooterMotorOn:
       if(shooter.isAtRPM(100)){
-        transfer.transferMtrOn();
+        transfer.setSpeed(Transfer_Constants.TRANSFER_MOTOR_ON);
         phase = Phase.TransferMotorOn;
       }
       break;
@@ -85,7 +86,7 @@ public class ShooterSequence extends BlinkyLightUser {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-        transfer.transferMtrOff();
+        transfer.setSpeed(0.0);
         shooter.setRPM(0.0, 0.0);
   }
 
