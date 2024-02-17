@@ -45,6 +45,7 @@ public class Intake extends SubsystemBase {
   final NeoServo angle_servo;
   final PIDFController hwAngleVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0); // inner (hw/vel) go up and divide by 2
   final PIDController anglePositionPID = new PIDController(1.0, 0.0, 0.0); // outer (pos)
+  final PIDFController intakeVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0);
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
   final SparkPIDController intakeMtrPid;
@@ -76,6 +77,8 @@ public class Intake extends SubsystemBase {
     intakeMtrEncoder = intakeMtr.getEncoder();
     intakeMtrEncoder.setPositionConversionFactor(wheelGearRatio);
     intakeMtrEncoder.setVelocityConversionFactor(wheelGearRatio / 60.0); // min to sec
+    intakeVelPID.copyTo(intakeMtr.getPIDController(), 0);
+
     // configure hardware pid with our values
     intakeMtr.burnFlash();
 
@@ -100,8 +103,8 @@ public class Intake extends SubsystemBase {
   }
 
   public void setIntakeSpeed(double speed) {
-    intakeMtr.set(speed);
-    // intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
+    // intakeMtr.set(speed);
+    intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
   }
 
   // public boolean hasNote() {

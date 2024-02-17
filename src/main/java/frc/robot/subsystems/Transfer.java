@@ -14,10 +14,12 @@ import frc.robot.Constants.DigitalIO;
 import frc.robot.Constants.Transfer_Constants;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.subsystems.Intake.IntakeWatcherCmd;
+import frc.robot.util.PIDFController;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 
 public class Transfer extends SubsystemBase {
 
@@ -25,12 +27,14 @@ public class Transfer extends SubsystemBase {
   CANSparkMax transferMtr;
   final SparkPIDController transferMtrPid;
   final RelativeEncoder transferMtrEncoder;
+  final PIDFController transferPID = new PIDFController(1.0, 0.0, 0.0, 0.0);
 
   /** Creates a new Transfer. */
   public Transfer() {
     final double radius = 1.27 * 2 * Math.PI; // 1.27 radius in cm
     final double gear_ratio = 35.0;
     final double conversionFactor = radius * gear_ratio;
+    transferPID.copyTo(transferMtr.getPIDController(), 0);
     transferMtr = new CANSparkMax(CAN.TRANSFER_MOTOR, CANSparkMax.MotorType.kBrushless);
     transferMtr.clearFaults();
     transferMtr.restoreFactoryDefaults();
@@ -48,16 +52,19 @@ public class Transfer extends SubsystemBase {
   }
 
   public void transferMtrOn() {
-    transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_ON);
+    transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_ON, ControlType.kVelocity, 0);
+    // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_ON);
   }
 
   // Motor speed will likely need to be changed
   public void transferMtrOff() {
-    transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_OFF);
+    transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_OFF, ControlType.kVelocity, 0);
+    // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_OFF);
   }
 
   public void transferMtrReverse() {
-    transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_REVERSE);
+    transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_REVERSE, ControlType.kVelocity, 0);
+    // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_REVERSE);
   }
 
   public double getTransferVelocity() {
