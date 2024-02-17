@@ -15,27 +15,24 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
-import frc.robot.commands.Intake.IntakeDefaultPos;
+import frc.robot.commands.Intake.IntakeCalibrateRetractedPos;
 import frc.robot.commands.Intake.IntakeSequence;
-import frc.robot.commands.Intake.IntakeToggle;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Shooter.ShooterSequence;
-import frc.robot.commands.Shooter.ShooterToggle;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
-import frc.robot.commands.utility.DummyShooterCmd;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
@@ -193,13 +190,12 @@ public class RobotContainer {
         var intake = getSubsystem(Intake.class);
         // var noseRoller = getSubsystem(NoseRoller.class);
         // TODO: replace Print/Dummy with real commands when known - ER
-        driver.rightTrigger().whileTrue(new DummyShooterCmd());
         driver.leftTrigger().onTrue(new PrintCommand("PlaceholderCMD: Align with shooter"));
-        driver.x().whileTrue(new IntakeToggle());
+        driver.x().whileTrue(new IntakeSequence());
         driver.y().whileTrue(new InstantCommand(() -> {
         intake.setAngleVelocity(0.3);
         }));
-        driver.a().whileTrue(new IntakeDefaultPos());
+        driver.a().whileTrue(new IntakeCalibrateRetractedPos());
         // when used can uncomment to set nose roller
         // driver.a().whileTrue(new InstantCommand(() -> {
         // noseRoller.setNoseVelocity(1.0);
@@ -236,10 +232,7 @@ public class RobotContainer {
       case Shooter_test:
         var shooter = getSubsystem(Shooter.class);
         if (shooter != null) {
-          shooter.setDefaultCommand(new RPMShooter(operator));
-          operator.b().onTrue(new InstantCommand(() -> {
-            shooter.cycleShootingMode();
-          }));
+          shooter.setDefaultCommand(new RPMShooter());
         }
         break;
     }
