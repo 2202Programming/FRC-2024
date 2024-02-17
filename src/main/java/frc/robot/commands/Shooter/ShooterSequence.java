@@ -65,7 +65,7 @@ public class ShooterSequence extends BlinkyLightUser {
       break;
       case ShooterMotorOn:
       if(shooter.isAtRPM(100)){
-        transfer.transferMotorOn();
+        transfer.transferMtrOn();
         phase = Phase.TransferMotorOn;
       }
       break;
@@ -85,7 +85,7 @@ public class ShooterSequence extends BlinkyLightUser {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-        transfer.transferMotorOff();
+        transfer.transferMtrOff();
         shooter.setRPM(0.0, 0.0);
   }
 

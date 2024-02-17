@@ -91,20 +91,8 @@ public class Intake extends SubsystemBase {
     this.setAngleClamp(lower_clamp, upper_clamp);
 
     // limit switch
-    m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); // TODO:
-                                                                                                               // Find
-                                                                                                               // out if
-                                                                                                               // it's
-                                                                                                               // normally
-                                                                                                               // closed
-                                                                                                               // or
-                                                                                                               // open
-    m_reverseLimit = angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); // TODO:
-                                                                                                               // Verify
-                                                                                                               // that
-                                                                                                               // this
-                                                                                                               // get is
-                                                                                                               // a set
+    m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); // TODO: Find out if it's normally closed or open
+    m_reverseLimit = angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); // TODO: Verify that this get is a set
     // limit switches should be enabled on default, bottom two lines are just in
     // case right now
     m_forwardLimit.enableLimitSwitch(true);
