@@ -10,36 +10,44 @@ import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
+
 /**
  * Button pressed starts command
  * Make sure we detect a note
  * Turn the shooter motors on
  * Once our shooter motors reach the proper speed, turn on the transfer motors
  * Once the lightgate no longer detects the note, wait x amount of frames
- * After x amount of frames, turn the blinky lights red, then turn everything off (command ended)
+ * After x amount of frames, turn the blinky lights red, then turn everything
+ * off (command ended)
  */
 
 public class ShooterSequence extends BlinkyLightUser {
   /** Creates a new ShooterSequence. */
   final Shooter shooter;
-  final Transfer transfer; 
+  final Transfer transfer;
+  final int DONE_COUNT = 20;
+  int count = 0;
   Phase phase;
-  public enum Phase{
-    HasNote,ShooterMotorOn,TransferMotorOn,Finished;
+
+  public enum Phase {
+    HasNote, ShooterMotorOn, TransferMotorOn, Finished;
   }
 
   public ShooterSequence() {
     this.shooter = RobotContainer.getSubsystem(Shooter.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
+    addRequirements(shooter, transfer);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    count = 0;
     phase = Phase.HasNote;
   }
-    public Color8Bit colorProvider() {
+
+  public Color8Bit colorProvider() {
     // make sure not is safely in our possession before going back
     return (!transfer.hasNote()) ? BlinkyLights.RED : BlinkyLights.GREEN;
   };
@@ -52,42 +60,40 @@ public class ShooterSequence extends BlinkyLightUser {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    switch (phase){
+    switch (phase) {
       case HasNote:
-      if(transfer.hasNote()){
-        shooter.setRPM(2000, 2000); //placeholder
-        phase = Phase.ShooterMotorOn;
-      }
-      break;
+          shooter.setRPM(2000, 2000); // placeholder
+          phase = Phase.ShooterMotorOn;
+        break;
       case ShooterMotorOn:
-      if(shooter.isAtRPM(300)){
-        transfer.setSpeed(30.0);
-        phase = Phase.TransferMotorOn;
-      }
-      break;
+        if (shooter.isAtRPM(100)) {
+          transfer.setSpeed(35.0);
+          phase = Phase.TransferMotorOn;
+        }
+        break;
       case TransferMotorOn:
-      if(!transfer.hasNote()){
-        phase = Phase.Finished;
-      }
-      break;
+        count++;
+        if (count >= DONE_COUNT) {
+          phase = Phase.Finished;
+        }
+
+        break;
       case Finished:
-      break;
+        break;
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-        transfer.setSpeed(0.0);
-        shooter.setRPM(0.0, 0.0);
+    transfer.setHasNote(false);
+    transfer.setSpeed(0.0);
+    shooter.setRPM(0.0, 0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(phase == Phase.Finished){
-      return true;
-    }
-    return false;
+    return phase == Phase.Finished;
   }
 }

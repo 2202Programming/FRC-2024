@@ -29,6 +29,8 @@ import frc.robot.commands.Intake.AnglePos;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Intake.TransferTest;
 import frc.robot.commands.Intake.setPos;
+import frc.robot.commands.Shooter.PneumaticsSequence;
+import frc.robot.commands.Shooter.PneumaticsTest;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Shooter.ShootTest;
 import frc.robot.commands.Shooter.ShooterSequence;
@@ -183,12 +185,15 @@ public class RobotContainer {
         driver.rightBumper().onTrue(new IntakeSequence());
         driver.povUp().onTrue(new ShooterSequence());
         driver.povDown().whileTrue(new ShootTest(1000.0)); // RPM
+        driver.povRight().whileTrue(new PneumaticsTest(true));
+        driver.povLeft().whileTrue(new PneumaticsTest(false));
+        driver.leftBumper().whileTrue(new PneumaticsSequence());
         // driver.x().whileTrue(new IntakeOn());
         driver.x().whileTrue(new AngleMover(5.0));
         driver.y().whileTrue(new AngleMover(-5.0));
         // driver.leftBumper().whileTrue(new IntakeCalibrateForwardPos());
         driver.b().whileTrue(new IntakeTest(0.35)); //% speed
-        driver.leftBumper().whileTrue(new TransferTest(30.0));
+        // driver.leftBumper().whileTrue(new TransferTest(30.0));
         driver.rightTrigger().onTrue(new AnglePos(0.0, 120.0));
         driver.leftTrigger().onTrue(new AnglePos(100.0, 60.0));
         // driver.rightTrigger().onTrue(new AnglePos(50.0));

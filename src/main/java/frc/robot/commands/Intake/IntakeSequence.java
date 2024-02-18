@@ -4,10 +4,8 @@
 
 package frc.robot.commands.Intake;
 
-import edu.wpi.first.wpilibj.util.Color8Bit;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.BlinkyLights;
-import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Transfer;
 
@@ -22,9 +20,8 @@ import frc.robot.subsystems.Transfer;
  * 
  */
 
-public class IntakeSequence extends BlinkyLightUser {
-  public final int DONE_COUNT = 0;
-  int count;
+public class IntakeSequence extends Command {
+
   final Intake intake;
   final Transfer transfer;
 
@@ -58,18 +55,7 @@ public class IntakeSequence extends BlinkyLightUser {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    count = 0;
     phase = Phase.IntakeDown;
-  }
-
-  public Color8Bit colorProvider() {
-    // make sure not is safely in our possession before going back
-    return (count > DONE_COUNT) ? BlinkyLights.GREEN : BlinkyLights.RED;
-  };
-
-  @Override
-  public boolean requestBlink() {
-    return false; // we want solid lights
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -79,8 +65,8 @@ public class IntakeSequence extends BlinkyLightUser {
       case IntakeDown:
       intake.setMaxVelocity(60.0);
         intake.setAngleSetpoint(100.0);
-        intake.setIntakeSpeed(0.35); //%
-        transfer.setSpeed(30.0);
+        intake.setIntakeSpeed(1.0); //%
+        transfer.setSpeed(35.0);
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:
