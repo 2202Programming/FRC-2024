@@ -29,6 +29,7 @@ public class Shooter extends SubsystemBase {
   final RelativeEncoder leftEncoder;
   final RelativeEncoder rightEncoder;
   final double FACTOR = 1.0;
+  final double kF = 1.0/5200.0;
 
   private final DoubleSolenoid shooterAngle;
 
@@ -37,7 +38,7 @@ public class Shooter extends SubsystemBase {
   private double currentLeftRPM;
   private double currentRightRPM;
 
-  PIDFController pidConsts = new PIDFController(0.001, 0.0, 0.0, 0.0);
+  PIDFController pidConsts = new PIDFController(0.00005, 0.0, 0.0, kF);
 
   public Shooter() {
     hw_leftPid = motor_config(leftMtr, pidConsts, true);
@@ -90,19 +91,22 @@ public class Shooter extends SubsystemBase {
   public void retractPneumatics(){
     shooterAngle.set(DoubleSolenoid.Value.kReverse);
   }
+  public WatcherCmd getWatcher(){
+    return new ShooterWatcherCmd();
+  }
 
   SparkPIDController motor_config(CANSparkMax mtr, PIDFController pid, boolean inverted) {
     mtr.clearFaults();
     mtr.restoreFactoryDefaults();
     var mtrpid = mtr.getPIDController();
-    pid.copyChangesTo(mtrpid, 0, pid);
+    pid.copyTo(mtrpid, 0);
     mtr.setInverted(inverted);
     return mtrpid;
   }
   RelativeEncoder config_encoder(CANSparkMax mtr) {
     RelativeEncoder enc = mtr.getEncoder();
     enc.setPositionConversionFactor(FACTOR);
-    enc.setVelocityConversionFactor(FACTOR / 60.0);
+    enc.setVelocityConversionFactor(FACTOR /* / 60.0*/);
     return enc;
   }
 
@@ -110,6 +114,10 @@ public class Shooter extends SubsystemBase {
   class ShooterWatcherCmd extends WatcherCmd {
     NetworkTableEntry nt_desiredLeftMotorRPM;
     NetworkTableEntry nt_currentLeftMotorRPM;
+    NetworkTableEntry nt_desiredRightMotorRPM;
+    NetworkTableEntry nt_currentRightMotorRPM;
+    NetworkTableEntry nt_kP;
+    NetworkTableEntry nt_kF;
     // add nt for pos when we add it
     @Override
     public String getTableName(){
@@ -119,10 +127,18 @@ public class Shooter extends SubsystemBase {
       NetworkTable table = getTable();
       nt_desiredLeftMotorRPM = table.getEntry("desiredLeftMotorRPM");
       nt_currentLeftMotorRPM = table.getEntry("currentLeftMotorRPM");
+      nt_desiredRightMotorRPM = table.getEntry("desiredRightMotorRPM");
+      nt_currentRightMotorRPM = table.getEntry("currentRightMotorRPM");
+      nt_kP = table.getEntry("kP");
+      nt_kF = table.getEntry("kF");
     }
     public void ntupdate(){
       nt_desiredLeftMotorRPM.setDouble(getDesiredLeftRPM());
       nt_currentLeftMotorRPM.setDouble(getLeftMotorRPM());
+      nt_desiredLeftMotorRPM.setDouble(getDesiredRightRPM());
+      nt_currentLeftMotorRPM.setDouble(getRightMotorRPM());
+      nt_kP.setDouble(getP());
+      // nt_kF.setDouble(getF());
     }
   }
 
@@ -150,4 +166,7 @@ public class Shooter extends SubsystemBase {
     hw_leftPid.setD(d);
     hw_rightPid.setD(d);
   }
+  // public void getF(){
+  //   return hw_leftPid.getFF();
+  // }
 }

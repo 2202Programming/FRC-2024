@@ -6,12 +6,10 @@ package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.RobotContainer;
-import frc.robot.Constants.Intake_Constants;
-import frc.robot.Constants.Transfer_Constants;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Transfer;
 
 /**
  * Driver presses button
@@ -33,7 +31,6 @@ public class IntakeSequence extends BlinkyLightUser {
   public enum Phase {
     IntakeDown("IntakeDown"),
     WaitingForNote("WaitingForNote"),
-    NoteDetected("NoteDetected"),
     Finished("Finished");
 
     String name;
@@ -55,6 +52,7 @@ public class IntakeSequence extends BlinkyLightUser {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
+    addRequirements(intake, transfer);
   }
 
   // Called when the command is initially scheduled.
@@ -79,20 +77,15 @@ public class IntakeSequence extends BlinkyLightUser {
   public void execute() {
     switch (phase) {
       case IntakeDown:
-        intake.setAnglePosition(Intake_Constants.AngleFloorPos);
-        intake.setIntakeSpeed(Intake_Constants.IntakeMotorDefault);
-        transfer.setSpeed(Transfer_Constants.TRANSFER_MOTOR_ON);
+      intake.setMaxVelocity(60.0);
+        intake.setAngleSetpoint(100.0);
+        intake.setIntakeSpeed(0.35); //%
+        transfer.setSpeed(30.0);
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:
         if (transfer.hasNote()) {
-          intake.setIntakeSpeed(0.0);
-          phase = Phase.NoteDetected;
-        }
-        break;
-      case NoteDetected:
-        count++;
-        if (count > DONE_COUNT) {
+          intake.setMaxVelocity(120.0);
           phase = Phase.Finished;
         }
         break;
@@ -106,16 +99,13 @@ public class IntakeSequence extends BlinkyLightUser {
   public void end(boolean interrupted) {
     transfer.setSpeed(0.0);
     intake.setIntakeSpeed(0.0);
-    intake.setAnglePosition(Intake_Constants.DrivingPosition);
+    intake.setAngleSetpoint(0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (phase == Phase.Finished) {
-      return true;
-    }
-    return false;
-  }
+    return phase == Phase.Finished;
 
+}
 }

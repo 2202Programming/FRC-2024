@@ -21,12 +21,17 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
-import frc.robot.commands.Intake.AngleForward;
+import frc.robot.commands.Intake.IntakeOn;
+import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeCalibrateForwardPos;
-import frc.robot.commands.Intake.IntakeCalibrateRetractedPos;
+import frc.robot.commands.Intake.AngleMover;
+import frc.robot.commands.Intake.AnglePos;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Intake.TransferTest;
+import frc.robot.commands.Intake.setPos;
 import frc.robot.commands.Shooter.RPMShooter;
+import frc.robot.commands.Shooter.ShootTest;
+import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FaceToTag;
 //todo re-enable after testing import frc.robot.commands.Swerve.FieldCentricDrive;
@@ -175,11 +180,19 @@ public class RobotContainer {
         break;
 
       case IntakeTesting:
-        driver.x().whileTrue(new AngleForward());
-        driver.y().whileTrue(new IntakeCalibrateRetractedPos());
-        driver.leftBumper().whileTrue(new IntakeCalibrateForwardPos());
-        driver.a().whileTrue(new IntakeTest());
-        driver.b().whileTrue(new TransferTest(25.0));
+        driver.rightBumper().onTrue(new IntakeSequence());
+        driver.povUp().onTrue(new ShooterSequence());
+        driver.povDown().whileTrue(new ShootTest(1000.0)); // RPM
+        // driver.x().whileTrue(new IntakeOn());
+        driver.x().whileTrue(new AngleMover(5.0));
+        driver.y().whileTrue(new AngleMover(-5.0));
+        // driver.leftBumper().whileTrue(new IntakeCalibrateForwardPos());
+        driver.b().whileTrue(new IntakeTest(0.35)); //% speed
+        driver.leftBumper().whileTrue(new TransferTest(30.0));
+        driver.rightTrigger().onTrue(new AnglePos(0.0, 120.0));
+        driver.leftTrigger().onTrue(new AnglePos(100.0, 60.0));
+        // driver.rightTrigger().onTrue(new AnglePos(50.0));
+        driver.a().onTrue(new setPos(0.0));
         break;
       
       case auto_shooter_test:
@@ -188,6 +201,7 @@ public class RobotContainer {
         driver.povUp().onTrue(new AutoShooting(ShootingTarget.Trap));
         driver.povRight().onTrue(new AutoShooting(ShootingTarget.Amp));
         break;
+
       
       default:
         break;

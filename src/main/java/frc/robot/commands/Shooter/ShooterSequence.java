@@ -4,14 +4,12 @@
 
 package frc.robot.commands.Shooter;
 
-import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.robot.Constants.Shooter_Constants;
-import frc.robot.Constants.Transfer_Constants;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Transfer;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Transfer;
 /**
  * Button pressed starts command
  * Make sure we detect a note
@@ -24,10 +22,8 @@ import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 public class ShooterSequence extends BlinkyLightUser {
   /** Creates a new ShooterSequence. */
   final Shooter shooter;
-  final Transfer transfer;
-  double count;  
+  final Transfer transfer; 
   Phase phase;
-  final double DONE_COUNT = 20; //placeholder
   public enum Phase{
     HasNote,ShooterMotorOn,TransferMotorOn,Finished;
   }
@@ -41,12 +37,11 @@ public class ShooterSequence extends BlinkyLightUser {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    count = 0;
     phase = Phase.HasNote;
   }
     public Color8Bit colorProvider() {
     // make sure not is safely in our possession before going back
-    return (count > DONE_COUNT) ? BlinkyLights.RED : BlinkyLights.GREEN;
+    return (!transfer.hasNote()) ? BlinkyLights.RED : BlinkyLights.GREEN;
   };
 
   @Override
@@ -60,21 +55,18 @@ public class ShooterSequence extends BlinkyLightUser {
     switch (phase){
       case HasNote:
       if(transfer.hasNote()){
-        shooter.setRPM(Shooter_Constants.ShooterDefaultSpeed, Shooter_Constants.ShooterDefaultSpeed); //placeholder
+        shooter.setRPM(2000, 2000); //placeholder
         phase = Phase.ShooterMotorOn;
       }
       break;
       case ShooterMotorOn:
-      if(shooter.isAtRPM(100)){
-        transfer.setSpeed(Transfer_Constants.TRANSFER_MOTOR_ON);
+      if(shooter.isAtRPM(300)){
+        transfer.setSpeed(30.0);
         phase = Phase.TransferMotorOn;
       }
       break;
       case TransferMotorOn:
       if(!transfer.hasNote()){
-        count++;
-      }
-      if(count > DONE_COUNT){
         phase = Phase.Finished;
       }
       break;

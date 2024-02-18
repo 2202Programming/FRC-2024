@@ -4,27 +4,25 @@
 
 package frc.robot.commands.Intake;
 
-import edu.wpi.first.wpilibj.util.Color8Bit;
-import frc.robot.Constants.Intake_Constants;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.BlinkyLights;
-import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Intake;
 
-public class IntakeCalibrateRetractedPos extends  BlinkyLightUser {
+public class AngleMover extends  Command {
     //Safe speed for moving to limit switch
-    final static double AngleVelocity = 5.0; //[deg/s] 
 
     /** Creates a new intakeForward. */
     public final Intake intake;
-
-    public IntakeCalibrateRetractedPos() {
+    double AngleVelocity; //[deg/s]
+    public AngleMover(double AngleVelocity) {
         this.intake = RobotContainer.getSubsystem(Intake.class);
+        this.AngleVelocity = AngleVelocity;
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        System.out.println("*******SPEED******" + AngleVelocity);
         intake.setAngleVelocity(AngleVelocity);
     }
 
@@ -33,30 +31,18 @@ public class IntakeCalibrateRetractedPos extends  BlinkyLightUser {
     public void execute() {
     }
 
-    /*
-     * Control the blinkylights based on being at calibration point or not.
-     */
-    @Override
-    public Color8Bit colorProvider() {
-        // make sure not is safely in our possession before going back
-        return (intake.atReverseLimitSwitch()) ? BlinkyLights.GREEN : BlinkyLights.RED;
-    };
-
-    @Override
-    public boolean requestBlink() {
-        return false; // we want solid lights
-    }
-
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+        // intake.setAnglePosition(0.0);
       intake.setAngleVelocity(0.0);      
-      intake.setAnglePosition(Intake_Constants.DrivingPosition);
+    //   intake.setAnglePosition(Intake_Constants.DrivingPosition);
     }
 
     // Returns true when the command should end, we end when count hits DONE_COUNT
     @Override
     public boolean isFinished() {
-        return intake.atReverseLimitSwitch();      
+        return false;
+        // return intake.atReverseLimitSwitch();      
     }
 }

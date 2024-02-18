@@ -35,14 +35,14 @@ public class Intake extends SubsystemBase {
   final double wheelGearRatio = 1.0; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean
                
   // anything or just gear raito works? (the comment before)
-  final double AngleGearRatio = 100.0; // Gear ratio
+  final double AngleGearRatio = 500.0; // Gear ratio
   /** Creates a new Intake. */
   public double intake_speed = 0.0;
- 
+  double desired_intake_speed = 0.0;
   // Intake Angle, a servo
   final NeoServo angle_servo;
-  final PIDFController hwAngleVelPID = new PIDFController(0.002141, 0.0, 0.0, 0.0503); // inner (hw/vel) go up and divide by 2
-  final PIDController anglePositionPID = new PIDController(1.0, 0.0, 0.0);  // outer (pos)
+  final PIDFController hwAngleVelPID = new PIDFController(/*0.002141*/0.010, 0.00003, 0.0, /*0.00503*/0.0045); // inner (hw/vel) go up and divide by 2
+  final PIDController anglePositionPID = new PIDController(4.0, 0.0, 0.0);  // outer (pos)
   
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
@@ -63,13 +63,12 @@ public class Intake extends SubsystemBase {
   public Intake() { // TODO: Get values
     final int STALL_CURRENT = 15; // [amp]
     final int FREE_CURRENT = 5; // [amp]
-    final double maxVel = 5.0; // [deg/s]
-    final double maxAccel = 5.0; // [deg/s^2]
-    final double posTol = 3.0; // [deg]
+    double maxVel = 120.0; // [deg/s]
+    final double maxAccel = 20.0; // [deg/s^2]
+    final double posTol = 2.0; // [deg]
     final double velTol = 1.0; // [deg/s]
     // servo controls angle of intake arm
-    angle_servo = new NeoServo(CAN.ANGLE_MTR, anglePositionPID, hwAngleVelPID, false); // TODO: find invert
-
+    angle_servo = new NeoServo(CAN.ANGLE_MTR, anglePositionPID, hwAngleVelPID, true);
     // use velocity control on intake motor
     intakeMtr.clearFaults();
     intakeMtr.restoreFactoryDefaults();
@@ -85,7 +84,7 @@ public class Intake extends SubsystemBase {
 
     /// Servo setup for angle_servo
     hwAngleVelPID.copyTo(angle_servo.getController().getPIDController(), 0);
-    angle_servo.setConversionFactor((180.0 / Math.PI) / AngleGearRatio) // [deg]
+    angle_servo.setConversionFactor(360.0 / AngleGearRatio) // [deg]
         .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
         .setVelocityHW_PID(maxVel, maxAccel)
         .setTolerance(posTol, velTol)
@@ -94,13 +93,15 @@ public class Intake extends SubsystemBase {
 
     // power on   
     setAnglePosition(PowerOnPos);
-    angle_servo.setClamp(PowerOnPos -10.0 , MaxExtendPos + 5.0);
+    angle_servo.setClamp(PowerOnPos, MaxExtendPos + 5.0);
 
     // limit switch config
-    m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen); 
-    m_reverseLimit = angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen); 
-    m_forwardLimit.enableLimitSwitch(true);
-    m_reverseLimit.enableLimitSwitch(true);
+    m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); 
+    m_reverseLimit = angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); 
+    m_forwardLimit.enableLimitSwitch(false);
+    m_reverseLimit.enableLimitSwitch(false);
+    // m_forwardLimit.enableLimitSwitch(true);
+    // m_reverseLimit.enableLimitSwitch(true);
   }
 
   public void setIntakeSpeed(double speed) {
@@ -134,6 +135,9 @@ public class Intake extends SubsystemBase {
   public void setAnglePosition(double pos) {
     angle_servo.setPosition(pos);
   }
+  public void setMaxVelocity(double velLimit){
+   angle_servo.setMaxVelocity(velLimit);
+  }
 
   /*
    * [deg/s]
@@ -141,7 +145,11 @@ public class Intake extends SubsystemBase {
    * TESTING ONLY
    */
   public void setAngleVelocity(double speed) {
+    desired_intake_speed = speed;
     angle_servo.setVelocityCmd(speed);
+  }
+  public double getDesiredVelocity(){
+    return desired_intake_speed;
   }
 
   public double getAngleSpeed() {
@@ -158,6 +166,12 @@ public class Intake extends SubsystemBase {
 
   public boolean atReverseLimitSwitch() {
     return m_reverseLimit.isPressed();
+  }
+  public boolean limitSwitchEnabled(){
+    return m_reverseLimit.isLimitSwitchEnabled();
+  }
+  public boolean forwardSwitchEnabled(){
+    return m_forwardLimit.isLimitSwitchEnabled();
   }
 
   public Command getWatcher() {
@@ -179,6 +193,9 @@ public class Intake extends SubsystemBase {
     NetworkTableEntry nt_anglePos;
     NetworkTableEntry nt_forwardLimit;
     NetworkTableEntry nt_reverseLimit;
+    NetworkTableEntry nt_reverseLimitSwitchEnabled;
+    NetworkTableEntry nt_forwardLimitSwitchEnabled;
+    NetworkTableEntry nt_desiredSpeed;
 
     @Override
     public String getTableName() {
@@ -196,6 +213,9 @@ public class Intake extends SubsystemBase {
       nt_anglePos = table.getEntry("anglePos");
       nt_forwardLimit = table.getEntry("forwardLimit");
       nt_reverseLimit = table.getEntry("reverseLimit");
+      nt_reverseLimitSwitchEnabled = table.getEntry("reverseLimitEnabled");
+      nt_forwardLimitSwitchEnabled = table.getEntry("forwardLimitSwitch");
+      nt_desiredSpeed = table.getEntry("desiredSpeed");
 
       // default value for mutables
       // example nt_maxArbFF.setDouble(maxArbFF);
@@ -211,6 +231,9 @@ public class Intake extends SubsystemBase {
       nt_anglePos.setDouble(getAnglePosition());
       nt_forwardLimit.setBoolean(m_forwardLimit.isPressed());
       nt_reverseLimit.setBoolean(m_reverseLimit.isPressed());
+      nt_reverseLimitSwitchEnabled.setBoolean(limitSwitchEnabled());
+      nt_forwardLimitSwitchEnabled.setBoolean(forwardSwitchEnabled());
+      nt_desiredSpeed.setDouble(getDesiredVelocity());
 
       // get mutable values
       // example maxArbFF = nt_maxArbFF.getDouble(maxArbFF);

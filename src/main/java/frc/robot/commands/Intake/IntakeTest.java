@@ -13,15 +13,16 @@ public class IntakeTest extends BlinkyLightUser {
 
     /** Creates a new intakeForward. */
     public final Intake intake;
-
-    public IntakeTest() {
+    double speed;
+    public IntakeTest(double speed) {
+        this.speed = speed;
         this.intake = RobotContainer.getSubsystem(Intake.class);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        intake.setIntakeSpeed(0.25);
+        intake.setIntakeSpeed(speed);
     }
 
     // Called every time the scheduler runs while the command is scheduled.

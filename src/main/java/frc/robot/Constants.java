@@ -236,7 +236,7 @@ public final class Constants {
 
   public static final class Intake_Constants {
     public static double IntakeMotorDefault = 0.01; // placeholder
-    public static double AngleFloorPos = 0.01; // placeholder
+    public static double AngleFloorPos = 100.0;
     public static double PickupPosition = 100; // placeholder - best position for getting Notes
     public static double DrivingPosition = 0.02; // placeholder - best position for driving around field
     public static double DefaultLimitSwitchPos = 10.0; // placeholder
