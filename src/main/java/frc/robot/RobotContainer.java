@@ -15,19 +15,15 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
-import frc.robot.commands.Intake.IntakeOn;
-import frc.robot.commands.Intake.IntakeSequence;
-import frc.robot.commands.Intake.IntakeCalibrateForwardPos;
 import frc.robot.commands.Intake.AngleMover;
 import frc.robot.commands.Intake.AnglePos;
+import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
-import frc.robot.commands.Intake.TransferTest;
 import frc.robot.commands.Intake.setPos;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.PneumaticsTest;
@@ -36,6 +32,7 @@ import frc.robot.commands.Shooter.ShootTest;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FaceToTag;
+import frc.robot.commands.Swerve.FieldCentricDrive;
 //todo re-enable after testing import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.auto.AutoShooting;
@@ -138,9 +135,9 @@ public class RobotContainer {
     dc = getSubsystem("DC");
 
     /* Set the commands below */
-    configureBindings(Bindings.IntakeTesting); // Change this to switch between bindings
+    configureBindings(Bindings.Competition); // Change this to switch between bindings
     if (drivetrain != null) {
-     //todo - reenable for comp drivetrain.setDefaultCommand(new FieldCentricDrive());
+      drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
   }
 
@@ -159,13 +156,12 @@ public class RobotContainer {
 
     switch (bindings) {
       case DriveTest:
-      case Competition:
-
         driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.b().onTrue(new AllianceAwareGyroReset(false));
-        driver.leftTrigger().onTrue(new ShooterSequence());
-        // todo ask komei for speaker align cmd--er
 
+        // Start any watcher commands
+        new PDPMonitorCmd(); // auto scheduled, runs when disabled
+        driver.leftTrigger().onTrue(new ShooterSequence(true, 1200.0));
         // This appears to break if initial pose is too close to path start pose
         // (zero-length path?)
         driver.a().onTrue(new SequentialCommandGroup(
@@ -179,6 +175,12 @@ public class RobotContainer {
             AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(1.73, 5.38), new Rotation2d(0.0)),
                 new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
             new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+          break;
+
+      case Competition:
+
+        driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
+        driver.y().onTrue(new AllianceAwareGyroReset(false));
 
         // Start any watcher commands
         new PDPMonitorCmd(); // auto scheduled, runs when disabled
@@ -187,10 +189,9 @@ public class RobotContainer {
         // i dont like that test commands and bindings are in here but we need them ig --er
       case IntakeTesting:
         driver.rightBumper().onTrue(new IntakeSequence());
-        driver.povUp().onTrue(new ShooterSequence());
-        driver.povDown().whileTrue(new ShootTest(1000.0)); // RPM
-        driver.povRight().onTrue(new PneumaticsTest(true));
-        driver.povLeft().onTrue(new PneumaticsTest(false));
+        driver.povUp().onTrue(new ShooterSequence(true, 2000.0));
+        driver.povRight().onTrue(new ShooterSequence(true, 1200.0));
+        driver.povDown().whileTrue(new ShooterSequence(3200.0)); // RPM
         driver.leftBumper().whileTrue(new PneumaticsSequence());
         // driver.x().whileTrue(new IntakeOn());
         driver.x().whileTrue(new AngleMover(5.0));
@@ -227,12 +228,17 @@ public class RobotContainer {
       case DriveTest:
       case Competition:
 
-      // TODO drivers change this!! just a placeholder for now!! -ER
-        double sussexSpeed = 1.0;
-
        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
         operator.x().whileTrue(new IntakeSequence());
-       // operator.y().whileTrue(new TransferTest(sussexSpeed));
+
+        //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
+
+        operator.povUp().whileTrue(new AngleMover(8.0));
+        operator.povDown().whileTrue(new AngleMover(-8.0));
+        operator.a().onTrue(new setPos(0.0));
+        operator.leftTrigger().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
+        operator.rightTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
+        operator.rightBumper().whileTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
         
         /* TODO climber bindings, commented out for sussex -- er
          *  Drive team mentioned that they want climber buttons on switchboard but i need 

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
 
@@ -25,26 +26,42 @@ public class ShooterSequence extends BlinkyLightUser {
   /** Creates a new ShooterSequence. */
   final Shooter shooter;
   final Transfer transfer;
+  final Intake intake;
   final int DONE_COUNT = 20;
+  final int PNEUMATICS_DONE_COUNT = 20;
+  double speed;
+  int pneumatics_count = 0;
   int count = 0;
   Phase phase;
+  boolean shootHigh;
 
   public enum Phase {
     HasNote, ShooterMotorOn, TransferMotorOn, Finished;
   }
 
-  public ShooterSequence() {
+  public ShooterSequence(boolean shootHigh, double speed) {
+    this.shootHigh = shootHigh;
+    this.speed = speed;
     this.shooter = RobotContainer.getSubsystem(Shooter.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
-    addRequirements(shooter, transfer);
+    this.intake = RobotContainer.getSubsystem(Intake.class);
+    addRequirements(shooter, transfer, intake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
+  public ShooterSequence(double speed){
+    this(false, speed);
+  }
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     count = 0;
+    pneumatics_count = 0;
     phase = Phase.HasNote;
+    if(shootHigh){
+      intake.setMaxVelocity(60.0);
+      intake.setAngleSetpoint(20.0);
+    }
   }
 
   public Color8Bit colorProvider() {
@@ -62,8 +79,16 @@ public class ShooterSequence extends BlinkyLightUser {
   public void execute() {
     switch (phase) {
       case HasNote:
-          shooter.setRPM(2000, 2000); // placeholder
+      if(intake.angleAtSetpoint()){
+          if(shootHigh){
+            shooter.deploy();
+            pneumatics_count++;
+          }
+          shooter.setRPM(speed, speed); // placeholder
+          if(pneumatics_count >= PNEUMATICS_DONE_COUNT || !shootHigh){
           phase = Phase.ShooterMotorOn;
+          }
+      }
         break;
       case ShooterMotorOn:
         if (shooter.isAtRPM(100)) {
@@ -89,6 +114,9 @@ public class ShooterSequence extends BlinkyLightUser {
     transfer.setHasNote(false);
     transfer.setSpeed(0.0);
     shooter.setRPM(0.0, 0.0);
+    shooter.retract();
+    intake.setMaxVelocity(10.0);  //[deg/s] 2.sec to retract
+    intake.setAngleSetpoint(0.0);
   }
 
   // Returns true when the command should end.

@@ -47,6 +47,7 @@ public class Shooter extends SubsystemBase {
     leftEncoder = config_encoder(leftMtr);
     rightEncoder = config_encoder(rightMtr);
     shooterAngle = new DoubleSolenoid(CAN.PCM1, PneumaticsModuleType.REVPH, PCM1.Forward, PCM1.Reverse);
+    retract();
   }
 
   @Override

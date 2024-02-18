@@ -7,6 +7,7 @@ package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
 
 /**
@@ -24,6 +25,7 @@ public class IntakeSequence extends Command {
 
   final Intake intake;
   final Transfer transfer;
+  final Shooter shooter;
 
   public enum Phase {
     IntakeDown("IntakeDown"),
@@ -49,7 +51,8 @@ public class IntakeSequence extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
-    addRequirements(intake, transfer);
+    this.shooter = RobotContainer.getSubsystem(Shooter.class);
+    addRequirements(intake, transfer, shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -63,9 +66,10 @@ public class IntakeSequence extends Command {
   public void execute() {
     switch (phase) {
       case IntakeDown:
-      intake.setMaxVelocity(60.0);
+        shooter.retract();
+        intake.setMaxVelocity(60.0);
         intake.setAngleSetpoint(100.0);
-        intake.setIntakeSpeed(1.0); //%
+        intake.setIntakeSpeed(1.0); // %
         transfer.setSpeed(35.0);
         phase = Phase.WaitingForNote;
         break;
@@ -93,5 +97,5 @@ public class IntakeSequence extends Command {
   public boolean isFinished() {
     return phase == Phase.Finished;
 
-}
+  }
 }
