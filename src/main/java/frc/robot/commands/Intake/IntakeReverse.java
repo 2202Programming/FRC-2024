@@ -22,19 +22,26 @@ public class IntakeReverse extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.setIntakeSpeed(-0.5);
-    transfer.setSpeed(-35.0);
+    intake.setMaxVelocity(60.0);
+    intake.setAngleSetpoint(100.0);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if(intake.getAnglePosition() >50.0){
+    intake.setIntakeSpeed(-0.5);
+    transfer.setSpeed(-35.0);
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    intake.setMaxVelocity(120.0);
+    intake.setAngleSetpoint(0.0);
     intake.setIntakeSpeed(0.0);
-    transfer .setSpeed(0.0);
+    transfer.setSpeed(0.0);
   }
 
 

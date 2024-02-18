@@ -5,6 +5,7 @@
 package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -69,7 +70,7 @@ public class IntakeSequence extends Command {
         shooter.retract();
         intake.setMaxVelocity(60.0);
         intake.setAngleSetpoint(100.0);
-        intake.setIntakeSpeed(1.0); // %
+        intake.setIntakeSpeed(0.8); // %
         transfer.setSpeed(35.0);
         phase = Phase.WaitingForNote;
         break;
@@ -87,9 +88,14 @@ public class IntakeSequence extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    if (interrupted) {
+      var cmd = new SequentialCommandGroup(
+          new AnglePos(100.0, 60.0),
+          new AnglePos(0.0, 120.0));
+      cmd.schedule();
+    }
     transfer.setSpeed(0.0);
     intake.setIntakeSpeed(0.0);
-    intake.setAngleSetpoint(0.0);
   }
 
   // Returns true when the command should end.

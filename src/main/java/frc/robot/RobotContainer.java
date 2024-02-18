@@ -25,6 +25,7 @@ import frc.robot.commands.Intake.AnglePos;
 import frc.robot.commands.Intake.IntakeReverse;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
+import frc.robot.commands.Intake.TransferTest;
 import frc.robot.commands.Intake.setPos;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.PneumaticsTest;
@@ -230,13 +231,14 @@ public class RobotContainer {
       case Competition:
 
        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
-        operator.x().whileTrue(new IntakeSequence());
+        operator.a().whileTrue(new IntakeSequence());
         operator.b().whileTrue(new IntakeReverse());
+        operator.x().whileTrue(new TransferTest(35.0));
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
-        operator.povUp().whileTrue(new AngleMover(8.0));
-        operator.povDown().whileTrue(new AngleMover(-8.0));
-        operator.x().onTrue(new setPos(0.0));
+        operator.povDown().whileTrue(new AngleMover(15.0)); // intake angle 
+        operator.povUp().whileTrue(new AngleMover(-15.0)); //bring up
+        operator.povLeft().onTrue(new setPos(0.0));
         operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
         operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
         operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN

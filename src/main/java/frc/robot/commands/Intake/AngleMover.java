@@ -35,6 +35,7 @@ public class AngleMover extends  Command {
     @Override
     public void end(boolean interrupted) {
         // intake.setAnglePosition(0.0);
+        intake.setAngleSetpoint(intake.getAnglePosition());
       intake.setAngleVelocity(0.0);      
     //   intake.setAnglePosition(Intake_Constants.DrivingPosition);
     }
