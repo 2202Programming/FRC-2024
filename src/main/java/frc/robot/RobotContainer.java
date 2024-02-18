@@ -29,13 +29,11 @@ import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Intake.setPos;
 import frc.robot.commands.Shooter.PneumaticsSequence;
-import frc.robot.commands.Shooter.PneumaticsTest;
 import frc.robot.commands.Shooter.RPMShooter;
-import frc.robot.commands.Shooter.ShootTest;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
+import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
-//todo re-enable after testing import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
@@ -147,7 +145,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("pickup", new IntakeSequence());
     NamedCommands.registerCommand("lineup shooter", new AutoShooting(ShootingTarget.Speaker));
-    NamedCommands.registerCommand("shoot", new ShooterSequence());
+    NamedCommands.registerCommand("shoot", new ShooterSequence(1500));  //[rpm] TODO might need sshoothigh=true
     NamedCommands.registerCommand("wait", new WaitCommand(2));
   }
 
