@@ -160,8 +160,11 @@ public class RobotContainer {
     switch (bindings) {
       case DriveTest:
       case Competition:
-        driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
+
+        driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.b().onTrue(new AllianceAwareGyroReset(false));
+        driver.leftTrigger().onTrue(new ShooterSequence());
+        // todo ask komei for speaker align cmd--er
 
         // This appears to break if initial pose is too close to path start pose
         // (zero-length path?)
@@ -181,6 +184,7 @@ public class RobotContainer {
         new PDPMonitorCmd(); // auto scheduled, runs when disabled
         break;
 
+        // i dont like that test commands and bindings are in here but we need them ig --er
       case IntakeTesting:
         driver.rightBumper().onTrue(new IntakeSequence());
         driver.povUp().onTrue(new ShooterSequence());
@@ -222,17 +226,23 @@ public class RobotContainer {
       default:
       case DriveTest:
       case Competition:
-        operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
 
-        operator.x().whileTrue(new PrintCommand("PlaceholderCMD: Intake Deploy"));
-        operator.x().whileFalse(new PrintCommand("PlaceholderCMD: Intake Retract"));
+      // TODO drivers change this!! just a placeholder for now!! -ER
+        double sussexSpeed = 1.0;
 
-        // Drive team mentioned that they want climber buttons on switchboard but i need
-        // to find that syntax -ER
-        // WIP THESE BINDINGS ARE NOT AT ALL FINAL
-        operator.povUp().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
-        operator.povDown().onTrue(new PrintCommand("PlaceholderCMD: Climber Down"));
-
+       // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
+        operator.x().whileTrue(new IntakeSequence());
+       // operator.y().whileTrue(new TransferTest(sussexSpeed));
+        
+        /* TODO climber bindings, commented out for sussex -- er
+         *  Drive team mentioned that they want climber buttons on switchboard but i need 
+         * to find that syntax -ER
+         * WIP THESE BINDINGS ARE NOT AT ALL FINAL
+         * operator.povUp().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
+           operator.povDown().onTrue(new PrintCommand("PlaceholderCMD: Climber Down")); 
+         */
+      
+        
         break;
       case Shooter_test:
         var shooter = getSubsystem(Shooter.class);
