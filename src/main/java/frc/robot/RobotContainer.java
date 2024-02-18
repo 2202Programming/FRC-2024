@@ -236,10 +236,10 @@ public class RobotContainer {
 
         operator.povUp().whileTrue(new AngleMover(8.0));
         operator.povDown().whileTrue(new AngleMover(-8.0));
-        operator.a().onTrue(new setPos(0.0));
-        operator.leftTrigger().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
-        operator.rightTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
-        operator.rightBumper().whileTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
+        operator.x().onTrue(new setPos(0.0));
+        operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
+        operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
+        operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
         
         /* TODO climber bindings, commented out for sussex -- er
          *  Drive team mentioned that they want climber buttons on switchboard but i need 
