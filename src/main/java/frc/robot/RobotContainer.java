@@ -230,12 +230,10 @@ public class RobotContainer {
       // TODO drivers change this!! just a placeholder for now!! -ER
         double sussexSpeed = 1.0;
 
-        operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
-        operator.x().whileTrue(new PrintCommand("PlaceholderCMD: Intake Deploy, intake retract"));
-        operator.y().whileTrue(new TransferTest(sussexSpeed));
+       // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
+        operator.x().whileTrue(new IntakeSequence());
+       // operator.y().whileTrue(new TransferTest(sussexSpeed));
         
-
-
         /* TODO climber bindings, commented out for sussex -- er
          *  Drive team mentioned that they want climber buttons on switchboard but i need 
          * to find that syntax -ER
