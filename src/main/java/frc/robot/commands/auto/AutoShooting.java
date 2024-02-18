@@ -23,6 +23,8 @@ public class AutoShooting extends SequentialCommandGroup {
    */
   public AutoShooting(ShootingTarget target) {
     limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
+
+    // TODO: We may need to check tags later, init(), of FSM isn't ready
     double tagID = determineTag(target);
     if (checkForTarget(tagID)) {
       addCommands(new FaceToTag(tagID));
@@ -39,7 +41,18 @@ public class AutoShooting extends SequentialCommandGroup {
    * @return tagID to face
    */
   private double determineTag(ShootingTarget target) {
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+    //handle Optional<> from getAlliance()
+    var allianceOpt = DriverStation.getAlliance();
+    var alliance = DriverStation.Alliance.Blue;  //default
+    if (allianceOpt.isEmpty()) {
+        System.out.println("Warning: FSM report no alliance, using Blue.");        
+    }
+    else {
+      //use what we are given
+      alliance = allianceOpt.get();
+    }
+
+    if (alliance == DriverStation.Alliance.Blue) {
       // on Blue Alliance
       if (target == ShootingTarget.Speaker) {
         return 7;

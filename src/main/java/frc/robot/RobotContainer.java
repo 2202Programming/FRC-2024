@@ -142,9 +142,10 @@ public class RobotContainer {
     }
 
     autoChooser = AutoBuilder.buildAutoChooser();
-
+    // Put event used for auto paths here, these commands get run on the event in the autopath,
+    // names must be unique.
     NamedCommands.registerCommand("pickup", new IntakeSequence());
-    NamedCommands.registerCommand("lineup shooter", new AutoShooting(ShootingTarget.Speaker));
+    NamedCommands.registerCommand("lineup shooter", new AutoShooting(ShootingTarget.Speaker));  //LL required
     NamedCommands.registerCommand("shoot", new ShooterSequence(1500));  //[rpm] TODO might need sshoothigh=true
     NamedCommands.registerCommand("wait", new WaitCommand(2));
   }
@@ -168,33 +169,33 @@ public class RobotContainer {
 
       //This appears to break if initial pose is too close to path start pose (zero-length path?)
       driver.x().onTrue(new SequentialCommandGroup(
-        new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+        new InstantCommand(drivetrain::printPose),
         AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("blue1"), 
           new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
-        new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+        new InstantCommand(drivetrain::printPose)));
         // Start any watcher commands
         new PDPMonitorCmd(); // auto scheduled, runs when disabled
         driver.leftTrigger().onTrue(new ShooterSequence(true, 1200.0));
         // This appears to break if initial pose is too close to path start pose
         // (zero-length path?)
         driver.a().onTrue(new SequentialCommandGroup(
-            new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+            new InstantCommand(drivetrain::printPose),
             AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("test_1m"),
                 new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
-            new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+            new InstantCommand(drivetrain::printPose)));
 
       driver.b().onTrue(new SequentialCommandGroup(
-        new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+        new InstantCommand(drivetrain::printPose),
         AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("red1"), 
           new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
-        new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+        new InstantCommand(drivetrain::printPose)));
        
 
         driver.x().onTrue(new SequentialCommandGroup(
-            new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+            new InstantCommand(drivetrain::printPose),
             AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(1.73, 5.38), new Rotation2d(0.0)),
                 new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
-            new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+            new InstantCommand(drivetrain::printPose)));
           break;
 
       case Competition:
