@@ -22,6 +22,7 @@ import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleMover;
 import frc.robot.commands.Intake.AnglePos;
+import frc.robot.commands.Intake.IntakeReverse;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Intake.setPos;
@@ -230,7 +231,7 @@ public class RobotContainer {
 
        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
         operator.x().whileTrue(new IntakeSequence());
-
+        operator.b().whileTrue(new IntakeReverse());
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
         operator.povUp().whileTrue(new AngleMover(8.0));
