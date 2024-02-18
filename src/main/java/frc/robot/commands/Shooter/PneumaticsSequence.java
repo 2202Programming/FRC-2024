@@ -31,7 +31,7 @@ public class PneumaticsSequence extends Command {
   @Override
   public void execute() {
     if(intake.angleAtSetpoint()){
-      shooter.deployPneumatics();
+      shooter.deploy();
     }
   }
 

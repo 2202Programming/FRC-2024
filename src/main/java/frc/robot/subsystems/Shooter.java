@@ -46,7 +46,7 @@ public class Shooter extends SubsystemBase {
 
     leftEncoder = config_encoder(leftMtr);
     rightEncoder = config_encoder(rightMtr);
-    shooterAngle = new DoubleSolenoid(PneumaticsModuleType.REVPH, PCM1.Forward, PCM1.Reverse);
+    shooterAngle = new DoubleSolenoid(CAN.PCM1, PneumaticsModuleType.REVPH, PCM1.Forward, PCM1.Reverse);
   }
 
   @Override
@@ -84,11 +84,11 @@ public class Shooter extends SubsystemBase {
   }
 
 
-  public void deployPneumatics(){
+  public void deploy(){
     shooterAngle.set(DoubleSolenoid.Value.kForward);
   }
   
-  public void retractPneumatics(){
+  public void retract(){
     shooterAngle.set(DoubleSolenoid.Value.kReverse);
   }
   public WatcherCmd getWatcher(){

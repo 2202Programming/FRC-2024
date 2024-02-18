@@ -185,8 +185,8 @@ public class RobotContainer {
         driver.rightBumper().onTrue(new IntakeSequence());
         driver.povUp().onTrue(new ShooterSequence());
         driver.povDown().whileTrue(new ShootTest(1000.0)); // RPM
-        driver.povRight().whileTrue(new PneumaticsTest(true));
-        driver.povLeft().whileTrue(new PneumaticsTest(false));
+        driver.povRight().onTrue(new PneumaticsTest(true));
+        driver.povLeft().onTrue(new PneumaticsTest(false));
         driver.leftBumper().whileTrue(new PneumaticsSequence());
         // driver.x().whileTrue(new IntakeOn());
         driver.x().whileTrue(new AngleMover(5.0));
