@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -148,6 +149,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("lineup shooter", new AutoShooting(ShootingTarget.Speaker));  //LL required
     NamedCommands.registerCommand("shoot", new ShooterSequence(1500));  //[rpm] TODO might need sshoothigh=true
     NamedCommands.registerCommand("wait", new WaitCommand(2));
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
