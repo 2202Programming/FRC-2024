@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -13,10 +14,12 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
@@ -31,7 +34,6 @@ import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Shooter.ShootTest;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
-import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 //todo re-enable after testing import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
@@ -52,6 +54,8 @@ import frc.robot.util.RobotSpecs;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+
+  private final SendableChooser<Command> autoChooser;
 
   // enum for bindings add when needed
   public enum Bindings {
@@ -98,9 +102,8 @@ public class RobotContainer {
   public static <T> T getObject(String name) {
     return (T) rc.robotSpecs.mySubsystemConfig.getObject(name);
   }
-
-  // Use this form when the RobotContainer object is NOT a Subsystem, and you can
-  // deal with nulls
+  
+  // Use this form when the RobotContainer object is NOT a Subsystem, and you can deal with nulls
   @SuppressWarnings("unchecked")
   public static <T> T getObjectOrNull(String name) {
     return (T) rc.robotSpecs.mySubsystemConfig.getObjectOrNull(name);
@@ -130,7 +133,7 @@ public class RobotContainer {
     // Quiet some of the noise
     DriverStation.silenceJoystickConnectionWarning(true);
 
-    // get subsystem vars as needed for bindings
+    // get subsystem vars as needed for bindings 
     drivetrain = getSubsystem(SwerveDrivetrain.class);
     dc = getSubsystem("DC");
 
@@ -139,6 +142,13 @@ public class RobotContainer {
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+
+    NamedCommands.registerCommand("pickup", new IntakeSequence());
+    NamedCommands.registerCommand("lineup shooter", new AutoShooting(ShootingTarget.Speaker));
+    NamedCommands.registerCommand("shoot", new ShooterSequence());
+    NamedCommands.registerCommand("wait", new WaitCommand(2));
   }
 
   /**
@@ -147,8 +157,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return null;
+    return autoChooser.getSelected();
   }
 
   private void configureBindings(Bindings bindings) {
@@ -159,6 +168,12 @@ public class RobotContainer {
         driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.b().onTrue(new AllianceAwareGyroReset(false));
 
+      //This appears to break if initial pose is too close to path start pose (zero-length path?)
+      driver.x().onTrue(new SequentialCommandGroup(
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+        AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("blue1"), 
+          new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
         // Start any watcher commands
         new PDPMonitorCmd(); // auto scheduled, runs when disabled
         driver.leftTrigger().onTrue(new ShooterSequence(true, 1200.0));
@@ -169,6 +184,13 @@ public class RobotContainer {
             AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("test_1m"),
                 new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
             new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+
+      driver.b().onTrue(new SequentialCommandGroup(
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+        AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("red1"), 
+          new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
+        new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+       
 
         driver.x().onTrue(new SequentialCommandGroup(
             new InstantCommand(RobotContainer.RC().drivetrain::printPose),
