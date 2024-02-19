@@ -4,24 +4,26 @@
 
 package frc.robot.commands.Intake;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Intake;
 
-
-public class IntakeOn extends BlinkyLightUser {
+public class AngleCalibration extends  Command {
+    //Safe speed for moving to limit switch
 
     /** Creates a new intakeForward. */
     public final Intake intake;
-
-    public IntakeOn() {
+    double AngleVelocity; //[deg/s]
+    public AngleCalibration(double AngleVelocity) {
         this.intake = RobotContainer.getSubsystem(Intake.class);
+        this.AngleVelocity = AngleVelocity;
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        intake.setIntakeSpeed(0.8);
+        System.out.println("*******SPEED******" + AngleVelocity);
+        intake.setAngleVelocity(AngleVelocity);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -32,11 +34,15 @@ public class IntakeOn extends BlinkyLightUser {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        intake.setIntakeSpeed(0.0);
+        // intake.setAnglePosition(0.0);
+      intake.setAngleVelocity(0.0);      
+    //   intake.setAnglePosition(Intake_Constants.DrivingPosition);
     }
 
+    // Returns true when the command should end, we end when count hits DONE_COUNT
     @Override
     public boolean isFinished() {
         return false;
+        // return intake.atReverseLimitSwitch();      
     }
 }

@@ -10,12 +10,12 @@ import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 
-public class AnglePos extends BlinkyLightUser {
+public class MoveToAnglePos extends BlinkyLightUser {
   /** Creates a new AnglePos. */
   public final Intake intake;
   double posCmd;
   double velLimit;
-  public AnglePos(double posCmd, double velLimit) {
+  public MoveToAnglePos(double posCmd, double velLimit) {
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.posCmd = posCmd;
     this.velLimit = velLimit;

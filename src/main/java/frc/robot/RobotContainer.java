@@ -20,12 +20,12 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
-import frc.robot.commands.Intake.AngleMover;
-import frc.robot.commands.Intake.AnglePos;
-import frc.robot.commands.Intake.IntakeReverse;
+import frc.robot.commands.Intake.AngleCalibration;
+import frc.robot.commands.Intake.MoveToAnglePos;
+import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
-import frc.robot.commands.Intake.setPos;
+import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.PneumaticsTest;
 import frc.robot.commands.Shooter.RPMShooter;
@@ -194,16 +194,15 @@ public class RobotContainer {
         driver.povRight().onTrue(new ShooterSequence(true, 1200.0));
         driver.povDown().whileTrue(new ShooterSequence(3200.0)); // RPM
         driver.leftBumper().whileTrue(new PneumaticsSequence());
-        // driver.x().whileTrue(new IntakeOn());
-        driver.x().whileTrue(new AngleMover(5.0));
-        driver.y().whileTrue(new AngleMover(-5.0));
+        driver.x().whileTrue(new AngleCalibration(5.0));
+        driver.y().whileTrue(new AngleCalibration(-5.0));
         // driver.leftBumper().whileTrue(new IntakeCalibrateForwardPos());
         driver.b().whileTrue(new IntakeTest(0.35)); //% speed
         // driver.leftBumper().whileTrue(new TransferTest(30.0));
-        driver.rightTrigger().onTrue(new AnglePos(0.0, 120.0));
-        driver.leftTrigger().onTrue(new AnglePos(100.0, 60.0));
+        driver.rightTrigger().onTrue(new MoveToAnglePos(0.0, 120.0));
+        driver.leftTrigger().onTrue(new MoveToAnglePos(100.0, 60.0));
         // driver.rightTrigger().onTrue(new AnglePos(50.0));
-        driver.a().onTrue(new setPos(0.0));
+        driver.a().onTrue(new CalibratePos(0.0));
         break;
       
       case auto_shooter_test:
@@ -231,12 +230,12 @@ public class RobotContainer {
 
        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
         operator.x().whileTrue(new IntakeSequence());
-        operator.b().whileTrue(new IntakeReverse());
+        operator.b().whileTrue(new EjectNote());
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
-        operator.povUp().whileTrue(new AngleMover(8.0));
-        operator.povDown().whileTrue(new AngleMover(-8.0));
-        operator.x().onTrue(new setPos(0.0));
+        operator.povUp().whileTrue(new AngleCalibration(8.0));
+        operator.povDown().whileTrue(new AngleCalibration(-8.0));
+        operator.x().onTrue(new CalibratePos(0.0));
         operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
         operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
         operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
