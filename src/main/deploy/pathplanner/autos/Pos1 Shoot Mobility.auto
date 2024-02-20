@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.9292510892714109,
-      "y": 7.1239327094038805
+      "x": 1.1993994471449507,
+      "y": 6.987301913535124
     },
-    "rotation": 0
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
@@ -14,13 +14,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Position 1, pickup 1 and shoot"
+            "pathName": "Pos1 to ShootPos1"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootPos1 to Mobility"
           }
         }
       ]
