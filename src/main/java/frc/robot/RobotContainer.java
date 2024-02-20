@@ -148,8 +148,8 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
-    NamedCommands.registerCommand("pickup", new IntakeToggle());
-    NamedCommands.registerCommand("shoot", new ShooterToggle());
+    NamedCommands.registerCommand("pickup", new IntakeSequence());
+    NamedCommands.registerCommand("shoot", new ShooterSequence(1000.0));
   }
 
   /**
