@@ -77,10 +77,6 @@ public class IntakeSequence extends Command {
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:
-        if (transfer.hasNote()) {
-          phase = Phase.Finished;
-        }
-        break;
       case Finished:
         break;
     }
@@ -91,17 +87,15 @@ public class IntakeSequence extends Command {
   public void end(boolean interrupted) {
     // TODO: edge case, the sequential doesn't cancel
     // TODO: Why did the intake angle go back up even when there is no command to
+    //TODO: edge case #2 - If the driver releases button as intake is coming up, it will go down before coming back up again
     if (interrupted) {
-      if(intake.angleAtSetpoint() && intake.getAngleSetpoint() == Intake.DownPos){
-        new MoveToAnglePos(Intake.UpPos, Intake.TravelUp);
-      }
       // Creates a command to continue going down until we get to the bottom before
       // moving back up, to minimize belt slippage
       var cmd = new SequentialCommandGroup();
-      if(!(intake.getAngleSetpoint() == Intake.DownPos)){
+      if(!intake.angleAtSetpoint()){
         cmd.addCommands(new MoveToAnglePos(Intake.DownPos, Intake.TravelDown));
       }
-          cmd.addCommands(new MoveToAnglePos(Intake.UpPos, Intake.TravelUp));
+      cmd.addCommands(new MoveToAnglePos(Intake.UpPos, Intake.TravelUp));
       cmd.addRequirements(intake);
       cmd.schedule();
     }
