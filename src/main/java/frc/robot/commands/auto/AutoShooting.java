@@ -4,16 +4,23 @@
 
 package frc.robot.commands.auto;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
+import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 
 public class AutoShooting extends SequentialCommandGroup {
 
   private Limelight_Subsystem limelight;
+  // TODO: Update these poses just guessed using pathplanner
+  private Translation2d RedSpeakerTagPose = new Translation2d(0.5, 5.5);
+  private Translation2d BlueSpeakerTagPose = new Translation2d(16.0, 5.5);
+  SwerveDrivetrain drivetrain;
 
   /**
    * Alliance aware sequence command to face to the target and shoot the notes.
@@ -22,13 +29,50 @@ public class AutoShooting extends SequentialCommandGroup {
    * @param target Enum target to shoot at.
    */
   public AutoShooting(ShootingTarget target) {
+    drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
     limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
+
     double tagID = determineTag(target);
+
     if (checkForTarget(tagID)) {
       addCommands(new FaceToTag(tagID));
-      // get Position here and feed it to the ShooterToggle to adjust the RPM
-      // TODO: Uncomment this avoiding error with 2023 bot
-      // addCommands(new ShooterToggle());
+      if (target == ShootingTarget.Speaker) {
+        SpeakerShootingPhase phase = getSpeakerPhase();
+        addCommands(new ShooterSequence(phase.isHigh(), phase.getRPM()));
+      } else if (target == ShootingTarget.Amp) {
+        addCommands(new ShooterSequence(true, 800.0));
+      } else {
+        // Trap
+        addCommands(new ShooterSequence(true, 1000.0));
+      }
+    }
+  }
+
+  /**
+   * 
+   * @return Phase(Holder of RPM and angle) of shooting position to the Speaker (Alliance Aware)
+   */
+  private SpeakerShootingPhase getSpeakerPhase() {
+    // Assuming that limelight has updated
+    double difference;
+    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+      // Blue Alliance
+      difference = Math.sqrt(
+          Math.pow(drivetrain.getPose().getTranslation().getX() - BlueSpeakerTagPose.getX(), 2)
+              + Math.pow(drivetrain.getPose().getTranslation().getY() - BlueSpeakerTagPose.getY(), 2));
+    } else {
+      // Red Alliance
+      difference = Math.sqrt(
+          Math.pow(drivetrain.getPose().getTranslation().getX() - RedSpeakerTagPose.getX(), 2)
+              + Math.pow(drivetrain.getPose().getTranslation().getY() - RedSpeakerTagPose.getY(), 2));
+    }
+
+    if (difference < 3.0) {
+      return SpeakerShootingPhase.Phase1;
+    } else if (difference < 6.0) {
+      return SpeakerShootingPhase.Phase2;
+    } else {
+      return SpeakerShootingPhase.Phase3;
     }
   }
 
@@ -77,6 +121,7 @@ public class AutoShooting extends SequentialCommandGroup {
         }
       }
     }
+    System.out.println("Invalid in AutoShooting");
     return 17;// DNE
   }
 
@@ -101,5 +146,30 @@ public class AutoShooting extends SequentialCommandGroup {
     Speaker,
     Amp,
     Trap
+  }
+
+  /**
+   * Phase of shooting position to the Speaker This hold the RPM and the angle
+   */
+  public enum SpeakerShootingPhase {
+    Phase1(true, 2000.0), // Close
+    Phase2(false, 2000.0), // Mid
+    Phase3(false, 3500.0);// Far
+
+    boolean high;
+    double RPM;
+
+    SpeakerShootingPhase(boolean high, double RPM) {
+      this.high = high;
+      this.RPM = RPM;
+    }
+
+    public boolean isHigh() {
+      return high;
+    }
+
+    public double getRPM() {
+      return RPM;
+    }
   }
 }
