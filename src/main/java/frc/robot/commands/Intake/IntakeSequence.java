@@ -77,6 +77,9 @@ public class IntakeSequence extends Command {
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:
+      if(transfer.hasNote()){
+        phase = Phase.Finished;
+      }
       case Finished:
         break;
     }

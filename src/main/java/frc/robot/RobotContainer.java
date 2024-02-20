@@ -244,6 +244,7 @@ public class RobotContainer {
 
        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
         operator.a().whileTrue(new IntakeSequence(false));
+        operator.y().whileTrue(new IntakeSequence(true));
         operator.b().whileTrue(new EjectNote());
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
