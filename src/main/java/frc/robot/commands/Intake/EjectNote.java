@@ -9,11 +9,11 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Transfer;
 
-public class IntakeReverse extends Command {
+public class EjectNote extends Command {
   /** Creates a new IntakeReverse. */
   final Intake intake;
   final Transfer transfer;
-  public IntakeReverse() {
+  public EjectNote() {
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
     // Use addRequirements() here to declare subsystem dependencies.

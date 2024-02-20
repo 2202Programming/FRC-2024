@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 
-public class setPos extends Command {
+public class CalibratePos extends Command {
   /** Creates a new AnglePos. */
   public final Intake intake;
   double desiredPos;
-  public setPos(double desiredPos) {
+  public CalibratePos(double desiredPos) {
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.desiredPos = desiredPos;
     // Use addRequirements() here to declare subsystem dependencies.
