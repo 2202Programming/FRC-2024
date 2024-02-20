@@ -60,7 +60,7 @@ public class ShooterSequence extends BlinkyLightUser {
     phase = Phase.HasNote;
     if(shootHigh){
       intake.setMaxVelocity(60.0);
-      intake.setAngleSetpoint(Intake.DownPos);
+      intake.setAngleSetpoint(Intake.ShootingPos);
     }
   }
 
@@ -115,7 +115,7 @@ public class ShooterSequence extends BlinkyLightUser {
     transfer.setSpeed(0.0);
     shooter.setRPM(0.0, 0.0);
     shooter.retract();
-    intake.setMaxVelocity(10.0);  //[deg/s] 2.sec to retract
+    intake.setMaxVelocity(120.0);  //[deg/s] 2.sec to retract
     intake.setAngleSetpoint(0.0);
   }
 
