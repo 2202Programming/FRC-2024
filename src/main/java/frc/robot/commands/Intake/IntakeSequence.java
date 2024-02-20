@@ -91,8 +91,8 @@ public class IntakeSequence extends Command {
     //TODO: edge case, the sequential doesn't cancel
     if (interrupted) {
       var cmd = new SequentialCommandGroup(
-          new AnglePos(100.0, 60.0),
-          new AnglePos(0.0, 120.0));
+          new MoveToAnglePos(100.0, 60.0),
+          new MoveToAnglePos(0.0, 120.0));
           cmd.addRequirements(intake);
       cmd.schedule();
     }
