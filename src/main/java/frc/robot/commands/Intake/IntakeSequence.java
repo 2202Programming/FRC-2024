@@ -19,7 +19,6 @@ import frc.robot.subsystems.Transfer;
  * Wait x amount of time after lightgate detects note
  * shut off transfer motor, bring intake to movement pos, and turn blinky lights
  * to green!!
- * 
  */
 
 public class IntakeSequence extends Command {
