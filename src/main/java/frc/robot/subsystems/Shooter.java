@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.PCM1;
 import frc.robot.commands.utility.WatcherCmd;
+import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
 public class Shooter extends SubsystemBase {
@@ -40,10 +41,12 @@ public class Shooter extends SubsystemBase {
 
   PIDFController pidConsts = new PIDFController(0.00005, 0.0, 0.0, kF);
 
+
+
+
   public Shooter() {
     hw_leftPid = motor_config(leftMtr, pidConsts, true);
     hw_rightPid = motor_config(rightMtr, pidConsts, false);
-
     leftEncoder = config_encoder(leftMtr);
     rightEncoder = config_encoder(rightMtr);
     shooterAngle = new DoubleSolenoid(CAN.PCM1, PneumaticsModuleType.REVPH, PCM1.Forward, PCM1.Reverse);

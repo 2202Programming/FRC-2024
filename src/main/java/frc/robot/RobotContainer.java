@@ -38,6 +38,7 @@ import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
@@ -212,8 +213,8 @@ public class RobotContainer {
         // driver.leftBumper().whileTrue(new IntakeCalibrateForwardPos());
         driver.b().whileTrue(new IntakeTest(0.35)); //% speed
         // driver.leftBumper().whileTrue(new TransferTest(30.0));
-        driver.rightTrigger().onTrue(new MoveToAnglePos(0.0, 120.0));
-        driver.leftTrigger().onTrue(new MoveToAnglePos(100.0, 60.0));
+        driver.rightTrigger().onTrue(new MoveToAnglePos(Intake.TravelUp, Intake.TravelUp));
+        driver.leftTrigger().onTrue(new MoveToAnglePos(Intake.TravelDown, Intake.TravelDown));
         // driver.rightTrigger().onTrue(new AnglePos(50.0));
         driver.a().onTrue(new CalibratePos(0.0));
         break;
@@ -242,7 +243,7 @@ public class RobotContainer {
       case Competition:
 
        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
-        operator.x().whileTrue(new IntakeSequence(false));
+        operator.a().whileTrue(new IntakeSequence(false));
         operator.b().whileTrue(new EjectNote());
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 

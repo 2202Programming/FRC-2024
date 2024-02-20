@@ -29,8 +29,11 @@ import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
 public class Intake extends SubsystemBase {
-  final double PowerOnPos = 0.0; //[deg]
-  final double MaxExtendPos = 90.0; //[deg]
+  public static final double UpPos = 0.0; //[deg]
+  public static final double ShootingPos = 20.0; //[deg]
+  public static final double DownPos = 90.0; //[deg]
+  public static final double TravelUp = 120.0; //[deg/s]
+  public static final double TravelDown = 60.0; //[deg/s]
 
   final double wheelGearRatio = 1.0; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean
                
@@ -92,8 +95,8 @@ public class Intake extends SubsystemBase {
         .burnFlash();
 
     // power on   
-    setAnglePosition(PowerOnPos);
-    angle_servo.setClamp(PowerOnPos, MaxExtendPos + 5.0);
+    setAnglePosition(UpPos);
+    angle_servo.setClamp(UpPos, DownPos + 5.0);
 
     // limit switch config
     m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); 
