@@ -5,7 +5,6 @@
 package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -19,17 +18,23 @@ import frc.robot.subsystems.Transfer;
  * Wait x amount of time after lightgate detects note
  * shut off transfer motor, bring intake to movement pos, and turn blinky lights
  * to green!!
+ * 
  */
 
-public class IntakeSequence extends Command {
+public class InIntake extends Command {
 
   final Intake intake;
   final Transfer transfer;
   final Shooter shooter;
+  final double FIRST_COUNT = 100; //frames
+  final double SECOND_COUNT = 100;
+  double count_one;
+  double count_two;
 
   public enum Phase {
     IntakeDown("IntakeDown"),
     WaitingForNote("WaitingForNote"),
+    Eject("Eject"),
     Finished("Finished");
 
     String name;
@@ -47,7 +52,9 @@ public class IntakeSequence extends Command {
   Phase phase;
 
   /** Creates a new IntakeSequence. */
-  public IntakeSequence() {
+  public InIntake() {
+    count_one = 0;
+    count_two = 0;
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
@@ -69,15 +76,28 @@ public class IntakeSequence extends Command {
         shooter.retract();
         intake.setMaxVelocity(60.0);
         intake.setAngleSetpoint(100.0);
-        intake.setIntakeSpeed(0.8); // %
+        intake.setIntakeSpeed(1.0); // %
         transfer.setSpeed(35.0);
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:
         if (transfer.hasNote()) {
-          intake.setMaxVelocity(120.0);
-          phase = Phase.Finished;
+            count_one++;
         }
+        if(count_one > FIRST_COUNT){
+          transfer.setSpeed(-35.0);
+          phase = Phase.Eject;
+          }
+        break;
+        case Eject:
+          if(!transfer.hasNote()){
+            count_two++;
+          }
+        if(count_two > SECOND_COUNT){
+            intake.setMaxVelocity(120.0);
+            phase = Phase.Finished;
+        }
+
         break;
       case Finished:
         break;
@@ -87,16 +107,9 @@ public class IntakeSequence extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //TODO: edge case, the sequential doesn't cancel
-    if (interrupted) {
-      var cmd = new SequentialCommandGroup(
-          new MoveToAnglePos(100.0, 60.0),
-          new MoveToAnglePos(0.0, 120.0));
-          cmd.addRequirements(intake);
-      cmd.schedule();
-    }
     transfer.setSpeed(0.0);
     intake.setIntakeSpeed(0.0);
+    intake.setAngleSetpoint(0.0);
   }
 
   // Returns true when the command should end.
