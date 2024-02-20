@@ -145,8 +145,9 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
-    NamedCommands.registerCommand("pickup", new IntakeToggle());
-    NamedCommands.registerCommand("shoot", new ShooterToggle());
+    NamedCommands.registerCommand("pickup", new IntakeSequence());
+    NamedCommands.registerCommand("shoot", new ShooterSequence(3500.0));
+    SmartDashboard.putData("Auto Chooser", autoChooser);
   }
 
   /**
@@ -166,7 +167,6 @@ public class RobotContainer {
         driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.b().onTrue(new AllianceAwareGyroReset(false));
 
-<<<<<<<<< Temporary merge branch 1
       //This appears to break if initial pose is too close to path start pose (zero-length path?)
       driver.x().onTrue(new SequentialCommandGroup(
         new InstantCommand(RobotContainer.RC().drivetrain::printPose),
@@ -180,7 +180,6 @@ public class RobotContainer {
           new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
         new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
        
-=========
         // Start any watcher commands
         new PDPMonitorCmd(); // auto scheduled, runs when disabled
         driver.leftTrigger().onTrue(new ShooterSequence(true, 1200.0));
@@ -191,7 +190,6 @@ public class RobotContainer {
             AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("test_1m"),
                 new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
             new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
->>>>>>>>> Temporary merge branch 2
 
         driver.x().onTrue(new SequentialCommandGroup(
             new InstantCommand(drivetrain::printPose),
