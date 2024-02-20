@@ -4,6 +4,11 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkPIDController;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -11,83 +16,125 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.DigitalIO;
-import frc.robot.Constants.Transfer_Constants;
 import frc.robot.commands.utility.WatcherCmd;
-import frc.robot.subsystems.Intake.IntakeWatcherCmd;
 import frc.robot.util.PIDFController;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkBase.ControlType;
-
 public class Transfer extends SubsystemBase {
+
+  //constants for geometry of transfer
+  final static double radius = 1.27 * 2.0 * Math.PI; // 1.27 radius in cm
+  final static double gearRatio = 1.0 / 35.0; // 35 motor turns -> 1 roller shaft turn [verified gr]
+  final static double conversionFactor = radius * gearRatio;  // [cm/rotations]
+
+  static final double MIN_SPEED=-1.0, MAX_SPEED=1.0; //example looks like Pct Pwr
+
+  // calc Kff for vel control from measured (RPS / %pwr)
+  final static double  Kff =  (1.0 / 43.2);   //full pwr gave 43.2 [cm/s]
+  final PIDFController transferPID = new PIDFController(0.015, 0.0, 0.0, Kff);
 
   DigitalInput lightgate = new DigitalInput(DigitalIO.TRANSFER_LIGHT_GATE);
   CANSparkMax transferMtr;
   final SparkPIDController transferMtrPid;
   final RelativeEncoder transferMtrEncoder;
-  final PIDFController transferPID = new PIDFController(1.0, 0.0, 0.0, 0.0);
+
+  // state vars
+  boolean has_note = false;
+  boolean prev_sense_note = false;
+  double speed_cmd; //for monitoring
 
   /** Creates a new Transfer. */
   public Transfer() {
-    final double radius = 1.27 * 2 * Math.PI; // 1.27 radius in cm
-    final double gear_ratio = 35.0;
-    final double conversionFactor = radius * gear_ratio;
-    transferPID.copyTo(transferMtr.getPIDController(), 0);
     transferMtr = new CANSparkMax(CAN.TRANSFER_MOTOR, CANSparkMax.MotorType.kBrushless);
     transferMtr.clearFaults();
     transferMtr.restoreFactoryDefaults();
+    transferMtr.setInverted(true);
     transferMtrPid = transferMtr.getPIDController();
     transferMtrEncoder = transferMtr.getEncoder();
     transferMtrEncoder.setPositionConversionFactor(conversionFactor);
     transferMtrEncoder.setVelocityConversionFactor(conversionFactor / 60.0); // min to sec
+    transferPID.copyTo(transferMtrPid, 0);
+    transferMtrPid.setOutputRange(MIN_SPEED, MAX_SPEED, 0);
     transferMtr.burnFlash();
+
+    transferMtrEncoder.setPosition(0.0);
   }
 
-  // TODO: find out methods/behaviors, pneumatics, etc.
+  /*
+   * true when note is blocking light gate
+   */
+  boolean senseNote() {
+    return !lightgate.get();
+  }
 
+  /*
+   * true - note passed light gate and then cleared past gate
+   * commands should stop motor on hasNote() == true.
+   */
   public boolean hasNote() {
-    return lightgate.get();
+    return has_note;
   }
 
-  public void transferMtrOn() {
-    transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_ON, ControlType.kVelocity, 0);
+  /*
+   * sets if we have a note or not for powerup or initization in commands
+   */
+  public void setHasNote(boolean note_state) {
+      has_note = note_state;
+      prev_sense_note = false;
+  }
+
+  /*
+   * speed [cm/s]
+   */
+  public void setSpeed(double speed) {
+     transferMtrPid.setReference(speed, ControlType.kVelocity, 0);
+     this.speed_cmd = speed;
     // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_ON);
   }
 
-  // Motor speed will likely need to be changed
+  /*
+  // Motor speed will likely need to be chan
   public void transferMtrOff() {
-    transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_OFF, ControlType.kVelocity, 0);
-    // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_OFF);
+    // transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_OFF,
+    // ControlType.kVelocity, 0);
+   // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_OFF);
   }
 
+ /*
   public void transferMtrReverse() {
     transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_REVERSE, ControlType.kVelocity, 0);
     // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_REVERSE);
   }
-
+*/
   public double getTransferVelocity() {
-    return transferMtr.get();
+    return transferMtrEncoder.getVelocity();
   }
 
   public Command getWatcher() {
     return new TransferWatcherCmd();
   }
 
-  // This motor speed will also probably need to be changed too, but make sure it
-  // is still a negative number
-  // This method would be used to spit the note back out if it gets jammed, but
-  // might not be necessary
+  /*
+   * watch gate during periodic so the hasNote() is accurate
+   */
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    // watch gate for high to low change, we have the note where we want it
+    if (senseNote()){
+      prev_sense_note = true;
+    }
+    else if (prev_sense_note) {
+      has_note = true;   // saw it then didn't, so we move past we have it
+    }
+
   }
 
   class TransferWatcherCmd extends WatcherCmd {
     // NetworkTableEntry nt_lightgate;
     NetworkTableEntry nt_lightgate;
-    NetworkTableEntry nt_transferVel;
+    NetworkTableEntry nt_Vel;
+    NetworkTableEntry nt_velcmd;
+    NetworkTableEntry nt_have_note;
+    NetworkTableEntry nt_pos;
 
     @Override
     public String getTableName() {
@@ -96,18 +143,23 @@ public class Transfer extends SubsystemBase {
 
     public void ntcreate() {
       NetworkTable table = getTable();
-      // nt_lightgate = table.getEntry("lightgate");
-      nt_lightgate = table.getEntry("lightgate");
-      nt_transferVel = table.getEntry("transferVel");
+      nt_lightgate = table.getEntry("senseNote");
+      nt_Vel = table.getEntry("velMeas");
+      nt_velcmd = table.getEntry("velCmd");
+      nt_have_note = table.getEntry("haveNote");
+      nt_pos  = table.getEntry("pos_");
 
       // default value for mutables
       // example nt_maxArbFF.setDouble(maxArbFF);
     }
 
     public void ntupdate() {
-      // nt_lightgate.setBoolean();
-      nt_lightgate.setBoolean(hasNote());
-      nt_transferVel.setDouble(getTransferVelocity());
+      nt_lightgate.setBoolean(senseNote());
+      nt_Vel.setDouble(getTransferVelocity());
+      nt_velcmd.setDouble(speed_cmd);
+      nt_have_note.setBoolean(hasNote());
+
+      nt_pos.setDouble( transferMtrEncoder.getPosition() );
 
       // get mutable values
       // example maxArbFF = nt_maxArbFF.getDouble(maxArbFF);

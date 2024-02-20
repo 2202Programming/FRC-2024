@@ -82,8 +82,8 @@ public final class Constants {
 
     public static final WheelOffsets comp2024AlphaBotOffsets = new WheelOffsets(43.85746387, 24.096825 , -65.21481, -43.066333125);
     public static final ChassisConfig comp2024AlphaBotChassisConfig = new ChassisConfig(
-        MperFT * (23.5 / 12.0) / 2.0,
-        MperFT * (19.5 / 12.0) / 2.0,
+        MperFT * (25 / 12.0) / 2.0,
+        MperFT * (20.75 / 12.0) / 2.0,
         0.999, // scale [] <= 1.0
         MperFT * (4.0 / 12.0),
         21.428,
@@ -158,10 +158,9 @@ public final class Constants {
     public static final int ROBORIO = 0;
     public static final int PDP = 1; // for rev
     public static final int PCM1 = 2; // for rev
-    public static final int PCM2 = 3; // for rev
 
     // lights
-    public static final int CANDLE1 = 3; // TODO: fix collision with PCM2
+    public static final int CANDLE1 = 3; 
     public static final int CANDLE2 = 4;
 
     // Warning: CAN 7 is used for CANCoder on swerveBot aka Tim 2.0
@@ -218,8 +217,8 @@ public final class Constants {
 
   // pnumatics control module 1
   public static final class PCM1 {
-    public static final int Forward = 0;// TODO: UPDATE
-    public static final int Reverse = 0;
+    public static final int Forward = 0;
+    public static final int Reverse = 1;
   }
 
   // pnumatics control module 2
@@ -237,7 +236,7 @@ public final class Constants {
 
   public static final class Intake_Constants {
     public static double IntakeMotorDefault = 0.01; // placeholder
-    public static double AngleFloorPos = 0.01; // placeholder
+    public static double AngleFloorPos = 100.0;
     public static double PickupPosition = 100; // placeholder - best position for getting Notes
     public static double DrivingPosition = 0.02; // placeholder - best position for driving around field
     public static double DefaultLimitSwitchPos = 10.0; // placeholder
@@ -250,8 +249,7 @@ public final class Constants {
   }
 
   public static final class Transfer_Constants { // placeholder
-    public static final double TRANSFER_MOTOR_ON = 0.5;
-    public static final double TRANSFER_MOTOR_OFF = 0.0;
+    public static final double TRANSFER_MOTOR_ON = 0.8;
     public static final double TRANSFER_MOTOR_REVERSE = -0.5;
   }
   public static final class Shooter_Constants{//placeholder

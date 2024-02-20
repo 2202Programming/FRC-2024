@@ -18,25 +18,29 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
-import frc.robot.commands.Intake.IntakeCalibrateRetractedPos;
-import frc.robot.commands.Intake.IntakeManualPickup;
+import frc.robot.commands.Intake.AngleCalibration;
+import frc.robot.commands.Intake.MoveToAnglePos;
+import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
+import frc.robot.commands.Intake.CalibratePos;
+import frc.robot.commands.Shooter.PneumaticsSequence;
+import frc.robot.commands.Shooter.PneumaticsTest;
 import frc.robot.commands.Shooter.RPMShooter;
-import frc.robot.commands.Shooter.ShooterToggle;
+import frc.robot.commands.Shooter.ShootTest;
+import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
+//todo re-enable after testing import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
@@ -57,7 +61,8 @@ public class RobotContainer {
 
   // enum for bindings add when needed
   public enum Bindings {
-    DriveTest, Shooter_test, Comptition, auto_shooter_test
+    Competition,
+    DriveTest, Shooter_test, IntakeTesting, auto_shooter_test
   }
 
   // The robot's subsystems and commands are defined here...
@@ -136,7 +141,7 @@ public class RobotContainer {
     dc = getSubsystem("DC");
 
     /* Set the commands below */
-    configureBindings(Bindings.auto_shooter_test); // Change this to switch between bindings
+    configureBindings(Bindings.Competition); // Change this to switch between bindings
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
@@ -161,15 +166,19 @@ public class RobotContainer {
 
     switch (bindings) {
       case DriveTest:
-        driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
+        driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.b().onTrue(new AllianceAwareGyroReset(false));
 
-      //This appears to break if initial pose is too close to path start pose (zero-length path?)
-      driver.x().onTrue(new SequentialCommandGroup(
-        new InstantCommand(RobotContainer.RC().drivetrain::printPose),
-        AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("blue1"), 
-          new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
-        new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+        // Start any watcher commands
+        new PDPMonitorCmd(); // auto scheduled, runs when disabled
+        driver.leftTrigger().onTrue(new ShooterSequence(true, 1200.0));
+        // This appears to break if initial pose is too close to path start pose
+        // (zero-length path?)
+        driver.a().onTrue(new SequentialCommandGroup(
+            new InstantCommand(RobotContainer.RC().drivetrain::printPose),
+            AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile("test_1m"),
+                new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
+            new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
 
       driver.b().onTrue(new SequentialCommandGroup(
         new InstantCommand(RobotContainer.RC().drivetrain::printPose),
@@ -183,26 +192,33 @@ public class RobotContainer {
             AutoBuilder.pathfindToPose(new Pose2d(new Translation2d(1.73, 5.38), new Rotation2d(0.0)),
                 new PathConstraints(3.0, 3.0, Units.degreesToRadians(540), Units.degreesToRadians(720))),
             new InstantCommand(RobotContainer.RC().drivetrain::printPose)));
+          break;
+
+      case Competition:
+
+        driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
+        driver.y().onTrue(new AllianceAwareGyroReset(false));
 
         // Start any watcher commands
         new PDPMonitorCmd(); // auto scheduled, runs when disabled
         break;
 
-      case Comptition:
-        var intake = getSubsystem(Intake.class);
-        // var noseRoller = getSubsystem(NoseRoller.class);
-        // TODO: replace Print/Dummy with real commands when known - ER
-        //driver.rightTrigger().whileTrue(new DummyShooterCmd());
-        driver.leftTrigger().onTrue(new PrintCommand("PlaceholderCMD: Align with shooter"));
-        driver.x().whileTrue(new IntakeSequence());
-        driver.y().whileTrue(new InstantCommand(() -> {
-          intake.setAngleVelocity(0.3);
-        }));
-        driver.a().whileTrue(new IntakeTest());
-        // when used can uncomment to set nose roller
-        // driver.a().whileTrue(new InstantCommand(() -> {
-        // noseRoller.setNoseVelocity(1.0);
-        // }));
+        // i dont like that test commands and bindings are in here but we need them ig --er
+      case IntakeTesting:
+        driver.rightBumper().onTrue(new IntakeSequence());
+        driver.povUp().onTrue(new ShooterSequence(true, 2000.0));
+        driver.povRight().onTrue(new ShooterSequence(true, 1200.0));
+        driver.povDown().whileTrue(new ShooterSequence(3200.0)); // RPM
+        driver.leftBumper().whileTrue(new PneumaticsSequence());
+        driver.x().whileTrue(new AngleCalibration(5.0));
+        driver.y().whileTrue(new AngleCalibration(-5.0));
+        // driver.leftBumper().whileTrue(new IntakeCalibrateForwardPos());
+        driver.b().whileTrue(new IntakeTest(0.35)); //% speed
+        // driver.leftBumper().whileTrue(new TransferTest(30.0));
+        driver.rightTrigger().onTrue(new MoveToAnglePos(0.0, 120.0));
+        driver.leftTrigger().onTrue(new MoveToAnglePos(100.0, 60.0));
+        // driver.rightTrigger().onTrue(new AnglePos(50.0));
+        driver.a().onTrue(new CalibratePos(0.0));
         break;
       
       case auto_shooter_test:
@@ -211,6 +227,7 @@ public class RobotContainer {
         driver.povUp().onTrue(new AutoShooting(ShootingTarget.Trap));
         driver.povRight().onTrue(new AutoShooting(ShootingTarget.Amp));
         break;
+
       
       default:
         break;
@@ -225,18 +242,29 @@ public class RobotContainer {
       // all the same for now since they are placeholders -- fall through ok
       default:
       case DriveTest:
-      case Comptition:
-        operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
+      case Competition:
 
-        operator.x().whileTrue(new PrintCommand("PlaceholderCMD: Intake Deploy"));
-        operator.x().whileFalse(new PrintCommand("PlaceholderCMD: Intake Retract"));
+       // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
+        operator.x().whileTrue(new IntakeSequence());
+        operator.b().whileTrue(new EjectNote());
+        //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
-        // Drive team mentioned that they want climber buttons on switchboard but i need
-        // to find that syntax -ER
-        // WIP THESE BINDINGS ARE NOT AT ALL FINAL
-        operator.povUp().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
-        operator.povDown().onTrue(new PrintCommand("PlaceholderCMD: Climber Down"));
-
+        operator.povUp().whileTrue(new AngleCalibration(8.0));
+        operator.povDown().whileTrue(new AngleCalibration(-8.0));
+        operator.x().onTrue(new CalibratePos(0.0));
+        operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
+        operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
+        operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
+        
+        /* TODO climber bindings, commented out for sussex -- er
+         *  Drive team mentioned that they want climber buttons on switchboard but i need 
+         * to find that syntax -ER
+         * WIP THESE BINDINGS ARE NOT AT ALL FINAL
+         * operator.povUp().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
+           operator.povDown().onTrue(new PrintCommand("PlaceholderCMD: Climber Down")); 
+         */
+      
+        
         break;
       case Shooter_test:
         var shooter = getSubsystem(Shooter.class);
