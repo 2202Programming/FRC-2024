@@ -15,7 +15,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -24,15 +23,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
-import frc.robot.commands.Intake.MoveToAnglePos;
+import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
-import frc.robot.commands.Intake.CalibratePos;
+import frc.robot.commands.Intake.MoveToAnglePos;
 import frc.robot.commands.Shooter.PneumaticsSequence;
-import frc.robot.commands.Shooter.PneumaticsTest;
 import frc.robot.commands.Shooter.RPMShooter;
-import frc.robot.commands.Shooter.ShootTest;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FaceToTag;
@@ -148,7 +145,7 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
-    NamedCommands.registerCommand("pickup", new IntakeSequence());
+    NamedCommands.registerCommand("pickup", new IntakeSequence(false));
     NamedCommands.registerCommand("shoot", new ShooterSequence(1000.0));
   }
 
@@ -205,7 +202,7 @@ public class RobotContainer {
 
         // i dont like that test commands and bindings are in here but we need them ig --er
       case IntakeTesting:
-        driver.rightBumper().onTrue(new IntakeSequence());
+        driver.rightBumper().onTrue(new IntakeSequence(false));
         driver.povUp().onTrue(new ShooterSequence(true, 2000.0));
         driver.povRight().onTrue(new ShooterSequence(true, 1200.0));
         driver.povDown().whileTrue(new ShooterSequence(3200.0)); // RPM
@@ -245,7 +242,7 @@ public class RobotContainer {
       case Competition:
 
        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
-        operator.x().whileTrue(new IntakeSequence());
+        operator.x().whileTrue(new IntakeSequence(false));
         operator.b().whileTrue(new EjectNote());
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 

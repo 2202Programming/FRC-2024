@@ -26,6 +26,7 @@ public class IntakeSequence extends Command {
   final Intake intake;
   final Transfer transfer;
   final Shooter shooter;
+  boolean stay_down;
 
   public enum Phase {
     IntakeDown("IntakeDown"),
@@ -47,8 +48,9 @@ public class IntakeSequence extends Command {
   Phase phase;
 
   /** Creates a new IntakeSequence. */
-  public IntakeSequence() {
+  public IntakeSequence(boolean stay_down) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.stay_down = stay_down;
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
     this.shooter = RobotContainer.getSubsystem(Shooter.class);
@@ -88,12 +90,16 @@ public class IntakeSequence extends Command {
   @Override
   public void end(boolean interrupted) {
     //TODO: edge case, the sequential doesn't cancel
+    //TODO: Why did the intake angle go back up even when there is no command to
     if (interrupted) {
       var cmd = new SequentialCommandGroup(
           new MoveToAnglePos(100.0, 60.0),
           new MoveToAnglePos(0.0, 120.0));
           cmd.addRequirements(intake);
       cmd.schedule();
+    }
+    if(!stay_down && !interrupted){
+      intake.setAngleSetpoint(100.0);
     }
     transfer.setSpeed(0.0);
     intake.setIntakeSpeed(0.0);
