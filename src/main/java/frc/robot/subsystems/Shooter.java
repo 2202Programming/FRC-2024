@@ -145,7 +145,8 @@ public class Shooter extends SubsystemBase {
 
 
   /*TODO: FOR SHOOTER TUNING 
-  AFTER FINISHING PID TUNING DELETE FOLLOWING*/
+  *AFTER FINISHING PID TUNING 
+  *DELETE FOLLOWING*/
   public double getP(){
     return hw_leftPid.getP();
   }

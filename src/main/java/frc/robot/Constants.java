@@ -231,7 +231,7 @@ public final class Constants {
     // public static final int Intake_Down = 1; //placeholder
     public static final int TRANSFER_LIGHT_GATE = 0; // placeholder
     public static final int RollerLightGate = 100; // placeholder
-
+    public static final int Intake_Note = 0; //placeholder
   }
 
   public static final class Intake_Constants {

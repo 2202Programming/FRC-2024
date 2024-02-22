@@ -19,10 +19,12 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DigitalInput;
 // import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
+import frc.robot.Constants.DigitalIO;
 // import frc.robot.Constants.DigitalIO;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.NeoServo;
@@ -36,6 +38,10 @@ public class Intake extends SubsystemBase {
                
   // anything or just gear raito works? (the comment before)
   final double AngleGearRatio = 500.0; // Gear ratio
+
+  boolean has_had_note = false;
+  boolean has_note = false;
+  
   /** Creates a new Intake. */
   public double intake_speed = 0.0;
   double desired_intake_speed = 0.0;
@@ -51,7 +57,7 @@ public class Intake extends SubsystemBase {
   final RelativeEncoder intakeMtrEncoder;
 
   // lightgate tell us when we have a game piece (aka a Note)
-  // final DigitalInput lightgate = new DigitalInput(DigitalIO.Intake_Note);
+  final DigitalInput lightgate = new DigitalInput(DigitalIO.Intake_Note);
 
   // limit switch
   SparkLimitSwitch m_forwardLimit;
@@ -178,9 +184,30 @@ public class Intake extends SubsystemBase {
     return new IntakeWatcherCmd();
   }
 
+  public boolean has_Note() {
+    return !lightgate.get();
+  }
+
+  public boolean has_Had_Note() {
+    return has_note;
+  }
+
+  public void setHasNote(boolean state) {
+    // if we ever lose a note, call this
+    has_note = state;
+    has_had_note = false;
+  }
+
   public void periodic() {
+    
+
     this.angle_servo.periodic();
 
+    if(has_Note()) {
+      has_had_note = true;
+    } else if(has_had_note) {
+      has_note = true;
+    }
   }
 
   class IntakeWatcherCmd extends WatcherCmd {
