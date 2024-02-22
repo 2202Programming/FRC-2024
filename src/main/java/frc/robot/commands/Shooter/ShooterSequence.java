@@ -55,6 +55,7 @@ public class ShooterSequence extends BlinkyLightUser {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("***ShooterSequence:init....***");
     count = 0;
     pneumatics_count = 0;
     phase = Phase.HasNote;
@@ -79,6 +80,7 @@ public class ShooterSequence extends BlinkyLightUser {
   public void execute() {
     switch (phase) {
       case HasNote:
+      System.out.println("***ShooterSequence:HasNote....***");
       if(intake.angleAtSetpoint()){
           if(shootHigh){
             shooter.deploy();
@@ -91,12 +93,14 @@ public class ShooterSequence extends BlinkyLightUser {
       }
         break;
       case ShooterMotorOn:
+        System.out.println("***ShooterSequence:ShooterMotorOn....***");
         if (shooter.isAtRPM(100)) {
           transfer.setSpeed(35.0);
           phase = Phase.TransferMotorOn;
         }
         break;
       case TransferMotorOn:
+        System.out.println("***ShooterSequence:TransferMotorOn....***");
         count++;
         if (count >= DONE_COUNT) {
           phase = Phase.Finished;
@@ -104,6 +108,7 @@ public class ShooterSequence extends BlinkyLightUser {
 
         break;
       case Finished:
+        System.out.println("***ShooterSequence:finished....***");
         break;
     }
   }

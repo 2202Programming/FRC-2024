@@ -59,6 +59,7 @@ public class IntakeSequence extends Command {
   @Override
   public void initialize() {
     phase = Phase.IntakeDown;
+    System.out.println("***Init IntakeSequence....***");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -66,6 +67,7 @@ public class IntakeSequence extends Command {
   public void execute() {
     switch (phase) {
       case IntakeDown:
+        System.out.println("***IntakeSequence:IntakeDown....***");
         shooter.retract();
         intake.setMaxVelocity(60.0);
         intake.setAngleSetpoint(100.0);
@@ -74,12 +76,14 @@ public class IntakeSequence extends Command {
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:
+        System.out.println("***IntakeSequence:WaitingForNote....***");
         if (transfer.hasNote()) {
           intake.setMaxVelocity(120.0);
           phase = Phase.Finished;
         }
         break;
       case Finished:
+        System.out.println("***IntakeSequence:Finished....***");
         break;
     }
   }

@@ -48,7 +48,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "Pickup 1",
+      "name": "Pickup",
       "waypointRelativePos": 1.0,
       "command": {
         "type": "parallel",
@@ -63,36 +63,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Intake down"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Spin intake motors"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "name": "End Intake",
-      "waypointRelativePos": 1.65,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "Intake up"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "Stop intake motors"
+                "name": "pickup"
               }
             }
           ]
@@ -115,7 +86,7 @@
             {
               "type": "named",
               "data": {
-                "name": "Spin shooter motors"
+                "name": "shoot"
               }
             }
           ]
