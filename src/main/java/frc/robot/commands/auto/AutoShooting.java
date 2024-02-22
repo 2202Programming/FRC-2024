@@ -7,6 +7,7 @@ package frc.robot.commands.auto;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
+import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
@@ -29,8 +30,9 @@ public class AutoShooting extends SequentialCommandGroup {
     if (checkForTarget(tagID)) {
       addCommands(new FaceToTag(tagID));
       // get Position here and feed it to the ShooterToggle to adjust the RPM
-      // TODO: Uncomment this avoiding error with 2023 bot
-      // addCommands(new ShooterToggle());
+      // I have this in AutoShooting branch now -KO
+      // Shoot low for auto now
+      addCommands(new ShooterSequence(false,3500));
     }
   }
 

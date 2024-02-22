@@ -99,6 +99,7 @@ public class IntakeSequence extends Command {
           cmd.addRequirements(intake);
       cmd.schedule();
     }
+    intake.setAngleSetpoint(0.0);
     transfer.setSpeed(0.0);
     intake.setIntakeSpeed(0.0);
   }

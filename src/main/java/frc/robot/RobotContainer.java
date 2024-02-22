@@ -144,11 +144,14 @@ public class RobotContainer {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
 
-    autoChooser = AutoBuilder.buildAutoChooser();
+    
 
     NamedCommands.registerCommand("pickup", new IntakeSequence());
     NamedCommands.registerCommand("shoot", new ParallelCommandGroup(new ShooterSequence(true,2000), new WaitCommand(2.0)));
+    NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker));
+    autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
   }
 
   /**
@@ -250,7 +253,7 @@ public class RobotContainer {
       case Competition:
 
        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
-        operator.x().whileTrue(new IntakeSequence());
+        operator.a().whileTrue(new IntakeSequence());
         operator.b().whileTrue(new EjectNote());
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
