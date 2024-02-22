@@ -17,9 +17,8 @@ import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 public class AutoShooting extends SequentialCommandGroup {
 
   private Limelight_Subsystem limelight;
-  // TODO: Update these poses just guessed using pathplanner
-  private Translation2d RedSpeakerTagPose = new Translation2d(0.5, 5.5);
-  private Translation2d BlueSpeakerTagPose = new Translation2d(16.0, 5.5);
+  private Translation2d BlueSpeakerTagPose = new Translation2d(0.0381, 5.55);//id7
+  private Translation2d RedSpeakerTagPose = new Translation2d(16.58, 5.55);//id4
   SwerveDrivetrain drivetrain;
 
   /**
@@ -67,9 +66,9 @@ public class AutoShooting extends SequentialCommandGroup {
               + Math.pow(drivetrain.getPose().getTranslation().getY() - RedSpeakerTagPose.getY(), 2));
     }
 
-    if (difference < 3.0) {
+    if (difference < 2.0) {
       return SpeakerShootingPhase.Phase1;
-    } else if (difference < 6.0) {
+    } else if (difference < 4.0) {
       return SpeakerShootingPhase.Phase2;
     } else {
       return SpeakerShootingPhase.Phase3;
@@ -83,7 +82,18 @@ public class AutoShooting extends SequentialCommandGroup {
    * @return tagID to face
    */
   private double determineTag(ShootingTarget target) {
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+    //handle Optional<> from getAlliance()
+    var allianceOpt = DriverStation.getAlliance();
+    var alliance = DriverStation.Alliance.Blue;  //default
+    if (allianceOpt.isEmpty()) {
+        System.out.println("Warning: FSM report no alliance, using Blue.");        
+    }
+    else {
+      //use what we are given
+      alliance = allianceOpt.get();
+    }
+    
+    if (alliance == DriverStation.Alliance.Blue) {
       // on Blue Alliance
       if (target == ShootingTarget.Speaker) {
         return 7;

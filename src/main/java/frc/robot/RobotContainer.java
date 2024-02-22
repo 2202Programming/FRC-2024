@@ -242,6 +242,7 @@ public class RobotContainer {
       // all the same for now since they are placeholders -- fall through ok
       default:
       case DriveTest:
+        break;
       case Competition:
 
        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
