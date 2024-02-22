@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.PCM1;
 import frc.robot.commands.utility.WatcherCmd;
-import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
 public class Shooter extends SubsystemBase {
