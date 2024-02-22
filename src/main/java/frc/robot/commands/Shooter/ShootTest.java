@@ -13,7 +13,7 @@ public class ShootTest extends Command {
   final Shooter shooter;
   double speed;
   public ShootTest(double speed) {
-        this.shooter = RobotContainer.getSubsystem(Shooter.class);
+        this.shooter = RobotContainer.getSubsystem("SHOOTER");
         this.speed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
   }

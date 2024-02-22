@@ -58,7 +58,7 @@ public class InIntake extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
-    this.shooter = RobotContainer.getSubsystem(Shooter.class);
+    this.shooter = RobotContainer.getSubsystem("SHOOTER");
     addRequirements(intake, transfer, shooter);
   }
 

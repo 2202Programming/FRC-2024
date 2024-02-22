@@ -30,7 +30,7 @@ public class Shooter extends SubsystemBase {
   final RelativeEncoder leftEncoder;
   final RelativeEncoder rightEncoder;
   final double FACTOR = 1.0;
-  final double kF = 1.0/5200.0;
+  final double kF = 1.0 / 5200.0;
 
   private DoubleSolenoid shooterAngle; // can be replaced w/ servo in derived class
 
@@ -41,20 +41,19 @@ public class Shooter extends SubsystemBase {
 
   PIDFController pidConsts = new PIDFController(0.00005, 0.0, 0.0, kF);
 
-
-
   public Shooter() {
     this(true);
   }
-  public Shooter(boolean HasSolenoid){
-     hw_leftPid = motor_config(leftMtr, pidConsts, true);
+
+  public Shooter(boolean HasSolenoid) {
+    hw_leftPid = motor_config(leftMtr, pidConsts, true);
     hw_rightPid = motor_config(rightMtr, pidConsts, false);
     leftEncoder = config_encoder(leftMtr);
     rightEncoder = config_encoder(rightMtr);
-    if(HasSolenoid){
-    shooterAngle = new DoubleSolenoid(CAN.PCM1, PneumaticsModuleType.REVPH, PCM1.Forward, PCM1.Reverse);
+    if (HasSolenoid) {
+      shooterAngle = new DoubleSolenoid(CAN.PCM1, PneumaticsModuleType.REVPH, PCM1.Forward, PCM1.Reverse);
+      retract();
     }
-    retract();
   }
 
   @Override
@@ -63,12 +62,14 @@ public class Shooter extends SubsystemBase {
     currentRightRPM = rightEncoder.getVelocity();
   }
 
-  public boolean isAtRPM(int tolerance){
-    return Math.abs(desiredLeftRPM - currentLeftRPM) < tolerance && Math.abs(desiredRightRPM - currentRightRPM) < tolerance;
+  public boolean isAtRPM(int tolerance) {
+    return Math.abs(desiredLeftRPM - currentLeftRPM) < tolerance
+        && Math.abs(desiredRightRPM - currentRightRPM) < tolerance;
   }
 
   @Deprecated
-  public void setSpeed(double foo) {}
+  public void setSpeed(double foo) {
+  }
 
   public void setRPM(double leftRPM, double rightRPM) {
     hw_leftPid.setReference(leftRPM, ControlType.kVelocity);
@@ -84,22 +85,24 @@ public class Shooter extends SubsystemBase {
   public double getRightMotorRPM() {
     return currentRightRPM;
   }
-  public double getDesiredLeftRPM(){
+
+  public double getDesiredLeftRPM() {
     return desiredLeftRPM;
   }
-  public double getDesiredRightRPM(){
+
+  public double getDesiredRightRPM() {
     return desiredRightRPM;
   }
 
-
-  public void deploy(){
+  public void deploy() {
     shooterAngle.set(DoubleSolenoid.Value.kForward);
   }
-  
-  public void retract(){
+
+  public void retract() {
     shooterAngle.set(DoubleSolenoid.Value.kReverse);
   }
-  public WatcherCmd getWatcher(){
+
+  public WatcherCmd getWatcher() {
     return new ShooterWatcherCmd();
   }
 
@@ -111,10 +114,11 @@ public class Shooter extends SubsystemBase {
     mtr.setInverted(inverted);
     return mtrpid;
   }
+
   RelativeEncoder config_encoder(CANSparkMax mtr) {
     RelativeEncoder enc = mtr.getEncoder();
     enc.setPositionConversionFactor(FACTOR);
-    enc.setVelocityConversionFactor(FACTOR /* / 60.0*/);
+    enc.setVelocityConversionFactor(FACTOR /* / 60.0 */);
     return enc;
   }
 
@@ -126,12 +130,14 @@ public class Shooter extends SubsystemBase {
     NetworkTableEntry nt_currentRightMotorRPM;
     NetworkTableEntry nt_kP;
     NetworkTableEntry nt_kF;
+
     // add nt for pos when we add it
     @Override
-    public String getTableName(){
+    public String getTableName() {
       return Shooter.this.getName();
     }
-    public void ntcreate(){
+
+    public void ntcreate() {
       NetworkTable table = getTable();
       nt_desiredLeftMotorRPM = table.getEntry("desiredLeftMotorRPM");
       nt_currentLeftMotorRPM = table.getEntry("currentLeftMotorRPM");
@@ -140,7 +146,8 @@ public class Shooter extends SubsystemBase {
       nt_kP = table.getEntry("kP");
       nt_kF = table.getEntry("kF");
     }
-    public void ntupdate(){
+
+    public void ntupdate() {
       nt_desiredLeftMotorRPM.setDouble(getDesiredLeftRPM());
       nt_currentLeftMotorRPM.setDouble(getLeftMotorRPM());
       nt_desiredLeftMotorRPM.setDouble(getDesiredRightRPM());
@@ -150,31 +157,37 @@ public class Shooter extends SubsystemBase {
     }
   }
 
-
-  /*TODO: FOR SHOOTER TUNING 
-  AFTER FINISHING PID TUNING DELETE FOLLOWING*/
-  public double getP(){
+  /*
+   * TODO: FOR SHOOTER TUNING
+   * AFTER FINISHING PID TUNING DELETE FOLLOWING
+   */
+  public double getP() {
     return hw_leftPid.getP();
   }
-  public double getI(){
+
+  public double getI() {
     return hw_leftPid.getI();
   }
-  public double getD(){
+
+  public double getD() {
     return hw_leftPid.getD();
   }
-  public void setP(double p){
+
+  public void setP(double p) {
     hw_leftPid.setP(p);
     hw_rightPid.setP(p);
   }
-  public void setI(double i){
+
+  public void setI(double i) {
     hw_leftPid.setI(i);
     hw_rightPid.setI(i);
   }
-  public void setD(double d){
+
+  public void setD(double d) {
     hw_leftPid.setD(d);
     hw_rightPid.setD(d);
   }
   // public void getF(){
-  //   return hw_leftPid.getFF();
+  // return hw_leftPid.getFF();
   // }
 }

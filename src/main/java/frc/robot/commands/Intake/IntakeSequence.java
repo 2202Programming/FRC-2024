@@ -54,7 +54,7 @@ public class IntakeSequence extends Command {
     this.stay_down = stay_down;
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
-    this.shooter = RobotContainer.getSubsystem(Shooter.class);
+    this.shooter = RobotContainer.getSubsystem("SHOOTER");
     addRequirements(intake, transfer, shooter);
   }
 
