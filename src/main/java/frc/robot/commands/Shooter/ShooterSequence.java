@@ -10,6 +10,7 @@ import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Transfer;
 
 /**
@@ -24,7 +25,7 @@ import frc.robot.subsystems.Transfer;
 
 public class ShooterSequence extends BlinkyLightUser {
   /** Creates a new ShooterSequence. */
-  final Shooter shooter;
+  final ShooterServo shooter;
   final Transfer transfer;
   final Intake intake;
   final int DONE_COUNT = 20;
@@ -42,7 +43,7 @@ public class ShooterSequence extends BlinkyLightUser {
   public ShooterSequence(boolean shootHigh, double speed) {
     this.shootHigh = shootHigh;
     this.speed = speed;
-    this.shooter = RobotContainer.getSubsystem(Shooter.class);
+    this.shooter = RobotContainer.getSubsystem(ShooterServo.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
     this.intake = RobotContainer.getSubsystem(Intake.class);
     addRequirements(shooter, transfer, intake);

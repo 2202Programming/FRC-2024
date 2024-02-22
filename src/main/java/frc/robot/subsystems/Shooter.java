@@ -32,7 +32,7 @@ public class Shooter extends SubsystemBase {
   final double FACTOR = 1.0;
   final double kF = 1.0/5200.0;
 
-  private final DoubleSolenoid shooterAngle;
+  private DoubleSolenoid shooterAngle; // can be replaced w/ servo in derived class
 
   private double desiredLeftRPM;
   private double desiredRightRPM;
@@ -43,13 +43,17 @@ public class Shooter extends SubsystemBase {
 
 
 
-
   public Shooter() {
-    hw_leftPid = motor_config(leftMtr, pidConsts, true);
+    this(true);
+  }
+  public Shooter(boolean HasSolenoid){
+     hw_leftPid = motor_config(leftMtr, pidConsts, true);
     hw_rightPid = motor_config(rightMtr, pidConsts, false);
     leftEncoder = config_encoder(leftMtr);
     rightEncoder = config_encoder(rightMtr);
+    if(HasSolenoid){
     shooterAngle = new DoubleSolenoid(CAN.PCM1, PneumaticsModuleType.REVPH, PCM1.Forward, PCM1.Reverse);
+    }
     retract();
   }
 
