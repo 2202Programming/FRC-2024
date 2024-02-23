@@ -2,15 +2,21 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.209843844624077,
-      "y": 6.882857938743868
+      "x": 1.07,
+      "y": 6.6
     },
-    "rotation": 180.0
+    "rotation": -121.37
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
         {
           "type": "path",
           "data": {
@@ -20,6 +26,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Pos1",
   "choreoAuto": false
 }
