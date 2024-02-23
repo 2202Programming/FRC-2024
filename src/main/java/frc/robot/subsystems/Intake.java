@@ -185,7 +185,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean has_Note() {
-    return !lightgate.get();
+    return lightgate.get(); //TODO: Find out if inverted or not
   }
 
   public boolean has_Had_Note() {

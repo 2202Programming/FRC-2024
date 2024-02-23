@@ -76,7 +76,7 @@ public class InIntake extends Command {
         shooter.retract();
         intake.setMaxVelocity(60.0);
         intake.setAngleSetpoint(100.0);
-        intake.setIntakeSpeed(1.0); // %
+        intake.setIntakeSpeed(0.8); // %
         transfer.setSpeed(35.0);
         phase = Phase.WaitingForNote;
         break;

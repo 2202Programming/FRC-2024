@@ -4,28 +4,24 @@
 
 package frc.robot.commands.Intake;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Transfer;
 
 /**
  * Driver presses button
- * Set intake angle to floor, turn on intake and transfer motors
+ * Set intake angle to floor, turn on intake motors
  * Wait until lightgate detects note
  * Turn off intake
- * Wait x amount of time after lightgate detects note
- * shut off transfer motor, bring intake to movement pos, and turn blinky lights
+ * bring intake to shooting pos, and turn blinky lights
  * to green!!
  * 
  */
 
-public class InIntakeLightgate extends Command {
+public class NoteInIntake extends Command {
 
   final Intake intake;
-  final Transfer transfer;
   final Shooter shooter;
   final double FIRST_COUNT = 100; //frames
   final double SECOND_COUNT = 100;
@@ -36,7 +32,6 @@ public class InIntakeLightgate extends Command {
     //TODO: maybe remove; might not need in future
     IntakeDown("IntakeDown"),
     WaitingForNote("WaitingForNote"),
-    Eject("Eject"),
     Finished("Finished");
 
     String name;
@@ -54,14 +49,11 @@ public class InIntakeLightgate extends Command {
   Phase phase;
 
   /** Creates a new IntakeSequence. */
-  public InIntakeLightgate() {
-    count_one = 0;
-    count_two = 0;
+  public NoteInIntake() {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = RobotContainer.getSubsystem(Intake.class);
-    this.transfer = RobotContainer.getSubsystem(Transfer.class);
     this.shooter = RobotContainer.getSubsystem(Shooter.class);
-    addRequirements(intake, transfer, shooter);
+    addRequirements(intake, shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -74,18 +66,17 @@ public class InIntakeLightgate extends Command {
   @Override
   public void execute() {
     switch (phase) {
-      //not used lol
       case IntakeDown:
         shooter.retract();
         intake.setMaxVelocity(60.0);
         intake.setAngleSetpoint(100.0);
-        intake.setIntakeSpeed(1.0); // %
-        transfer.setSpeed(35.0);
+        intake.setIntakeSpeed(0.8); // %
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:
         if (intake.has_Note()) {
             intake.setIntakeSpeed(0.0);
+            phase = Phase.Finished;
         }
         break;
       case Finished:
@@ -96,8 +87,8 @@ public class InIntakeLightgate extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    transfer.setSpeed(0.0);
     intake.setIntakeSpeed(0.0);
+    intake.setMaxVelocity(120.0);
     intake.setAngleSetpoint(0.0);
   }
 
