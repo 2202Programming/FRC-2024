@@ -230,9 +230,9 @@ public final class Constants {
     // TODO lots of placeholders - confirm with electical what we really have
     // public static final int Intake_Up = 0; //placeholder
     // public static final int Intake_Down = 1; //placeholder
-    public static final int TRANSFER_LIGHT_GATE = 0; // placeholder
+    public static final int TRANSFER_LIGHT_GATE = 0;
     public static final int RollerLightGate = 100; // placeholder
-
+    public static final int Intake_Note = 5; //TODO: FIND VALUE (current placeholder)
   }
 
   public static final class Roller_Constants {
