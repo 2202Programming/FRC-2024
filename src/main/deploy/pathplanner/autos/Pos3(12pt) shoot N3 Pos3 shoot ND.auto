@@ -24,32 +24,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pos2 to N2"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "pickup"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "angle_shoot"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "N2 to NB"
+                  "pathName": "Pos3 to N3"
                 }
               },
               {
@@ -64,18 +39,24 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NB to N2"
+            "pathName": "N3 to Pos3"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "angle_shoot"
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Pos3 to ND"
           }
         }
       ]
     }
   },
-  "folder": "Pos2",
+  "folder": "Pos3",
   "choreoAuto": false
 }

@@ -9,8 +9,10 @@
     "Pos3"
   ],
   "autoFolders": [
+    "Pos4",
+    "Pos1",
     "Pos2",
-    "Pos1"
+    "Pos3"
   ],
   "defaultMaxVel": 1.0,
   "defaultMaxAccel": 1.0,
