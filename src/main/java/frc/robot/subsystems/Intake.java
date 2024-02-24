@@ -19,23 +19,32 @@ import com.revrobotics.SparkPIDController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-// import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder; //absolute encoder
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
-// import frc.robot.Constants.DigitalIO;
+import frc.robot.Constants.DigitalIO;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
 public class Intake extends SubsystemBase {
-  final double PowerOnPos = 0.0; //[deg]
-  final double MaxExtendPos = 90.0; //[deg]
+  public static final double UpPos = 0.0; //[deg]
+  public static final double ShootingPos = 20.0; //[deg]
+  public static final double DownPos = 90.0; //[deg]
+  public static final double TravelUp = 120.0; //[deg/s]
+  public static final double TravelDown = 60.0; //[deg/s]
+  public static final double encoderOffset = 10.0; //placeholder 0 Offset and the default pos instead of 0 (subtract rn)
 
   final double wheelGearRatio = 1.0; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean
                
   // anything or just gear raito works? (the comment before)
   final double AngleGearRatio = 500.0; // Gear ratio
+
+  boolean has_had_note = false;
+  boolean has_note = false;
+  
   /** Creates a new Intake. */
   public double intake_speed = 0.0;
   double desired_intake_speed = 0.0;
@@ -51,15 +60,16 @@ public class Intake extends SubsystemBase {
   final RelativeEncoder intakeMtrEncoder;
 
   // lightgate tell us when we have a game piece (aka a Note)
-  // final DigitalInput lightgate = new DigitalInput(DigitalIO.Intake_Note);
+  final DigitalInput lightgate = new DigitalInput(DigitalIO.Intake_Note);
 
   // limit switch
   SparkLimitSwitch m_forwardLimit;
   SparkLimitSwitch m_reverseLimit;
   // Digital IO limit switches if we use
-  // DigitalInput limitSwitchUp = new DigitalInput(DigitalIO.Intake_Up);
-  // DigitalInput limitSwitchDown = new DigitalInput(DigitalIO.Intake_Down);
-
+  DigitalInput limitSwitchUp = new DigitalInput(DigitalIO.Intake_Up);
+  DigitalInput limitSwitchDown = new DigitalInput(DigitalIO.Intake_Down);
+  //abs encoder
+  DutyCycleEncoder encoder = new DutyCycleEncoder(DigitalIO.Encoder);
   public Intake() { // TODO: Get values
     final int STALL_CURRENT = 15; // [amp]
     final int FREE_CURRENT = 5; // [amp]
@@ -92,8 +102,8 @@ public class Intake extends SubsystemBase {
         .burnFlash();
 
     // power on   
-    setAnglePosition(PowerOnPos);
-    angle_servo.setClamp(PowerOnPos, MaxExtendPos + 5.0);
+    setAnglePosition(UpPos);
+    angle_servo.setClamp(UpPos, DownPos + 5.0);
 
     // limit switch config
     m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); 
@@ -131,6 +141,9 @@ public class Intake extends SubsystemBase {
   public double getAnglePosition() {
     return angle_servo.getPosition();
   }
+  public double getPos(){
+    return encoder.getAbsolutePosition() - encoderOffset;
+  }
 
   public void setAnglePosition(double pos) {
     angle_servo.setPosition(pos);
@@ -161,11 +174,11 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean atForwardLimitSwitch() {
-    return m_forwardLimit.isPressed(); // do we need to check the other???
+    return limitSwitchUp.get(); // do we need to check the other???
   }
 
   public boolean atReverseLimitSwitch() {
-    return m_reverseLimit.isPressed();
+    return limitSwitchDown.get();
   }
   public boolean limitSwitchEnabled(){
     return m_reverseLimit.isLimitSwitchEnabled();
@@ -178,9 +191,33 @@ public class Intake extends SubsystemBase {
     return new IntakeWatcherCmd();
   }
 
+  public boolean has_Note() {
+    return lightgate.get(); //TODO: Find out if inverted or not
+  }
+
+  public boolean has_Had_Note() {
+    return has_note;
+  }
+
+  public void setHasNote(boolean state) {
+    // if we ever lose a note, call this
+    has_note = state;
+    has_had_note = false;
+  }
+  public void calibratePos(){
+    setAngleSetpoint(getPos());
+  }
+
   public void periodic() {
+    
+
     this.angle_servo.periodic();
 
+    if(has_Note()) {
+      has_had_note = true;
+    } else if(has_had_note) {
+      has_note = true;
+    }
   }
 
   class IntakeWatcherCmd extends WatcherCmd {
@@ -229,8 +266,8 @@ public class Intake extends SubsystemBase {
       nt_kD.setDouble(hwAngleVelPID.getD());
       nt_wheelVel.setDouble(getIntakeRollerSpeed());
       nt_anglePos.setDouble(getAnglePosition());
-      nt_forwardLimit.setBoolean(m_forwardLimit.isPressed());
-      nt_reverseLimit.setBoolean(m_reverseLimit.isPressed());
+      nt_forwardLimit.setBoolean(limitSwitchUp.get());
+      nt_reverseLimit.setBoolean(limitSwitchDown.get());
       nt_reverseLimitSwitchEnabled.setBoolean(limitSwitchEnabled());
       nt_forwardLimitSwitchEnabled.setBoolean(forwardSwitchEnabled());
       nt_desiredSpeed.setDouble(getDesiredVelocity());

@@ -26,6 +26,7 @@ public class IntakeSequence extends Command {
   final Intake intake;
   final Transfer transfer;
   final Shooter shooter;
+  boolean stay_down;
 
   public enum Phase {
     IntakeDown("IntakeDown"),
@@ -46,12 +47,14 @@ public class IntakeSequence extends Command {
 
   Phase phase;
 
-  /** Creates a new IntakeSequence. */
-  public IntakeSequence() {
-    // Use addRequirements() here to declare subsystem dependencies.
+  /*
+   * stay_down = true for No defense rapid shoot
+   */
+  public IntakeSequence(boolean stay_down) {
+    this.stay_down = stay_down;
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
-    this.shooter = RobotContainer.getSubsystem(Shooter.class);
+    this.shooter = RobotContainer.getSubsystem("SHOOTER");
     addRequirements(intake, transfer, shooter);
   }
 
@@ -92,15 +95,25 @@ public class IntakeSequence extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    //TODO: edge case, the sequential doesn't cancel
+    // TODO: edge case, the sequential doesn't cancel
+    // TODO: Why did the intake angle go back up even when there is no command to
+    //TODO: edge case #2 - If the driver releases button as intake is coming up, it will go down before coming back up again
     if (interrupted) {
-      var cmd = new SequentialCommandGroup(
-          new MoveToAnglePos(100.0, 60.0),
-          new MoveToAnglePos(0.0, 120.0));
-          cmd.addRequirements(intake);
+      // Creates a command to continue going down until we get to the bottom before
+      // moving back up, to minimize belt slippage
+      var cmd = new SequentialCommandGroup();
+      if(!intake.angleAtSetpoint()){
+        cmd.addCommands(new MoveToAnglePos(Intake.DownPos, Intake.TravelDown));
+      }
+      cmd.addCommands(new MoveToAnglePos(Intake.UpPos, Intake.TravelUp));
+      cmd.addRequirements(intake);
       cmd.schedule();
     }
-    intake.setAngleSetpoint(0.0);
+
+    if (!stay_down && !interrupted) {
+      intake.setMaxVelocity(Intake.TravelUp);
+      intake.setAngleSetpoint(Intake.UpPos);
+    }
     transfer.setSpeed(0.0);
     intake.setIntakeSpeed(0.0);
   }

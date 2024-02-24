@@ -169,6 +169,7 @@ public final class Constants {
     // shooter CAN IDs -- MOTORS
     public static final int SHOOTER_L = 15;
     public static final int SHOOTER_R = 16;
+    public static final int SHOOTER_ANGLE = 100; //placeholder
 
     // Drive Train IDs 20 - 31
     // drive train CAN addresses are set above with CANModuleConfig to support
@@ -230,17 +231,12 @@ public final class Constants {
     // TODO lots of placeholders - confirm with electical what we really have
     // public static final int Intake_Up = 0; //placeholder
     // public static final int Intake_Down = 1; //placeholder
-    public static final int TRANSFER_LIGHT_GATE = 0; // placeholder
+    public static final int TRANSFER_LIGHT_GATE = 0;
     public static final int RollerLightGate = 100; // placeholder
-
-  }
-
-  public static final class Intake_Constants {
-    public static double IntakeMotorDefault = 0.01; // placeholder
-    public static double AngleFloorPos = 100.0;
-    public static double PickupPosition = 100; // placeholder - best position for getting Notes
-    public static double DrivingPosition = 0.02; // placeholder - best position for driving around field
-    public static double DefaultLimitSwitchPos = 10.0; // placeholder
+    public static final int Intake_Note = 5; //TODO: FIND VALUE (current placeholder)
+    public static final int Intake_Up = 10; //placeholder
+    public static final int Intake_Down = 50; //placeholder
+    public static final int Encoder = 70; //placeholder
   }
 
   public static final class Roller_Constants {
