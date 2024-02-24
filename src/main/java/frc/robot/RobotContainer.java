@@ -254,6 +254,7 @@ public class RobotContainer {
       default:
       case DriveTest:
         break;
+      case auto_shooter_test:
       case Competition:
 
        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));

@@ -21,15 +21,16 @@ import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 public class RotateTo extends Command {
   private final SwerveDrivetrain drivetrain;
   private PIDController pid;
-  private final double kp = 5.0;
+  private final double kp = 0.04;
   private final double ki = 0.0;
   private final double kd = 0.0;
-  private final double pos_tol = 3.0;
+  private final double pos_tol = 5.0;
+  private final double vel_tol = 1.0;
   private SwerveDriveKinematics kinematics;
   private Pose2d currentPose;
   private double targetRot;
   private SwerveModuleState[] outputModuleState;
-  private Translation2d targetPose;
+  private Translation2d targetPose; // Position want to face to
   private Timer timer;
 
   /** Creates a new RotateTo. */
@@ -37,27 +38,21 @@ public class RotateTo extends Command {
     drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
     addRequirements(drivetrain);
     pid = new PIDController(kp, ki, kd);
-    pid.setTolerance(pos_tol);
+    pid.enableContinuousInput(-180.0, 180.0);
+    pid.setTolerance(pos_tol, vel_tol);
     kinematics = drivetrain.getKinematics();
-    targetPose = (DriverStation.getAlliance().get() == Alliance.Blue) ? Tag_Pose.ID7 : Tag_Pose.ID4;
     timer = new Timer();
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    targetPose = (DriverStation.getAlliance().get() == Alliance.Blue) ? Tag_Pose.ID7 : Tag_Pose.ID4;
     timer.restart();
     currentPose = drivetrain.getPose();
-    if (currentPose.getX() - targetPose.getX() < 0) {//Adding 180 or not
-      targetRot = 180 +
-          (Math.atan2(currentPose.getTranslation().getX() - targetPose.getX(),
-              currentPose.getTranslation().getY() - targetPose.getY())) // [-pi, pi]
-              * 180 / Math.PI;
-    } else {
-      targetRot = (Math.atan2(currentPose.getTranslation().getX() - targetPose.getX(),
-          currentPose.getTranslation().getY() - targetPose.getY())) // [-pi, pi]
-          * 180 / Math.PI;
-    }
+    targetRot = (Math.atan2(currentPose.getTranslation().getY() - targetPose.getY(),
+        currentPose.getTranslation().getX() - targetPose.getX())) // [-pi, pi]
+        * 180 / Math.PI - 180;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -87,4 +82,5 @@ public class RotateTo extends Command {
   public boolean isFinished() {
     return pid.atSetpoint() || timer.hasElapsed(4);
   }
+
 }
