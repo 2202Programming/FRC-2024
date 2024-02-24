@@ -97,18 +97,18 @@ public class ShooterSequence extends BlinkyLightUser {
         if (shooter.isAtRPM(100)) {
           transfer.setSpeed(35.0);
           phase = Phase.TransferMotorOn;
+          System.out.println("***ShooterSequence:TransferMotorOn....***");
         }
         break;
-      case TransferMotorOn:
-        System.out.println("***ShooterSequence:TransferMotorOn....***");
+      case TransferMotorOn:  
         count++;
         if (count >= DONE_COUNT) {
           phase = Phase.Finished;
+          System.out.println("***ShooterSequence:finished....***");
         }
-
         break;
       case Finished:
-        System.out.println("***ShooterSequence:finished....***");
+        
         break;
     }
   }

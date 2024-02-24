@@ -257,8 +257,8 @@ public class RobotContainer {
         operator.b().whileTrue(new EjectNote());
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
-        operator.povUp().whileTrue(new AngleCalibration(8.0));
-        operator.povDown().whileTrue(new AngleCalibration(-8.0));
+        operator.povUp().whileTrue(new AngleCalibration(15.0));
+        operator.povDown().whileTrue(new AngleCalibration(-15.0));
         operator.x().onTrue(new CalibratePos(0.0));
         operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
         operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
