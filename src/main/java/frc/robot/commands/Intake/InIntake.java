@@ -110,6 +110,7 @@ public class InIntake extends Command {
     transfer.setSpeed(0.0);
     intake.setIntakeSpeed(0.0);
     intake.setAngleSetpoint(0.0);
+    intake.setHasNote(false);
   }
 
   // Returns true when the command should end.
