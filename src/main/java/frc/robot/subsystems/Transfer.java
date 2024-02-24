@@ -38,7 +38,7 @@ public class Transfer extends SubsystemBase {
   final SparkPIDController transferMtrPid;
   final RelativeEncoder transferMtrEncoder;
 
-  public noteCommandedLocation commandedLocation;
+  public noteCommandedLocation commandedLocation = noteCommandedLocation.transfer;
 
   // state vars
   boolean has_note = false;

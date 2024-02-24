@@ -242,7 +242,19 @@ public final class Constants {
   } //TODO: check for deletion
 
   public static final class Transfer_Constants {
-    public enum noteCommandedLocation{transfer, intake};
+    public enum noteCommandedLocation {
+      transfer, intake;
+      
+      public noteCommandedLocation cycle(noteCommandedLocation location) {
+        if(location == transfer) {
+          return noteCommandedLocation.intake;
+        } else if (location == intake) {
+          return noteCommandedLocation.transfer;
+        } else {
+          return null;
+        }
+      }
+    }
   }
 
   /*-------NT------- */

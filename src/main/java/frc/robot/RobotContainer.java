@@ -250,7 +250,7 @@ public class RobotContainer {
         operator.y().whileTrue(new IntakeSequence(true));
         operator.b().whileTrue(new EjectNote());
         operator.x().whileTrue(new IntakeTest(-1.0));
-        operator.rightStick().onTrue(new SwitchNoteLocation()); //placeholder
+        operator.leftBumper().onTrue(new SwitchNoteLocation()); //placeholder
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
         operator.povRight().whileTrue(new IntakeTest(0.35));
