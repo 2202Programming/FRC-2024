@@ -92,6 +92,7 @@ public class NeoServo implements VelocityControlled {
         ctrl.setIdleMode(CANSparkMax.IdleMode.kBrake);
         pid = ctrl.getPIDController();
         encoder = ctrl.getAlternateEncoder(extEncoderType, kCPR);
+        pid.setFeedbackDevice(encoder);
 
         this.positionPID = positionPID;
         this.hwVelSlot = hwVelSlot;
