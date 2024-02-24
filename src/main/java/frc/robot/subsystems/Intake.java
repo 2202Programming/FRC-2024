@@ -15,8 +15,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.SparkMaxAlternateEncoder.Type;
+//import com.revrobotics.CANSparkLowLevel.MotorType;
+//import com.revrobotics.SparkMaxAlternateEncoder.Type;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
@@ -36,8 +36,7 @@ public class Intake extends SubsystemBase {
   public static final double DownPos = 90.0; // [deg]
   public static final double TravelUp = 120.0; // [deg/s]
   public static final double TravelDown = 60.0; // [deg/s]
-  public static final double EncoderOffset = 10.0; // placeholder 0 Offset and the default pos instead of 0 (subtract
-                                                   // rn)
+  public static final double EncoderOffset = 10.0; // todo Offset and the default pos                                                  
 
   // External encoder used
   // https://www.revrobotics.com/rev-11-1271/
@@ -57,8 +56,8 @@ public class Intake extends SubsystemBase {
   double desired_intake_speed = 0.0;
   // Intake Angle, a servo
   final NeoServo angle_servo;
-  // keep orig final PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.010, 0.00003, 0.0, /* 0.00503 */0.0045); 
-  final PIDFController hwAngleVelPID = new PIDFController(0.0001, 0.00000, 0.0, 0.00); 
+  PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.010, 0.00003, 0.0, /* 0.00503 */0.0045); 
+  //ext enc testing PIDFController hwAngleVelPID = new PIDFController(0.0001, 0.00000, 0.0, 0.00); 
 
   /* inner (hw/vel) go up and divide by 2*/
   final PIDController anglePositionPID = new PIDController(.10, 0.0, 0.0); // outer (pos)
@@ -88,8 +87,11 @@ public class Intake extends SubsystemBase {
     final double velTol = 1.0; // [deg/s]
 
     // servo controls angle of intake arm, setup for alt-encoder and brushless motor
-    angle_servo = new NeoServo(CAN.ANGLE_MTR, MotorType.kBrushless, anglePositionPID, hwAngleVelPID,
-        Type.kQuadrature, Angle_kCPR, true, 0);
+    angle_servo = new NeoServo(CAN.ANGLE_MTR, 
+      // uncomment for alt enc MotorType.kBrushless,
+      anglePositionPID, hwAngleVelPID,
+      // uncomment for alt enc Type.kQuadrature, Angle_kCPR, 
+      true, 0);
 
     // use velocity control on intake motor
     intakeMtr.clearFaults();
