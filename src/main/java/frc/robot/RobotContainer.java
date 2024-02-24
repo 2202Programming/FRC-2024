@@ -26,6 +26,7 @@ import frc.robot.commands.Intake.AbsEncoderCalibrate;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
+import frc.robot.commands.Intake.IntakePositionHandler;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Intake.MoveToAnglePos;
@@ -245,7 +246,7 @@ public class RobotContainer {
       case Competition:
 
        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
-        operator.a().whileTrue(new IntakeSequence(false));
+        operator.a().whileTrue(new IntakePositionHandler());
         operator.y().whileTrue(new IntakeSequence(true));
         operator.b().whileTrue(new EjectNote());
         operator.x().whileTrue(new IntakeTest(-1.0));
