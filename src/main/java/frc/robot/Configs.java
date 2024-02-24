@@ -8,6 +8,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.NoseRoller;
 import frc.robot.subsystems.PneumaticsControl;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
@@ -47,9 +48,10 @@ public class Configs {
       .add(Command.class, "IntakeWatcher", () -> {
         return RobotContainer.getSubsystem(Intake.class).getWatcher();
       })
-       .add(Shooter.class)
-        .add(Command.class, "ShooterWatcher", () -> {
-        return RobotContainer.getSubsystem(Shooter.class).getWatcher();
+       .add(ShooterServo.class, "SHOOTER")
+        .add(Command.class, "ShooterServoWatcher", () -> {
+          //cast to get the correct type of shooter
+        return ((ShooterServo)RobotContainer.getSubsystem("SHOOTER")).getWatcher();
       })
       .add(Transfer.class)
       .add(Command.class, "TransferWatcher", () -> {

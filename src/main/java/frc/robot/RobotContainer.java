@@ -26,11 +26,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
-import frc.robot.commands.Intake.MoveToAnglePos;
+import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
-import frc.robot.commands.Intake.CalibratePos;
+import frc.robot.commands.Intake.MoveToAnglePos;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Shooter.ShooterSequence;
@@ -41,6 +41,7 @@ import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.Swerve.RotateTo;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
@@ -145,15 +146,13 @@ public class RobotContainer {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
 
-    
-
-    NamedCommands.registerCommand("pickup", new IntakeSequence());
+    //NamedCommands for use in PathPlanner scripts.
+    NamedCommands.registerCommand("pickup", new IntakeSequence(true));
     NamedCommands.registerCommand("shoot", new ParallelCommandGroup(new ShooterSequence(true,2000), new WaitCommand(2.0)));
     NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker));
     NamedCommands.registerCommand("RotateTo", new RotateTo());
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
-
   }
 
   /**
@@ -215,7 +214,7 @@ public class RobotContainer {
 
         // i dont like that test commands and bindings are in here but we need them ig --er
       case IntakeTesting:
-        driver.rightBumper().onTrue(new IntakeSequence());
+        driver.rightBumper().onTrue(new IntakeSequence(false));
         driver.povUp().onTrue(new ShooterSequence(true, 2000.0));
         driver.povRight().onTrue(new ShooterSequence(true, 1200.0));
         driver.povDown().whileTrue(new ShooterSequence(3200.0)); // RPM
@@ -225,8 +224,8 @@ public class RobotContainer {
         // driver.leftBumper().whileTrue(new IntakeCalibrateForwardPos());
         driver.b().whileTrue(new IntakeTest(0.35)); //% speed
         // driver.leftBumper().whileTrue(new TransferTest(30.0));
-        driver.rightTrigger().onTrue(new MoveToAnglePos(0.0, 120.0));
-        driver.leftTrigger().onTrue(new MoveToAnglePos(100.0, 60.0));
+        driver.rightTrigger().onTrue(new MoveToAnglePos(Intake.TravelUp, Intake.TravelUp));
+        driver.leftTrigger().onTrue(new MoveToAnglePos(Intake.TravelDown, Intake.TravelDown));
         // driver.rightTrigger().onTrue(new AnglePos(50.0));
         driver.a().onTrue(new CalibratePos(0.0));
         break;
@@ -258,16 +257,21 @@ public class RobotContainer {
       case Competition:
 
        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
-        operator.a().whileTrue(new IntakeSequence());
+        operator.a().whileTrue(new IntakeSequence(false));
+        operator.y().whileTrue(new IntakeSequence(true));
         operator.b().whileTrue(new EjectNote());
+        operator.x().whileTrue(new IntakeTest(-1.0));
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
-        operator.povUp().whileTrue(new AngleCalibration(15.0));
-        operator.povDown().whileTrue(new AngleCalibration(-15.0));
+        operator.povRight().whileTrue(new IntakeTest(0.35));
+        operator.povLeft().onTrue(new CalibratePos(0.0));
+        operator.povUp().whileTrue(new AngleCalibration(-15.0));
+        operator.povDown().whileTrue(new AngleCalibration(15.0));
         operator.x().onTrue(new CalibratePos(0.0));
         operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
         operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
         operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
+       // TODO waiting for sensor wiring  operator.x().onTrue(new AbsEncoderCalibrate());
         
         /* TODO climber bindings, commented out for sussex -- er
          *  Drive team mentioned that they want climber buttons on switchboard but i need 

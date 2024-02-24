@@ -80,8 +80,8 @@ public class RPMShooter extends Command {
     requestedRightShooterRPM = SmartDashboard.getNumber("Requested Right Shooter RPM", 0.0);
     requestedBothShooterRPM = SmartDashboard.getNumber("Requested Shooter RPM: ", 0.0);
 
-    if ((lastRequestedLeftShooterRPM != requestedLeftShooterRPM)
-        || (lastRequestedRightShooterRPM != requestedRightShooterRPM)) {
+    if ((lastRequestedLeftShooterRPM != requestedLeftShooterRPM) ||
+        (lastRequestedRightShooterRPM != requestedRightShooterRPM)) {
       m_shooter.setRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
     }
     if ((requestedBothShooterRPM > 0)) {

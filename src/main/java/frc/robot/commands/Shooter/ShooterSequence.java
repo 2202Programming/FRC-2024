@@ -24,6 +24,7 @@ import frc.robot.subsystems.Transfer;
 
 public class ShooterSequence extends BlinkyLightUser {
   /** Creates a new ShooterSequence. */
+  //use simple Shooter, even if ShooterServo is created because this command can work with either.
   final Shooter shooter;
   final Transfer transfer;
   final Intake intake;
@@ -42,7 +43,7 @@ public class ShooterSequence extends BlinkyLightUser {
   public ShooterSequence(boolean shootHigh, double speed) {
     this.shootHigh = shootHigh;
     this.speed = speed;
-    this.shooter = RobotContainer.getSubsystem(Shooter.class);
+    this.shooter = RobotContainer.getSubsystem("SHOOTER");
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
     this.intake = RobotContainer.getSubsystem(Intake.class);
     addRequirements(shooter, transfer, intake);
@@ -61,7 +62,7 @@ public class ShooterSequence extends BlinkyLightUser {
     phase = Phase.HasNote;
     if(shootHigh){
       intake.setMaxVelocity(60.0);
-      intake.setAngleSetpoint(20.0);
+      intake.setAngleSetpoint(Intake.ShootingPos);
     }
   }
 
@@ -120,7 +121,7 @@ public class ShooterSequence extends BlinkyLightUser {
     transfer.setSpeed(0.0);
     shooter.setRPM(0.0, 0.0);
     shooter.retract();
-    intake.setMaxVelocity(10.0);  //[deg/s] 2.sec to retract
+    intake.setMaxVelocity(120.0);  //[deg/s] 2.sec to retract
     intake.setAngleSetpoint(0.0);
   }
 

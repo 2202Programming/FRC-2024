@@ -15,50 +15,73 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkMaxAlternateEncoder.Type;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-// import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
-// import frc.robot.Constants.DigitalIO;
+import frc.robot.Constants.DigitalIO;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
 public class Intake extends SubsystemBase {
-  final double PowerOnPos = 0.0; //[deg]
-  final double MaxExtendPos = 90.0; //[deg]
+  public static final double UpPos = 0.0; // [deg]
+  public static final double ShootingPos = 20.0; // [deg]
+  public static final double DownPos = 90.0; // [deg]
+  public static final double TravelUp = 120.0; // [deg/s]
+  public static final double TravelDown = 60.0; // [deg/s]
+  public static final double EncoderOffset = 10.0; // placeholder 0 Offset and the default pos instead of 0 (subtract
+                                                   // rn)
+
+  // External encoder used
+  // https://www.revrobotics.com/rev-11-1271/
+  // https://docs.revrobotics.com/sparkmax/operating-modes/using-encoders/alternate-encoder-mode
+  static final int Angle_kCPR = 8192; // alt encoder angle [counts per rotation]
 
   final double wheelGearRatio = 1.0; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean
-               
+
   // anything or just gear raito works? (the comment before)
   final double AngleGearRatio = 500.0; // Gear ratio
+
+  boolean has_had_note = false;
+  boolean has_note = false;
+
   /** Creates a new Intake. */
   public double intake_speed = 0.0;
   double desired_intake_speed = 0.0;
   // Intake Angle, a servo
   final NeoServo angle_servo;
-  final PIDFController hwAngleVelPID = new PIDFController(/*0.002141*/0.010, 0.00003, 0.0, /*0.00503*/0.0045); // inner (hw/vel) go up and divide by 2
-  final PIDController anglePositionPID = new PIDController(4.0, 0.0, 0.0);  // outer (pos)
-  
+  final PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.010, 0.00003, 0.0, /* 0.00503 */0.0045); // inner
+                                                                                                                   // (hw/vel)
+                                                                                                                   // go
+                                                                                                                   // up
+                                                                                                                   // and
+                                                                                                                   // divide
+                                                                                                                   // by
+                                                                                                                   // 2
+  final PIDController anglePositionPID = new PIDController(4.0, 0.0, 0.0); // outer (pos)
+
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
-  final PIDFController intakeVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0);  //wip - use pwr for sussex
+  final PIDFController intakeVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0); // wip - use pwr for sussex
   final SparkPIDController intakeMtrPid;
   final RelativeEncoder intakeMtrEncoder;
 
   // lightgate tell us when we have a game piece (aka a Note)
-  // final DigitalInput lightgate = new DigitalInput(DigitalIO.Intake_Note);
+  final DigitalInput lightgate = new DigitalInput(DigitalIO.Intake_Note);
 
   // limit switch
   SparkLimitSwitch m_forwardLimit;
   SparkLimitSwitch m_reverseLimit;
   // Digital IO limit switches if we use
-  // DigitalInput limitSwitchUp = new DigitalInput(DigitalIO.Intake_Up);
-  // DigitalInput limitSwitchDown = new DigitalInput(DigitalIO.Intake_Down);
+  DigitalInput limitSwitchUp = new DigitalInput(DigitalIO.IntakeIsUp);
+  DigitalInput limitSwitchDown = new DigitalInput(DigitalIO.IntakeIsDown);
 
   public Intake() { // TODO: Get values
     final int STALL_CURRENT = 15; // [amp]
@@ -67,8 +90,11 @@ public class Intake extends SubsystemBase {
     final double maxAccel = 20.0; // [deg/s^2]
     final double posTol = 2.0; // [deg]
     final double velTol = 1.0; // [deg/s]
-    // servo controls angle of intake arm
-    angle_servo = new NeoServo(CAN.ANGLE_MTR, anglePositionPID, hwAngleVelPID, true);
+
+    // servo controls angle of intake arm, setup for alt-encoder and brushless motor
+    angle_servo = new NeoServo(CAN.ANGLE_MTR, MotorType.kBrushless, anglePositionPID, hwAngleVelPID,
+        Type.kQuadrature, Angle_kCPR, true, 0);
+
     // use velocity control on intake motor
     intakeMtr.clearFaults();
     intakeMtr.restoreFactoryDefaults();
@@ -91,13 +117,13 @@ public class Intake extends SubsystemBase {
         .setMaxVelocity(maxVel)
         .burnFlash();
 
-    // power on   
-    setAnglePosition(PowerOnPos);
-    angle_servo.setClamp(PowerOnPos, MaxExtendPos + 5.0);
+    // power on
+    setAnglePosition(UpPos);
+    angle_servo.setClamp(UpPos, DownPos + 5.0);
 
     // limit switch config
-    m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); 
-    m_reverseLimit = angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed); 
+    m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
+    m_reverseLimit = angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
     m_forwardLimit.enableLimitSwitch(false);
     m_reverseLimit.enableLimitSwitch(false);
     // m_forwardLimit.enableLimitSwitch(true);
@@ -135,8 +161,9 @@ public class Intake extends SubsystemBase {
   public void setAnglePosition(double pos) {
     angle_servo.setPosition(pos);
   }
-  public void setMaxVelocity(double velLimit){
-   angle_servo.setMaxVelocity(velLimit);
+
+  public void setMaxVelocity(double velLimit) {
+    angle_servo.setMaxVelocity(velLimit);
   }
 
   /*
@@ -148,29 +175,32 @@ public class Intake extends SubsystemBase {
     desired_intake_speed = speed;
     angle_servo.setVelocityCmd(speed);
   }
-  public double getDesiredVelocity(){
+
+  public double getDesiredVelocity() {
     return desired_intake_speed;
   }
 
   public double getAngleSpeed() {
     return angle_servo.getVelocity();
   }
-  
+
   public boolean angleAtSetpoint() {
     return angle_servo.atSetpoint(); // are we there yet?
   }
 
   public boolean atForwardLimitSwitch() {
-    return m_forwardLimit.isPressed(); // do we need to check the other???
+    return limitSwitchUp.get(); // do we need to check the other???
   }
 
   public boolean atReverseLimitSwitch() {
-    return m_reverseLimit.isPressed();
+    return limitSwitchDown.get();
   }
-  public boolean limitSwitchEnabled(){
+
+  public boolean limitSwitchEnabled() {
     return m_reverseLimit.isLimitSwitchEnabled();
   }
-  public boolean forwardSwitchEnabled(){
+
+  public boolean forwardSwitchEnabled() {
     return m_forwardLimit.isLimitSwitchEnabled();
   }
 
@@ -178,9 +208,29 @@ public class Intake extends SubsystemBase {
     return new IntakeWatcherCmd();
   }
 
+  public boolean has_Note() {
+    return lightgate.get(); // TODO: Find out if inverted or not
+  }
+
+  public boolean has_Had_Note() {
+    return has_note;
+  }
+
+  public void setHasNote(boolean state) {
+    // if we ever lose a note, call this
+    has_note = state;
+    has_had_note = false;
+  }
+
   public void periodic() {
+
     this.angle_servo.periodic();
 
+    if (has_Note()) {
+      has_had_note = true;
+    } else if (has_had_note) {
+      has_note = true;
+    }
   }
 
   class IntakeWatcherCmd extends WatcherCmd {
@@ -229,8 +279,8 @@ public class Intake extends SubsystemBase {
       nt_kD.setDouble(hwAngleVelPID.getD());
       nt_wheelVel.setDouble(getIntakeRollerSpeed());
       nt_anglePos.setDouble(getAnglePosition());
-      nt_forwardLimit.setBoolean(m_forwardLimit.isPressed());
-      nt_reverseLimit.setBoolean(m_reverseLimit.isPressed());
+      nt_forwardLimit.setBoolean(limitSwitchUp.get());
+      nt_reverseLimit.setBoolean(limitSwitchDown.get());
       nt_reverseLimitSwitchEnabled.setBoolean(limitSwitchEnabled());
       nt_forwardLimitSwitchEnabled.setBoolean(forwardSwitchEnabled());
       nt_desiredSpeed.setDouble(getDesiredVelocity());
