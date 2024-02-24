@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CAN;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.NoseRoller;
 import frc.robot.subsystems.PneumaticsControl;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterServo;
@@ -74,8 +73,7 @@ public class Configs {
       .add(SwerveDrivetrain.class) // must be after LL and Sensors
       .add(Intake.class)
       .add(Shooter.class)
-      .add(Transfer.class)
-      .add(NoseRoller.class);
+      .add(Transfer.class);
 
   // Subsystems and hardware on Tim 2.0
   public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig()

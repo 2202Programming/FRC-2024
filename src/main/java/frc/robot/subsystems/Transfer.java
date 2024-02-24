@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.DigitalIO;
+import frc.robot.Constants.Transfer_Constants.noteCommandedLocation;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.PIDFController;
 
@@ -32,10 +33,12 @@ public class Transfer extends SubsystemBase {
   final static double  Kff =  (1.0 / 43.2);   //full pwr gave 43.2 [cm/s]
   final PIDFController transferPID = new PIDFController(0.015, 0.0, 0.0, Kff);
 
-  DigitalInput lightgate = new DigitalInput(DigitalIO.TRANSFER_LIGHT_GATE);
+  DigitalInput lightgate = new DigitalInput(DigitalIO.Transfer_Light_Gate);
   CANSparkMax transferMtr;
   final SparkPIDController transferMtrPid;
   final RelativeEncoder transferMtrEncoder;
+
+  public noteCommandedLocation commandedLocation = noteCommandedLocation.transfer;
 
   // state vars
   boolean has_note = false;

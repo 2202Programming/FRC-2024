@@ -246,6 +246,22 @@ public final class Constants {
     public static double RollerSpeedDefault = 0.01; // placeholder: Note change namesx
     public static double RollerPosShoot = 20; // placeholder
     public static double RollerPosDefault = 5; // placeholder
+  } //TODO: check for deletion
+
+  public static final class Transfer_Constants {
+    public enum noteCommandedLocation {
+      transfer, intake;
+      
+      public noteCommandedLocation cycle(noteCommandedLocation location) {
+        if(location == transfer) {
+          return noteCommandedLocation.intake;
+        } else if (location == intake) {
+          return noteCommandedLocation.transfer;
+        } else {
+          return null;
+        }
+      }
+    }
   }
 
   public static final class Transfer_Constants { // placeholder

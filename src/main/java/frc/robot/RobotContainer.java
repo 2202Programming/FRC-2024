@@ -28,9 +28,11 @@ import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
+import frc.robot.commands.Intake.IntakePositionHandler;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Intake.MoveToAnglePos;
+import frc.robot.commands.Intake.SwitchNoteLocation;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Shooter.ShooterSequence;
@@ -257,10 +259,11 @@ public class RobotContainer {
       case Competition:
 
        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
-        operator.a().whileTrue(new IntakeSequence(false));
+        operator.a().whileTrue(new IntakePositionHandler());
         operator.y().whileTrue(new IntakeSequence(true));
         operator.b().whileTrue(new EjectNote());
         operator.x().whileTrue(new IntakeTest(-1.0));
+        operator.leftBumper().onTrue(new SwitchNoteLocation()); //placeholder
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
         operator.povRight().whileTrue(new IntakeTest(0.35));
