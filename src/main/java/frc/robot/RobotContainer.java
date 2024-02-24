@@ -140,7 +140,7 @@ public class RobotContainer {
     dc = getSubsystem("DC");
 
     /* Set the commands below */
-    configureBindings(Bindings.Competition); // Change this to switch between bindings
+    configureBindings(Bindings.auto_shooter_test); // Change this to switch between bindings
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
@@ -150,6 +150,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("pickup", new IntakeSequence());
     NamedCommands.registerCommand("shoot", new ParallelCommandGroup(new ShooterSequence(true,2000), new WaitCommand(2.0)));
     NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker));
+    NamedCommands.registerCommand("RotateTo", new RotateTo());
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 

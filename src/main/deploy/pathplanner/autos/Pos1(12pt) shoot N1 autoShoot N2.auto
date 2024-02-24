@@ -60,6 +60,18 @@
               }
             ]
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RotateTo"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "angle_shoot"
+          }
         }
       ]
     }
