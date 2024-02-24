@@ -24,6 +24,7 @@ public class transferToIntake extends Command {
   
   final Intake intake;
   final Transfer transfer;
+  boolean firstGate = false;
 
 
   /** Creates a new transferToIntake. */
@@ -49,8 +50,11 @@ public class transferToIntake extends Command {
       intake.setAngleSetpoint(100.0);
       intake.setIntakeSpeed(-0.8); 
       transfer.setSpeed(-35.0);
-    } else if (intake.has_Had_Note()) {
-      end(isScheduled());
+    } else if (intake.has_Had_Note() && !firstGate) {
+      transfer.setHasNote(false);
+      firstGate = true;
+    } else if (intake.has_Had_Note() && firstGate){
+      end(true);
     }
   }
 
