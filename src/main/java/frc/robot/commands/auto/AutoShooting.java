@@ -4,7 +4,7 @@
 
 package frc.robot.commands.auto;
 
-import edu.wpi.first.math.geometry.Translation2d;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
@@ -13,12 +13,10 @@ import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
-
+import frc.robot.Constants.Tag_Pose;
 public class AutoShooting extends SequentialCommandGroup {
 
   private Limelight_Subsystem limelight;
-  private Translation2d BlueSpeakerTagPose = new Translation2d(0.0381, 5.55);//id7
-  private Translation2d RedSpeakerTagPose = new Translation2d(16.58, 5.55);//id4
   SwerveDrivetrain drivetrain;
 
   /**
@@ -57,13 +55,13 @@ public class AutoShooting extends SequentialCommandGroup {
     if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
       // Blue Alliance
       difference = Math.sqrt(
-          Math.pow(drivetrain.getPose().getTranslation().getX() - BlueSpeakerTagPose.getX(), 2)
-              + Math.pow(drivetrain.getPose().getTranslation().getY() - BlueSpeakerTagPose.getY(), 2));
+          Math.pow(drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID7.getX(), 2)
+              + Math.pow(drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID7.getY(), 2));
     } else {
       // Red Alliance
       difference = Math.sqrt(
-          Math.pow(drivetrain.getPose().getTranslation().getX() - RedSpeakerTagPose.getX(), 2)
-              + Math.pow(drivetrain.getPose().getTranslation().getY() - RedSpeakerTagPose.getY(), 2));
+          Math.pow(drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID4.getX(), 2)
+              + Math.pow(drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID4.getY(), 2));
     }
 
     if (difference < 2.0) {
