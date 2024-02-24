@@ -36,8 +36,8 @@ public class RotateTo extends Command {
   public RotateTo() {
     drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
     addRequirements(drivetrain);
-    pid.setTolerance(pos_tol);
     pid = new PIDController(kp, ki, kd);
+    pid.setTolerance(pos_tol);
     kinematics = drivetrain.getKinematics();
     targetPose = (DriverStation.getAlliance().get() == Alliance.Blue) ? Tag_Pose.ID7 : Tag_Pose.ID4;
     timer = new Timer();
