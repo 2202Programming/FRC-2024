@@ -38,6 +38,7 @@ import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
+import frc.robot.commands.Swerve.RotateTo;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 import frc.robot.subsystems.Shooter;
@@ -234,6 +235,7 @@ public class RobotContainer {
         driver.povDown().onTrue(new AutoShooting(ShootingTarget.Speaker));
         driver.povUp().onTrue(new AutoShooting(ShootingTarget.Trap));
         driver.povRight().onTrue(new AutoShooting(ShootingTarget.Amp));
+        driver.x().onTrue(new RotateTo());
         break;
 
       
@@ -250,6 +252,7 @@ public class RobotContainer {
       // all the same for now since they are placeholders -- fall through ok
       default:
       case DriveTest:
+        break;
       case Competition:
 
        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));

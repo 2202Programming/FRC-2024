@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.subsystems.Swerve.Config.CANConfig;
 import frc.robot.subsystems.Swerve.Config.CANModuleConfig;
 import frc.robot.subsystems.Swerve.Config.ChassisConfig;
@@ -254,6 +255,12 @@ public final class Constants {
   }
   public static final class Shooter_Constants{//placeholder
     public static final double ShooterDefaultSpeed = 0.5;
+  }
+  public static final class Tag_Pose {
+    /**Blue Speaker center tag*/
+    public static final Translation2d ID7 = new Translation2d(0.0381, 5.55);
+    /**Red Speaker center tag*/
+    public static final Translation2d ID4 = new Translation2d(16.58, 5.55);
   }
 
   /*-------NT------- */
