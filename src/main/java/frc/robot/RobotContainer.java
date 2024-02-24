@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
+import frc.robot.commands.Intake.AbsEncoderCalibrate;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
@@ -254,6 +255,7 @@ public class RobotContainer {
         operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
         operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
         operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
+        operator.x().onTrue(new AbsEncoderCalibrate());
         
         /* TODO climber bindings, commented out for sussex -- er
          *  Drive team mentioned that they want climber buttons on switchboard but i need 

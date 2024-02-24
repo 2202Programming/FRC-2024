@@ -20,12 +20,11 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
-// import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder; //absolute encoder
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.DigitalIO;
-// import frc.robot.Constants.DigitalIO;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
@@ -36,6 +35,7 @@ public class Intake extends SubsystemBase {
   public static final double DownPos = 90.0; //[deg]
   public static final double TravelUp = 120.0; //[deg/s]
   public static final double TravelDown = 60.0; //[deg/s]
+  public static final double encoderOffset = 10.0; //placeholder 0 Offset and the default pos instead of 0 (subtract rn)
 
   final double wheelGearRatio = 1.0; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean
                
@@ -66,9 +66,10 @@ public class Intake extends SubsystemBase {
   SparkLimitSwitch m_forwardLimit;
   SparkLimitSwitch m_reverseLimit;
   // Digital IO limit switches if we use
-  // DigitalInput limitSwitchUp = new DigitalInput(DigitalIO.Intake_Up);
-  // DigitalInput limitSwitchDown = new DigitalInput(DigitalIO.Intake_Down);
-
+  DigitalInput limitSwitchUp = new DigitalInput(DigitalIO.Intake_Up);
+  DigitalInput limitSwitchDown = new DigitalInput(DigitalIO.Intake_Down);
+  //abs encoder
+  DutyCycleEncoder encoder = new DutyCycleEncoder(DigitalIO.Encoder);
   public Intake() { // TODO: Get values
     final int STALL_CURRENT = 15; // [amp]
     final int FREE_CURRENT = 5; // [amp]
@@ -140,6 +141,9 @@ public class Intake extends SubsystemBase {
   public double getAnglePosition() {
     return angle_servo.getPosition();
   }
+  public double getPos(){
+    return encoder.getAbsolutePosition() - encoderOffset;
+  }
 
   public void setAnglePosition(double pos) {
     angle_servo.setPosition(pos);
@@ -170,11 +174,11 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean atForwardLimitSwitch() {
-    return m_forwardLimit.isPressed(); // do we need to check the other???
+    return limitSwitchUp.get(); // do we need to check the other???
   }
 
   public boolean atReverseLimitSwitch() {
-    return m_reverseLimit.isPressed();
+    return limitSwitchDown.get();
   }
   public boolean limitSwitchEnabled(){
     return m_reverseLimit.isLimitSwitchEnabled();
@@ -199,6 +203,9 @@ public class Intake extends SubsystemBase {
     // if we ever lose a note, call this
     has_note = state;
     has_had_note = false;
+  }
+  public void calibratePos(){
+    setAngleSetpoint(getPos());
   }
 
   public void periodic() {
@@ -259,8 +266,8 @@ public class Intake extends SubsystemBase {
       nt_kD.setDouble(hwAngleVelPID.getD());
       nt_wheelVel.setDouble(getIntakeRollerSpeed());
       nt_anglePos.setDouble(getAnglePosition());
-      nt_forwardLimit.setBoolean(m_forwardLimit.isPressed());
-      nt_reverseLimit.setBoolean(m_reverseLimit.isPressed());
+      nt_forwardLimit.setBoolean(limitSwitchUp.get());
+      nt_reverseLimit.setBoolean(limitSwitchDown.get());
       nt_reverseLimitSwitchEnabled.setBoolean(limitSwitchEnabled());
       nt_forwardLimitSwitchEnabled.setBoolean(forwardSwitchEnabled());
       nt_desiredSpeed.setDouble(getDesiredVelocity());
