@@ -115,7 +115,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void setIntakeSpeed(double speed) {
-    intakeMtr.set(speed);
+    intakeMtr.set(speed); //RPM
     // intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
   }
 
@@ -149,7 +149,7 @@ public class Intake extends SubsystemBase {
     angle_servo.setPosition(pos);
   }
   public void setMaxVelocity(double velLimit){
-   angle_servo.setMaxVelocity(velLimit);
+    angle_servo.setMaxVelocity(velLimit); //deg/s
   }
 
   /*

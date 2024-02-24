@@ -242,7 +242,7 @@ public final class Constants {
     public static double RollerSpeedDefault = 0.01; // placeholder: Note change namesx
     public static double RollerPosShoot = 20; // placeholder
     public static double RollerPosDefault = 5; // placeholder
-  }
+  } //TODO: check for deletion
 
   /*-------NT------- */
   public final static class NTStrings {

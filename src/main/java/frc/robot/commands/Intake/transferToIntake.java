@@ -46,10 +46,10 @@ public class transferToIntake extends Command {
   public void execute() {
     
     if (!intake.has_Note() && !intake.has_Had_Note()) {
-      intake.setMaxVelocity(60.0);
-      intake.setAngleSetpoint(100.0);
-      intake.setIntakeSpeed(-0.8); 
-      transfer.setSpeed(-35.0);
+      intake.setMaxVelocity(60.0); // DEG/S
+      intake.setAngleSetpoint(100.0); //'down' position
+      intake.setIntakeSpeed(-0.8); //% of motor power converted to RPM (-1 -> 1)
+      transfer.setSpeed(-35.0); //cm/s
     } else if (intake.has_Had_Note() && !firstGate) {
       transfer.setHasNote(false);
       firstGate = true;
@@ -61,8 +61,8 @@ public class transferToIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.setMaxVelocity(120.0);
-    intake.setAngleSetpoint(0.0);
+    intake.setMaxVelocity(120.0); // DEG/S
+    intake.setAngleSetpoint(0.0); //'up' position
     intake.setIntakeSpeed(0.0); 
     transfer.setSpeed(0.0);
     transfer.setHasNote(false);
