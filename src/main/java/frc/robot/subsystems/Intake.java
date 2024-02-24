@@ -60,7 +60,7 @@ public class Intake extends SubsystemBase {
   //ext enc testing PIDFController hwAngleVelPID = new PIDFController(0.0001, 0.00000, 0.0, 0.00); 
 
   /* inner (hw/vel) go up and divide by 2*/
-  final PIDController anglePositionPID = new PIDController(.10, 0.0, 0.0); // outer (pos)
+  final PIDController anglePositionPID = new PIDController(4.0, 0.0, 0.0); // outer (pos)
 
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
@@ -91,7 +91,7 @@ public class Intake extends SubsystemBase {
       // uncomment for alt enc MotorType.kBrushless,
       anglePositionPID, hwAngleVelPID,
       // uncomment for alt enc Type.kQuadrature, Angle_kCPR, 
-      true, 0);
+      true);
 
     // use velocity control on intake motor
     intakeMtr.clearFaults();
