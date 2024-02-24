@@ -12,6 +12,7 @@
 
 package frc.robot.commands.Intake;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
@@ -45,6 +46,8 @@ public class SwitchNoteLocation extends Command {
     } else if (transfer.commandedLocation == noteCommandedLocation.intake) {
       transfer.commandedLocation = noteCommandedLocation.transfer;
     }
+
+    SmartDashboard.putString("Commanded Note Location", transfer.commandedLocation.toString());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

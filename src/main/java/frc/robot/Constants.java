@@ -228,14 +228,11 @@ public final class Constants {
 
   public final class DigitalIO {
     // TODO lots of placeholders - confirm with electical what we really have
-    // public static final int Intake_Up = 0; //placeholder
-    // public static final int Intake_Down = 1; //placeholder
-    public static final int TRANSFER_LIGHT_GATE = 0;
-    public static final int RollerLightGate = 100; // placeholder
-    public static final int Intake_Note = 5; //TODO: FIND VALUE (current placeholder)
-    public static final int Intake_Up = 10; //placeholder
-    public static final int Intake_Down = 50; //placeholder
-    public static final int Encoder = 70; //placeholder
+    public static final int Transfer_Light_Gate = 0;
+    public static final int Intake_Note = 1; //placeholder
+    public static final int Intake_Up = 2;
+    public static final int Intake_Down = 3; 
+    public static final int Encoder = 6; //placeholder
   }
 
   public static final class Roller_Constants {
