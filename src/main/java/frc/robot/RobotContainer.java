@@ -246,8 +246,10 @@ public class RobotContainer {
         operator.a().whileTrue(new IntakeSequence(false));
         operator.y().whileTrue(new IntakeSequence(true));
         operator.b().whileTrue(new EjectNote());
+        operator.x().whileTrue(new IntakeTest(-1.0));
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
+        operator.povRight().whileTrue(new IntakeTest(0.35));
         operator.povDown().whileTrue(new AngleCalibration(8.0));
         operator.povUp().whileTrue(new AngleCalibration(-8.0));
         operator.povLeft().onTrue(new CalibratePos(0.0));
