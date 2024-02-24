@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.DigitalIO;
+import frc.robot.Constants.Transfer_Constants.noteCommandedLocation;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.PIDFController;
 
@@ -36,6 +37,8 @@ public class Transfer extends SubsystemBase {
   CANSparkMax transferMtr;
   final SparkPIDController transferMtrPid;
   final RelativeEncoder transferMtrEncoder;
+
+  public noteCommandedLocation commandedLocation;
 
   // state vars
   boolean has_note = false;

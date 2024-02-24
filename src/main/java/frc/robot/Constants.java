@@ -244,6 +244,10 @@ public final class Constants {
     public static double RollerPosDefault = 5; // placeholder
   } //TODO: check for deletion
 
+  public static final class Transfer_Constants {
+    public enum noteCommandedLocation{transfer, intake};
+  }
+
   /*-------NT------- */
   public final static class NTStrings {
     public final static String NT_Name_Position = "Position";
