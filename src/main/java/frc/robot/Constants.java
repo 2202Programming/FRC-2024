@@ -169,7 +169,7 @@ public final class Constants {
     // shooter CAN IDs -- MOTORS
     public static final int SHOOTER_L = 15;
     public static final int SHOOTER_R = 16;
-    public static final int SHOOTER_ANGLE = 100; //placeholder
+
 
     // Drive Train IDs 20 - 31
     // drive train CAN addresses are set above with CANModuleConfig to support
@@ -198,6 +198,7 @@ public final class Constants {
     // Nose Roller
     public static final int NOSE_MOTOR_ANGLE = 54;
     public static final int NOSE_MOTOR_FIRE = 55;
+    public static final int SHOOTER_ANGLE = 56; 
 
     // Transfer
     public static final int TRANSFER_MOTOR = 19; 
@@ -207,6 +208,7 @@ public final class Constants {
 
     // IMU
     public static final int PIGEON_IMU_CAN = 60;
+
 
     // Whether to burn flash or not
     public static final boolean BURN_FLASH = false; // swerve-mk3

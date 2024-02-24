@@ -57,15 +57,11 @@ public class Intake extends SubsystemBase {
   double desired_intake_speed = 0.0;
   // Intake Angle, a servo
   final NeoServo angle_servo;
-  final PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.010, 0.00003, 0.0, /* 0.00503 */0.0045); // inner
-                                                                                                                   // (hw/vel)
-                                                                                                                   // go
-                                                                                                                   // up
-                                                                                                                   // and
-                                                                                                                   // divide
-                                                                                                                   // by
-                                                                                                                   // 2
-  final PIDController anglePositionPID = new PIDController(4.0, 0.0, 0.0); // outer (pos)
+  // keep orig final PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.010, 0.00003, 0.0, /* 0.00503 */0.0045); 
+  final PIDFController hwAngleVelPID = new PIDFController(0.0001, 0.00000, 0.0, 0.00); 
+
+  /* inner (hw/vel) go up and divide by 2*/
+  final PIDController anglePositionPID = new PIDController(.10, 0.0, 0.0); // outer (pos)
 
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
@@ -121,11 +117,12 @@ public class Intake extends SubsystemBase {
     setAnglePosition(UpPos);
     angle_servo.setClamp(UpPos, DownPos + 5.0);
 
-    // limit switch config
-    m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
-    m_reverseLimit = angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
-    m_forwardLimit.enableLimitSwitch(false);
-    m_reverseLimit.enableLimitSwitch(false);
+    // limit switch config 
+    //Cannot have alternate encoder and limit switches- error from lib
+    //m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
+    //m_reverseLimit = angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
+    //m_forwardLimit.enableLimitSwitch(false);
+    //m_reverseLimit.enableLimitSwitch(false);
     // m_forwardLimit.enableLimitSwitch(true);
     // m_reverseLimit.enableLimitSwitch(true);
   }
@@ -279,10 +276,10 @@ public class Intake extends SubsystemBase {
       nt_kD.setDouble(hwAngleVelPID.getD());
       nt_wheelVel.setDouble(getIntakeRollerSpeed());
       nt_anglePos.setDouble(getAnglePosition());
-      nt_forwardLimit.setBoolean(limitSwitchUp.get());
-      nt_reverseLimit.setBoolean(limitSwitchDown.get());
-      nt_reverseLimitSwitchEnabled.setBoolean(limitSwitchEnabled());
-      nt_forwardLimitSwitchEnabled.setBoolean(forwardSwitchEnabled());
+      //nt_forwardLimit.setBoolean(limitSwitchUp.get());
+      //nt_reverseLimit.setBoolean(limitSwitchDown.get());
+      //nt_reverseLimitSwitchEnabled.setBoolean(limitSwitchEnabled());
+      //nt_forwardLimitSwitchEnabled.setBoolean(forwardSwitchEnabled());
       nt_desiredSpeed.setDouble(getDesiredVelocity());
 
       // get mutable values

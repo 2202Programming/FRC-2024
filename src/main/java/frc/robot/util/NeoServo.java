@@ -85,7 +85,7 @@ public class NeoServo implements VelocityControlled {
             PIDFController hwVelPIDcfg,
             Type extEncoderType, int kCPR,  
             boolean inverted, int hwVelSlot) {
-        ctrl = new CANSparkMax(canID, MotorType.kBrushed);
+        ctrl = new CANSparkMax(canID, motorType);
         ctrl.clearFaults();
         ctrl.restoreFactoryDefaults();
         ctrl.setInverted(inverted);
