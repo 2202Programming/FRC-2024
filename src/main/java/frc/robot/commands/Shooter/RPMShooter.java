@@ -8,11 +8,14 @@ import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Shooter;
 
 public class RPMShooter extends Command {
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Shooter m_shooter;
+  private final CommandXboxController m_driverController;
 
   private double currentLeftMotorRPM;
   private double currentRightMotorRPM;
@@ -24,8 +27,14 @@ public class RPMShooter extends Command {
   private double requestedRightShooterRPM;
   private double requestedBothShooterRPM;
 
+  private boolean triggerMode = false;
+  private double currentTriggerPercent;
+  
   private double lastRequestedLeftShooterRPM;
   private double lastRequestedRightShooterRPM;
+
+
+  private Shooter.ShooterMode currentShootingMode;
 
   private double requestedP = 0.0001;
   private double requestedI = 0.0;
@@ -35,8 +44,9 @@ public class RPMShooter extends Command {
   private double currentI = 0.0;
   private double currentD = 0.0;
 
-  public RPMShooter() {
+  public RPMShooter(CommandXboxController controller) {
     m_shooter = RobotContainer.getSubsystem(Shooter.class);
+    m_driverController = controller;
     addRequirements(m_shooter);
   }
 
@@ -46,20 +56,24 @@ public class RPMShooter extends Command {
     requestedLeftShooterRPM = 0.0;
     requestedRightShooterRPM = 0.0;
 
-    SmartDashboard.putNumber("Requested Left Shooter RPM", 0.0);
-    SmartDashboard.putNumber("Requested Right Shooter RPM", 0.0);
+    SmartDashboard.putNumber("Trigger Percent", m_driverController.getLeftTriggerAxis());
+    SmartDashboard.putBoolean("Trigger Mode", triggerMode);
 
-    SmartDashboard.putNumber("Requested P", requestedP);
-    SmartDashboard.putNumber("Requested I", requestedI);
-    SmartDashboard.putNumber("Requested D", requestedD);
+    SmartDashboard.putNumber("Requested Left Shooter RPM",0.0);
+    SmartDashboard.putNumber("Requested Right Shooter RPM",0.0);
+     
+    SmartDashboard.putNumber("Requested P",requestedP);
+    SmartDashboard.putNumber("Requested I",requestedI);
+    SmartDashboard.putNumber("Requested D",requestedD);
 
     currentP = m_shooter.getP();
     currentI = m_shooter.getI();
     currentD = m_shooter.getD();
-
+  
     SmartDashboard.putNumber("Current P", currentP);
     SmartDashboard.putNumber("Current I", currentI);
-    SmartDashboard.putNumber("Current D", currentD);
+    SmartDashboard.putNumber("Current D", currentD);    
+
 
   }
 
@@ -69,52 +83,63 @@ public class RPMShooter extends Command {
     currentLeftMotorRPM = shooterLeftEncoder.getVelocity();
     currentRightMotorRPM = shooterRightEncoder.getVelocity();
 
+    currentTriggerPercent = m_driverController.getLeftTriggerAxis();
+    
+    SmartDashboard.putNumber("Trigger Percent", currentTriggerPercent);
+    SmartDashboard.putBoolean("Trigger Mode", triggerMode);
+
     lastRequestedLeftShooterRPM = requestedLeftShooterRPM;
     lastRequestedRightShooterRPM = requestedRightShooterRPM;
 
-    SmartDashboard.putNumber("Current Shooter RPM", currentLeftMotorRPM); // should be 1.0
+    SmartDashboard.putString("Current Shoooting Mode",currentShootingMode.toString());
+    SmartDashboard.putNumber("Current Shooter RPM", currentLeftMotorRPM); //should be 1.0
     SmartDashboard.putNumber("Current Left Motor RPM", currentLeftMotorRPM);
     SmartDashboard.putNumber("Current Right Motor RPM", currentRightMotorRPM);
 
-    requestedLeftShooterRPM = SmartDashboard.getNumber("Requested Left Shooter RPM", 0.0);
-    requestedRightShooterRPM = SmartDashboard.getNumber("Requested Right Shooter RPM", 0.0);
-    requestedBothShooterRPM = SmartDashboard.getNumber("Requested Shooter RPM: ", 0.0);
+    requestedLeftShooterRPM = SmartDashboard.getNumber("Requested Left Shooter RPM",0.0);
+    requestedRightShooterRPM = SmartDashboard.getNumber("Requested Right Shooter RPM",0.0);
+    requestedBothShooterRPM = SmartDashboard.getNumber("Requested Shooter RPM: ",0.0);
 
-    if ((lastRequestedLeftShooterRPM != requestedLeftShooterRPM)
-        || (lastRequestedRightShooterRPM != requestedRightShooterRPM)) {
-      m_shooter.setRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
-    }
-    if ((requestedBothShooterRPM > 0)) {
-      if ((requestedBothShooterRPM != requestedLeftShooterRPM)
-          && (requestedBothShooterRPM != requestedRightShooterRPM)) {
-        m_shooter.setRPM(requestedBothShooterRPM, requestedBothShooterRPM);
-      } else {
-        m_shooter.setRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
+    switch(m_shooter.getShooterMode()){
+      case Trigger: //this mode uses left trigger as motor %
+        m_shooter.setSpeed(currentTriggerPercent);
+        break;
+      case RPM: //this mode uses requested RPM off smart dashboard in velocity controlled mode
+        if ((lastRequestedLeftShooterRPM != requestedLeftShooterRPM) || (lastRequestedRightShooterRPM != requestedRightShooterRPM)) {
+          m_shooter.setRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
+        }
+        /*this SHOULD set both motors at the same time
+        *TODO: test this*/
+        if ((requestedBothShooterRPM > 0)) {
+          if ((requestedBothShooterRPM != requestedLeftShooterRPM) && (requestedBothShooterRPM != requestedRightShooterRPM)) {
+            m_shooter.setRPM(requestedBothShooterRPM, requestedBothShooterRPM);          
+          } else {
+            m_shooter.setRPM(requestedLeftShooterRPM, requestedRightShooterRPM);
+        }
       }
+        break;
     }
-
-    requestedP = SmartDashboard.getNumber("Requested P", requestedP);
-    requestedI = SmartDashboard.getNumber("Requested I", requestedI);
-    requestedD = SmartDashboard.getNumber("Requested D", requestedD);
-
+    
+    requestedP = SmartDashboard.getNumber("Requested P",requestedP);
+    requestedI = SmartDashboard.getNumber("Requested I",requestedI);
+    requestedD = SmartDashboard.getNumber("Requested D",requestedD);
+    
     currentP = m_shooter.getP();
     currentI = m_shooter.getI();
     currentD = m_shooter.getD();
-
+  
     SmartDashboard.putNumber("Current P", currentP);
     SmartDashboard.putNumber("Current I", currentI);
-    SmartDashboard.putNumber("Current D", currentD);
-
+    SmartDashboard.putNumber("Current D", currentD);  
+    
     setPIDs();
+
   }
 
-  private void setPIDs() {
-    if (currentP != requestedP)
-      m_shooter.setP(requestedP);
-    if (currentI != requestedI)
-      m_shooter.setI(requestedI);
-    if (currentD != requestedD)
-      m_shooter.setD(requestedD);
+  private void setPIDs(){
+    if(currentP != requestedP) m_shooter.setP(requestedP);
+    if(currentI != requestedI) m_shooter.setI(requestedI);
+    if(currentD != requestedD) m_shooter.setD(requestedD);
   }
 
   // Called once the command ends or is interrupted.

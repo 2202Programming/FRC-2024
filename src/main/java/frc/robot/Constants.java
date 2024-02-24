@@ -80,31 +80,35 @@ public final class Constants {
         12.8, // confirmed with vince
         8.14); // confirmed with vince
 
+    // TODO: For 2024 CompetitionBotAlpha ***NOT YET CONFIRMED
     public static final WheelOffsets comp2024AlphaBotOffsets = new WheelOffsets(43.85746387, 24.096825 , -65.21481, -43.066333125);
     public static final ChassisConfig comp2024AlphaBotChassisConfig = new ChassisConfig(
-        MperFT * (25 / 12.0) / 2.0,
-        MperFT * (20.75 / 12.0) / 2.0,
+        MperFT * (23.5 / 12.0) / 2.0,
+        MperFT * (19.5 / 12.0) / 2.0,
         0.999, // scale [] <= 1.0
         MperFT * (4.0 / 12.0),
         21.428,
         6.75);
-    // TODO: For 2024 CompetitionBotBeta ***NOT YET CONFIRMED
+      // TODO: For 2024 CompetitionBotBeta ***NOT YET CONFIRMED
     public static final WheelOffsets comp2024BetaBotOffsets = comp2024AlphaBotOffsets;
     public static final ChassisConfig comp2024BotBetaChassisConfig = comp2024AlphaBotChassisConfig;
     
+    // TODO: confirm this when start working on 2024 bot Alpha
     public static final ChassisInversionSpecs comp2024BotAlphaInversionSpecs = new ChassisInversionSpecs(
-
+      
         new ModuleInversionSpecs(true, true, false), // FR
         new ModuleInversionSpecs(false, true, false), // FL
         new ModuleInversionSpecs(true, true, false), // BR
         new ModuleInversionSpecs(false, true, false)); // BL
 
+    
     // TODO: confirm this when start working on 2024 bot Beta
     public static final ChassisInversionSpecs comp2024BotBetaInversionSpecs = new ChassisInversionSpecs(
         new ModuleInversionSpecs(true, true, false), // FR
         new ModuleInversionSpecs(false, true, false), // FL
         new ModuleInversionSpecs(true, true, false), // BR
         new ModuleInversionSpecs(false, true, false)); // BL
+
 
     public static final ChassisInversionSpecs swerveBotChassisInversionSpecs = new ChassisInversionSpecs(
         new ModuleInversionSpecs(true, false, false), // FR
@@ -126,26 +130,24 @@ public final class Constants {
 
     // Support for multiple robots on same code base
 
-    public static final CANModuleConfig comp2024CAN_FL = new CANModuleConfig(29, 24, 25);
-    public static final CANModuleConfig comp2024CAN_FR = new CANModuleConfig(30, 26, 27);
-    public static final CANModuleConfig comp2024CAN_BL = new CANModuleConfig(28, 22, 23);
-    public static final CANModuleConfig comp2024CAN_BR = new CANModuleConfig(31, 20, 21);
+    public static final CANModuleConfig comp2024CAN_FL = new CANModuleConfig(29,24,25);
+    public static final CANModuleConfig comp2024CAN_FR = new CANModuleConfig(30,26,27);
+    public static final CANModuleConfig comp2024CAN_BL = new CANModuleConfig(28,22,23);
+    public static final CANModuleConfig comp2024CAN_BR = new CANModuleConfig(31,20,21);
 
-    public static final CANModuleConfig swerveBotCAN_FL = new CANModuleConfig(7, 20, 21);
-    public static final CANModuleConfig swerveBotCAN_FR = new CANModuleConfig(30, 26, 27);
-    public static final CANModuleConfig swerveBotCAN_BL = new CANModuleConfig(28, 22, 23);
-    public static final CANModuleConfig swerveBotCAN_BR = new CANModuleConfig(31, 24, 25);
+    public static final CANModuleConfig swerveBotCAN_FL = new CANModuleConfig(7,20,21);
+    public static final CANModuleConfig swerveBotCAN_FR = new CANModuleConfig(30,26,27);
+    public static final CANModuleConfig swerveBotCAN_BL = new CANModuleConfig(28,22,23);
+    public static final CANModuleConfig swerveBotCAN_BR = new CANModuleConfig(31,24,25);
 
-    public static final CANConfig comp2024BotCANConfig = new CANConfig(comp2024CAN_FL, comp2024CAN_FR, comp2024CAN_BL,
-        comp2024CAN_BR);
-    public static final CANConfig swerveBotCANConfig = new CANConfig(swerveBotCAN_FL, swerveBotCAN_FR, swerveBotCAN_BL,
-        swerveBotCAN_BR);
-    public static final CANConfig chadBotCANConfig = new CANConfig(swerveBotCAN_FL, swerveBotCAN_FR, swerveBotCAN_BL,
-        swerveBotCAN_BR);
-    public static final CANConfig doofBotCANConfig = new CANConfig(swerveBotCAN_FL, swerveBotCAN_FR, swerveBotCAN_BL,
-        swerveBotCAN_BR);
+    public static final CANConfig comp2024BotCANConfig = new CANConfig(comp2024CAN_FL, comp2024CAN_FR, comp2024CAN_BL, comp2024CAN_BR);
+    public static final CANConfig swerveBotCANConfig = new CANConfig(swerveBotCAN_FL, swerveBotCAN_FR, swerveBotCAN_BL, swerveBotCAN_BR);
+    public static final CANConfig chadBotCANConfig = new CANConfig(swerveBotCAN_FL, swerveBotCAN_FR, swerveBotCAN_BL, swerveBotCAN_BR);
+    public static final CANConfig doofBotCANConfig = new CANConfig(swerveBotCAN_FL, swerveBotCAN_FR, swerveBotCAN_BL, swerveBotCAN_BR);
 
   } // end DriveTrain configs
+
+  
 
   /*-------------------------Ports/CAN-------------------------------- */
   /**
@@ -155,51 +157,57 @@ public final class Constants {
    * 
    */
   public static final class CAN {
-    public static final int ROBORIO = 0;
-    public static final int PDP = 1; // for rev
-    public static final int PCM1 = 2; // for rev
+    public static final int ROBORIO = 0;  
+    public static final int PDP = 1; //for rev
+    public static final int PCM1 = 2; //for rev
+    public static final int PCM2 = 3; //for rev
 
-    // lights
-    public static final int CANDLE1 = 3; 
+    //lights
+    public static final int CANDLE1 = 3;   //TODO: fix collision with PCM2
     public static final int CANDLE2 = 4;
-
-    // Warning: CAN 7 is used for CANCoder on swerveBot aka Tim 2.0
+    
+    //Warning: CAN 7 is used for CANCoder on swerveBot aka Tim 2.0 
 
     // shooter CAN IDs -- MOTORS
-    public static final int SHOOTER_L = 15;
-    public static final int SHOOTER_R = 16;
+    public static final int SHOOTER_L = 15; 
+    public static final int SHOOTER_R = 16; 
+
+    // Intake CAN IDs -- MOTORS
+    public static final int INTAKE_R = 17;
+    public static final int INTAKE_L = 18;
 
     // Drive Train IDs 20 - 31
-    // drive train CAN addresses are set above with CANModuleConfig to support
-    // different robots
+    // drive train CAN addresses are set above with CANModuleConfig to support different robots
     // See above CANModuleConfig definitions.
-    //
-    // Typically: Drv Ang CC Corner
-    // -- --- -- ----
-    // 20 21 31 BR
-    // 22 23 28 BL
-    // 24 25 29 FL
-    // 26 27 30 FR
+    //           
+    // Typically:  Drv  Ang CC  Corner
+    //             --   --- --  ----
+    //             20   21  31  BR
+    //             22   23  28  BL
+    //             24   25  29  FL
+    //             26   27  30  FR
     //
     // TODO: Triple check these numbers with controller client softare, CTRE and REV
-    // as the numbers differ from comments at end of this file and there seems
-    // to be an inconsistent ordering with the CANCoders.
+    //       as the numbers differ from comments at end of this file and there seems
+    //       to be an inconsistent ordering with the CANCoders.
     //
     // There are exceptions, check for your ROBOT.
 
     // PLACEHOLDERS - use 50 .. 59, max CAN addr is 64
     // Please move to correct location when ID is assigned
+    public static final int ARM_RIGHT_Motor = 50; // placeholder
+    public static final int ARM_LEFT_Motor = 51; // placeholder
 
     // Intake
-    public static final int INTAKE_MTR = 18; 
-    public static final int ANGLE_MTR = 17; 
+    public static final int INTAKE_MTR = 52; // placeholder
+    public static final int ANGLE_MTR = 53; // placeholder
     // Nose Roller
     public static final int NOSE_MOTOR_ANGLE = 54;
     public static final int NOSE_MOTOR_FIRE = 55;
-
+    
     // Transfer
-    public static final int TRANSFER_MOTOR = 19; 
-
+    public static final int TRANSFER_MOTOR = 56; // placeholder
+    
     // Claw
     public static final int CLAW_WHEEL_MOTOR = 16;
 
@@ -216,44 +224,39 @@ public final class Constants {
   }
 
   // pnumatics control module 1
-  public static final class PCM1 {
-    public static final int Forward = 0;
-    public static final int Reverse = 1;
+  public final class PCM1 {
   }
 
   // pnumatics control module 2
-  public static final class PCM2 {
+  public final class PCM2 {
   }
 
   public final class DigitalIO {
-    // TODO lots of placeholders - confirm with electical what we really have
-    // public static final int Intake_Up = 0; //placeholder
-    // public static final int Intake_Down = 1; //placeholder
-    public static final int TRANSFER_LIGHT_GATE = 0; // placeholder
-    public static final int RollerLightGate = 100; // placeholder
-
+    //TODO lots of placeholders - confirm with electical what we really have
+    public static final int Intake_Up = 0; //placeholder
+    public static final int Intake_Down = 1; //placeholder
+    public static final int Intake_Note = 2;  //placeholder
+    public static final int TRANSFER_LIGHT_GATE = 3; //placeholder
+    public static final int RollerLightGate = 4; //placeholder
+    
   }
 
   public static final class Intake_Constants {
     public static double IntakeMotorDefault = 0.01; // placeholder
-    public static double AngleFloorPos = 100.0;
-    public static double PickupPosition = 100; // placeholder - best position for getting Notes
-    public static double DrivingPosition = 0.02; // placeholder - best position for driving around field
-    public static double DefaultLimitSwitchPos = 10.0; // placeholder
+    public static double AngleMotorDefault = 0.01; //placeholder
+    public static double AnglePosition = 100; //placeholder
+    public static double TransferPosition = 0.02; //placeholder
+    public static double DefaultLimitSwitchPos = 10.0; //placeholder
   }
-
   public static final class Roller_Constants {
-    public static double RollerSpeedDefault = 0.01; // placeholder: Note change namesx
-    public static double RollerPosShoot = 20; // placeholder
-    public static double RollerPosDefault = 5; // placeholder
+    public static double RollerSpeedDefault = 0.01; //placeholder: Note change namesx
+    public static double RollerPosShoot = 20; //placeholder
+    public static double RollerPosDefault = 5; //placeholder
   }
-
-  public static final class Transfer_Constants { // placeholder
-    public static final double TRANSFER_MOTOR_ON = 0.8;
+  public static final class Transfer_Constants{ //placeholder
+    public static final double TRANSFER_MOTOR_ON = 0.5;
+    public static final double TRANSFER_MOTOR_OFF = 0.0;
     public static final double TRANSFER_MOTOR_REVERSE = -0.5;
-  }
-  public static final class Shooter_Constants{//placeholder
-    public static final double ShooterDefaultSpeed = 0.5;
   }
 
   /*-------NT------- */
@@ -264,7 +267,7 @@ public final class Constants {
   // public static final class CAN{
   // /* 1/20/24
   // * CAN IDs:
-  // * Corner 3 Drive Motor BL: 22
+  // * Corner 3 Drive Motor BL: 22              
   // * Corner 3 Direction Motor BL: 23
   // * BL Encoder: 28
   // *
