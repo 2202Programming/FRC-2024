@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -24,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
-import frc.robot.commands.Intake.AbsEncoderCalibrate;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
@@ -146,17 +146,13 @@ public class RobotContainer {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
 
-    
-
-    NamedCommands.registerCommand("pickup", new IntakeSequence());
+    //NamedCommands for use in PathPlanner scripts.
+    NamedCommands.registerCommand("pickup", new IntakeSequence(true));
     NamedCommands.registerCommand("shoot", new ParallelCommandGroup(new ShooterSequence(true,2000), new WaitCommand(2.0)));
     NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker));
     NamedCommands.registerCommand("RotateTo", new RotateTo());
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
-
-    NamedCommands.registerCommand("pickup", new IntakeSequence(false));
-    NamedCommands.registerCommand("shoot", new ShooterSequence(1000.0));
   }
 
   /**
@@ -267,16 +263,14 @@ public class RobotContainer {
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
         operator.povRight().whileTrue(new IntakeTest(0.35));
-        operator.povDown().whileTrue(new AngleCalibration(8.0));
-        operator.povUp().whileTrue(new AngleCalibration(-8.0));
         operator.povLeft().onTrue(new CalibratePos(0.0));
-        operator.povUp().whileTrue(new AngleCalibration(15.0));
-        operator.povDown().whileTrue(new AngleCalibration(-15.0));
+        operator.povUp().whileTrue(new AngleCalibration(-15.0));
+        operator.povDown().whileTrue(new AngleCalibration(15.0));
         operator.x().onTrue(new CalibratePos(0.0));
         operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
         operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
         operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
-        operator.x().onTrue(new AbsEncoderCalibrate());
+       // TODO waiting for sensor wiring  operator.x().onTrue(new AbsEncoderCalibrate());
         
         /* TODO climber bindings, commented out for sussex -- er
          *  Drive team mentioned that they want climber buttons on switchboard but i need 
