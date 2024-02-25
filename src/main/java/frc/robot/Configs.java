@@ -7,7 +7,6 @@ import frc.robot.Constants.CAN;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.PneumaticsControl;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
@@ -49,10 +48,10 @@ public class Configs {
       })
       .add(Shooter.class, "SHOOTER")
       // .add(ShooterServo.class, "SHOOTER")
-      //  .add(Command.class, "ShooterServoWatcher", () -> {
-      //    //cast to get the correct type of shooter
-      //  return ((ShooterServo)RobotContainer.getSubsystem("SHOOTER")).getWatcher();
-      //})
+        .add(Command.class, "ShooterSWatcher", () -> {
+          //cast to get the correct type of shooter
+        return ((Shooter)RobotContainer.getSubsystem("SHOOTER")).getWatcher();
+      })
       .add(Transfer.class)
       .add(Command.class, "TransferWatcher", () -> {
         return RobotContainer.getSubsystem(Transfer.class).getWatcher();
@@ -71,9 +70,10 @@ public class Configs {
       .add(Sensors_Subsystem.class)
       .add(Limelight_Subsystem.class)
       .add(SwerveDrivetrain.class) // must be after LL and Sensors
-      .add(Intake.class)
-      .add(Shooter.class)
-      .add(Transfer.class);
+      //.add(Intake.class)
+      //.add(Shooter.class)
+      //.add(Transfer.class)
+      ;
 
   // Subsystems and hardware on Tim 2.0
   public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig()
