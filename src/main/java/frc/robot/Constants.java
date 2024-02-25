@@ -230,16 +230,14 @@ public final class Constants {
   }
 
   public final class DigitalIO {
-    // TODO lots of placeholders - confirm with electical what we really have
-    // public static final int Intake_Up = 0; //placeholder
-    // public static final int Intake_Down = 1; //placeholder
-    public static final int TRANSFER_LIGHT_GATE = 0;
-    public static final int Intake_Note = 1;
+    public static final int Transfer_LightGate = 0;
+    public static final int Intake_LightGate = 1;
+    public static final int IntakeIsUp = 2; 
+    public static final int IntakeIsDown = 3; 
     
     //TODO wire these placeholders on the bot
-    public static final int RollerLightGate = 2; // placeholder
-    public static final int IntakeIsUp = 3; //placeholder
-    public static final int IntakeIsDown = 4; //placeholder
+    public static final int RollerLightGate = 4; // placeholder
+    
   }
 
   public static final class Roller_Constants {
@@ -261,16 +259,12 @@ public final class Constants {
           return null;
         }
       }
-    }
-  }
+   }
 
-  public static final class Transfer_Constants { // placeholder
     public static final double TRANSFER_MOTOR_ON = 0.8;
     public static final double TRANSFER_MOTOR_REVERSE = -0.5;
   }
-  public static final class Shooter_Constants{//placeholder
-    public static final double ShooterDefaultSpeed = 0.5;
-  }
+
   public static final class Tag_Pose {
     /**Blue Speaker center tag*/
     public static final Translation2d ID7 = new Translation2d(0.0381, 5.55);

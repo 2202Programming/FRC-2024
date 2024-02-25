@@ -33,7 +33,7 @@ public class Transfer extends SubsystemBase {
   final static double  Kff =  (1.0 / 43.2);   //full pwr gave 43.2 [cm/s]
   final PIDFController transferPID = new PIDFController(0.015, 0.0, 0.0, Kff);
 
-  DigitalInput lightgate = new DigitalInput(DigitalIO.Transfer_Light_Gate);
+  DigitalInput lightgate = new DigitalInput(DigitalIO.Transfer_LightGate);
   CANSparkMax transferMtr;
   final SparkPIDController transferMtrPid;
   final RelativeEncoder transferMtrEncoder;

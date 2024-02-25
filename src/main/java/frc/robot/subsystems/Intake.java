@@ -69,7 +69,7 @@ public class Intake extends SubsystemBase {
   final RelativeEncoder intakeMtrEncoder;
 
   // lightgate tell us when we have a game piece (aka a Note)
-  final DigitalInput lightgate = new DigitalInput(DigitalIO.Intake_Note);
+  final DigitalInput lightgate = new DigitalInput(DigitalIO.Intake_LightGate);
 
   // limit switch
   SparkLimitSwitch m_forwardLimit;
