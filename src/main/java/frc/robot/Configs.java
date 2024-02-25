@@ -2,19 +2,18 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CAN;
-import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.NoseRoller;
 import frc.robot.subsystems.PneumaticsControl;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
+//import frc.robot.subsystems.Swerve.DTMonitorCmd;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.SubsystemConfig;
-import edu.wpi.first.wpilibj2.command.Command;
 
 /*
  * The Subsystems and object in Configs will be created by RobotContainer 
@@ -35,20 +34,28 @@ public class Configs {
         return pdp;
       })
       .add(PneumaticsControl.class)
-      .add(BlinkyLights.class, "LIGHTS")
+//      .add(BlinkyLights.class, "LIGHTS")
       .add(HID_Xbox_Subsystem.class, "DC", () -> {
         return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
       })
       .add(Sensors_Subsystem.class)
       .add(Limelight_Subsystem.class)
       .add(SwerveDrivetrain.class) // must be after LL and Sensors
+      //.add(Command.class, "DT_Monitor", () -> {return new DTMonitorCmd();})
       .add(Intake.class)
       .add(Command.class, "IntakeWatcher", () -> {
-        return RobotContainer.getSubsystem(Intake.class).getWatcher(); })
-      .add(Shooter.class)
+        return RobotContainer.getSubsystem(Intake.class).getWatcher();
+      })
+      .add(Shooter.class, "SHOOTER")
+      // .add(ShooterServo.class, "SHOOTER")
+        .add(Command.class, "ShooterWatcher", () -> {
+          //cast to get the correct type of shooter
+        return ((Shooter)RobotContainer.getSubsystem("SHOOTER")).getWatcher();
+      })
       .add(Transfer.class)
-      //add(Climber.class)
-      ;
+      .add(Command.class, "TransferWatcher", () -> {
+        return RobotContainer.getSubsystem(Transfer.class).getWatcher();
+      });
 
   public static final SubsystemConfig comp2024BetaBotSubsystemConfig = new SubsystemConfig()
       // deferred construction via Supplier<Object> lambda
@@ -63,10 +70,10 @@ public class Configs {
       .add(Sensors_Subsystem.class)
       .add(Limelight_Subsystem.class)
       .add(SwerveDrivetrain.class) // must be after LL and Sensors
-      .add(Intake.class)
-      .add(Shooter.class)
-      .add(Transfer.class)
-      .add(NoseRoller.class);
+      //.add(Intake.class)
+      //.add(Shooter.class)
+      //.add(Transfer.class)
+      ;
 
   // Subsystems and hardware on Tim 2.0
   public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig()

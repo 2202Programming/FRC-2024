@@ -107,6 +107,11 @@ public class Sensors_Subsystem extends SubsystemBase {
   double m_roll;
   double m_pitch;
   double m_yaw;
+
+  double m_Xaccel;
+  double m_Yaccel;
+  double m_Zaccel;
+
   // offsets measured at power up
   final int BIAS_SAMPLES = 5; // [count]
   final double BIAS_DELAY = 0.2; // [s]
@@ -161,7 +166,7 @@ public class Sensors_Subsystem extends SubsystemBase {
     double roll_bias = 0.0, pitch_bias = 0.0, yaw_bias = 0.0;
     for (int i = 0; i < BIAS_SAMPLES; i++) {
       roll_bias += m_pigeon.getRotation3d().getX() * 180.0 / Math.PI;// Roll
-      pitch_bias += m_pigeon.getRotation3d().getY() * 180.0/ Math.PI;// Pitch
+      pitch_bias += m_pigeon.getRotation3d().getY() * 180.0 / Math.PI;// Pitch
       yaw_bias += m_pigeon.getRotation3d().getZ() * 180.0 / Math.PI;// Yaw
       Timer.delay(BIAS_DELAY);
     }
@@ -175,10 +180,17 @@ public class Sensors_Subsystem extends SubsystemBase {
   public void periodic() {
     // CCW positive, inverting here to match all the NavX code previously written.
     m_yaw = ModMath.fmod360_2(-m_pigeon.getRotation3d().getZ() * 180.0 / Math.PI);
-    m_pitch = (m_pigeon.getRotation3d().getY()* 180.0 / Math.PI) - m_pitch_bias;
-    m_roll = (m_pigeon.getRotation3d().getX()*180.0 / Math.PI) - m_roll_bias;
+    m_pitch = (m_pigeon.getRotation3d().getY() * 180.0 / Math.PI) - m_pitch_bias;
+    m_roll = (m_pigeon.getRotation3d().getX() * 180.0 / Math.PI) - m_roll_bias;
     getRotationPositions(m_rot);
+
+    // TODO m_xyz_dps not set
     m_yaw_d = m_xyz_dps[2];
+
+    // read accelerations
+    m_Xaccel = m_pigeon.getAccelerationX().getValueAsDouble();
+    m_Yaccel = m_pigeon.getAccelerationY().getValueAsDouble();
+    m_Zaccel = m_pigeon.getAccelerationZ().getValueAsDouble();
 
     log_counter++;
     log();
@@ -234,6 +246,18 @@ public class Sensors_Subsystem extends SubsystemBase {
 
   public double getYawRate() {
     return m_xyz_dps[2];
+  }
+
+  public double getXAccel() {
+    return m_Xaccel;
+  }
+
+  public double getYAccel() {
+    return m_Yaccel;
+  }
+
+  public double getZAccel() {
+    return m_Zaccel;
   }
 
   /*
@@ -325,10 +349,10 @@ public class Sensors_Subsystem extends SubsystemBase {
     // (-180,180)
     // Phoenix 6 is [-0.5, 0.5) rotations
     // so multiply this by 360 so that it returns degrees
-    pos.back_left = rot_encoder_bl.getAbsolutePosition().getValueAsDouble() *360.0;
-    pos.back_right = rot_encoder_br.getAbsolutePosition().getValueAsDouble()*360.0;
-    pos.front_left = rot_encoder_fl.getAbsolutePosition().getValueAsDouble()*360.0;
-    pos.front_right = rot_encoder_fr.getAbsolutePosition().getValueAsDouble()*360.0;
+    pos.back_left = rot_encoder_bl.getAbsolutePosition().getValueAsDouble() * 360.0;
+    pos.back_right = rot_encoder_br.getAbsolutePosition().getValueAsDouble() * 360.0;
+    pos.front_left = rot_encoder_fl.getAbsolutePosition().getValueAsDouble() * 360.0;
+    pos.front_right = rot_encoder_fr.getAbsolutePosition().getValueAsDouble() * 360.0;
 
     return pos;
   }
@@ -351,6 +375,7 @@ public class Sensors_Subsystem extends SubsystemBase {
   /**
    * init() - setup cancoder the way we need them.
    * This CANcoder returns value in rotation with phoenix 6 [-0.5, 0.5)
+   * 
    * @param c
    * @return CANcoder just initialized
    */

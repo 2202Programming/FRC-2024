@@ -5,6 +5,7 @@
 package frc.robot.util;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
@@ -59,41 +60,78 @@ public class NeoServo implements VelocityControlled {
     final SparkPIDController pid;
     final RelativeEncoder encoder;
 
+    /*
+     * internal constructor shared by other forms, does most of setup
+     * encoder and pid set in calling constructor.
+     */
+    private NeoServo(int canID, MotorType motorType,
+            PIDController positionPID,
+            PIDFController hwVelPIDcfg,
+            boolean inverted, int hwVelSlot,
+            Type encType, int kCPR) {
+    
+        setName("NeoServo-" + canID);  //until a better name is selected
+        ctrl = new CANSparkMax(canID, motorType);
+        ctrl.setCANTimeout(50); //enter blocking mode for config
+        ctrl.clearFaults();
+        ctrl.restoreFactoryDefaults();
+        ctrl.setInverted(inverted);
+        ctrl.setIdleMode(CANSparkMax.IdleMode.kBrake);
+        
+        if (encType == null) {
+            //normal, internal encoder based on motor counts
+            encoder = ctrl.getEncoder();
+            pid = ctrl.getPIDController();
+        }
+        else {
+            //alternate encoder - relative, external
+            encoder = ctrl.getAlternateEncoder(encType, kCPR);
+            pid = ctrl.getPIDController();                    
+            pid.setFeedbackDevice(encoder);
+        }
+        // copy rest of inputs
+        this.positionPID = positionPID;
+        this.hwVelSlot = hwVelSlot;
+        this.hwVelPIDcfg = hwVelPIDcfg;
+        this.prevVelPIDcfg = new PIDFController(hwVelPIDcfg);
+        
+        //Setup pid on hardware with give config and full output range
+        pid.setOutputRange(-1.0, 1.0);
+        this.hwVelPIDcfg.copyTo(pid, this.hwVelSlot);
+
+        errorCheck();
+        ctrl.setCANTimeout(0); //leave blocking mode
+    }
+
+    /* default slot=0 for pid slot */
     public NeoServo(int canID, PIDController positionPID, PIDFController hwVelPIDcfg, boolean inverted) {
         this(canID, positionPID, hwVelPIDcfg, inverted, 0);
     }
 
     public NeoServo(int canID, PIDController positionPID, PIDFController hwVelPIDcfg, boolean inverted, int hwVelSlot) {
-        // use canID to get controller and supporting objects
-        ctrl = new CANSparkMax(canID, MotorType.kBrushless);
-        ctrl.clearFaults();
-        ctrl.restoreFactoryDefaults();
-        ctrl.setInverted(inverted);
-        ctrl.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        pid = ctrl.getPIDController();
-        encoder = ctrl.getEncoder();
-
-        this.positionPID = positionPID;
-        this.hwVelSlot = hwVelSlot;
-        this.hwVelPIDcfg = hwVelPIDcfg;
-        this.prevVelPIDcfg = new PIDFController(hwVelPIDcfg);
+        this(canID, MotorType.kBrushless, positionPID, hwVelPIDcfg, inverted,  hwVelSlot, 
+            null, 0);        
     }
 
-    // not really a NEO, but a sparkmax controller on brushed motor and alt encoder
-    public NeoServo(int canID, PIDController positionPID, PIDFController hwVelPIDcfg, boolean inverted, int hwVelSlot,
-            Type extEncoderType, int kCPR) {
-        ctrl = new CANSparkMax(canID, MotorType.kBrushed);
-        ctrl.clearFaults();
-        ctrl.restoreFactoryDefaults();
-        ctrl.setInverted(inverted);
-        ctrl.setIdleMode(CANSparkMax.IdleMode.kBrake);
-        pid = ctrl.getPIDController();
-        encoder = ctrl.getAlternateEncoder(extEncoderType, kCPR);
+    // Works now with given motor type and an alt encoder
+    public NeoServo(int canID, MotorType motorType,
+            PIDController positionPID,
+            PIDFController hwVelPIDcfg,
+            Type extEncoderType, int kCPR,  
+            boolean inverted, int hwVelSlot) {
+        this(canID, MotorType.kBrushless, positionPID, hwVelPIDcfg, inverted,  hwVelSlot, 
+            extEncoderType, kCPR);        
+    }
 
-        this.positionPID = positionPID;
-        this.hwVelSlot = hwVelSlot;
-        this.hwVelPIDcfg = hwVelPIDcfg;
-        this.prevVelPIDcfg = new PIDFController(hwVelPIDcfg);
+    void errorCheck() {
+        REVLibError error = ctrl.getLastError();
+        if (error!= REVLibError.kOk) {
+            System.out.println(name + " SparkMax LastError:" + error.toString() + ", clearing." );
+        }
+        error = ctrl.clearFaults();
+        if (error!= REVLibError.kOk) {
+            System.out.println(name + " SparkMax couldn't clear faults:" + error.toString() + ", good luck." );
+        }
     }
 
     public NeoServo setName(String name) {
@@ -140,6 +178,10 @@ public class NeoServo implements VelocityControlled {
         // defer to the VelocityControlled API
         setMaxVel(maxVelocity);
         return this;
+    }
+
+    public CANSparkMax getController() {
+        return ctrl;
     }
 
     public NeoServo setBrakeMode(CANSparkMax.IdleMode mode) {
@@ -246,8 +288,8 @@ public class NeoServo implements VelocityControlled {
      * Looks for motion on the servo to ensure we are not stalled.
      * 
      * return -
-     * false => servo is moving correctly
-     * true => servo is stalled for N frames or more, cut the motor in periodic()
+     *  false => servo is moving correctly
+     *  true => servo is stalled for N frames or more, cut the motor in periodic()
      */
     boolean isStalled() {
         boolean not_moving = (Math.abs(velocity_cmd) > positionPID.getVelocityTolerance()) && // motion requested
@@ -265,6 +307,9 @@ public class NeoServo implements VelocityControlled {
         periodic(0.0);
     }
 
+    /*
+     * compAdjustment - used to sync two servo like arms that should move together
+     */
     public void periodic(double compAdjustment) {
         // measure -read encoder for current position and velocity
         currentPos = encoder.getPosition() - trim;
@@ -281,9 +326,10 @@ public class NeoServo implements VelocityControlled {
 
         // if velocity mode, use external_vel_cmd, otherwise use positionPID
         velocity_cmd = velocity_mode ? external_vel_cmd + compAdjustment : velocity_cmd;
-        
-        //local copy of arbFeedforward incase stall has to zero it and it isn't set every frame by class user
-        double arbFF = arbFeedforward;   
+
+        // local copy of arbFeedforward incase stall has to zero it and it isn't set
+        // every frame by class user
+        double arbFF = arbFeedforward;
 
         // confirm we are moving and not stalled
         if (isStalled()) {
@@ -294,7 +340,7 @@ public class NeoServo implements VelocityControlled {
                         " velocity_cmd=" + velocity_cmd +
                         " measured_vel=" + currentVel, false);
                 // stalled for NO_MOTION_FRAMES frames, stop trying to move
-                setSetpoint(currentPos); // stay where we are 
+                setSetpoint(currentPos); // stay where we are
                 velocity_cmd = 0.0;
                 arbFF = 0.0;
             } else {
@@ -306,15 +352,14 @@ public class NeoServo implements VelocityControlled {
         pid.setReference(velocity_cmd, ControlType.kVelocity, hwVelSlot, arbFF, ArbFFUnits.kPercentOut);
     }
 
-
     public void simulationPeriodic() {
         // nothing to do if we are not enabled
-        if (!DriverStation.isEnabled()) 
+        if (!DriverStation.isEnabled())
             return;
-        //simple model - encoder vel is set in sim when a velocity mode is used
-        //so move the position based on velocity being commanded
-        // no dynamics are modeled 
-        double pos = encoder.getPosition() + encoder.getVelocity() * Constants.DT; 
+        // simple model - encoder vel is set in sim when a velocity mode is used
+        // so move the position based on velocity being commanded
+        // no dynamics are modeled
+        double pos = encoder.getPosition() + encoder.getVelocity() * Constants.DT;
         encoder.setPosition(pos);
     }
 
