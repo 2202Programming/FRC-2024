@@ -42,6 +42,7 @@ import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.Swerve.RotateTo;
 import frc.robot.commands.auto.AutoShooting;
+import frc.robot.commands.auto.TurnFaceShootAuto;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -237,6 +238,7 @@ public class RobotContainer {
         driver.povDown().onTrue(new AutoShooting(ShootingTarget.Speaker));
         driver.povUp().onTrue(new AutoShooting(ShootingTarget.Trap));
         driver.povRight().onTrue(new AutoShooting(ShootingTarget.Amp));
+        driver.povLeft().onTrue(new TurnFaceShootAuto(4));
         driver.x().onTrue(new RotateTo());
         break;
 
