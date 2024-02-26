@@ -4,12 +4,19 @@
 
 package frc.robot.commands.Intake;
 
-import edu.wpi.first.wpilibj2.command.Command;
+//import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Transfer;
-import frc.robot.Constants.Transfer_Constants.noteCommandedLocation;
+//import frc.robot.Constants.Transfer_Constants.NoteCommandedLocation;
+
+/*
+ * WIP  -  
+ * 
+ *   TODO: Please fill out what this command should do.
+ * 
+ */
 
 public class IntakePositionHandler extends InstantCommand {
 
@@ -27,13 +34,15 @@ public class IntakePositionHandler extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(transfer.commandedLocation == noteCommandedLocation.transfer) {
+    /*  WIP not sure of the intent here - Mr.L
+    if(transfer.commandedLocation == NoteCommandedLocation.Transfer) {
       Command command = new IntakeSequence(false);
       command.schedule();
-    } else if (transfer.commandedLocation == noteCommandedLocation.intake) {
+    } else if (transfer.commandedLocation == NoteCommandedLocation.Intake) {
       Command command = new NoteInIntake();
       command.schedule();
     }
+    */
   }
 
   // Called every time the scheduler runs while the command is scheduled.

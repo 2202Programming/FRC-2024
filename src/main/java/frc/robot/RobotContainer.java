@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.Transfer_Constants.NoteCommandedLocation;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
@@ -263,7 +264,7 @@ public class RobotContainer {
         operator.y().whileTrue(new IntakeSequence(true));
         operator.b().whileTrue(new EjectNote());
         operator.x().whileTrue(new IntakeTest(-1.0));
-        operator.leftBumper().onTrue(new SwitchNoteLocation()); //placeholder
+        operator.leftBumper().onTrue(new SwitchNoteLocation(NoteCommandedLocation.Swap)); 
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
         operator.povRight().whileTrue(new IntakeTest(0.35));

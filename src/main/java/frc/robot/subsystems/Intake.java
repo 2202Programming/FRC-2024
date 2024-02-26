@@ -207,7 +207,7 @@ public class Intake extends SubsystemBase {
     return new IntakeWatcherCmd();
   }
 
-  public boolean has_Note() {
+  public boolean hasNote() {
     return lightgate.get(); // TODO: Find out if inverted or not
   }
 
@@ -225,7 +225,7 @@ public class Intake extends SubsystemBase {
 
     this.angle_servo.periodic();
 
-    if (has_Note()) {
+    if (hasNote()) {
       has_had_note = true;
     } else if (has_had_note) {
       has_note = true;

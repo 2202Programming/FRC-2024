@@ -74,7 +74,7 @@ public class NoteInIntake extends Command {
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:
-        if (intake.has_Note()) {
+        if (intake.hasNote()) {
             intake.setIntakeSpeed(0.0);
             phase = Phase.Finished;
         }

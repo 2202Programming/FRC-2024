@@ -247,20 +247,7 @@ public final class Constants {
   } //TODO: check for deletion
 
   public static final class Transfer_Constants {
-    public enum noteCommandedLocation {
-      transfer, intake;
-      
-      public noteCommandedLocation cycle(noteCommandedLocation location) {
-        if(location == transfer) {
-          return noteCommandedLocation.intake;
-        } else if (location == intake) {
-          return noteCommandedLocation.transfer;
-        } else {
-          return null;
-        }
-      }
-   }
-
+    public enum NoteCommandedLocation { Transfer, Intake, Swap; }
     public static final double TRANSFER_MOTOR_ON = 0.8;
     public static final double TRANSFER_MOTOR_REVERSE = -0.5;
   }
