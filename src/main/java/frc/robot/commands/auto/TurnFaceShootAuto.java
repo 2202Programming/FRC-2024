@@ -96,17 +96,25 @@ public class TurnFaceShootAuto extends Command {
         currentTagOffset = tagOffset(targetTagID);
 
         if(currentTagOffset > angle_tolerance){ //tag is not centered enough
+          if (currentPhase != Phase.CenteringTag){
+            System.out.println("***TurnFaceShootAuto: Switching to CenteringTag...");
+          }
           currentPhase = Phase.CenteringTag;
         }
         else { //tag is visible and centered enough
+          System.out.println("***TurnFaceShootAuto: Switching to Shooting...");
           currentPhase = Phase.Shooting;
         }
       }
       else { //tag is not visible
         if(currentRotationError < angle_tolerance){ //can't see tag, but internal concept of rotation is within tolerance
+          System.out.println("***TurnFaceShootAuto: Switching to Shooting...");
           currentPhase = Phase.Shooting;
         }
         else{ //can't see tag, and internal concept of rotation is above tolerance
+          if (currentPhase != Phase.TurningBlind){
+            System.out.println("***TurnFaceShootAuto: Switching to TurningBlind...");
+          }
           currentPhase = Phase.TurningBlind;
         }
       }
@@ -123,9 +131,11 @@ public class TurnFaceShootAuto extends Command {
       break;
       case Shooting:
         if(!shootCommand.isScheduled()){ //presumable first time through for case shooting, schedule the shoot command but only once
+          System.out.println("***TurnFaceShootAuto: Scheduling shooter...");
           shootCommand.schedule();
         }
         else if(shootCommand.isFinished()){ //shoot command is done, so we can finish this whole command
+          System.out.println("***TurnFaceShootAuto: Shooter finished..");
           finished = true;
         }
       break;
@@ -147,6 +157,7 @@ public class TurnFaceShootAuto extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    System.out.println("***TurnFaceShootAuto: Finished...");
     return finished;
   }
 
