@@ -21,10 +21,10 @@ import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 public class RotateTo extends Command {
   private final SwerveDrivetrain drivetrain;
   private PIDController pid;
-  private final double kp = 0.04;
+  private final double kp = 0.05;
   private final double ki = 0.0;
   private final double kd = 0.0;
-  private final double pos_tol = 5.0;
+  private final double pos_tol = 10.0;
   private final double vel_tol = 1.0;
   private SwerveDriveKinematics kinematics;
   private Pose2d currentPose;
