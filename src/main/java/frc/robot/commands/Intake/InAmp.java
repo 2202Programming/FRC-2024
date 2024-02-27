@@ -26,7 +26,7 @@ public class InAmp extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(intake.angleAtSetpoint() /* and hits wall */){
+    if(intake.angleAtSetpoint()){
       intake.setIntakeSpeed(-1.0);
     }
   }
@@ -35,6 +35,7 @@ public class InAmp extends Command {
   @Override
   public void end(boolean interrupted) {
     //add max vel?
+    intake.setMaxVelocity(120.0);
     intake.setAngleSetpoint(0.0);
     intake.setIntakeSpeed(0.0);
   }
