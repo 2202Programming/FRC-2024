@@ -19,8 +19,8 @@ public class InAmp extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.setMaxVelocity(30.0);
-    intake.setAngleSetpoint(10.0); //placeholder - find value that works
+    intake.setMaxVelocity(20.0);
+    intake.setAngleSetpoint(30.0); //placeholder - find value that works
   }
 
   // Called every time the scheduler runs while the command is scheduled.

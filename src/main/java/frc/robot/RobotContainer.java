@@ -29,6 +29,8 @@ import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
+import frc.robot.commands.Intake.InAmp;
+import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakePositionHandler;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
@@ -209,7 +211,7 @@ public class RobotContainer {
       case Competition:
 
         driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
-        driver.y().onTrue(new AllianceAwareGyroReset(false));
+        driver.y().onTrue(new AllianceAwareGyroReset(true));//DONT COMMIT THIS CHANGE
 
         // Start any watcher commands
         new PDPMonitorCmd(); // auto scheduled, runs when disabled
@@ -263,18 +265,20 @@ public class RobotContainer {
         operator.a().whileTrue(new IntakePositionHandler());
         operator.y().whileTrue(new IntakeSequence(true));
         operator.b().whileTrue(new EjectNote());
-        operator.x().whileTrue(new IntakeTest(-1.0));
+        // operator.x().whileTrue(new IntakeTest(-1.0));
         operator.leftBumper().onTrue(new SwitchNoteLocation(NoteCommandedLocation.Swap)); 
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
+        operator.rightBumper().whileTrue(new InIntake());
+        operator.leftTrigger().whileTrue(new InAmp());
         operator.povRight().whileTrue(new IntakeTest(0.35));
         operator.povLeft().onTrue(new CalibratePos(0.0));
         operator.povUp().whileTrue(new AngleCalibration(-15.0));
         operator.povDown().whileTrue(new AngleCalibration(15.0));
         operator.x().onTrue(new CalibratePos(0.0));
-        operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
-        operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
-        operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
+        // operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
+        // operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
+        // operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
        // TODO waiting for sensor wiring  operator.x().onTrue(new AbsEncoderCalibrate());
         
         /* TODO climber bindings, commented out for sussex -- er

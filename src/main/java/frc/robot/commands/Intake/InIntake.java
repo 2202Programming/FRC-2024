@@ -7,7 +7,6 @@ package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
 
 /**
  * Driver presses button
@@ -23,7 +22,8 @@ import frc.robot.subsystems.Shooter;
 public class InIntake extends Command {
 
   final Intake intake;
-  final Shooter shooter;
+  final double DONE_COUNT = 2;
+  double count;
 
   public enum Phase {
     IntakeDown("IntakeDown"),
@@ -48,13 +48,13 @@ public class InIntake extends Command {
   public InIntake() {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = RobotContainer.getSubsystem(Intake.class);
-    this.shooter = RobotContainer.getSubsystem("SHOOTER");
-    addRequirements(intake, shooter);
+    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    count = 0;
     phase = Phase.IntakeDown;
   }
 
@@ -63,7 +63,6 @@ public class InIntake extends Command {
   public void execute() {
     switch (phase) {
       case IntakeDown:
-        shooter.retract();
         intake.setMaxVelocity(60.0);
         intake.setAngleSetpoint(100.0);
         intake.setIntakeSpeed(0.8); // %
@@ -71,6 +70,9 @@ public class InIntake extends Command {
         break;
       case WaitingForNote:
         if (intake.hasNote()) {
+          count++;
+        }
+        if(count >= DONE_COUNT){
           phase = Phase.Finished;
         }
         break;
