@@ -46,7 +46,7 @@ public class Intake extends SubsystemBase {
   final double wheelGearRatio = 1.0; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean
 
   // anything or just gear raito works? (the comment before)
-  final double AngleGearRatio = 500.0; // Gear ratio
+  final double AngleGearRatio = 405.0; // Gear ratio
 
   boolean has_had_note = false;
   boolean has_note = false;
