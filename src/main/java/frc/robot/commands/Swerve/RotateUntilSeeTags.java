@@ -53,6 +53,7 @@ public class RotateUntilSeeTags extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("***RotateIUntilSeeTags: Init...");
     targetPose = (DriverStation.getAlliance().get() == Alliance.Blue) ? Tag_Pose.ID7 : Tag_Pose.ID4;
     timer.restart();
     currentPose = drivetrain.getPose();
@@ -80,6 +81,7 @@ public class RotateUntilSeeTags extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("***RotateIUntilSeeTags: End...");
     timer.stop();
   }
     /**

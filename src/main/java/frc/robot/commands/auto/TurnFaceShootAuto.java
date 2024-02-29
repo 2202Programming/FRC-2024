@@ -6,21 +6,25 @@ package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
 
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.RotateTo;
+import frc.robot.commands.Swerve.RotateUntilSeeTags;
 import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 
 
 public class TurnFaceShootAuto extends Command {
   double targetTagID;
+  int tagID;
   Limelight_Subsystem limelight;
 
   public TurnFaceShootAuto(int tagID) {
     targetTagID = tagID;
+    this.tagID = tagID;
     limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
   }
 
@@ -30,14 +34,14 @@ public class TurnFaceShootAuto extends Command {
       if(checkForTarget()) { //target tag is visible
         new SequentialCommandGroup(
           new FaceToTag(targetTagID),
-          new ShooterSequence(1000)
+          new ShooterSequence(3000)
         ).schedule();
       } 
       else{ //target tag is not *yet* visible
         new SequentialCommandGroup(
-          new RotateTo(),
+          new RotateUntilSeeTags(tagID),
           new FaceToTag(targetTagID),
-          new ShooterSequence(1000)
+          new ShooterSequence(3000)
         ).schedule();
       }
   }
