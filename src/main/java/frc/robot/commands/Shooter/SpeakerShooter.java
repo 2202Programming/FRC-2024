@@ -21,7 +21,10 @@ public class SpeakerShooter extends Command {
   private final double SHOOTER_Y_OFFSET = 0.0; // [m] pivotal point of shooter from the center(direction of shooter is +)
   private final double SHOOTER_Z_OFFSET = 0.0; // [m] shooter z position from floor
   private final double SPEAKER_HEIGHT = 0.0; // [m] speaker height from the floor
+
   private final double angle_adjustment = 0.0; // [deg] angle gain/lose for tuning
+  private final double[][] reg_ind_val = {{0,0},{0,0}}; // [radius, rot] use value from collectData mode
+  private final double[] reg_dep_val = {0,0}; // [rpm] shooter speed
 
   // RobotPose with polar coordinate(origin is tag)
   private double radius; // [m] distance from the speaker to the robot
