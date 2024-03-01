@@ -4,23 +4,24 @@
 
 package frc.robot.commands.Shooter;
 
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Tag_Pose;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
+import frc.robot.util.MultiRegression;
 
 public class SpeakerShooter extends Command {
   private SwerveDrivetrain drivetrain;
   private ShooterServo shooter;
   private boolean finished = false;
 
-  // TODO: Move this to Constnats
+  // TODO: Move this to Constnats And change these
   private final double SHOOTER_Y_OFFSET = 0.0; // [m] pivotal point of shooter from the center(direction of shooter is +)
   private final double SHOOTER_Z_OFFSET = 0.0; // [m] shooter z position from floor
-  private final double SPEAKER_HEIGHT = 0.0; // [m] speaker height from the floor
+  //TODO:Check this value
+  private final double SPEAKER_HEIGHT = 198; // [m] speaker height from the floor
 
   private final double angle_adjustment = 0.0; // [deg] angle gain/lose for tuning
   private final double[][] reg_ind_val = {{0,0},{0,0}}; // [radius, rot] use value from collectData mode
@@ -40,6 +41,7 @@ public class SpeakerShooter extends Command {
 
   // Switch to collect data for regression
   private boolean collectData = true;
+  private MultiRegression model;
   /**
    * Command shooting speaker
    * <p>Requires: ShooterServo and limelight detecting specified tag.
@@ -52,6 +54,7 @@ public class SpeakerShooter extends Command {
     drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
     shooter = RobotContainer.getSubsystem(ShooterServo.class);
     addRequirements(shooter);
+    model = new MultiRegression(reg_ind_val, reg_dep_val, 1000, 0.01, 2);
   }
 
   // Called when the command is initially scheduled.
@@ -76,7 +79,7 @@ public class SpeakerShooter extends Command {
               Math.abs(drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID4.getX())))
           * 180 / Math.PI;
     }
-    shooter_angle = Math.atan((SPEAKER_HEIGHT - SHOOTER_Z_OFFSET) /(radius - SHOOTER_Y_OFFSET));
+    shooter_angle = Math.atan((SPEAKER_HEIGHT - SHOOTER_Z_OFFSET) /(radius - SHOOTER_Y_OFFSET)) + angle_adjustment;
     //TODO: set shooter angle to shooter_angle
     // shooter.setShooterAngle(shooter_angle); maybe like this?
   }
@@ -91,7 +94,10 @@ public class SpeakerShooter extends Command {
     }
     else{
       if(shooter.atShooterAngleSetpoint()){
-        //TODO: implement shooter.setRPM() to set RPM
+        double[] condition = {radius, rot};
+        model.predict(condition);
+        //TODO: schedule SHOOTER command HERE with angle and RPM 
+        finished = true;
       }
     }
   }
