@@ -34,7 +34,7 @@ public class FaceToTag extends Command {
   Rotation2d currentAngle;
   double min_rot_rate = 6.0;
 
-  final double vel_tol = 2.0;
+  final double vel_tol = 1.0;
   final double pos_tol = 1.0;
   final double max_rot_rate = 45.0; // [deg/s]
 
@@ -128,6 +128,12 @@ public class FaceToTag extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("***FaceToTag: End...");
+    drivetrain.drive(kinematics.toSwerveModuleStates(ChassisSpeeds.fromFieldRelativeSpeeds(
+          0,
+          0,
+          0,
+          drivetrain.getPose().getRotation())));
     timer.stop();
   }
 
