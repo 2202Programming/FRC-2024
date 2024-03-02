@@ -13,7 +13,7 @@ import frc.robot.util.PIDFController;
 
 public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
-  final double GearRatio = 0; //have 2 eventually probably lol
+  final double GearRatio = 1.0; //have 2 eventually probably lol
   final double maxVel = 100.0; //placeholder
     final double maxAccel = 10.0; //placevholder
     double posTol = 2.0; //placeholder (maybe final posTol??)
@@ -22,26 +22,28 @@ public class Climber extends SubsystemBase {
     final int FREE_CURRENT = 15; //placeholder
   double desiredRightArmPos;
   double desiredLeftArmPos;
-  boolean syncArmsEnabled = true; //should be true most of the time
+  boolean sync = false; //if we want to use sync or not
+  double syncComp = 0.0;
 
   PIDController rightPID = new PIDController(0, 0, 0); //sw outer pos pid
   PIDController leftPID = new PIDController(0, 0, 0);
   PIDFController rightHwVelPID = new PIDFController(0, 0, 0, 0); //hw vel pid
   PIDFController leftHwVelPID = new PIDFController(0, 0, 0, 0);
+  PIDController syncPID = new PIDController(0.1, 0.0, 0.0); //sync pid left -> right
   double follow_comp = 0.0; //if for some reason one arm faster than other
   final NeoServo rightArm = new NeoServo(Constants.CAN.LEFT_CLIMBER, leftPID, leftHwVelPID, false); // need to find invert
   final NeoServo leftArm = new NeoServo(Constants.CAN.RIGHT_CLIMBER, rightPID, rightHwVelPID, false);
 
   public Climber() {
     leftHwVelPID.copyTo(leftArm.getController().getPIDController(), 0);
-    leftArm.setConversionFactor(360.0 / GearRatio) // we probs want diff conversions, currently in deg
+    leftArm.setConversionFactor(1.0/GearRatio) // find this
         .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
         .setVelocityHW_PID(maxVel, maxAccel)
         .setTolerance(posTol, velTol)
         .setMaxVelocity(maxVel)
         .burnFlash();
     rightHwVelPID.copyTo(rightArm.getController().getPIDController(), 0);
-    rightArm.setConversionFactor(360.0 / GearRatio) // we probs want diff conversions, currently in deg
+    rightArm.setConversionFactor(1.0/GearRatio) // find this
         .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
         .setVelocityHW_PID(maxVel, maxAccel)
         .setTolerance(posTol, velTol)
@@ -50,30 +52,36 @@ public class Climber extends SubsystemBase {
   }
 
   public void setArmHeight(double pos){
-        desiredLeftArmPos = pos;
+    desiredLeftArmPos = pos;
     desiredRightArmPos = pos;
     leftArm.setSetpoint(pos);
     rightArm.setSetpoint(pos);
+    sync = true;
   }
   public void setLeftArmHeight(double pos){
     desiredLeftArmPos = pos;
     leftArm.setSetpoint(pos);
+    sync = false;
   }
   public void setRightArmHeight(double pos){
     desiredRightArmPos = pos;
     rightArm.setSetpoint(pos);
+    sync = false;
   }
 // lines 46-56 are for testing only
   public void setArmVelocity(double vel){
     leftArm.setVelocityCmd(vel);
     rightArm.setVelocityCmd(vel);
+    sync = false;
   }
 
   public void setLeftArmVelocity(double vel){
   leftArm.setVelocityCmd(vel);
+  sync = false;
 }
 public void setRightArmVelocity(double vel){
   rightArm.setVelocityCmd(vel);
+  sync = false;
 }
 
   public double getLeftArmHeight(){
@@ -101,9 +109,16 @@ public void setRightArmVelocity(double vel){
   public void ClampAccel(double accel){
     MathUtil.clamp(accel, maxAccel, -maxAccel);
   }
+  public void setArmSync(boolean sync){
+    this.sync = sync;
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    syncComp = sync ? syncPID.calculate(leftArm.getPosition(), rightArm.getPosition()) : 0.0;
+    leftArm.periodic(syncComp);
+    rightArm.periodic(0.0);
+
   }
 }
