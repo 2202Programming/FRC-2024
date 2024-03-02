@@ -4,9 +4,6 @@
 
 package frc.robot;
 
-import java.util.Dictionary;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.subsystems.Swerve.Config.CANConfig;
 import frc.robot.subsystems.Swerve.Config.CANModuleConfig;
