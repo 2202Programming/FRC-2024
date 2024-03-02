@@ -27,7 +27,6 @@ import frc.robot.Constants.Transfer_Constants.NoteCommandedLocation;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
-import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.IntakePositionHandler;
 import frc.robot.commands.Intake.IntakeSequence;
@@ -231,7 +230,7 @@ public class RobotContainer {
         driver.rightTrigger().onTrue(new MoveToAnglePos(Intake.TravelUp, Intake.TravelUp));
         driver.leftTrigger().onTrue(new MoveToAnglePos(Intake.TravelDown, Intake.TravelDown));
         // driver.rightTrigger().onTrue(new AnglePos(50.0));
-        driver.a().onTrue(new CalibratePos(0.0));
+        //driver.a().onTrue(new CalibratePos(0.0));
         break;
       
       case auto_shooter_test:
@@ -272,10 +271,10 @@ public class RobotContainer {
         // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay in intake
         // operator.leftTrigger().whileTrue(new InAmp()); //works ---> into amp seq
         operator.povRight().whileTrue(new IntakeTest(0.35)); 
-        operator.povLeft().onTrue(new CalibratePos(0.0));
+        //operator.povLeft().onTrue(new CalibratePos(0.0));
         operator.povUp().whileTrue(new AngleCalibration(-15.0));
         operator.povDown().whileTrue(new AngleCalibration(15.0));
-        operator.x().onTrue(new CalibratePos(0.0));
+        //operator.x().onTrue(new CalibratePos(0.0));
         operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
         operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
         operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN

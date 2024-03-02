@@ -14,9 +14,8 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkLimitSwitch;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkMaxAlternateEncoder.Type;
+import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
@@ -48,18 +47,14 @@ public class Intake extends SubsystemBase {
   // anything or just gear raito works? (the comment before)
   final double AngleGearRatio = 500.0; // Gear ratio
 
-  boolean has_had_note = false;
-  boolean has_note = false;
-
   /** Creates a new Intake. */
   public double intake_speed = 0.0;
   double desired_intake_speed = 0.0;
   // Intake Angle, a servo
   final NeoServo angle_servo;
-  PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.0010, 0.0000, 0.0, /* 0.00503 */0.00); 
-  //PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.010, 0.00003, 0.0, /* 0.00503 */0.0045); //internal
-  //ext enc testing PIDFController hwAngleVelPID = new PIDFController(0.0001, 0.00000, 0.0, 0.00); 
-
+  
+  PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.010, 0.00003, 0.0, /* 0.00503 */0.0045); //internal vel
+  
   /* inner (hw/vel) go up and divide by 2*/
   //final PIDController anglePositionPID = new PIDController(4.0, 0.0, 0.0); // outer (pos) for internal enc
   final PIDController anglePositionPID = new PIDController(2.0, 0.0, 0.0); // outer (pos) ext enc
@@ -81,6 +76,11 @@ public class Intake extends SubsystemBase {
   DigitalInput limitSwitchUp = new DigitalInput(DigitalIO.IntakeIsUp);
   DigitalInput limitSwitchDown = new DigitalInput(DigitalIO.IntakeIsDown);
 
+  //Note State variables
+  boolean holdNote;  // true - keeps note in intake holding position, false passes it on
+  boolean senseNote_prev = false; // for edge detection 
+  boolean hasNote = false; // true when Intake has it
+
   public Intake() { // TODO: Get values
     final int STALL_CURRENT = 15; // [amp]
     final int FREE_CURRENT = 5; // [amp]
@@ -89,13 +89,11 @@ public class Intake extends SubsystemBase {
     final double posTol = 2.0; // [deg]
     final double velTol = 1.0; // [deg/s]
 
-    // servo controls angle of intake arm, setup for alt-encoder and brushless motor
+    // servo controls angle of intake arm, setup for velocity mode on brushless motor
     angle_servo = new NeoServo(CAN.ANGLE_MTR, 
-      // uncomment for alt enc 
-      MotorType.kBrushless,
+      //MotorType.kBrushless,// uncomment for alt enc  
       anglePositionPID, hwAngleVelPID,
-      // uncomment for alt enc 
-      Type.kQuadrature, Angle_kCPR, 
+      // Type.kQuadrature, Angle_kCPR, // uncomment for alt enc   
       true, 0);
 
     // use velocity control on intake motor
@@ -114,14 +112,17 @@ public class Intake extends SubsystemBase {
     /// Servo setup for angle_servo
     hwAngleVelPID.copyTo(angle_servo.getController().getPIDController(), 0);
     angle_servo
-        //.setConversionFactor(360.0 / AngleGearRatio) // [deg] for internal encoder behind gears
-        .setConversionFactor(360.0)   // [deg] external encoder on arm shaft
+        .setConversionFactor(360.0 / AngleGearRatio) // [deg] for internal encoder behind gears
+        //.setConversionFactor(360.0)   // [deg] external encoder on arm shaft
         .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
         .setVelocityHW_PID(maxVel, maxAccel)
         .setTolerance(posTol, velTol)
         .setMaxVelocity(maxVel)
         .burnFlash();
 
+    // Add external Encoder for position, but use Vel mode on inner loop
+    angle_servo.addAltPositionEncoder( Type.kQuadrature, Angle_kCPR, 360.0);
+    
     // power on
     setAnglePosition(UpPos);
     angle_servo.setClamp(UpPos, DownPos + 5.0);
@@ -137,7 +138,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void setIntakeSpeed(double speed) {
-    intakeMtr.set(speed); //RPM
+    intakeMtr.set(speed); //[%pwr] TODO change to velocity mode & tune hwpid for intakeMtr
     // intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
   }
 
@@ -164,6 +165,10 @@ public class Intake extends SubsystemBase {
     return angle_servo.getPosition();
   }
 
+  /*
+   * sets anglePosision to given value, doesn't move the intake.
+   * Useful for calibration with limits or power up.
+   */
   public void setAnglePosition(double pos) {
     angle_servo.setPosition(pos);
   }
@@ -175,7 +180,7 @@ public class Intake extends SubsystemBase {
   /*
    * [deg/s]
    * Switches angle servo to velcoity mode
-   * TESTING ONLY
+   * Used for test and calibration.
    */
   public void setAngleVelocity(double speed) {
     desired_intake_speed = speed;
@@ -215,32 +220,52 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasNote() {
-    return !lightgate.get(); // TODO: Find out if inverted or not
+    return !lightgate.get(); 
   }
 
-  public boolean has_Had_Note() {
-    return has_note;
+  public boolean has_Had_Note() {  //Mr.L not sure of intent???
+    return hasNote;
   }
 
   public void setHasNote(boolean state) {
     // if we ever lose a note, call this
-    has_note = state;
-    has_had_note = false;
+    hasNote = state;
+    senseNote_prev = false;
+  }
+
+  /*
+   * sets holdNote, when true the intake will stop moving when note is in 
+   * its holding position.
+   * 
+   * If set to true, assumes we don't have the note and clears
+   * any note state so we can watch for it.
+   */
+  public void setHoldNote(boolean holdNote)  {
+    this.holdNote = holdNote;
+    senseNote_prev = false;
+    if (holdNote) setHasNote(false);
   }
 
   public void periodic() {
-
     this.angle_servo.periodic();
 
-    if (hasNote()) {
-      has_had_note = true;
-    } else if (has_had_note) {
-      has_note = true;
+    // don't bother tracking note edge if we aren't going to hold it
+    if (!holdNote) return;
+
+    // if we get here, we need to hold on to the note
+    // moniter lightgate and speed so we can signal we have the note
+    if (senseNote()) {
+      senseNote_prev = true;
+    } else if (senseNote_prev) {
+      // high to low edge seen, we have it. Cmd will use timer to position correctly
+      // and stop the intakeMtr.
+      hasNote = true;
     }
   }
 
   class IntakeWatcherCmd extends WatcherCmd {
     NetworkTableEntry nt_hasNote;
+    NetworkTableEntry nt_senseNote_prev;
     NetworkTableEntry nt_angleVel;
     NetworkTableEntry nt_kP;
     NetworkTableEntry nt_kI;
@@ -274,9 +299,8 @@ public class Intake extends SubsystemBase {
       //nt_forwardLimitSwitchEnabled = table.getEntry("forwardLimitSwitch");
       nt_desiredSpeed = table.getEntry("desiredSpeed");
       nt_hasNote = table.getEntry("_hasNote");
+      nt_senseNote_prev = table.getEntry("_senseNote_prev");
 
-      // default value for mutables
-      // example nt_maxArbFF.setDouble(maxArbFF);
     }
 
     public void ntupdate() {
@@ -293,10 +317,7 @@ public class Intake extends SubsystemBase {
       //nt_forwardLimitSwitchEnabled.setBoolean(forwardSwitchEnabled());
       nt_desiredSpeed.setDouble(getDesiredVelocity());
       nt_hasNote.setBoolean(hasNote());
-
-      // get mutable values
-      // example maxArbFF = nt_maxArbFF.getDouble(maxArbFF);
-
+      nt_senseNote_prev.setBoolean(senseNote_prev);
     }
   } // watcher command
 

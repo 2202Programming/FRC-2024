@@ -13,17 +13,17 @@ public class AngleCalibration extends  Command {
 
     /** Creates a new intakeForward. */
     public final Intake intake;
-    double AngleVelocity; //[deg/s]
-    public AngleCalibration(double AngleVelocity) {
+    double angleVelocity; //[deg/s]
+    public AngleCalibration(double angleVelocity) {
         this.intake = RobotContainer.getSubsystem(Intake.class);
-        this.AngleVelocity = AngleVelocity;
+        this.angleVelocity = angleVelocity;
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        System.out.println("*******SPEED******" + AngleVelocity);
-        intake.setAngleVelocity(AngleVelocity);
+        System.out.println("*******SPEED******" + angleVelocity);
+        intake.setAngleVelocity(angleVelocity);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -33,17 +33,19 @@ public class AngleCalibration extends  Command {
 
     // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {
-        // intake.setAnglePosition(0.0);
+    public void end(boolean interrupted) {        
+        intake.setAngleVelocity(0.0);             
+        if (interrupted) return;
+
+        //made it here, then we completed calibration, so set our position
+        intake.setAnglePosition( (angleVelocity < 0.0) ? Intake.UpPos : Intake.DownPos);
         intake.setAngleSetpoint(intake.getAnglePosition());
-      intake.setAngleVelocity(0.0);      
-    //   intake.setAnglePosition(Intake_Constants.DrivingPosition);
     }
 
     // Returns true when the command should end, we end when count hits DONE_COUNT
     @Override
     public boolean isFinished() {
-        return false;
-        // return intake.atReverseLimitSwitch();      
+        return  (angleVelocity < 0.0) ? intake.atReverseLimitSwitch() : intake.atForwardLimitSwitch();      
+        
     }
 }
