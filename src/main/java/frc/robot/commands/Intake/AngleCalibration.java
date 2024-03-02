@@ -33,7 +33,8 @@ public class AngleCalibration extends  Command {
 
     // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {        
+    public void end(boolean interrupted) { 
+        intake.setMaxVelocity(1.0); // test worked, turns off vel-cmd at end so bounce isn't chased.
         intake.setAngleVelocity(0.0);             
         if (interrupted) return;
 

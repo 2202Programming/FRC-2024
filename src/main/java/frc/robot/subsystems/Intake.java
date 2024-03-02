@@ -54,7 +54,7 @@ public class Intake extends SubsystemBase {
   final NeoServo angle_servo;
   
   //PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.010, 0.00003, 0.0, /* 0.00503 */0.0045); //internal vel
-  PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.0010, 0.0000, 0.0, /* 0.00503 */0.0055); //internal vel
+  PIDFController hwAngleVelPID = new PIDFController(0.0050, 0.0000, 0.0, 0.0075); //3/2/24 improved vel loop match (new encoder)
   
   /* inner (hw/vel) go up and divide by 2*/
   //final PIDController anglePositionPID = new PIDController(4.0, 0.0, 0.0); // outer (pos) for internal enc
