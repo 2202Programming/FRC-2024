@@ -18,7 +18,7 @@ import frc.robot.subsystems.Shooter;
  * to green!!
  * 
  */
-
+@Deprecated  // See InIntake command - these seem the same
 public class NoteInIntake extends Command {
 
   final Intake intake;
