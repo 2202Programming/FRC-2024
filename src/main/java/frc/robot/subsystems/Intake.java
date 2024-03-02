@@ -15,8 +15,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkPIDController;
-//import com.revrobotics.CANSparkLowLevel.MotorType;
-//import com.revrobotics.SparkMaxAlternateEncoder.Type;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkMaxAlternateEncoder.Type;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
@@ -56,11 +56,14 @@ public class Intake extends SubsystemBase {
   double desired_intake_speed = 0.0;
   // Intake Angle, a servo
   final NeoServo angle_servo;
-  PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.010, 0.00003, 0.0, /* 0.00503 */0.0045); 
+  PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.0010, 0.0000, 0.0, /* 0.00503 */0.00); 
+  //PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.010, 0.00003, 0.0, /* 0.00503 */0.0045); //internal
   //ext enc testing PIDFController hwAngleVelPID = new PIDFController(0.0001, 0.00000, 0.0, 0.00); 
 
   /* inner (hw/vel) go up and divide by 2*/
-  final PIDController anglePositionPID = new PIDController(4.0, 0.0, 0.0); // outer (pos)
+  //final PIDController anglePositionPID = new PIDController(4.0, 0.0, 0.0); // outer (pos) for internal enc
+  final PIDController anglePositionPID = new PIDController(2.0, 0.0, 0.0); // outer (pos) ext enc
+
 
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
@@ -88,10 +91,12 @@ public class Intake extends SubsystemBase {
 
     // servo controls angle of intake arm, setup for alt-encoder and brushless motor
     angle_servo = new NeoServo(CAN.ANGLE_MTR, 
-      // uncomment for alt enc MotorType.kBrushless,
+      // uncomment for alt enc 
+      MotorType.kBrushless,
       anglePositionPID, hwAngleVelPID,
-      // uncomment for alt enc Type.kQuadrature, Angle_kCPR, 
-      true);
+      // uncomment for alt enc 
+      Type.kQuadrature, Angle_kCPR, 
+      true, 0);
 
     // use velocity control on intake motor
     intakeMtr.clearFaults();
@@ -108,7 +113,9 @@ public class Intake extends SubsystemBase {
 
     /// Servo setup for angle_servo
     hwAngleVelPID.copyTo(angle_servo.getController().getPIDController(), 0);
-    angle_servo.setConversionFactor(360.0 / AngleGearRatio) // [deg]
+    angle_servo
+        //.setConversionFactor(360.0 / AngleGearRatio) // [deg] for internal encoder behind gears
+        .setConversionFactor(360.0)   // [deg] external encoder on arm shaft
         .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
         .setVelocityHW_PID(maxVel, maxAccel)
         .setTolerance(posTol, velTol)
@@ -134,9 +141,9 @@ public class Intake extends SubsystemBase {
     // intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
   }
 
-  // public boolean hasNote() {
-  // return lightgate.get();
-  // }
+  public boolean senseNote() {
+   return !lightgate.get();
+   }
 
   public double getIntakeRollerSpeed() {
     return intakeMtrEncoder.getVelocity();
@@ -188,11 +195,11 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean atForwardLimitSwitch() {
-    return limitSwitchUp.get(); // do we need to check the other???
+    return !limitSwitchDown.get(); 
   }
 
   public boolean atReverseLimitSwitch() {
-    return limitSwitchDown.get();
+    return !limitSwitchUp.get();
   }
 
   public boolean limitSwitchEnabled() {
@@ -233,7 +240,7 @@ public class Intake extends SubsystemBase {
   }
 
   class IntakeWatcherCmd extends WatcherCmd {
-    // NetworkTableEntry nt_lightgate;
+    NetworkTableEntry nt_hasNote;
     NetworkTableEntry nt_angleVel;
     NetworkTableEntry nt_kP;
     NetworkTableEntry nt_kI;
@@ -254,38 +261,38 @@ public class Intake extends SubsystemBase {
 
     public void ntcreate() {
       NetworkTable table = getTable();
-      // nt_lightgate = table.getEntry("lightgate");
+      nt_lightgate = table.getEntry("dio_Note");
       nt_angleVel = table.getEntry("angleVel");
       nt_kP = table.getEntry("kP");
       nt_kI = table.getEntry("kI");
       nt_kD = table.getEntry("kD");
       nt_wheelVel = table.getEntry("wheelVel");
       nt_anglePos = table.getEntry("anglePos");
-      nt_forwardLimit = table.getEntry("forwardLimit");
-      nt_reverseLimit = table.getEntry("reverseLimit");
-      nt_reverseLimitSwitchEnabled = table.getEntry("reverseLimitEnabled");
-      nt_forwardLimitSwitchEnabled = table.getEntry("forwardLimitSwitch");
+      nt_forwardLimit = table.getEntry("dio_LimitFwd");
+      nt_reverseLimit = table.getEntry("dio_LimitRev");
+      //nt_reverseLimitSwitchEnabled = table.getEntry("reverseLimitEnabled");
+      //nt_forwardLimitSwitchEnabled = table.getEntry("forwardLimitSwitch");
       nt_desiredSpeed = table.getEntry("desiredSpeed");
-      nt_lightgate = table.getEntry("lightgate");
+      nt_hasNote = table.getEntry("_hasNote");
 
       // default value for mutables
       // example nt_maxArbFF.setDouble(maxArbFF);
     }
 
     public void ntupdate() {
-      // nt_lightgate.setBoolean();
+      nt_lightgate.setBoolean(senseNote());
       nt_angleVel.setDouble(getAngleSpeed());
       nt_kP.setDouble(hwAngleVelPID.getP());
       nt_kI.setDouble(hwAngleVelPID.getI());
       nt_kD.setDouble(hwAngleVelPID.getD());
       nt_wheelVel.setDouble(getIntakeRollerSpeed());
       nt_anglePos.setDouble(getAnglePosition());
-      //nt_forwardLimit.setBoolean(limitSwitchUp.get());
-      //nt_reverseLimit.setBoolean(limitSwitchDown.get());
+      nt_forwardLimit.setBoolean(atForwardLimitSwitch());
+      nt_reverseLimit.setBoolean(atReverseLimitSwitch());
       //nt_reverseLimitSwitchEnabled.setBoolean(limitSwitchEnabled());
       //nt_forwardLimitSwitchEnabled.setBoolean(forwardSwitchEnabled());
       nt_desiredSpeed.setDouble(getDesiredVelocity());
-      nt_lightgate.setBoolean(hasNote());
+      nt_hasNote.setBoolean(hasNote());
 
       // get mutable values
       // example maxArbFF = nt_maxArbFF.getDouble(maxArbFF);

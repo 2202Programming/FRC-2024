@@ -232,8 +232,8 @@ public final class Constants {
   public final class DigitalIO {
     public static final int Transfer_LightGate = 0;
     public static final int Intake_LightGate = 1;
-    public static final int IntakeIsUp = 2; 
-    public static final int IntakeIsDown = 3; 
+    public static final int IntakeIsDown = 2; 
+    public static final int IntakeIsUp = 3; 
     
     //TODO wire these placeholders on the bot
     public static final int RollerLightGate = 4; // placeholder
