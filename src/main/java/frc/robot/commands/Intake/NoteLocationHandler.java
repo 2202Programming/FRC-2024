@@ -181,7 +181,7 @@ public class NoteLocationHandler extends Command {
   @Override
   public void execute() {
     // watch our targe subsystem to say they have the note
-    isDone = targetHasNote.getAsBoolean();
+    isDone = (isDone) ? true : targetHasNote.getAsBoolean();
   }
 
   // Called once the command ends or is interrupted.
