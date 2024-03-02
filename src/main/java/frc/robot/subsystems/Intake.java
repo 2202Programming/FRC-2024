@@ -53,16 +53,17 @@ public class Intake extends SubsystemBase {
   // Intake Angle, a servo
   final NeoServo angle_servo;
   
-  PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.010, 0.00003, 0.0, /* 0.00503 */0.0045); //internal vel
+  //PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.010, 0.00003, 0.0, /* 0.00503 */0.0045); //internal vel
+  PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.0010, 0.0000, 0.0, /* 0.00503 */0.0055); //internal vel
   
   /* inner (hw/vel) go up and divide by 2*/
   //final PIDController anglePositionPID = new PIDController(4.0, 0.0, 0.0); // outer (pos) for internal enc
-  final PIDController anglePositionPID = new PIDController(2.0, 0.0, 0.0); // outer (pos) ext enc
+  final PIDController anglePositionPID = new PIDController(1.0, 0.0, 0.0); // outer (pos) ext enc
 
 
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
-  final PIDFController intakeVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0); // wip - use pwr for sussex
+  final PIDFController intakeVelPID = new PIDFController(0.0, 0.0, 0.0, 0.0); // wip - use pwr for sussex
   final SparkPIDController intakeMtrPid;
   final RelativeEncoder intakeMtrEncoder;
 
@@ -272,6 +273,7 @@ public class Intake extends SubsystemBase {
     NetworkTableEntry nt_kD;
     NetworkTableEntry nt_wheelVel;
     NetworkTableEntry nt_anglePos;
+    NetworkTableEntry nt_angleCmd;
     NetworkTableEntry nt_forwardLimit;
     NetworkTableEntry nt_reverseLimit;
     NetworkTableEntry nt_reverseLimitSwitchEnabled;
@@ -293,6 +295,7 @@ public class Intake extends SubsystemBase {
       nt_kD = table.getEntry("kD");
       nt_wheelVel = table.getEntry("wheelVel");
       nt_anglePos = table.getEntry("anglePos");
+      nt_angleCmd = table.getEntry("anglePosCmd");
       nt_forwardLimit = table.getEntry("dio_LimitFwd");
       nt_reverseLimit = table.getEntry("dio_LimitRev");
       //nt_reverseLimitSwitchEnabled = table.getEntry("reverseLimitEnabled");
@@ -311,6 +314,7 @@ public class Intake extends SubsystemBase {
       nt_kD.setDouble(hwAngleVelPID.getD());
       nt_wheelVel.setDouble(getIntakeRollerSpeed());
       nt_anglePos.setDouble(getAnglePosition());
+      nt_angleCmd.setDouble(getAngleSetpoint());
       nt_forwardLimit.setBoolean(atForwardLimitSwitch());
       nt_reverseLimit.setBoolean(atReverseLimitSwitch());
       //nt_reverseLimitSwitchEnabled.setBoolean(limitSwitchEnabled());

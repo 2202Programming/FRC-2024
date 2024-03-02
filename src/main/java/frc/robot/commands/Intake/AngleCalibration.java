@@ -38,7 +38,8 @@ public class AngleCalibration extends  Command {
         if (interrupted) return;
 
         //made it here, then we completed calibration, so set our position
-        intake.setAnglePosition( (angleVelocity < 0.0) ? Intake.UpPos : Intake.DownPos);
+         System.out.println("Calibration at " + intake.getAnglePosition());
+        intake.setAnglePosition( (angleVelocity < 0.0) ? Intake.UpPos : intake.getAnglePosition());
         intake.setAngleSetpoint(intake.getAnglePosition());
     }
 
