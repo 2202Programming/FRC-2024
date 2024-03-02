@@ -35,7 +35,25 @@ public class Intake extends SubsystemBase {
   public static final double DownPos = 90.0; // [deg]
   public static final double TravelUp = 120.0; // [deg/s]
   public static final double TravelDown = 60.0; // [deg/s]
-  public static final double EncoderOffset = 10.0; // todo Offset and the default pos                                                  
+  public static final double EncoderOffset = 10.0; // todo Offset and the default pos
+
+  public int count = 0;
+
+  /*
+   * S - shooter
+   * I - intake
+   * T - transfer
+   * O - outside
+   * 2 - to
+   * F - from
+   */
+  enum intakeNoteState {
+    hasNote, hasNoNote, O2I, T2I, I2T, I2O
+  }
+
+  enum noteLocation {
+    outside, intake, transfer, shooter, none
+  }
 
   // External encoder used
   // https://www.revrobotics.com/rev-11-1271/
@@ -128,15 +146,28 @@ public class Intake extends SubsystemBase {
     setAnglePosition(UpPos);
     angle_servo.setClamp(UpPos, DownPos + 5.0);
 
-    // limit switch config 
-    //Cannot have alternate encoder and limit switches- error from lib
-    //m_forwardLimit = angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
-    //m_reverseLimit = angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
-    //m_forwardLimit.enableLimitSwitch(false);
-    //m_reverseLimit.enableLimitSwitch(false);
+    // limit switch config
+    // Cannot have alternate encoder and limit switches- error from lib
+    // m_forwardLimit =
+    // angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
+    // m_reverseLimit =
+    // angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
+    // m_forwardLimit.enableLimitSwitch(false);
+    // m_reverseLimit.enableLimitSwitch(false);
     // m_forwardLimit.enableLimitSwitch(true);
     // m_reverseLimit.enableLimitSwitch(true);
   }
+
+  // TODO: change is we start with the note in the intake; assumes that we do not
+  // have the note in the intake at the start of the game
+  // ?? TODO/Question why are these states not set in the constructor or placed
+  // with the other globals??
+  intakeNoteState state = intakeNoteState.hasNoNote;
+  noteLocation location = noteLocation.none;
+  intakeNoteState requestedState;
+  // this is the 'state' that we want when the motors turn off
+  IntakeMotorHelper myIntakeMotorHelper = new IntakeMotorHelper();
+  LightgateHelper myLightgateHelper = new LightgateHelper();
 
   public void setIntakeSpeed(double speed) {
     intakeMtr.set(speed); //[%pwr] TODO change to velocity mode & tune hwpid for intakeMtr
@@ -146,6 +177,12 @@ public class Intake extends SubsystemBase {
   public boolean senseNote() {
    return !lightgate.get();
    }
+  public boolean hasNote() {
+    if(state == intakeNoteState.hasNote) {
+      return true;
+    }
+    return false;
+  }
 
   public double getIntakeRollerSpeed() {
     return intakeMtrEncoder.getVelocity();
@@ -220,8 +257,8 @@ public class Intake extends SubsystemBase {
     return new IntakeWatcherCmd();
   }
 
-  public boolean hasNote() {
-    return !lightgate.get(); 
+  /* protected */ boolean senseNote() {
+    return !lightgate.get(); // inverted is correct
   }
 
   public boolean has_Had_Note() {  //Mr.L not sure of intent???
@@ -248,7 +285,12 @@ public class Intake extends SubsystemBase {
   }
 
   public void periodic() {
+    myIntakeMotorHelper.setMotorState(getIntakeRollerSpeed());
     this.angle_servo.periodic();
+    if (myIntakeMotorHelper.isMotorOn()) {
+      processNoteDetection();
+    }
+  }
 
     // don't bother tracking note edge if we aren't going to hold it
     if (!holdNote) return;
@@ -261,6 +303,152 @@ public class Intake extends SubsystemBase {
       // high to low edge seen, we have it. Cmd will use timer to position correctly
       // and stop the intakeMtr.
       hasNote = true;
+  private void processNoteDetection() {
+
+    /*
+     * S - shooter
+     * I - intake
+     * T - transfer
+     * O - outside
+     * 2 - to
+     * F - from
+     */
+
+    if (myIntakeMotorHelper.motorHasToggledOn()) {
+      // checks if motor is toggled on, not actually on
+      myLightgateHelper.resetThrows();
+    }
+
+    myLightgateHelper.setLightgateHelperState(senseNote());
+
+    switch (state) {
+      case hasNoNote:
+        if (myIntakeMotorHelper.isMotorPositiveDirection()) { // RPM (positive direction; intaking a note; going towards
+                                                              // shooter)
+          state = intakeNoteState.O2I;
+          break;
+
+        } else if (myIntakeMotorHelper.isMotorNegativeDirection()) { // RPM (negative direction, getting a note from
+                                                                     // transfer)
+          state = intakeNoteState.T2I;
+          break;
+
+        } else {
+          System.out.println("*********Error: we are not in the correct place.");
+          break;
+        }
+      case hasNote:
+        if (myIntakeMotorHelper.isMotorPositiveDirection()) { // RPM
+          state = intakeNoteState.I2T;
+          break;
+
+        } else if (myIntakeMotorHelper.isMotorNegativeDirection()) {
+          state = intakeNoteState.I2O;
+          break;
+
+        } else {
+          break;
+        }
+      case O2I:
+        // outside to intake
+        if (myLightgateHelper.isSingleThrow()) {
+          state = intakeNoteState.hasNote;
+        }
+        break;
+
+      case T2I:
+        // transfer to intake
+        if (myLightgateHelper.isDoubleThrow()) {
+          state = intakeNoteState.hasNote;
+        }
+        break;
+
+      case I2T:
+        // intake to transfer
+        if (myLightgateHelper.isSingleThrow()) {
+          state = intakeNoteState.hasNoNote;
+        }
+        break;
+      case I2O:
+        state = intakeNoteState.hasNoNote;
+        break;
+
+      default:
+        System.out.println(
+            "*********ERROR: We are in the default case. Something has gone wrong.");
+        break;
+    }
+  }
+
+  class IntakeMotorHelper {
+    enum motorState {
+      positive, negative, off;
+    }
+
+    motorState currentMotorState = motorState.off;
+    motorState previousMotorState = motorState.off;
+
+    boolean isMotorOn() {
+      return motorState.off != currentMotorState;
+    }
+
+    boolean isMotorPositiveDirection() {
+      return motorState.positive == currentMotorState;
+    }
+
+    boolean isMotorNegativeDirection() {
+      return motorState.negative == currentMotorState;
+    }
+
+    void setMotorState(double motorSpeed) {
+      previousMotorState = currentMotorState;
+      if (motorSpeed > 10) {
+        currentMotorState = motorState.positive;
+        return;
+      }
+      if (motorSpeed < -10) {
+        currentMotorState = motorState.negative;
+        return;
+      }
+      currentMotorState = motorState.off;
+
+      return;
+    }
+
+    boolean motorHasToggledOff() {
+      return (currentMotorState == motorState.off) && (previousMotorState != motorState.off);
+      // This compares currentMotorState and previous motor state
+    }
+
+    boolean motorHasToggledOn() {
+      return (currentMotorState != motorState.off) && (previousMotorState == motorState.off);
+    }
+  }
+
+  class LightgateHelper {
+    boolean previousLightgateState = false;
+    // A 'throw' is a rising edge in the lightgate - when the lightgate is broken,
+    // not when it's unbroken
+    int numberOfThrows = 0;
+
+    boolean isSingleThrow() {
+      return numberOfThrows == 1;
+    }
+
+    boolean isDoubleThrow() {
+      return numberOfThrows == 2;
+    }
+
+    void resetThrows() {
+      // use to reset single/double throw
+      numberOfThrows = 0;
+    }
+
+    void setLightgateHelperState(boolean lightgateState) {
+      if (lightgateState == true && previousLightgateState == false) {
+        numberOfThrows++;
+      }
+      previousLightgateState = lightgateState;
     }
   }
 
@@ -279,7 +467,6 @@ public class Intake extends SubsystemBase {
     NetworkTableEntry nt_reverseLimitSwitchEnabled;
     NetworkTableEntry nt_forwardLimitSwitchEnabled;
     NetworkTableEntry nt_desiredSpeed;
-    NetworkTableEntry nt_lightgate;
 
     @Override
     public String getTableName() {

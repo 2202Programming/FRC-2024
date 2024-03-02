@@ -43,6 +43,16 @@ public class Transfer extends SubsystemBase {
   boolean prev_sense_note = false;
   double speed_cmd; //for monitoring
 
+    /*
+   * S - shooter
+   * I - intake
+   * T - transfer
+   * O - outside
+   * 2 - to
+   * F - from
+   */
+   enum transferNoteState {hasNote, hasNoNote, T2S, I2T, T2I, /*S2T*/}
+
   /** Creates a new Transfer. */
   public Transfer() {
     transferMtr = new CANSparkMax(CAN.TRANSFER_MOTOR, CANSparkMax.MotorType.kBrushless);
@@ -59,6 +69,8 @@ public class Transfer extends SubsystemBase {
 
     transferMtrEncoder.setPosition(0.0);
   }
+
+  transferNoteState state = transferNoteState.hasNoNote;
 
   /*
    * true when note is blocking light gate
