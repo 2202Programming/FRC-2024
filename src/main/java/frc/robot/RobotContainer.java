@@ -33,6 +33,7 @@ import frc.robot.commands.Intake.IntakePositionHandler;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Intake.MoveToAnglePos;
+import frc.robot.commands.Intake.NoteLocationHandler;
 import frc.robot.commands.Intake.SwitchNoteLocation;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.RPMShooter;
@@ -145,7 +146,7 @@ public class RobotContainer {
     dc = getSubsystem("DC");
 
     /* Set the commands below */
-    configureBindings(Bindings.auto_shooter_test); // Change this to switch between bindings
+    configureBindings(Bindings.IntakeTesting); // Change this to switch between bindings
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
@@ -218,7 +219,7 @@ public class RobotContainer {
 
         // i dont like that test commands and bindings are in here but we need them ig --er
       case IntakeTesting:
-        driver.rightBumper().onTrue(new IntakeSequence(false));
+        driver.rightBumper().whileTrue(new IntakeSequence(false));
         driver.povUp().onTrue(new ShooterSequence(true, 2000.0));
         driver.povRight().onTrue(new ShooterSequence(true, 1200.0));
         driver.povDown().whileTrue(new ShooterSequence(3200.0)); // RPM
@@ -302,7 +303,12 @@ public class RobotContainer {
           operator.x().onTrue(new CalibratePos(0));
           operator.povDown().whileTrue(new AngleCalibration(15.0));
           operator.povUp().whileTrue(new AngleCalibration(-15.0));
-          operator.y().whileTrue(new IntakeTest(0.5));
+          operator.y().whileTrue(new IntakeTest(0.5)); //%
+          operator.rightBumper().whileTrue(new IntakeTest(-0.5)); //%
+          operator.leftBumper().whileTrue(new NoteLocationHandler(NoteCommandedLocation.Transfer));
+          operator.povRight().onTrue(new NoteLocationHandler(NoteCommandedLocation.Swap));
+          operator.b().onTrue(new MoveToAnglePos(100, 60));
+
     }
   }
 }

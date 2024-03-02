@@ -26,14 +26,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.DigitalIO;
 import frc.robot.commands.utility.WatcherCmd;
-import frc.robot.subsystems.Transfer.transferNoteState;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
 public class Intake extends SubsystemBase {
   public static final double UpPos = 0.0; // [deg]
   public static final double ShootingPos = 20.0; // [deg]
-  public static final double DownPos = 90.0; // [deg]
+  public static final double DownPos = 96.0; // [deg]
   public static final double TravelUp = 120.0; // [deg/s]
   public static final double TravelDown = 60.0; // [deg/s]
   public static final double EncoderOffset = 10.0; // todo Offset and the default pos
@@ -287,7 +286,9 @@ public class Intake extends SubsystemBase {
 
   public void periodic() {
     myIntakeMotorHelper.setMotorState(getIntakeRollerSpeed());
+
     this.angle_servo.periodic();
+    
     if (myIntakeMotorHelper.isMotorOn()) {
       processNoteDetection();
     }
@@ -327,12 +328,15 @@ public class Intake extends SubsystemBase {
         if (myIntakeMotorHelper.isMotorPositiveDirection()) { // RPM (positive direction; intaking a note; going towards
                                                               // shooter)
           state = intakeNoteState.O2I;
+          System.out.println("We have no note and the motors are in a positive direction.");
+
           break;
 
         } else if (myIntakeMotorHelper.isMotorNegativeDirection()) { // RPM (negative direction, getting a note from
                                                                      // transfer)
           state = intakeNoteState.T2I;
-          break;
+          System.out.println("We have no note and the motors are in a negative direction.");
+          break;    
 
         } else {
           System.out.println("*********Error: we are not in the correct place.");
@@ -341,19 +345,23 @@ public class Intake extends SubsystemBase {
       case hasNote:
         if (myIntakeMotorHelper.isMotorPositiveDirection()) { // RPM
           state = intakeNoteState.I2T;
+          System.out.println("We have a note and the motors are in a positive direction.");
           break;
 
         } else if (myIntakeMotorHelper.isMotorNegativeDirection()) {
           state = intakeNoteState.I2O;
+          System.out.println("We have anote and the motors are in a negative direction.");
           break;
 
         } else {
+          System.out.println("ERROR: we are not in the right place.");
           break;
         }
       case O2I:
         // outside to intake
         if (myLightgateHelper.isSingleThrow()) {
           state = intakeNoteState.hasNote;
+          System.out.println("We are in the outside to intake case.");
         }
         break;
 
@@ -361,6 +369,7 @@ public class Intake extends SubsystemBase {
         // transfer to intake
         if (myLightgateHelper.isDoubleThrow()) {
           state = intakeNoteState.hasNote;
+          System.out.println("We are in the transfer nto intake case.");
         }
         break;
 
@@ -368,6 +377,7 @@ public class Intake extends SubsystemBase {
         // intake to transfer
         if (myLightgateHelper.isSingleThrow()) {
           state = intakeNoteState.hasNoNote;
+          System.out.println("We are in the intake to transfer case.");
         }
         break;
 
@@ -375,14 +385,17 @@ public class Intake extends SubsystemBase {
       //outside to transfer
       if(myLightgateHelper.isSingleThrow()) {
         state = intakeNoteState.hasNote;
+        System.out.println("We are in the outside to transfer case with a single throw.");
       }
 
       if(myLightgateHelper.isDoubleThrow()) {
         state = intakeNoteState.hasNoNote;
+        System.out.println("We are in the outside to transfer case with a double throw.");
       }
 
       case I2O:
         state = intakeNoteState.hasNoNote;
+        System.out.println("We are in the intake to outside code.");
         break;
 
       default:

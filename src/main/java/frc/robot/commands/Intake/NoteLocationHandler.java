@@ -174,7 +174,7 @@ public class NoteLocationHandler extends Command {
   private boolean isIntakeAngleReady() {
     double currentAngle = intake.getAnglePosition();
     // absolute value of the difference between 2.5(ish) degrees
-    return Math.abs(currentAngle - 100.0) < 2.5; 
+    return Math.abs(currentAngle - Intake.DownPos) < 10;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
