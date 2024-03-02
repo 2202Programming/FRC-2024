@@ -7,8 +7,6 @@ package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.Transfer;
 
 /**
  * Driver presses button
@@ -24,17 +22,12 @@ import frc.robot.subsystems.Transfer;
 public class InIntake extends Command {
 
   final Intake intake;
-  final Transfer transfer;
-  final Shooter shooter;
-  final double FIRST_COUNT = 100; //frames
-  final double SECOND_COUNT = 100;
-  double count_one;
-  double count_two;
+  final double DONE_COUNT = 2;
+  double count;
 
   public enum Phase {
     IntakeDown("IntakeDown"),
     WaitingForNote("WaitingForNote"),
-    Eject("Eject"),
     Finished("Finished");
 
     String name;
@@ -53,18 +46,15 @@ public class InIntake extends Command {
 
   /** Creates a new IntakeSequence. */
   public InIntake() {
-    count_one = 0;
-    count_two = 0;
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = RobotContainer.getSubsystem(Intake.class);
-    this.transfer = RobotContainer.getSubsystem(Transfer.class);
-    this.shooter = RobotContainer.getSubsystem("SHOOTER");
-    addRequirements(intake, transfer, shooter);
+    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    count = 0;
     phase = Phase.IntakeDown;
   }
 
@@ -73,31 +63,18 @@ public class InIntake extends Command {
   public void execute() {
     switch (phase) {
       case IntakeDown:
-        shooter.retract();
         intake.setMaxVelocity(60.0);
         intake.setAngleSetpoint(100.0);
         intake.setIntakeSpeed(0.8); // %
-        transfer.setSpeed(35.0);
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:
-        if (transfer.hasNote()) {
-            count_one++;
+        if (intake.hasNote()) {
+          count++;
         }
-        if(count_one > FIRST_COUNT){
-          transfer.setSpeed(-35.0);
-          phase = Phase.Eject;
-          }
-        break;
-        case Eject:
-          if(!transfer.hasNote()){
-            count_two++;
-          }
-        if(count_two > SECOND_COUNT){
-            intake.setMaxVelocity(120.0);
-            phase = Phase.Finished;
+        if(count >= DONE_COUNT){
+          phase = Phase.Finished;
         }
-
         break;
       case Finished:
         break;
@@ -107,10 +84,8 @@ public class InIntake extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    transfer.setSpeed(0.0);
     intake.setIntakeSpeed(0.0);
     intake.setAngleSetpoint(0.0);
-    intake.setHasNote(false);
   }
 
   // Returns true when the command should end.

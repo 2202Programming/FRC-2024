@@ -29,6 +29,8 @@ import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
+import frc.robot.commands.Intake.InAmp;
+import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakePositionHandler;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
@@ -265,11 +267,13 @@ public class RobotContainer {
         operator.a().whileTrue(new IntakePositionHandler());
         operator.y().whileTrue(new IntakeSequence(true));
         operator.b().whileTrue(new EjectNote());
-        operator.x().whileTrue(new IntakeTest(-1.0));
+        // operator.x().whileTrue(new IntakeTest(-1.0));
         operator.leftBumper().onTrue(new SwitchNoteLocation(NoteCommandedLocation.Swap)); 
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
-        operator.povRight().whileTrue(new IntakeTest(0.35));
+        // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay in intake
+        // operator.leftTrigger().whileTrue(new InAmp()); //works ---> into amp seq
+        operator.povRight().whileTrue(new IntakeTest(0.35)); 
         operator.povLeft().onTrue(new CalibratePos(0.0));
         operator.povUp().whileTrue(new AngleCalibration(-15.0));
         operator.povDown().whileTrue(new AngleCalibration(15.0));

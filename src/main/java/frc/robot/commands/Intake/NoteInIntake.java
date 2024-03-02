@@ -23,10 +23,6 @@ public class NoteInIntake extends Command {
 
   final Intake intake;
   final Shooter shooter;
-  final double FIRST_COUNT = 100; //frames
-  final double SECOND_COUNT = 100;
-  double count_one;
-  double count_two;
 
   public enum Phase {
     //TODO: maybe remove; might not need in future

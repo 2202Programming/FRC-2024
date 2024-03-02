@@ -208,7 +208,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasNote() {
-    return lightgate.get(); // TODO: Find out if inverted or not
+    return !lightgate.get(); // TODO: Find out if inverted or not
   }
 
   public boolean has_Had_Note() {
@@ -245,6 +245,7 @@ public class Intake extends SubsystemBase {
     NetworkTableEntry nt_reverseLimitSwitchEnabled;
     NetworkTableEntry nt_forwardLimitSwitchEnabled;
     NetworkTableEntry nt_desiredSpeed;
+    NetworkTableEntry nt_lightgate;
 
     @Override
     public String getTableName() {
@@ -265,6 +266,7 @@ public class Intake extends SubsystemBase {
       nt_reverseLimitSwitchEnabled = table.getEntry("reverseLimitEnabled");
       nt_forwardLimitSwitchEnabled = table.getEntry("forwardLimitSwitch");
       nt_desiredSpeed = table.getEntry("desiredSpeed");
+      nt_lightgate = table.getEntry("lightgate");
 
       // default value for mutables
       // example nt_maxArbFF.setDouble(maxArbFF);
@@ -283,6 +285,7 @@ public class Intake extends SubsystemBase {
       //nt_reverseLimitSwitchEnabled.setBoolean(limitSwitchEnabled());
       //nt_forwardLimitSwitchEnabled.setBoolean(forwardSwitchEnabled());
       nt_desiredSpeed.setDouble(getDesiredVelocity());
+      nt_lightgate.setBoolean(hasNote());
 
       // get mutable values
       // example maxArbFF = nt_maxArbFF.getDouble(maxArbFF);
