@@ -10,7 +10,6 @@ import frc.robot.Constants.Tag_Pose;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
-import frc.robot.util.MultiRegression;
 
 public class SpeakerShooter extends Command {
   private SwerveDrivetrain drivetrain;
@@ -18,14 +17,12 @@ public class SpeakerShooter extends Command {
   private boolean finished = false;
 
   // TODO: Move this to Constnats And change these
-  private final double SHOOTER_Y_OFFSET = 0.0; // [m] pivotal point of shooter from the center(direction of shooter is +)
+  private final double SHOOTER_Y_OFFSET = 0.0; // [m] pivotal point of shooter from the center(direction of shooter is+)
   private final double SHOOTER_Z_OFFSET = 0.0; // [m] shooter z position from floor
-  //TODO:Check this value
+  // TODO:Check this value
   private final double SPEAKER_HEIGHT = 198; // [m] speaker height from the floor
 
   private final double angle_adjustment = 0.0; // [deg] angle gain/lose for tuning
-  private final double[][] reg_ind_val = {{0,0},{0,0}}; // [radius, rot] use value from collectData mode
-  private final double[] reg_dep_val = {0,0}; // [rpm] shooter speed
 
   // RobotPose with polar coordinate(origin is tag)
   private double radius; // [m] distance from the speaker to the robot
@@ -36,17 +33,23 @@ public class SpeakerShooter extends Command {
   // front of the speaker
   private double rot;
 
-  //shooter angle [deg]
+  // shooter angle [deg]
   private double shooter_angle;
 
   // Switch to collect data for regression
   private boolean collectData = true;
-  private MultiRegression model;
+  private double dX;
+  private double dY;
+
   /**
    * Command shooting speaker
-   * <p>Requires: ShooterServo and limelight detecting specified tag.
-   * Calculate the angle and RPM to shoot the speaker</p>
-   * <p>Shooter angle- will be calculated by the distance and geometry.</p>
+   * <p>
+   * Requires: ShooterServo and limelight detecting specified tag.
+   * Calculate the angle and RPM to shoot the speaker
+   * </p>
+   * <p>
+   * Shooter angle- will be calculated by the distance and geometry.
+   * </p>
    * RPM- will be calculated using formula based of polar coordinate determined
    * the target is the vertex of the polar coordinate
    */
@@ -54,49 +57,45 @@ public class SpeakerShooter extends Command {
     drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
     shooter = RobotContainer.getSubsystem(ShooterServo.class);
     addRequirements(shooter);
-    model = new MultiRegression(reg_ind_val, reg_dep_val, 1000, 0.01, 2);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-      // Blue Alliance
-      radius = Math.sqrt(
-          Math.pow(drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID7.getX(), 2)
-              + Math.pow(drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID7.getY(), 2));
-      rot = Math.abs(Math.atan(
-          Math.abs(drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID7.getY()) /
-              Math.abs(drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID7.getX())))
-          * 180 / Math.PI;
+      dX = drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID7.getX();
+      dY = drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID7.getY();
     } else {
-      // Red Alliance
-      radius = Math.sqrt(
-          Math.pow(drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID4.getX(), 2)
-              + Math.pow(drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID4.getY(), 2));
-      rot = Math.abs(Math.atan(
-          Math.abs(drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID4.getY()) /
-              Math.abs(drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID4.getX())))
-          * 180 / Math.PI;
+      dX = drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID4.getX();
+      dY = drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID4.getY();
     }
-    shooter_angle = Math.atan((SPEAKER_HEIGHT - SHOOTER_Z_OFFSET) /(radius - SHOOTER_Y_OFFSET)) + angle_adjustment;
-    //TODO: set shooter angle to shooter_angle
+    shooter_angle = Math.atan((SPEAKER_HEIGHT - SHOOTER_Z_OFFSET) / (radius - SHOOTER_Y_OFFSET)) + angle_adjustment;
+    // TODO: set shooter angle to shooter_angle
     // shooter.setShooterAngle(shooter_angle); maybe like this?
   }
+
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(collectData){
-      //for data collection
-      //run RPMShooter to test the shooting RPM and put value in the array
+    if (collectData) {
+      // for data collection not for actual shooting
+      // run RPMShooter to test the shooting RPM and put value in the array
+      radius = Math.sqrt(
+          Math.pow(dX, 2)
+              + Math.pow(dY, 2));
+      rot = Math.abs(Math.atan(
+          Math.abs(dY) /
+              Math.abs(dX)))
+          * 180 / Math.PI;
       System.out.println("[" + radius + "," + rot + "]");
       finished = true;
-    }
-    else{
-      if(shooter.atShooterAngleSetpoint()){
-        double[] condition = {radius, rot};
-        model.predict(condition);
-        //TODO: schedule SHOOTER command HERE with angle and RPM 
+    } else {
+      // actual shooting
+      if (shooter.atShooterAngleSetpoint()) {
+        // rpm calculation plug collected number into csv in python code -ko
+        double rpm = 7205.19 + -3266.57 * dX + -3266.57 * dY + 935.96 * Math.pow(dX, 2) + 731.54 * dX * dY
+            + 935.96 * Math.pow(dY, 2);
+        // TODO: schedule SHOOTER command HERE with angle and RPM
         finished = true;
       }
     }
