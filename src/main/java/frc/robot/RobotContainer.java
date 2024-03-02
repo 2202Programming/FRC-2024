@@ -296,6 +296,13 @@ public class RobotContainer {
           shooter.setDefaultCommand(new RPMShooter());
         }
         break;
+
+        case IntakeTesting:
+          operator.a().whileTrue(new IntakeSequence(true));
+          operator.x().onTrue(new CalibratePos(0));
+          operator.povDown().whileTrue(new AngleCalibration(15.0));
+          operator.povUp().whileTrue(new AngleCalibration(-15.0));
+          operator.y().whileTrue(new IntakeTest(0.5));
     }
   }
 }
