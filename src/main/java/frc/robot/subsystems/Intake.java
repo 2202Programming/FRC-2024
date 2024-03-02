@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.DigitalIO;
 import frc.robot.commands.utility.WatcherCmd;
+import frc.robot.subsystems.Transfer.transferNoteState;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
@@ -48,7 +49,7 @@ public class Intake extends SubsystemBase {
    * F - from
    */
   enum intakeNoteState {
-    hasNote, hasNoNote, O2I, T2I, I2T, I2O
+    hasNote, hasNoNote, O2I, T2I, I2T, I2O, O2T
   }
 
   enum noteLocation {
@@ -369,6 +370,17 @@ public class Intake extends SubsystemBase {
           state = intakeNoteState.hasNoNote;
         }
         break;
+
+      case O2T:
+      //outside to transfer
+      if(myLightgateHelper.isSingleThrow()) {
+        state = intakeNoteState.hasNote;
+      }
+
+      if(myLightgateHelper.isDoubleThrow()) {
+        state = intakeNoteState.hasNoNote;
+      }
+
       case I2O:
         state = intakeNoteState.hasNoNote;
         break;
