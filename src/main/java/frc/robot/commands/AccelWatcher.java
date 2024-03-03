@@ -9,7 +9,7 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 
-//TODO CMD to watch the accel of the robot (watch the drop in the accel)
+
 public class AccelWatcher extends Command {
     final Sensors_Subsystem sensors;
     // final SwerveDrivetrain drivetrain;
@@ -19,6 +19,8 @@ public class AccelWatcher extends Command {
     double accel; // [m/s^2]
     boolean use_absolute;
     boolean use_neg_case;
+
+    Command cmd = null;  // command to run when accel event happens
 
     /*
      * 
@@ -43,7 +45,10 @@ public class AccelWatcher extends Command {
     public AccelWatcher(double targ_accel) {
         this(targ_accel, true);
     }
-
+    public AccelWatcher(Command cmd, double targ_accel, boolean use_absolute) {
+        this(targ_accel, use_absolute);
+        this.cmd = cmd;
+    }
     @Override
     public void initialize() {
         exceeded_target = false;
@@ -57,6 +62,13 @@ public class AccelWatcher extends Command {
             exceeded_target = (accel < targ_accel);
         } else {
             exceeded_target = (accel > targ_accel);
+        }
+    }
+    @Override
+    public void end(boolean interrupted) {
+        if (cmd != null && !interrupted) {
+            cmd.schedule();
+            System.out.println("Accel limit hit, scheduling: " + cmd.getName() );
         }
     }
 

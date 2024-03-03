@@ -92,20 +92,6 @@ public class Transfer extends SubsystemBase {
     // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_ON);
   }
 
-  /*
-  // Motor speed will likely need to be chan
-  public void transferMtrOff() {
-    // transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_OFF,
-    // ControlType.kVelocity, 0);
-   // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_OFF);
-  }
-
- /*
-  public void transferMtrReverse() {
-    transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_REVERSE, ControlType.kVelocity, 0);
-    // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_REVERSE);
-  }
-*/
   public double getTransferVelocity() {
     return transferMtrEncoder.getVelocity();
   }
@@ -119,14 +105,17 @@ public class Transfer extends SubsystemBase {
    */
   @Override
   public void periodic() {
+    // watch for Note if we don't have one
     // watch gate for high to low change, we have the note where we want it
-    if (senseNote()){
-      prev_sense_note = true;
+    if (!has_note) {
+      if (senseNote()){
+        prev_sense_note = true; // start looking for edge h->s
+      }
+      else if (prev_sense_note) {
+        has_note = true;   // saw it then didn't, so we move past we have it
+        prev_sense_note = false;
+      }
     }
-    else if (prev_sense_note) {
-      has_note = true;   // saw it then didn't, so we move past we have it
-    }
-
   }
 
   class TransferWatcherCmd extends WatcherCmd {
