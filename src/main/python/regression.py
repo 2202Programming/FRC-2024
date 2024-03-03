@@ -1,4 +1,11 @@
 #%%
+#
+# To run:
+#   Create a python venv  (vscode ctl-sh-P Python Create Env)
+#   From Terminal started in vscode:
+#     pip install pandas plotly scikit-learn
+#
+#
 import numpy as np
 import pandas as pd
 import plotly.graph_objs as go

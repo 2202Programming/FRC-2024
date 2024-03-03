@@ -16,11 +16,11 @@ public class SpeakerShooter extends Command {
   private ShooterServo shooter;
   private boolean finished = false;
 
-  // TODO: Move this to Constnats And change these
+  // Keep these constants here, not needed elsewhere.
   private final double SHOOTER_Y_OFFSET = 0.0; // [m] pivotal point of shooter from the center(direction of shooter is+)
   private final double SHOOTER_Z_OFFSET = 0.0; // [m] shooter z position from floor
   // TODO:Check this value
-  private final double SPEAKER_HEIGHT = 198; // [m] speaker height from the floor
+  private final double SPEAKER_HEIGHT = 1.98; // [m] speaker height from the floor
 
   private final double angle_adjustment = 0.0; // [deg] angle gain/lose for tuning
 
