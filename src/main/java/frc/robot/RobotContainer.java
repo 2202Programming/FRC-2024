@@ -29,12 +29,11 @@ import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.EjectNote;
-import frc.robot.commands.Intake.IntakePositionHandler;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Intake.MoveToAnglePos;
 import frc.robot.commands.Intake.NoteLocationHandler;
-import frc.robot.commands.Intake.SwitchNoteLocation;
+import frc.robot.commands.Intake.SetNoteLocation;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Shooter.ShooterSequence;
@@ -134,6 +133,9 @@ public class RobotContainer {
     robotSpecs = new RobotSpecs();
     robotSpecs.mySubsystemConfig.constructAll();
 
+    // Set binding to Competition (or your mode for testing)
+    Bindings bindings = Bindings.IntakeTesting;    
+
     // Testing, but also to drive the drivers nuts...
     Command random_lights = new RandomLightsCmd();
     random_lights.schedule();
@@ -146,7 +148,7 @@ public class RobotContainer {
     dc = getSubsystem("DC");
 
     /* Set the commands below */
-    configureBindings(Bindings.IntakeTesting); // Change this to switch between bindings
+    configureBindings(bindings); // Change this to switch between bindings
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
@@ -158,6 +160,14 @@ public class RobotContainer {
     NamedCommands.registerCommand("RotateTo", new RotateTo());
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    //make some noise if we are not on Competion bindings
+    if (bindings != Bindings.Competition) {
+      System.out.println(
+        "*****************************************************************************\n"+
+        "Warning: Not using competition bindings, using: " +bindings.toString()+
+        "\n*****************************************************************************\n");
+    }
   }
 
   /**
@@ -272,11 +282,11 @@ public class RobotContainer {
       case Competition:
 
         // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
-        operator.a().whileTrue(new IntakePositionHandler());
+        // removed -did nothing   operator.a().whileTrue(new IntakePositionHandler()); 
         operator.y().whileTrue(new IntakeSequence(true));
         operator.b().whileTrue(new EjectNote());
         // operator.x().whileTrue(new IntakeTest(-1.0));
-        operator.leftBumper().onTrue(new SwitchNoteLocation(NoteCommandedLocation.Swap)); 
+        operator.leftBumper().onTrue(new SetNoteLocation(NoteCommandedLocation.Swap)); 
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
         // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay in intake
@@ -284,7 +294,7 @@ public class RobotContainer {
         operator.povRight().whileTrue(new IntakeTest(0.35)); 
         //operator.povLeft().onTrue(new CalibratePos(0.0));
         operator.povUp().whileTrue(new AngleCalibration(-25.0));
-        operator.povDown().whileTrue(new AngleCalibration(25.0));
+        // prefer up to calibrate   operator.povDown().whileTrue(new AngleCalibration(25.0));
         //operator.x().onTrue(new CalibratePos(0.0));
         operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
         operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
@@ -300,7 +310,7 @@ public class RobotContainer {
 
         case IntakeTesting:
           operator.a().whileTrue(new IntakeSequence(true));
-          operator.x().onTrue(new CalibratePos(0));
+          //operator.x().onTrue(/* free */);
           operator.povDown().whileTrue(new AngleCalibration(15.0));
           operator.povUp().whileTrue(new AngleCalibration(-15.0));
           operator.y().whileTrue(new IntakeTest(0.5)); //%

@@ -31,9 +31,7 @@ import frc.robot.Constants.Transfer_Constants.NoteCommandedLocation;
  * Where there is a note, 
  * 
  */
-
-
-public class SwitchNoteLocation extends Command {
+public class SetNoteLocation extends Command {
 
   Intake intake = RobotContainer.getSubsystem(Intake.class);
   Transfer transfer = RobotContainer.getSubsystem(Transfer.class);
@@ -46,11 +44,17 @@ public class SwitchNoteLocation extends Command {
   BooleanSupplier targetHasNote;
   double intake_speed;
   double transfer_speed;
+  boolean intakeUpAtEnd = false;
 
   /** Creates a new transferToIntake. */
-  public SwitchNoteLocation(NoteCommandedLocation commandedLocation) {
+  public SetNoteLocation(NoteCommandedLocation commandedLocation) {
     this.commandedLocation = commandedLocation;
     addRequirements(intake, transfer);
+  }
+
+  public SetNoteLocation(NoteCommandedLocation commandedLocation, boolean intakeUpAtEnd) {
+    this(commandedLocation);
+    this.intakeUpAtEnd = intakeUpAtEnd;
   }
 
   // Called when the command is initially scheduled.
@@ -121,19 +125,18 @@ public class SwitchNoteLocation extends Command {
 
   /*
    * makes sure intake is at a good angle to perform a transfer
-   * TODO: Consider moving to subsystem API
    */
   private boolean isIntakeAngleReady() {
     double currentAngle = intake.getAnglePosition();
     // absolute value of the difference between 2.5(ish) degrees
-    return Math.abs(currentAngle - 100.0) < 2.5; 
+    return intake.angleAtSetpoint()  && (Math.abs(currentAngle - Intake.DownPos) < 2.5); 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     // watch our targe subsystem to say they have the note
-    isDone = targetHasNote.getAsBoolean();
+    isDone = (isDone) ? true : targetHasNote.getAsBoolean();
   }
 
   // Called once the command ends or is interrupted.
@@ -143,6 +146,8 @@ public class SwitchNoteLocation extends Command {
     intake.setIntakeSpeed(0.0);
     transfer.setSpeed(0.0);
     
+    if (interrupted || !intakeUpAtEnd) return;
+
     //return intake to up position
     intake.setMaxVelocity(Intake.TravelUp); // DEG/S
     intake.setAngleSetpoint(Intake.UpPos); // 'up' position    

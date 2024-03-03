@@ -96,9 +96,9 @@ public class Intake extends SubsystemBase {
   DigitalInput limitSwitchDown = new DigitalInput(DigitalIO.IntakeIsDown);
 
   //Note State variables
-  boolean holdNote;  // true - keeps note in intake holding position, false passes it on
+  boolean holdNote;  // true, well watch for Note edge.
   boolean senseNote_prev = false; // for edge detection 
-  boolean hasNote = false; // true when Intake has it
+  boolean hasNote = false; // true when Intake has Note
 
   public Intake() { // TODO: Get values
     final int STALL_CURRENT = 15; // [amp]
@@ -174,9 +174,10 @@ public class Intake extends SubsystemBase {
     // intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
   }
 
-  public boolean senseNote() {
-   return !lightgate.get();
-   }
+  boolean senseNote() {
+    return !lightgate.get();
+  }
+
   public boolean hasNote() {
     if(state == intakeNoteState.hasNote) {
       return true;
@@ -257,14 +258,6 @@ public class Intake extends SubsystemBase {
     return new IntakeWatcherCmd();
   }
 
-  /* protected */ boolean senseNote() {
-    return !lightgate.get(); // inverted is correct
-  }
-
-  public boolean has_Had_Note() {  //Mr.L not sure of intent???
-    return hasNote;
-  }
-
   public void setHasNote(boolean state) {
     // if we ever lose a note, call this
     hasNote = state;
@@ -285,28 +278,33 @@ public class Intake extends SubsystemBase {
   }
 
   public void periodic() {
-    myIntakeMotorHelper.setMotorState(getIntakeRollerSpeed());
+    this.angle_servo.periodic();  // do child objects first
 
-    this.angle_servo.periodic();
-    
-    if (myIntakeMotorHelper.isMotorOn()) {
-      processNoteDetection();
-    }
-  }
+    //@Ben uncomment for testing
+    // processNoteDetection();
+  
 
     // don't bother tracking note edge if we aren't going to hold it
     if (!holdNote) return;
 
     // if we get here, we need to hold on to the note
-    // moniter lightgate and speed so we can signal we have the note
-    if (senseNote()) {
-      senseNote_prev = true;
-    } else if (senseNote_prev) {
-      // high to low edge seen, we have it. Cmd will use timer to position correctly
-      // and stop the intakeMtr.
-      hasNote = true;
-  private void processNoteDetection() {
+    // moniter lightgate signal we have the note
+    if (!hasNote) {
+      if (senseNote()) {
+        senseNote_prev = true;
+      } else if (senseNote_prev) {
+        // high to low edge seen, we have it. Cmd will use timer to position correctly
+        // and stop the intakeMtr based on direction and timing.
+        hasNote = true;
+      }
+    }
+  }
 
+  /*
+   * Ben et.al. I moved your processing here so it is self contained
+   */
+  @SuppressWarnings("unused")
+  private void processNoteDetection() {
     /*
      * S - shooter
      * I - intake
@@ -315,6 +313,10 @@ public class Intake extends SubsystemBase {
      * 2 - to
      * F - from
      */
+    myIntakeMotorHelper.setMotorState(getIntakeRollerSpeed());
+
+     //nothing to do if intake motor is off
+    if (!myIntakeMotorHelper.isMotorOn()) return;
 
     if (myIntakeMotorHelper.motorHasToggledOn()) {
       // checks if motor is toggled on, not actually on
@@ -477,6 +479,10 @@ public class Intake extends SubsystemBase {
     }
   }
 
+  /*
+   * Watcher commmand puts network table data for intake.
+   * 
+   */
   class IntakeWatcherCmd extends WatcherCmd {
     NetworkTableEntry nt_hasNote;
     NetworkTableEntry nt_senseNote_prev;
@@ -492,6 +498,7 @@ public class Intake extends SubsystemBase {
     NetworkTableEntry nt_reverseLimitSwitchEnabled;
     NetworkTableEntry nt_forwardLimitSwitchEnabled;
     NetworkTableEntry nt_desiredSpeed;
+    NetworkTableEntry nt_lightgate;
 
     @Override
     public String getTableName() {

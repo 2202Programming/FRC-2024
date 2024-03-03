@@ -145,15 +145,15 @@ public class NoteLocationHandler extends Command {
         targetHasNote = intake::hasNote;        
         intake_speed = -0.8;   // [% pwr]  neg for intake <-- transfer
         transfer_speed = -35.0; // [cm/s]
-        
+        intake.setHoldNote(true); // tell transfer to watch for Note
         transfer.setHasNote(false);
         break;
 
       case Transfer:
+        //going intake --> transfer 
         targetHasNote = transfer::hasNote;
-        intake_speed = 0.8;   // [% pwr]  positive for intake --> transfer
+        intake_speed = 0.8;   // [% pwr]
         transfer_speed = 35.0; // [cm/s]
-        
         intake.setHasNote(false);
       break;
     
