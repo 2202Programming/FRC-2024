@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -246,6 +247,15 @@ public class RobotContainer {
       default:
         break;
     }
+
+    // Sideboard buttons (Default/Competition)
+    var sideboard = dc.SwitchBoard();
+    /*
+     * WIP THESE BINDINGS ARE NOT AT ALL FINAL
+     */
+    sideboard.sw11().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
+    sideboard.sw12().onTrue(new PrintCommand("PlaceholderCMD: Climber Down"));
+
     configureOperator(bindings);
   }
 
@@ -260,7 +270,7 @@ public class RobotContainer {
       case auto_shooter_test:
       case Competition:
 
-       // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
+        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
         operator.a().whileTrue(new IntakePositionHandler());
         operator.y().whileTrue(new IntakeSequence(true));
         operator.b().whileTrue(new EjectNote());
@@ -278,16 +288,6 @@ public class RobotContainer {
         operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
         operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
         operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
-       // TODO waiting for sensor wiring  operator.x().onTrue(new AbsEncoderCalibrate());
-        
-        /* TODO climber bindings, commented out for sussex -- er
-         *  Drive team mentioned that they want climber buttons on switchboard but i need 
-         * to find that syntax -ER
-         * WIP THESE BINDINGS ARE NOT AT ALL FINAL
-         * operator.povUp().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
-           operator.povDown().onTrue(new PrintCommand("PlaceholderCMD: Climber Down")); 
-         */
-      
         
         break;
       case Shooter_test:
