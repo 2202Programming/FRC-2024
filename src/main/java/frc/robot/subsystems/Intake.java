@@ -164,7 +164,6 @@ public class Intake extends SubsystemBase {
   noteLocation location = noteLocation.none;
   intakeNoteState requestedState;
   // this is the 'state' that we want when the motors turn off
-  IntakeMotorHelper myIntakeMotorHelper = new IntakeMotorHelper();
   LightgateHelper myLightgateHelper = new LightgateHelper();
 
   public void setIntakeSpeed(double speed) {
@@ -261,6 +260,9 @@ public class Intake extends SubsystemBase {
     hasNote = state;
     senseNote_prev = false;
   }
+  public boolean noteLightgateDoubleThrow(){
+    return myLightgateHelper.isDoubleThrow();
+  }
 
   /*
    * sets holdNote, when true the intake will stop moving when note is in 
@@ -276,6 +278,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void periodic() {
+    myLightgateHelper.setLightgateHelperState(hasNote());
     this.angle_servo.periodic();  // do child objects first
 
     //@Ben uncomment for testing
@@ -297,159 +300,7 @@ public class Intake extends SubsystemBase {
       }
     }
   }
-
-  /*
-   * Ben et.al. I moved your processing here so it is self contained
-   */
-  @SuppressWarnings("unused")
-  private void processNoteDetection() {
-    /*
-     * S - shooter
-     * I - intake
-     * T - transfer
-     * O - outside
-     * 2 - to
-     * F - from
-     */
-    myIntakeMotorHelper.setMotorState(getIntakeRollerSpeed());
-
-     //nothing to do if intake motor is off
-    if (!myIntakeMotorHelper.isMotorOn()) return;
-
-    if (myIntakeMotorHelper.motorHasToggledOn()) {
-      // checks if motor is toggled on, not actually on
-      myLightgateHelper.resetThrows();
-    }
-
-    myLightgateHelper.setLightgateHelperState(senseNote());
-
-    switch (state) {
-      case hasNoNote:
-        if (myIntakeMotorHelper.isMotorPositiveDirection()) { // RPM (positive direction; intaking a note; going towards
-                                                              // shooter)
-          state = intakeNoteState.O2I;
-          System.out.println("We have no note and the motors are in a positive direction.");
-
-          break;
-
-        } else if (myIntakeMotorHelper.isMotorNegativeDirection()) { // RPM (negative direction, getting a note from
-                                                                     // transfer)
-          state = intakeNoteState.T2I;
-          System.out.println("We have no note and the motors are in a negative direction.");
-          break;    
-
-        } else {
-          System.out.println("*********Error: we are not in the correct place.");
-          break;
-        }
-      case hasNote:
-        if (myIntakeMotorHelper.isMotorPositiveDirection()) { // RPM
-          state = intakeNoteState.I2T;
-          System.out.println("We have a note and the motors are in a positive direction.");
-          break;
-
-        } else if (myIntakeMotorHelper.isMotorNegativeDirection()) {
-          state = intakeNoteState.I2O;
-          System.out.println("We have anote and the motors are in a negative direction.");
-          break;
-
-        } else {
-          System.out.println("ERROR: we are not in the right place.");
-          break;
-        }
-      case O2I:
-        // outside to intake
-        if (myLightgateHelper.isSingleThrow()) {
-          state = intakeNoteState.hasNote;
-          System.out.println("We are in the outside to intake case.");
-        }
-        break;
-
-      case T2I:
-        // transfer to intake
-        if (myLightgateHelper.isDoubleThrow()) {
-          state = intakeNoteState.hasNote;
-          System.out.println("We are in the transfer nto intake case.");
-        }
-        break;
-
-      case I2T:
-        // intake to transfer
-        if (myLightgateHelper.isSingleThrow()) {
-          state = intakeNoteState.hasNoNote;
-          System.out.println("We are in the intake to transfer case.");
-        }
-        break;
-
-      case O2T:
-      //outside to transfer
-      if(myLightgateHelper.isSingleThrow()) {
-        state = intakeNoteState.hasNote;
-        System.out.println("We are in the outside to transfer case with a single throw.");
-      }
-
-      if(myLightgateHelper.isDoubleThrow()) {
-        state = intakeNoteState.hasNoNote;
-        System.out.println("We are in the outside to transfer case with a double throw.");
-      }
-
-      case I2O:
-        state = intakeNoteState.hasNoNote;
-        System.out.println("We are in the intake to outside code.");
-        break;
-
-      default:
-        System.out.println(
-            "*********ERROR: We are in the default case. Something has gone wrong.");
-        break;
-    }
-  }
-
-  class IntakeMotorHelper {
-    enum motorState {
-      positive, negative, off;
-    }
-
-    motorState currentMotorState = motorState.off;
-    motorState previousMotorState = motorState.off;
-
-    boolean isMotorOn() {
-      return motorState.off != currentMotorState;
-    }
-
-    boolean isMotorPositiveDirection() {
-      return motorState.positive == currentMotorState;
-    }
-
-    boolean isMotorNegativeDirection() {
-      return motorState.negative == currentMotorState;
-    }
-
-    void setMotorState(double motorSpeed) {
-      previousMotorState = currentMotorState;
-      if (motorSpeed > 10) {
-        currentMotorState = motorState.positive;
-        return;
-      }
-      if (motorSpeed < -10) {
-        currentMotorState = motorState.negative;
-        return;
-      }
-      currentMotorState = motorState.off;
-
-      return;
-    }
-
-    boolean motorHasToggledOff() {
-      return (currentMotorState == motorState.off) && (previousMotorState != motorState.off);
-      // This compares currentMotorState and previous motor state
-    }
-
-    boolean motorHasToggledOn() {
-      return (currentMotorState != motorState.off) && (previousMotorState == motorState.off);
-    }
-  }
-
+  
   class LightgateHelper {
     boolean previousLightgateState = false;
     // A 'throw' is a rising edge in the lightgate - when the lightgate is broken,
