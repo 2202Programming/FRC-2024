@@ -15,11 +15,12 @@ public class MoveToAnglePos extends BlinkyLightUser {
   public final Intake intake;
   double posCmd;
   double velLimit;
+  
   public MoveToAnglePos(double posCmd, double velLimit) {
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.posCmd = posCmd;
     this.velLimit = velLimit;
-    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(intake);
   }
 
       /*
@@ -27,8 +28,8 @@ public class MoveToAnglePos extends BlinkyLightUser {
      */
     @Override
     public Color8Bit colorProvider() {
-        // make sure not is safely in our possession before going back
-        return (intake.angleAtSetpoint()) ? BlinkyLights.GREEN : BlinkyLights.RED;
+        // green when moving down, red moving back
+        return (intake.getAngleSpeed() >0.0) ? BlinkyLights.GREEN : BlinkyLights.RED;
     };
 
     @Override

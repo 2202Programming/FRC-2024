@@ -28,23 +28,7 @@ public class IntakeSequence extends Command {
   final Shooter shooter;
   boolean stay_down;
 
-  public enum Phase {
-    IntakeDown("IntakeDown"),
-    WaitingForNote("WaitingForNote"),
-    Finished("Finished");
-
-    String name;
-
-    private Phase(String name) {
-      this.name = name;
-    }
-
-    public String toString() {
-      return name;
-    }
-
-  }
-
+  public enum Phase {IntakeDown, WaitingForNote, Finished  }
   Phase phase;
 
   /*

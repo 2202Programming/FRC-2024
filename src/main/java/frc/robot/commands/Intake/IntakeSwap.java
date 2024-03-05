@@ -30,25 +30,24 @@ public class IntakeSwap extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.resetThrows();
 
     if(transfer.hasNote()){
       target=intake::noteLightgateDoubleThrow;
-      DONE_COUNT = 1; //Counter for transfer --> intake
+      DONE_COUNT = 10; //Counter for transfer --> intake
         intakee = true;
     }
     else if(intake.hasNote()){
       target=transfer::hasNote;
-      DONE_COUNT = 1; //Counter for intake --> transfer
+      DONE_COUNT = 5; //Counter for intake --> transfer
         intakee= false;
     }
         if(intakee){
       transfer.setSpeed(-35.0);//not %
-      intake.setIntakeSpeed(-0.6); //%
+      intake.setIntakeSpeed(-0.8); //%
     }
     else if(!intakee){
       transfer.setSpeed(35.0);
-      intake.setIntakeSpeed(0.6); //%
+      intake.setIntakeSpeed(0.8); //%
     }
   }
 

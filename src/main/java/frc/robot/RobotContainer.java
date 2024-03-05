@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -35,7 +36,8 @@ import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeSwap;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Intake.MoveToAnglePos;
-import frc.robot.commands.Intake.SwitchNoteLocation;
+import frc.robot.commands.Intake.NoteLocationHandler;
+import frc.robot.commands.Intake.SetNoteLocation;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Shooter.ShooterSequence;
@@ -135,6 +137,9 @@ public class RobotContainer {
     robotSpecs = new RobotSpecs();
     robotSpecs.mySubsystemConfig.constructAll();
 
+    // Set binding to Competition (or your mode for testing)
+    Bindings bindings = Bindings.IntakeTesting;    
+
     // Testing, but also to drive the drivers nuts...
     Command random_lights = new RandomLightsCmd();
     random_lights.schedule();
@@ -147,7 +152,7 @@ public class RobotContainer {
     dc = getSubsystem("DC");
 
     /* Set the commands below */
-    configureBindings(Bindings.IntakeTesting); // Change this to switch between bindings
+    configureBindings(bindings); // Change this to switch between bindings
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
@@ -159,6 +164,14 @@ public class RobotContainer {
     NamedCommands.registerCommand("RotateTo", new RotateTo());
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
+    //make some noise if we are not on Competion bindings
+    if (bindings != Bindings.Competition) {
+      System.out.println(
+        "*****************************************************************************\n"+
+        "Warning: Not using competition bindings, using: " +bindings.toString()+
+        "\n*****************************************************************************\n");
+    }
   }
 
   /**
@@ -220,7 +233,7 @@ public class RobotContainer {
 
         // i dont like that test commands and bindings are in here but we need them ig --er
       case IntakeTesting:
-        driver.rightBumper().onTrue(new IntakeSequence(false));
+        driver.rightBumper().whileTrue(new IntakeSequence(false));
         driver.povUp().onTrue(new ShooterSequence(true, 2000.0));
         driver.povRight().onTrue(new ShooterSequence(true, 1200.0));
         driver.povDown().whileTrue(new ShooterSequence(3200.0)); // RPM
@@ -233,7 +246,7 @@ public class RobotContainer {
         driver.rightTrigger().onTrue(new MoveToAnglePos(Intake.TravelUp, Intake.TravelUp));
         driver.leftTrigger().onTrue(new MoveToAnglePos(Intake.TravelDown, Intake.TravelDown));
         // driver.rightTrigger().onTrue(new AnglePos(50.0));
-        driver.a().onTrue(new CalibratePos(0.0));
+        //driver.a().onTrue(new CalibratePos(0.0));
         break;
       
       case auto_shooter_test:
@@ -249,6 +262,15 @@ public class RobotContainer {
       default:
         break;
     }
+
+    // Sideboard buttons (Default/Competition)
+    var sideboard = dc.SwitchBoard();
+    /*
+     * WIP THESE BINDINGS ARE NOT AT ALL FINAL
+     */
+    sideboard.sw11().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
+    sideboard.sw12().onTrue(new PrintCommand("PlaceholderCMD: Climber Down"));
+
     configureOperator(bindings);
   }
 
@@ -263,34 +285,24 @@ public class RobotContainer {
       case auto_shooter_test:
       case Competition:
 
-       // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
-        operator.a().whileTrue(new IntakePositionHandler());
+        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
+        // removed -did nothing   operator.a().whileTrue(new IntakePositionHandler()); 
         operator.y().whileTrue(new IntakeSequence(true));
         operator.b().whileTrue(new EjectNote());
         // operator.x().whileTrue(new IntakeTest(-1.0));
-        operator.leftBumper().onTrue(new SwitchNoteLocation(NoteCommandedLocation.Swap)); 
+        operator.leftBumper().onTrue(new SetNoteLocation(NoteCommandedLocation.Swap)); 
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
         // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay in intake
         // operator.leftTrigger().whileTrue(new InAmp()); //works ---> into amp seq
         operator.povRight().whileTrue(new IntakeTest(0.35)); 
-        operator.povLeft().onTrue(new CalibratePos(0.0));
-        operator.povUp().whileTrue(new AngleCalibration(-15.0));
-        operator.povDown().whileTrue(new AngleCalibration(15.0));
-        operator.x().onTrue(new CalibratePos(0.0));
+        //operator.povLeft().onTrue(new CalibratePos(0.0));
+        operator.povUp().whileTrue(new AngleCalibration(-25.0));
+        // prefer up to calibrate   operator.povDown().whileTrue(new AngleCalibration(25.0));
+        //operator.x().onTrue(new CalibratePos(0.0));
         operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
         operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
         operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
-       // TODO waiting for sensor wiring  operator.x().onTrue(new AbsEncoderCalibrate());
-        
-        /* TODO climber bindings, commented out for sussex -- er
-         *  Drive team mentioned that they want climber buttons on switchboard but i need 
-         * to find that syntax -ER
-         * WIP THESE BINDINGS ARE NOT AT ALL FINAL
-         * operator.povUp().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
-           operator.povDown().onTrue(new PrintCommand("PlaceholderCMD: Climber Down")); 
-         */
-      
         
         break;
         case IntakeTesting:
@@ -320,6 +332,21 @@ public class RobotContainer {
           shooter.setDefaultCommand(new RPMShooter());
         }
         break;
+
+        case IntakeTesting:
+          operator.a().onTrue(new IntakeSequence(true));
+          operator.x().onTrue(new InIntake());
+          operator.povLeft().onTrue(new CalibratePos(0.0));
+          //operator.x().onTrue(/* free */);
+          operator.povDown().whileTrue(new AngleCalibration(15.0));
+          operator.povUp().whileTrue(new AngleCalibration(-15.0));
+          operator.y().whileTrue(new IntakeTest(0.5)); //%
+          operator.rightBumper().whileTrue(new IntakeTest(-0.5)); //%
+          operator.povRight().onTrue(new IntakeSwap());
+          operator.b().onTrue(new MoveToAnglePos(100, 60));
+          
+
+
     }
   }
 }

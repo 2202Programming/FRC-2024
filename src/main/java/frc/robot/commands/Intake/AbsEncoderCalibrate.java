@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 
+@Deprecated  // likely won't have ABS Encoder
 public class AbsEncoderCalibrate extends Command {
   final Intake intake;
   /** Creates a new AbsEncoderCalibrate. */

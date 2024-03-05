@@ -232,19 +232,9 @@ public final class Constants {
   public final class DigitalIO {
     public static final int Transfer_LightGate = 0;
     public static final int Intake_LightGate = 1;
-    public static final int IntakeIsUp = 2; 
-    public static final int IntakeIsDown = 3; 
-    
-    //TODO wire these placeholders on the bot
-    public static final int RollerLightGate = 4; // placeholder
-    
+    public static final int IntakeIsDown = 2; 
+    public static final int IntakeIsUp = 3; 
   }
-
-  public static final class Roller_Constants {
-    public static double RollerSpeedDefault = 0.01; // placeholder: Note change namesx
-    public static double RollerPosShoot = 20; // placeholder
-    public static double RollerPosDefault = 5; // placeholder
-  } //TODO: check for deletion
 
   public static final class Transfer_Constants {
     public enum NoteCommandedLocation { Transfer, Intake, Swap; }

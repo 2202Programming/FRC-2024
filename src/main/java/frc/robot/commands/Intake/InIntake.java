@@ -25,28 +25,15 @@ public class InIntake extends Command {
   final double DONE_COUNT = 1;
   double count;
 
-  public enum Phase {
-    IntakeDown("IntakeDown"),
-    WaitingForNote("WaitingForNote"),
-    Finished("Finished");
-
-    String name;
-
-    private Phase(String name) {
-      this.name = name;
-    }
-
-    public String toString() {
-      return name;
-    }
-
-  }
-
+  //State machine 
+  enum Phase { IntakeDown,  WaitingForNote,  Finished  }
   Phase phase;
 
-  /** Creates a new IntakeSequence. */
+  /**
+   * Intake will hold note in good position for it to deliver.
+   * Assumes intake is empty and will pick up from the floor.
+  */
   public InIntake() {
-    // Use addRequirements() here to declare subsystem dependencies.
     this.intake = RobotContainer.getSubsystem(Intake.class);
     addRequirements(intake);
   }
@@ -56,6 +43,7 @@ public class InIntake extends Command {
   public void initialize() {
     count = 0;
     phase = Phase.IntakeDown;
+    intake.setHoldNote(true);  // we want to keep the note
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -69,8 +57,8 @@ public class InIntake extends Command {
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:
-        if (intake.hasNote()) {
-           phase = Phase.Finished;
+        if (intake.senseNote()) {
+          count++;
         }
         if(count >= DONE_COUNT){
           phase = Phase.Finished;
