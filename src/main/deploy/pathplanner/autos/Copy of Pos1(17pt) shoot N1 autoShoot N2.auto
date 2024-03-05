@@ -49,7 +49,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "N1 to N2"
+                  "pathName": "Copy of N1 to N2"
                 }
               },
               {
@@ -64,18 +64,12 @@
         {
           "type": "named",
           "data": {
-            "name": "RotateTo"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "angle_shoot"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Pos1",
   "choreoAuto": false
 }

@@ -57,7 +57,7 @@ public class IntakeSequence extends Command {
         System.out.println("***IntakeSequence:IntakeDown....***");
         shooter.retract();
         intake.setMaxVelocity(60.0);
-        intake.setAngleSetpoint(88.0);
+        intake.setAngleSetpoint(100.0);
         intake.setIntakeSpeed(0.6); // %
         transfer.setSpeed(35.0);
         phase = Phase.WaitingForNote;

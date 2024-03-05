@@ -24,35 +24,47 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pos1 to NA"
+                  "pathName": "Pos1 to N1"
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 4.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "pickup"
-                      }
-                    }
-                  ]
+                  "name": "pickup"
                 }
               }
             ]
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Pos1 to N1"
+            "name": "angle_shoot"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "N1 to N2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "pickup"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RotateTo"
           }
         },
         {
@@ -64,6 +76,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Pos1",
   "choreoAuto": false
 }
