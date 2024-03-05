@@ -29,8 +29,10 @@ import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
+import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakePositionHandler;
 import frc.robot.commands.Intake.IntakeSequence;
+import frc.robot.commands.Intake.IntakeSwap;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Intake.MoveToAnglePos;
 import frc.robot.commands.Intake.SwitchNoteLocation;
@@ -145,7 +147,7 @@ public class RobotContainer {
     dc = getSubsystem("DC");
 
     /* Set the commands below */
-    configureBindings(Bindings.auto_shooter_test); // Change this to switch between bindings
+    configureBindings(Bindings.IntakeTesting); // Change this to switch between bindings
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
@@ -290,6 +292,27 @@ public class RobotContainer {
          */
       
         
+        break;
+        case IntakeTesting:
+        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
+        operator.a().whileTrue(new IntakePositionHandler());
+        operator.y().whileTrue(new IntakeSequence(true));
+        operator.b().onTrue(new InIntake());
+        // operator.b().whileTrue(new EjectNote());
+        // operator.x().whileTrue(new IntakeTest(-1.0));
+        operator.leftBumper().onTrue(new IntakeSwap()); 
+        //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
+
+        // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay in intake
+        // operator.leftTrigger().whileTrue(new InAmp()); //works ---> into amp seq
+        operator.povRight().whileTrue(new IntakeTest(0.35)); 
+        operator.povLeft().onTrue(new CalibratePos(0.0));
+        operator.povUp().whileTrue(new AngleCalibration(-15.0));
+        operator.povDown().whileTrue(new AngleCalibration(15.0));
+        operator.x().onTrue(new CalibratePos(0.0));
+        operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
+        operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
+        operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
         break;
       case Shooter_test:
         var shooter = getSubsystem(Shooter.class);
