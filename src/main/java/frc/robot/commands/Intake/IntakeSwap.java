@@ -32,7 +32,7 @@ public class IntakeSwap extends Command {
   public void initialize() {
 
     if(transfer.hasNote()){
-      target=intake::hasNote;
+      target=intake::noteLightgateDoubleThrow;
       DONE_COUNT = 10; //Counter for transfer --> intake
         intakee = true;
     }

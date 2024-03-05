@@ -37,7 +37,7 @@ public class Intake extends SubsystemBase {
   public static final double TravelUp = 120.0; // [deg/s]
   public static final double TravelDown = 60.0; // [deg/s]
   public static final double EncoderOffset = 10.0; // todo Offset and the default pos                                                  
-
+  public LightgateHelper myLightgateHelper = new LightgateHelper();
   // External encoder used
   // https://www.revrobotics.com/rev-11-1271/
   // https://docs.revrobotics.com/sparkmax/operating-modes/using-encoders/alternate-encoder-mode
@@ -208,7 +208,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasNote() {
-    return !lightgate.get(); // TODO: Find out if inverted or not
+    return !lightgate.get(); // is inverted
   }
 
   public boolean has_Had_Note() {
@@ -221,14 +221,44 @@ public class Intake extends SubsystemBase {
     has_had_note = false;
   }
 
-  public void periodic() {
+  public boolean noteLightgateDoubleThrow(){
+    return myLightgateHelper.isDoubleThrow();
+  }
 
+  public void periodic() {
+    myLightgateHelper.setLightgateHelperState(hasNote());
     this.angle_servo.periodic();
 
     if (hasNote()) {
       has_had_note = true;
     } else if (has_had_note) {
       has_note = true;
+    }
+  }
+    class LightgateHelper {
+    boolean previousLightgateState = false;
+    // A 'throw' is a rising edge in the lightgate - when the lightgate is broken,
+    // not when it's unbroken
+    int numberOfThrows = 0;
+
+    boolean isSingleThrow() {
+      return numberOfThrows == 1;
+    }
+
+    boolean isDoubleThrow() {
+      return numberOfThrows == 2;
+    }
+
+    void resetThrows() {
+      // use to reset single/double throw
+      numberOfThrows = 0;
+    }
+
+    void setLightgateHelperState(boolean lightgateState) {
+      if (lightgateState == true && previousLightgateState == false) {
+        numberOfThrows++;
+      }
+      previousLightgateState = lightgateState;
     }
   }
 
