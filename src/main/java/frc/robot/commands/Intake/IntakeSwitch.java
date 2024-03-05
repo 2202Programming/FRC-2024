@@ -13,7 +13,9 @@ public class IntakeSwitch extends Command {
   final Intake intake;
   final Transfer transfer;
   boolean intakee;  //go to intake
-  /** Creates a new IntakeSwitch. */
+  /**
+   * Two different buttons for swap 
+   */
   public IntakeSwitch(boolean intakee) {
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);

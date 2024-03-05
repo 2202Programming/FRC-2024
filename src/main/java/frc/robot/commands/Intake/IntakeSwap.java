@@ -4,15 +4,22 @@
 
 package frc.robot.commands.Intake;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Transfer;
-
+/*
+ * One button toggle based on current note location
+ */
 public class IntakeSwap extends Command {
   final Intake intake;
   final Transfer transfer;
-  boolean intakee;
+  boolean intakee; //true = transfer --> intake, false = intake --> transfer
+  BooleanSupplier target;
+  int count;
+  int DONE_COUNT;
   /** Creates a new IntakeSwitch. */
   public IntakeSwap() {
     this.intake = RobotContainer.getSubsystem(Intake.class);
@@ -23,10 +30,15 @@ public class IntakeSwap extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
     if(transfer.hasNote()){
+      target=intake::hasNote;
+      DONE_COUNT = 10; //Counter for transfer --> intake
         intakee = true;
     }
     else if(intake.hasNote()){
+      target=transfer::hasNote;
+      DONE_COUNT = 5; //Counter for intake --> transfer
         intakee= false;
     }
         if(intakee){
@@ -42,6 +54,9 @@ public class IntakeSwap extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if(target.getAsBoolean()){
+      count++;
+    }
 
   }
 
@@ -55,16 +70,6 @@ public class IntakeSwap extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(intakee){
-      if(intake.hasNote()){
-        return true;
-      }
-    }
-    else if(!intakee){
-      if(transfer.hasNote()){
-        return true;
-      }
-    }
-    return false;
+    return count > DONE_COUNT;
   }
 }
