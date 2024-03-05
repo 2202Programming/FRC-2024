@@ -315,9 +315,11 @@ public class RobotContainer {
           operator.povUp().whileTrue(new AngleCalibration(-15.0));
           operator.y().whileTrue(new IntakeTest(0.5)); //%
           operator.rightBumper().whileTrue(new IntakeTest(-0.5)); //%
-          operator.leftBumper().whileTrue(new NoteLocationHandler(NoteCommandedLocation.Transfer));
+          operator.leftBumper().onTrue(new NoteLocationHandler(NoteCommandedLocation.Transfer));
           operator.povRight().onTrue(new NoteLocationHandler(NoteCommandedLocation.Swap));
           operator.b().onTrue(new MoveToAnglePos(100, 60));
+          
+
 
     }
   }

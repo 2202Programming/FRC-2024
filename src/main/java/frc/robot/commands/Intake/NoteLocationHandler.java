@@ -107,6 +107,8 @@ public class NoteLocationHandler extends Command {
     boolean isNoteInIntake = intake.hasNote();
     isDone = false;
 
+    intake.resetNoteLightgate();
+
     SmartDashboard.putString("Commanded Note Location", commandedLocation.toString());
 
     if (!isIntakeAngleReady()) {

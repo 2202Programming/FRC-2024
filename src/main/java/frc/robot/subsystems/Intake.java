@@ -37,8 +37,6 @@ public class Intake extends SubsystemBase {
   public static final double TravelDown = 60.0; // [deg/s]
   public static final double EncoderOffset = 10.0; // todo Offset and the default pos
 
-  public int count = 0;
-
   /*
    * S - shooter
    * I - intake
@@ -477,6 +475,10 @@ public class Intake extends SubsystemBase {
       }
       previousLightgateState = lightgateState;
     }
+  }
+
+  public void resetNoteLightgate() {
+    myLightgateHelper.resetThrows();
   }
 
   /*
