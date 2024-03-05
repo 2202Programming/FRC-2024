@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Intake;
 
-@Deprecated  //shouldn't need this with position switches on AlphaBot
+// @Deprecated  //shouldn't need this with position switches on AlphaBot
 public class CalibratePos extends Command {
   /** Creates a new AnglePos. */
   public final Intake intake;

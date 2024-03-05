@@ -57,7 +57,7 @@ public class InIntake extends Command {
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:
-        if (intake.hasNote()) {
+        if (intake.senseNote()) {
           count++;
         }
         if(count >= DONE_COUNT){

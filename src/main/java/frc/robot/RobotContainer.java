@@ -28,8 +28,11 @@ import frc.robot.Constants.Transfer_Constants.NoteCommandedLocation;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
+import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
+import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakeSequence;
+import frc.robot.commands.Intake.IntakeSwap;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Intake.MoveToAnglePos;
 import frc.robot.commands.Intake.NoteLocationHandler;
@@ -309,14 +312,15 @@ public class RobotContainer {
         break;
 
         case IntakeTesting:
-          operator.a().whileTrue(new IntakeSequence(true));
+          operator.a().onTrue(new IntakeSequence(true));
+          operator.x().onTrue(new InIntake());
+          operator.povLeft().onTrue(new CalibratePos(0.0));
           //operator.x().onTrue(/* free */);
           operator.povDown().whileTrue(new AngleCalibration(15.0));
           operator.povUp().whileTrue(new AngleCalibration(-15.0));
           operator.y().whileTrue(new IntakeTest(0.5)); //%
           operator.rightBumper().whileTrue(new IntakeTest(-0.5)); //%
-          operator.leftBumper().onTrue(new NoteLocationHandler(NoteCommandedLocation.Transfer));
-          operator.povRight().onTrue(new NoteLocationHandler(NoteCommandedLocation.Swap));
+          operator.povRight().onTrue(new IntakeSwap());
           operator.b().onTrue(new MoveToAnglePos(100, 60));
           
 

@@ -37,22 +37,6 @@ public class Intake extends SubsystemBase {
   public static final double TravelDown = 60.0; // [deg/s]
   public static final double EncoderOffset = 10.0; // todo Offset and the default pos
 
-  /*
-   * S - shooter
-   * I - intake
-   * T - transfer
-   * O - outside
-   * 2 - to
-   * F - from
-   */
-  enum intakeNoteState {
-    hasNote, hasNoNote, O2I, T2I, I2T, I2O, O2T
-  }
-
-  enum noteLocation {
-    outside, intake, transfer, shooter, none
-  }
-
   // External encoder used
   // https://www.revrobotics.com/rev-11-1271/
   // https://docs.revrobotics.com/sparkmax/operating-modes/using-encoders/alternate-encoder-mode
@@ -160,9 +144,6 @@ public class Intake extends SubsystemBase {
   // have the note in the intake at the start of the game
   // ?? TODO/Question why are these states not set in the constructor or placed
   // with the other globals??
-  intakeNoteState state = intakeNoteState.hasNoNote;
-  noteLocation location = noteLocation.none;
-  intakeNoteState requestedState;
   // this is the 'state' that we want when the motors turn off
   LightgateHelper myLightgateHelper = new LightgateHelper();
 
@@ -171,12 +152,12 @@ public class Intake extends SubsystemBase {
     // intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
   }
 
-  boolean senseNote() {
+  public boolean senseNote() {
     return !lightgate.get();
   }
 
   public boolean hasNote() {
-    if(state == intakeNoteState.hasNote) {
+    if(senseNote()) {
       return true;
     }
     return false;
@@ -278,7 +259,6 @@ public class Intake extends SubsystemBase {
   }
 
   public void periodic() {
-    myLightgateHelper.setLightgateHelperState(hasNote());
     this.angle_servo.periodic();  // do child objects first
 
     //@Ben uncomment for testing
@@ -287,6 +267,8 @@ public class Intake extends SubsystemBase {
 
     // don't bother tracking note edge if we aren't going to hold it
     if (!holdNote) return;
+
+    // myLightgateHelper.setLightgateHelperState(hasNote());
 
     // if we get here, we need to hold on to the note
     // moniter lightgate signal we have the note
@@ -352,6 +334,8 @@ public class Intake extends SubsystemBase {
     NetworkTableEntry nt_forwardLimitSwitchEnabled;
     NetworkTableEntry nt_desiredSpeed;
     NetworkTableEntry nt_lightgate;
+    NetworkTableEntry nt_throws;
+    NetworkTableEntry nt_senseNote;
 
     @Override
     public String getTableName() {
@@ -375,6 +359,8 @@ public class Intake extends SubsystemBase {
       nt_desiredSpeed = table.getEntry("desiredSpeed");
       nt_hasNote = table.getEntry("_hasNote");
       nt_senseNote_prev = table.getEntry("_senseNote_prev");
+      nt_throws = table.getEntry("throws");
+      nt_senseNote = table.getEntry("senseNote");
 
     }
 
@@ -394,6 +380,8 @@ public class Intake extends SubsystemBase {
       nt_desiredSpeed.setDouble(getDesiredVelocity());
       nt_hasNote.setBoolean(hasNote());
       nt_senseNote_prev.setBoolean(senseNote_prev);
+      nt_throws.setDouble(myLightgateHelper.numberOfThrows);
+      nt_senseNote.setBoolean(senseNote());
     }
   } // watcher command
 
