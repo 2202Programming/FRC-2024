@@ -14,7 +14,7 @@ import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.Constants.Tag_Pose;
-public class AutoShooting extends SequentialCommandGroup {
+public class AutoShooting extends SequentialCommandGroup{
 
   private Limelight_Subsystem limelight;
   SwerveDrivetrain drivetrain;
@@ -34,6 +34,7 @@ public class AutoShooting extends SequentialCommandGroup {
     if (checkForTarget(tagID)) {
       addCommands(new FaceToTag(tagID));
       if (target == ShootingTarget.Speaker) {
+        // addCommands(new SpeakerShooter()); instead of this when we get servo
         SpeakerShootingPhase phase = getSpeakerPhase();
         addCommands(new ShooterSequence(phase.isHigh(), phase.getRPM()));
       } else if (target == ShootingTarget.Amp) {
