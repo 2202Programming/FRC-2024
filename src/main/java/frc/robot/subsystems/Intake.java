@@ -221,6 +221,10 @@ public class Intake extends SubsystemBase {
     has_had_note = false;
   }
 
+  public void resetThrows(){
+    myLightgateHelper.resetThrows();
+  }
+
   public boolean noteLightgateDoubleThrow(){
     return myLightgateHelper.isDoubleThrow();
   }
@@ -276,6 +280,7 @@ public class Intake extends SubsystemBase {
     NetworkTableEntry nt_forwardLimitSwitchEnabled;
     NetworkTableEntry nt_desiredSpeed;
     NetworkTableEntry nt_lightgate;
+    NetworkTableEntry nt_throws;
 
     @Override
     public String getTableName() {
@@ -297,7 +302,7 @@ public class Intake extends SubsystemBase {
       nt_forwardLimitSwitchEnabled = table.getEntry("forwardLimitSwitch");
       nt_desiredSpeed = table.getEntry("desiredSpeed");
       nt_lightgate = table.getEntry("lightgate");
-
+      nt_throws = table.getEntry("throws");
       // default value for mutables
       // example nt_maxArbFF.setDouble(maxArbFF);
     }
@@ -316,6 +321,7 @@ public class Intake extends SubsystemBase {
       //nt_forwardLimitSwitchEnabled.setBoolean(forwardSwitchEnabled());
       nt_desiredSpeed.setDouble(getDesiredVelocity());
       nt_lightgate.setBoolean(hasNote());
+      nt_throws.setDouble(myLightgateHelper.numberOfThrows);
 
       // get mutable values
       // example maxArbFF = nt_maxArbFF.getDouble(maxArbFF);

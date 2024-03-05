@@ -22,7 +22,7 @@ import frc.robot.subsystems.Intake;
 public class InIntake extends Command {
 
   final Intake intake;
-  final double DONE_COUNT = 2;
+  final double DONE_COUNT = 1;
   double count;
 
   public enum Phase {
@@ -70,7 +70,7 @@ public class InIntake extends Command {
         break;
       case WaitingForNote:
         if (intake.hasNote()) {
-          count++;
+           phase = Phase.Finished;
         }
         if(count >= DONE_COUNT){
           phase = Phase.Finished;
