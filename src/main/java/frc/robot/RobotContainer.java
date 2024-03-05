@@ -28,15 +28,12 @@ import frc.robot.Constants.Transfer_Constants.NoteCommandedLocation;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
-import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.InIntake;
-import frc.robot.commands.Intake.IntakePositionHandler;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeSwap;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Intake.MoveToAnglePos;
-import frc.robot.commands.Intake.NoteLocationHandler;
 import frc.robot.commands.Intake.SetNoteLocation;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.RPMShooter;
@@ -286,7 +283,6 @@ public class RobotContainer {
       case Competition:
 
         // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
-        // removed -did nothing   operator.a().whileTrue(new IntakePositionHandler()); 
         operator.y().whileTrue(new IntakeSequence(true));
         operator.b().whileTrue(new EjectNote());
         // operator.x().whileTrue(new IntakeTest(-1.0));
@@ -305,27 +301,7 @@ public class RobotContainer {
         operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
         
         break;
-        case IntakeTesting:
-        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
-        operator.a().whileTrue(new IntakePositionHandler());
-        operator.y().whileTrue(new IntakeSequence(true));
-        operator.b().onTrue(new InIntake());
-        // operator.b().whileTrue(new EjectNote());
-        // operator.x().whileTrue(new IntakeTest(-1.0));
-        operator.leftBumper().onTrue(new IntakeSwap()); 
-        //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
-
-        // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay in intake
-        // operator.leftTrigger().whileTrue(new InAmp()); //works ---> into amp seq
-        operator.povRight().whileTrue(new IntakeTest(0.35)); 
-        operator.povLeft().onTrue(new CalibratePos(0.0));
-        operator.povUp().whileTrue(new AngleCalibration(-15.0));
-        operator.povDown().whileTrue(new AngleCalibration(15.0));
-        operator.x().onTrue(new CalibratePos(0.0));
-        operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
-        operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
-        operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
-        break;
+       
       case Shooter_test:
         var shooter = getSubsystem(Shooter.class);
         if (shooter != null) {
@@ -334,19 +310,25 @@ public class RobotContainer {
         break;
 
         case IntakeTesting:
-          operator.a().onTrue(new IntakeSequence(true));
+          operator.a().onTrue(new IntakeSequence(true)); //works for both modes
+          operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0)); 
           operator.x().onTrue(new InIntake());
-          operator.povLeft().onTrue(new CalibratePos(0.0));
-          //operator.x().onTrue(/* free */);
-          operator.povDown().whileTrue(new AngleCalibration(15.0));
-          operator.povUp().whileTrue(new AngleCalibration(-15.0));
           operator.y().whileTrue(new IntakeTest(0.5)); //%
-          operator.rightBumper().whileTrue(new IntakeTest(-0.5)); //%
-          operator.povRight().onTrue(new IntakeSwap());
-          operator.b().onTrue(new MoveToAnglePos(100, 60));
+
+          operator.povDown().onTrue(new AngleCalibration(15.0));  // good for alpha 
+          operator.povUp().onTrue(new AngleCalibration(-15.0)); // not needed, calibrate with up
           
-
-
+          operator.povRight().onTrue(new IntakeSwap());
+          operator.povLeft().whileTrue(new EjectNote());
+  
+          // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay in intake
+          // operator.leftTrigger().whileTrue(new InAmp()); //works ---> into amp seq
+          // operator.povRight().whileTrue(new IntakeTest(0.35)); 
+        
+          operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
+          operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
+          operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
+          break;
     }
   }
 }

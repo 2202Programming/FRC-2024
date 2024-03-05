@@ -12,35 +12,36 @@ import frc.robot.subsystems.Transfer;
 public class IntakeSwitch extends Command {
   final Intake intake;
   final Transfer transfer;
-  boolean intakee;  //go to intake
-  /**
-   * Two different buttons for swap 
-   */
-  public IntakeSwitch(boolean intakee) {
-    this.intake = RobotContainer.getSubsystem(Intake.class);
-    this.transfer = RobotContainer.getSubsystem(Transfer.class);
-    this.intakee = intakee;
+  boolean noteToIntake; // go to intake
 
-    // Use addRequirements() here to declare subsystem dependencies.
+  /**
+   * Two different buttons for swap
+   */
+  public IntakeSwitch(boolean noteToIntake) {
+    intake = RobotContainer.getSubsystem(Intake.class);
+    transfer = RobotContainer.getSubsystem(Transfer.class);
+    this.noteToIntake = noteToIntake;
+    addRequirements(intake, transfer);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-        if(intakee){
-      transfer.setSpeed(-35.0);//not %
-      intake.setIntakeSpeed(-0.8); //%
-    }
-    else if(!intakee){
+    if (noteToIntake) {
+      transfer.setSpeed(-35.0);// not %
+      intake.setIntakeSpeed(-0.8); // %
+    } else {
       transfer.setSpeed(35.0);
-      intake.setIntakeSpeed(0.8); //%
+      intake.setIntakeSpeed(0.8); // %
     }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+    //TODO Still need a counter to deal with stopping at the correct spot
+    // See IntakeSwap... best to modify that command to handle these cases.
+    // Merge this cmd with Intake swap, then compare with SetNoteLocation...
   }
 
   // Called once the command ends or is interrupted.
@@ -53,13 +54,12 @@ public class IntakeSwitch extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(intakee){
-      if(intake.hasNote()){
+    if (noteToIntake) {
+      if (intake.hasNote()) {
         return true;
       }
-    }
-    else if(!intakee){
-      if(transfer.hasNote()){
+    } else if (!noteToIntake) {
+      if (transfer.hasNote()) {
         return true;
       }
     }

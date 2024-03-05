@@ -35,7 +35,7 @@ public class Intake extends SubsystemBase {
   public static final double DownPos = 96.0; // [deg]
   public static final double TravelUp = 120.0; // [deg/s]
   public static final double TravelDown = 60.0; // [deg/s]
-  public static final double EncoderOffset = 10.0; // todo Offset and the default pos                                                  
+  
   public LightgateHelper myLightgateHelper = new LightgateHelper();
   // External encoder used
   // https://www.revrobotics.com/rev-11-1271/
@@ -145,7 +145,6 @@ public class Intake extends SubsystemBase {
   // ?? TODO/Question why are these states not set in the constructor or placed
   // with the other globals??
   // this is the 'state' that we want when the motors turn off
-  LightgateHelper myLightgateHelper = new LightgateHelper();
 
   public void setIntakeSpeed(double speed) {
     intakeMtr.set(speed); //[%pwr] TODO change to velocity mode & tune hwpid for intakeMtr
@@ -157,10 +156,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasNote() {
-    if(senseNote()) {
-      return true;
-    }
-    return false;
+   return hasNote;
   }
 
   public double getIntakeRollerSpeed() {
@@ -240,9 +236,6 @@ public class Intake extends SubsystemBase {
     // if we ever lose a note, call this
     hasNote = state;
     senseNote_prev = false;
-  }
-  public boolean noteLightgateDoubleThrow(){
-    return myLightgateHelper.isDoubleThrow();
   }
 
   /*

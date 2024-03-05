@@ -51,13 +51,14 @@ public class InIntake extends Command {
   public void execute() {
     switch (phase) {
       case IntakeDown:
-        intake.setMaxVelocity(60.0);
-        intake.setAngleSetpoint(100.0);
+        intake.setMaxVelocity(Intake.TravelDown);
+        intake.setAngleSetpoint(Intake.DownPos);
         intake.setIntakeSpeed(0.8); // %
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:
-        if (intake.senseNote()) {
+        // watch the intake State for note posession of Note
+        if (intake.hasNote()) {
           count++;
         }
         if(count >= DONE_COUNT){
@@ -73,13 +74,13 @@ public class InIntake extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.setIntakeSpeed(0.0);
-    intake.setAngleSetpoint(0.0);
+    intake.setAngleVelocity(Intake.TravelUp);
+    intake.setAngleSetpoint(Intake.UpPos);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return phase == Phase.Finished;
-
   }
 }
