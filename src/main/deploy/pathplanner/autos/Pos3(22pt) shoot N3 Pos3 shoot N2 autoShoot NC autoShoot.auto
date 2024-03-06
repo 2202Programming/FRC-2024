@@ -37,6 +37,37 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "N3 to Pos3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Pos3 to N2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "pickup"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "angle_shoot"
@@ -49,13 +80,26 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pos3 to ND"
+                  "pathName": "N2 to NC"
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "pickup"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "pickup"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -64,32 +108,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "ND to S"
+            "pathName": "NC to N2"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "angle_shoot"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "S to NE"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "pickup"
-                }
-              }
-            ]
           }
         }
       ]
