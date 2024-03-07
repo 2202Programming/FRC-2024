@@ -10,6 +10,8 @@ import frc.robot.subsystems.Intake;
 
 public class InAmp extends Command {
   final Intake intake;
+  final int DONE_COUNT = 20; //placeholder
+  double count;
   /** Creates a new InAmp. */
   public InAmp() {
     this.intake = RobotContainer.getSubsystem(Intake.class);
@@ -29,6 +31,9 @@ public class InAmp extends Command {
     if(intake.angleAtSetpoint()){
       intake.setIntakeSpeed(-1.0);
     }
+    if(intake.atVelocity()){
+      count++;
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -38,11 +43,12 @@ public class InAmp extends Command {
     intake.setMaxVelocity(120.0);
     intake.setAngleSetpoint(0.0);
     intake.setIntakeSpeed(0.0);
+    intake.setHasNote(false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return count >= DONE_COUNT;
   }
 }

@@ -43,7 +43,7 @@ public class InIntake extends Command {
   public void initialize() {
     count = 0;
     phase = Phase.IntakeDown;
-    intake.setHoldNote(true);  // we want to keep the note
+  //   intake.setHoldNote(true);  // we want to keep the note
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -76,6 +76,12 @@ public class InIntake extends Command {
     intake.setIntakeSpeed(0.0);
     intake.setAngleVelocity(Intake.TravelUp);
     intake.setAngleSetpoint(Intake.UpPos);
+    if(intake.senseNote()){
+    intake.setHasNote(true);
+    }
+    else{
+      intake.setHasNote(false);
+    }
   }
 
   // Returns true when the command should end.

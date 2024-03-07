@@ -86,6 +86,12 @@ public class NoteInIntake extends Command {
     intake.setIntakeSpeed(0.0);
     intake.setMaxVelocity(120.0);
     intake.setAngleSetpoint(0.0);
+    if(intake.senseNote()){
+      intake.setHasNote(true);
+    }
+    else{
+      intake.setHasNote(false);
+    }
   }
 
   // Returns true when the command should end.

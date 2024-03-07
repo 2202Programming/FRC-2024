@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.Transfer_Constants.NoteCommandedLocation;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
@@ -34,7 +33,6 @@ import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeSwap;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Intake.MoveToAnglePos;
-import frc.robot.commands.Intake.SetNoteLocation;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Shooter.ShooterSequence;
@@ -286,7 +284,7 @@ public class RobotContainer {
         operator.y().whileTrue(new IntakeSequence(true));
         operator.b().whileTrue(new EjectNote());
         // operator.x().whileTrue(new IntakeTest(-1.0));
-        operator.leftBumper().onTrue(new SetNoteLocation(NoteCommandedLocation.Swap)); 
+        operator.leftBumper().onTrue(new IntakeSwap()); 
         //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
         // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay in intake

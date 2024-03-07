@@ -35,9 +35,8 @@ public class Intake extends SubsystemBase {
   public static final double DownPos = 96.0; // [deg]
   public static final double TravelUp = 120.0; // [deg/s]
   public static final double TravelDown = 60.0; // [deg/s]
-  
-  public LightgateHelper myLightgateHelper = new LightgateHelper();
-  // External encoder used
+
+  // External encoder used6
   // https://www.revrobotics.com/rev-11-1271/
   // https://docs.revrobotics.com/sparkmax/operating-modes/using-encoders/alternate-encoder-mode
   static final int Angle_kCPR = 8192; // alt encoder angle [counts per rotation]
@@ -78,8 +77,6 @@ public class Intake extends SubsystemBase {
   DigitalInput limitSwitchDown = new DigitalInput(DigitalIO.IntakeIsDown);
 
   //Note State variables
-  boolean holdNote;  // true, well watch for Note edge.
-  boolean senseNote_prev = false; // for edge detection 
   boolean hasNote = false; // true when Intake has Note
 
   public Intake() { // TODO: Get values
@@ -199,6 +196,9 @@ public class Intake extends SubsystemBase {
     desired_intake_speed = speed;
     angle_servo.setVelocityCmd(speed);
   }
+  public boolean atVelocity(){
+    return Math.abs(intakeMtr.get() - desired_intake_speed) < 0.05;
+  }
 
   public double getDesiredVelocity() {
     return desired_intake_speed;
@@ -235,85 +235,12 @@ public class Intake extends SubsystemBase {
   public void setHasNote(boolean state) {
     // if we ever lose a note, call this
     hasNote = state;
-    senseNote_prev = false;
-  }
-
-  /*
-   * sets holdNote, when true the intake will stop moving when note is in 
-   * its holding position.
-   * 
-   * If set to true, assumes we don't have the note and clears
-   * any note state so we can watch for it.
-   */
-  public void setHoldNote(boolean holdNote)  {
-    this.holdNote = holdNote;
-    senseNote_prev = false;
-    if (holdNote) setHasNote(false);
-  }
-
-  public void resetThrows(){
-    myLightgateHelper.resetThrows();
-  }
-
-  public boolean noteLightgateDoubleThrow(){
-    return myLightgateHelper.isDoubleThrow();
   }
 
   public void periodic() {
     this.angle_servo.periodic();  // do child objects first
-
-    //@Ben uncomment for testing
-    // processNoteDetection();
-  
-
-    // don't bother tracking note edge if we aren't going to hold it
-    if (!holdNote) return;
-
-    // myLightgateHelper.setLightgateHelperState(hasNote());
-
-    // if we get here, we need to hold on to the note
-    // moniter lightgate signal we have the note
-    if (!hasNote) {
-      if (senseNote()) {
-        senseNote_prev = true;
-      } else if (senseNote_prev) {
-        // high to low edge seen, we have it. Cmd will use timer to position correctly
-        // and stop the intakeMtr based on direction and timing.
-        hasNote = true;
-      }
-    }
   }
   
-  class LightgateHelper {
-    boolean previousLightgateState = false;
-    // A 'throw' is a rising edge in the lightgate - when the lightgate is broken,
-    // not when it's unbroken
-    int numberOfThrows = 0;
-
-    boolean isSingleThrow() {
-      return numberOfThrows == 1;
-    }
-
-    boolean isDoubleThrow() {
-      return numberOfThrows == 2;
-    }
-
-    void resetThrows() {
-      // use to reset single/double throw
-      numberOfThrows = 0;
-    }
-
-    void setLightgateHelperState(boolean lightgateState) {
-      if (lightgateState == true && previousLightgateState == false) {
-        numberOfThrows++;
-      }
-      previousLightgateState = lightgateState;
-    }
-  }
-
-  public void resetNoteLightgate() {
-    myLightgateHelper.resetThrows();
-  }
 
   /*
    * Watcher commmand puts network table data for intake.
@@ -321,7 +248,6 @@ public class Intake extends SubsystemBase {
    */
   class IntakeWatcherCmd extends WatcherCmd {
     NetworkTableEntry nt_hasNote;
-    NetworkTableEntry nt_senseNote_prev;
     NetworkTableEntry nt_angleVel;
     NetworkTableEntry nt_kP;
     NetworkTableEntry nt_kI;
@@ -335,7 +261,6 @@ public class Intake extends SubsystemBase {
     NetworkTableEntry nt_forwardLimitSwitchEnabled;
     NetworkTableEntry nt_desiredSpeed;
     NetworkTableEntry nt_lightgate;
-    NetworkTableEntry nt_throws;
     NetworkTableEntry nt_senseNote;
 
     @Override
@@ -359,8 +284,6 @@ public class Intake extends SubsystemBase {
       //nt_forwardLimitSwitchEnabled = table.getEntry("forwardLimitSwitch");
       nt_desiredSpeed = table.getEntry("desiredSpeed");
       nt_hasNote = table.getEntry("_hasNote");
-      nt_senseNote_prev = table.getEntry("_senseNote_prev");
-      nt_throws = table.getEntry("throws");
       nt_senseNote = table.getEntry("senseNote");
 
     }
@@ -380,8 +303,6 @@ public class Intake extends SubsystemBase {
       //nt_forwardLimitSwitchEnabled.setBoolean(forwardSwitchEnabled());
       nt_desiredSpeed.setDouble(getDesiredVelocity());
       nt_hasNote.setBoolean(hasNote());
-      nt_senseNote_prev.setBoolean(senseNote_prev);
-      nt_throws.setDouble(myLightgateHelper.numberOfThrows);
       nt_senseNote.setBoolean(senseNote());
     }
   } // watcher command

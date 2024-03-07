@@ -39,20 +39,7 @@ public class Transfer extends SubsystemBase {
 
   // state vars
   boolean has_note = false;
-  boolean prev_sense_note = false;
   double speed_cmd; // for monitoring
-
-  /*
-   * S - shooter
-   * I - intake
-   * T - transfer
-   * O - outside
-   * 2 - to
-   * F - from
-   */
-  enum transferNoteState {
-    hasNote, hasNoNote, T2S, I2T, T2I,
-    /* S2T */}
 
   /** Creates a new Transfer. */
   public Transfer() {
@@ -71,12 +58,11 @@ public class Transfer extends SubsystemBase {
     transferMtrEncoder.setPosition(0.0);
   }
 
-  transferNoteState state = transferNoteState.hasNoNote;
 
   /*
    * true when note is blocking light gate
    */
-  boolean senseNote() {
+  public boolean senseNote() {
     return !lightgate.get();
   }
 
@@ -93,7 +79,6 @@ public class Transfer extends SubsystemBase {
    */
   public void setHasNote(boolean note_state) {
     has_note = note_state;
-    prev_sense_note = false;
   }
 
   /*
@@ -118,17 +103,7 @@ public class Transfer extends SubsystemBase {
    */
   @Override
   public void periodic() {
-    // watch for Note if we don't have one
-    // watch gate for high to low change, we have the note where we want it
-    if (!has_note) {
-      if (senseNote()){
-        prev_sense_note = true; // start looking for edge h->s
-      }
-      else if (prev_sense_note) {
-        has_note = true;   // saw it then didn't, so we move past we have it
-        prev_sense_note = false;
-      }
-    }
+  
   }
 
   class TransferWatcherCmd extends WatcherCmd {

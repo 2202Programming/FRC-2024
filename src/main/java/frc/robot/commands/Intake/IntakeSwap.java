@@ -18,6 +18,7 @@ public class IntakeSwap extends Command {
   final Intake intake;
   final Transfer transfer;
   BooleanSupplier target;
+  boolean checkIntake;
   int count;
   int DONE_COUNT;
 
@@ -33,15 +34,17 @@ public class IntakeSwap extends Command {
   public void initialize() {
     count = 0;
     if (transfer.hasNote()) {
-      target = intake::noteLightgateDoubleThrow;
-      DONE_COUNT = 10; // Counter for transfer --> intake
+      target = intake::senseNote;
+      DONE_COUNT = 10; // Delay for transfer --> intake
       transfer.setSpeed(-35.0);// [cm/s]
       intake.setIntakeSpeed(-0.8); // %
-    } else if (intake.hasNote()) {
-      target = transfer::hasNote;
-      DONE_COUNT = 5; // Counter for intake --> transfer
+      checkIntake = true;
+    } else if (intake.senseNote()) {
+      target = transfer::senseNote;
+      DONE_COUNT = 5; // Delay for intake --> transfer
       transfer.setSpeed(35.0); // [cm/s]
       intake.setIntakeSpeed(0.8); // [%pwr]
+      checkIntake = false;
     } else {
       // handle case where neither has note
       count = DONE_COUNT = 0;  // do nothing, signal done
@@ -62,6 +65,14 @@ public class IntakeSwap extends Command {
   public void end(boolean interrupted) {
     intake.setIntakeSpeed(0.0);
     transfer.setSpeed(0.0);
+    if(checkIntake){
+      intake.setHasNote(true);
+      transfer.setHasNote(false);
+    }
+    else{
+      transfer.setHasNote(true);
+      intake.setHasNote(false);
+    }
   }
 
   // Returns true when the command should end.
