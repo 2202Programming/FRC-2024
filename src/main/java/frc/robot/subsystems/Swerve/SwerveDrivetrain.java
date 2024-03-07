@@ -333,6 +333,10 @@ public class SwerveDrivetrain extends SubsystemBase {
     }
   }
 
+  public SwerveModulePosition[] getSwerveModulePositions() {
+    return meas_pos;
+  }
+
   @Override
   public void periodic() {
     // update data from each of the swerve drive modules.
