@@ -5,16 +5,26 @@
 package frc.robot.util;
 
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
+import edu.wpi.first.math.interpolation.Interpolator;
+import edu.wpi.first.math.interpolation.InverseInterpolator;
 
 /** Add your docs here. */
 public class DistanceInterpretor {
-    public DistanceInterpretor(){
-    InterpolatingTreeMap<Double, Double> table = new InterpolatingTreeMap<>();
+    public DistanceInterpretor() {
+    InverseInterpolator<Double> inverseInterpolator = InverseInterpolator.forDouble(); 
+    Interpolator<Double> interpolator = Interpolator.forDouble();
+    
+    InterpolatingTreeMap<Double, Double> table = new InterpolatingTreeMap<>(inverseInterpolator, interpolator);        
 
-    table.put(125.0, 450.0);
+    table.put(100.0, 450.0);
     table.put(200.0, 510.0);
     table.put(268.0, 525.0);
     table.put(312.0, 550.0);
     table.put(326.0, 650.0);
+
+    //test 
+    assert 480.0 == table.get(150.0) ;
+    var x = table.get(225.0);
+
     }
 }
