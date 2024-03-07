@@ -22,15 +22,15 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "Pos1 to N1"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "pickup"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Pos1 to N1"
                 }
               }
             ]

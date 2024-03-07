@@ -236,10 +236,12 @@ public class RobotContainer {
       
       case auto_shooter_test:
         driver.a().onTrue(new FaceToTag(4));
+        driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.povDown().onTrue(new AutoShooting(ShootingTarget.Speaker));
         driver.povUp().onTrue(new AutoShooting(ShootingTarget.Trap));
         driver.povRight().onTrue(new AutoShooting(ShootingTarget.Amp));
         driver.povLeft().onTrue(new TurnFaceShootAuto(4));
+        driver.y().onTrue(new AllianceAwareGyroReset(true));
         driver.x().onTrue(new RotateTo());
         break;
 

@@ -91,7 +91,7 @@ public final class Constants {
         0.999, // scale [] <= 1.0
         MperFT * (4.0 / 12.0),
         21.428,
-        6.75);
+        8.14); // 3/6 Confirmed with Mechanical
     // TODO: For 2024 CompetitionBotBeta ***NOT YET CONFIRMED
     public static final WheelOffsets comp2024BetaBotOffsets = comp2024AlphaBotOffsets;
     public static final ChassisConfig comp2024BotBetaChassisConfig = comp2024AlphaBotChassisConfig;
