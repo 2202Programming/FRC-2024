@@ -27,15 +27,22 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
+import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.InIntake;
+import frc.robot.commands.Intake.IntakeAngleTest;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeSwap;
 import frc.robot.commands.Intake.IntakeTest;
 import frc.robot.commands.Intake.MoveToAnglePos;
+import frc.robot.commands.Intake.TestTransfer;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.RPMShooter;
+import frc.robot.commands.Shooter.ShootTest;
+import frc.robot.commands.Shooter.ShooterAngleCalibrate;
+import frc.robot.commands.Shooter.ShooterAngleVelMove;
 import frc.robot.commands.Shooter.ShooterSequence;
+import frc.robot.commands.Shooter.ShooterServoSequence;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
@@ -67,7 +74,7 @@ public class RobotContainer {
   // enum for bindings add when needed
   public enum Bindings {
     Competition,
-    DriveTest, Shooter_test, IntakeTesting, auto_shooter_test
+    DriveTest, Shooter_test, IntakeTesting, auto_shooter_test, new_bot_test
   }
 
   // The robot's subsystems and commands are defined here...
@@ -136,7 +143,7 @@ public class RobotContainer {
     distanceInterpretor = new DistanceInterpretor();
 
     // Set binding to Competition (or your mode for testing)
-    Bindings bindings = Bindings.IntakeTesting;    
+    Bindings bindings = Bindings.new_bot_test;    
 
     // Testing, but also to drive the drivers nuts...
     Command random_lights = new RandomLightsCmd();
@@ -256,6 +263,10 @@ public class RobotContainer {
         driver.x().onTrue(new RotateTo());
         break;
 
+      case new_bot_test:
+        driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
+        driver.y().onTrue(new AllianceAwareGyroReset(false));
+        break;
       
       default:
         break;
@@ -329,6 +340,32 @@ public class RobotContainer {
           operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
           operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
           operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
+          break;
+
+          case new_bot_test:
+          //INTAKE & TRANSFER
+          // operator.a().onTrue(new IntakeSequence(true)); //works for both modes
+          operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0)); 
+          // operator.x().onTrue(new InIntake(true));
+          operator.x().whileTrue(new AngleCalibration(15.0));
+          operator.a().whileTrue(new TestTransfer(35.0));
+          operator.y().whileTrue(new IntakeTest(0.5)); //%
+          operator.povDown().whileTrue(new IntakeAngleTest(15.0));  // good for alpha 
+          operator.povUp().whileTrue(new IntakeAngleTest(-15.0)); // not needed, calibrate with up
+          operator.povRight().onTrue(new IntakeSwap());
+          operator.povLeft().whileTrue(new EjectNote());
+          operator.leftBumper().onTrue(new CalibratePos(0.0));
+
+          //SHOOTER
+          operator.rightTrigger().whileTrue(new ShootTest(500.0));
+          operator.leftTrigger().whileTrue(new ShooterAngleVelMove(5.0));
+          operator.rightBumper().whileTrue(new ShooterAngleVelMove(-5.0));
+          // operator.rightBumper().onTrue(new ShooterServoSequence(30.0, 2000.0)); //speaker close /
+          
+  
+          // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay in intake
+          // operator.leftTrigger().whileTrue(new InAmp()); //works ---> into amp seq
+          // operator.povRight().whileTrue(new IntakeTest(0.35)); 
           break;
     }
   }

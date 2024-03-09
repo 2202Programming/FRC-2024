@@ -81,7 +81,7 @@ public void setTargetPose(Pose2d targetPose){
 
   public void setShooterAngleSetpoint(double angle) {
     double convertedPos = Math.sin(angle) * Hypotenuse; //equation to convert
-    shooterAngle.setVelocityCmd(convertedPos);
+    shooterAngle.setSetpoint(convertedPos);
   }
 
   public double getShooterAngleSetpoint() {
