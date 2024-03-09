@@ -10,25 +10,27 @@ import frc.robot.subsystems.Climber.Climber;
 
 public class Climb extends Command {
   /** Creates a new Climber. */
-  Climber climber;
-  double speed;
-  boolean done;
-  public Climb(double speed) {  
+  private Climber climber;
+  private double pos;
+  private boolean done;
+  
+  public Climb(double pos) {  
     // Use addRequirements() here to declare subsystem dependencies.
     climber = RobotContainer.getSubsystem(Climber.class);
-    this.speed = speed;
+    this.pos = pos;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    climber.setArmHeight(speed);
+    climber.setArmHeight(pos);
     done = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    // TODO: Do we want to monitor current while this is occuring?
     if(climber.leftArmAtSetpoint() && climber.rightArmAtSetpoint()){
       done = true;
     }

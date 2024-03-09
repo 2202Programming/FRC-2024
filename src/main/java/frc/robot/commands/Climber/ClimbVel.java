@@ -13,7 +13,17 @@ public class ClimbVel extends Command {
   boolean right;
   boolean left;
   double speed;
-  /** Creates a new ClimbVel. */
+  
+
+  /**
+   * Create a new ClimbVel Command
+   * The arm will move the entire time this command is running, therefore
+   * this command should be run are whileTrue() only
+   *
+   * @param right Are we moving the right arm?
+   * @param left Are we moving the left arm?
+   * @param speed Arm movment vel, cm/s
+   */
   public ClimbVel(boolean right, boolean left, double speed) {
     climber = RobotContainer.getSubsystem(Climber.class);
     this.right = right;
