@@ -313,7 +313,7 @@ public class RobotContainer {
         case IntakeTesting:
           operator.a().onTrue(new IntakeSequence(true)); //works for both modes
           operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0)); 
-          operator.x().onTrue(new InIntake());
+          operator.x().onTrue(new InIntake(true));
           operator.y().whileTrue(new IntakeTest(0.5)); //%
 
           operator.povDown().onTrue(new AngleCalibration(15.0));  // good for alpha 

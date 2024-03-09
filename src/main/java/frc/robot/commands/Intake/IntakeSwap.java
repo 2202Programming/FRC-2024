@@ -39,7 +39,7 @@ public class IntakeSwap extends Command {
       transfer.setSpeed(-35.0);// [cm/s]
       intake.setIntakeSpeed(-0.8); // %
       checkIntake = true;
-    } else if (intake.senseNote()) {
+    } else if (intake.hasNote()) {
       target = transfer::senseNote;
       DONE_COUNT = 5; // Delay for intake --> transfer
       transfer.setSpeed(35.0); // [cm/s]
@@ -71,7 +71,6 @@ public class IntakeSwap extends Command {
     }
     else{
       transfer.setHasNote(true);
-      intake.setHasNote(false);
     }
   }
 

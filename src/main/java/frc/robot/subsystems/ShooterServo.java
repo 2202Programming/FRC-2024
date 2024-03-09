@@ -4,12 +4,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.units.Distance;
 import frc.robot.Constants.CAN;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.commands.utility.WatcherCmd;
-import frc.robot.util.DistanceInterpretor;
+import frc.robot.subsystems.Shooter.ShooterWatcherCmd;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
@@ -30,7 +28,7 @@ public class ShooterServo extends Shooter {
 
   final static double DeployAngle = 100.0;// tbd both
   final static double RetractAngle = 50.0;
-
+  final static double Hypotenuse = 16.748; //hypotenuse of 
   private final NeoServo shooterAngle;
 
   PIDController shooterPos = new PIDController(1.0, 0.0, 0.0);
@@ -41,7 +39,7 @@ public class ShooterServo extends Shooter {
     shooterAngle = new NeoServo(CAN.SHOOTER_ANGLE, shooterPos, hwShooterVelPID, false);
     // Servo setup for angle_servo
     hwShooterVelPID.copyTo(shooterAngle.getController().getPIDController(), 0);
-    shooterAngle.setConversionFactor(360.0 / ShooterAngleGearRatio) // [deg]
+    shooterAngle.setConversionFactor(360.0 / ShooterAngleGearRatio) // [deg] - With conversion factor done in method, it will be set through height, but read in deg still
         .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
         .setVelocityHW_PID(maxVel, maxAccel)
         .setTolerance(posTol, velTol)
@@ -77,11 +75,18 @@ public void setTargetPose(Pose2d targetPose){
     setShooterAngleSetpoint(RetractAngle);
   }
 
-  public void setShooterAngleSetpoint(double pos) {
-    shooterAngle.setSetpoint(pos);
+  public void setShooterAngleSetpoint(double angle) {
+    double convertedPos = Math.sin(angle) * Hypotenuse; //equation to convert
+    shooterAngle.setVelocityCmd(convertedPos);
   }
 
   public double getShooterAngleSetpoint() {
+    return shooterAngle.getSetpoint();
+  }
+  public void setShooterAnglePosition(double pos){
+    shooterAngle.setPosition(pos);
+  }
+  public double getShooterAnglePosition(){
     return shooterAngle.getPosition();
   }
 
@@ -96,6 +101,11 @@ public void setTargetPose(Pose2d targetPose){
   public boolean atShooterAngleSetpoint() {
     return shooterAngle.atSetpoint();
   }
+
+  public void setServoVelocity(double vel){
+    shooterAngle.setVelocityCmd(vel);
+  }
+}
 
   class ShooterServoWatcherCmd extends ShooterWatcherCmd {
     NetworkTableEntry nt_desiredSetpoint;

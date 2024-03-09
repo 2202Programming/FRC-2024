@@ -24,6 +24,7 @@ public class InIntake extends Command {
   final Intake intake;
   final double DONE_COUNT = 1;
   double count;
+  boolean stay_down;
 
   //State machine 
   enum Phase { IntakeDown,  WaitingForNote,  Finished  }
@@ -33,7 +34,8 @@ public class InIntake extends Command {
    * Intake will hold note in good position for it to deliver.
    * Assumes intake is empty and will pick up from the floor.
   */
-  public InIntake() {
+  public InIntake(boolean stay_down) {
+    this.stay_down = stay_down;
     this.intake = RobotContainer.getSubsystem(Intake.class);
     addRequirements(intake);
   }
@@ -58,7 +60,7 @@ public class InIntake extends Command {
         break;
       case WaitingForNote:
         // watch the intake State for note posession of Note
-        if (intake.hasNote()) {
+        if (intake.senseNote()) {
           count++;
         }
         if(count >= DONE_COUNT){
@@ -74,13 +76,12 @@ public class InIntake extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.setIntakeSpeed(0.0);
+    if(!stay_down){
     intake.setAngleVelocity(Intake.TravelUp);
     intake.setAngleSetpoint(Intake.UpPos);
+    }
     if(intake.senseNote()){
     intake.setHasNote(true);
-    }
-    else{
-      intake.setHasNote(false);
     }
   }
 

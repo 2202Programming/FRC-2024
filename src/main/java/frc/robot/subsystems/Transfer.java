@@ -38,8 +38,10 @@ public class Transfer extends SubsystemBase {
   final RelativeEncoder transferMtrEncoder;
 
   // state vars
-  boolean has_note = false;
+  boolean hasNote = false;
+  boolean first_detect;
   double speed_cmd; // for monitoring
+  boolean senseNote_prev;
 
   /** Creates a new Transfer. */
   public Transfer() {
@@ -71,14 +73,15 @@ public class Transfer extends SubsystemBase {
    * commands should stop motor on hasNote() == true.
    */
   public boolean hasNote() {
-    return has_note;
+    return hasNote;
   }
 
   /*
    * sets if we have a note or not for powerup or initization in commands
    */
   public void setHasNote(boolean note_state) {
-    has_note = note_state;
+    hasNote = note_state;
+    senseNote_prev = false;
   }
 
   /*
@@ -103,8 +106,18 @@ public class Transfer extends SubsystemBase {
    */
   @Override
   public void periodic() {
-  
+    if (!hasNote) {
+      if (senseNote() && !senseNote_prev) {
+        senseNote_prev = true;
+        hasNote = true;
+      // } else if (senseNote_prev) {
+      //   // high to low edge seen, we have it. Cmd will use timer to position correctly
+      //   // and stop the intakeMtr based on direction and timing.
+      //   hasNote = true;
+      // }
+    }
   }
+}
 
   class TransferWatcherCmd extends WatcherCmd {
     // NetworkTableEntry nt_lightgate;

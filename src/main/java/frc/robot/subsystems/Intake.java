@@ -239,6 +239,9 @@ public class Intake extends SubsystemBase {
 
   public void periodic() {
     this.angle_servo.periodic();  // do child objects first
+    if(!senseNote()){
+      hasNote = false;
+    }
   }
   
 
@@ -283,7 +286,7 @@ public class Intake extends SubsystemBase {
       //nt_reverseLimitSwitchEnabled = table.getEntry("reverseLimitEnabled");
       //nt_forwardLimitSwitchEnabled = table.getEntry("forwardLimitSwitch");
       nt_desiredSpeed = table.getEntry("desiredSpeed");
-      nt_hasNote = table.getEntry("_hasNote");
+      nt_hasNote = table.getEntry("hasNote");
       nt_senseNote = table.getEntry("senseNote");
 
     }
