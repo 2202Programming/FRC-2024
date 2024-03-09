@@ -64,13 +64,21 @@ public class Climber extends SubsystemBase {
     rightArm.setSetpoint(pos);
     sync = true;
   }
-
+  /**
+   * Extend Left arm to position given.
+   *
+   * @param pos Desired position in cm from fully retracted position
+   */
   public void setLeftArmHeight(double pos) {
     desiredLeftArmPos = pos;
     leftArm.setSetpoint(pos);
     sync = false;
   }
-
+  /**
+   * Extend Right arm to position given.
+   *
+   * @param pos Desired position in cm from fully retracted position
+   */
   public void setRightArmHeight(double pos) {
     desiredRightArmPos = pos;
     rightArm.setSetpoint(pos);
@@ -78,6 +86,11 @@ public class Climber extends SubsystemBase {
   }
 
   // lines 46-56 are for testing only
+  /**
+   * Testing command, sets the arms to a comanded velocity
+   *
+   * @param vel Sets arms to a specific velocity (in cm/sec)
+   */
   public void setArmVelocity(double vel) {
     leftArm.setVelocityCmd(vel);
     rightArm.setVelocityCmd(vel);
@@ -136,6 +149,11 @@ public class Climber extends SubsystemBase {
     MathUtil.clamp(accel, maxAccel, -maxAccel);
   }
 
+  /**
+   * Tells the arms to move in sync, or not to. 
+   *
+   * @param sync sets the arms to be synced or not.
+   */
   public void setArmSync(boolean sync) {
     this.sync = sync;
   }

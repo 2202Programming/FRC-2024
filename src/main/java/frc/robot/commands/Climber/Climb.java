@@ -13,7 +13,11 @@ public class Climb extends Command {
   private Climber climber;
   private double pos;
   private boolean done;
-  
+  /** 
+   * Climb will just set both arms to a single position. It does nothing more than that.
+   * 
+   * @param pos position that we want BOTH arms to go to.
+   */
   public Climb(double pos) {  
     // Use addRequirements() here to declare subsystem dependencies.
     climber = RobotContainer.getSubsystem(Climber.class);

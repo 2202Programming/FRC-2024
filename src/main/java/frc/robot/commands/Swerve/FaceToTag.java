@@ -60,6 +60,12 @@ public class FaceToTag extends Command {
    * 
    * @param TagID AprilTag ID to face
    */
+
+   /**
+   * Face to tag will take a tag ID and then have us change our heading till we can see said tag.
+   *
+   * @param TagID Takes the tag we are looking for.
+   */
   public FaceToTag(double TagID) {
 
     limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
