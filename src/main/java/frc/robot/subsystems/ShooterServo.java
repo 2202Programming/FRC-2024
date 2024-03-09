@@ -153,6 +153,14 @@ public class ShooterServo extends Shooter {
     return atLimit;
   }
 
+  public void zeroEncoder(){
+    shooterAngle.setPosition(0.0);
+  }
+
+  public double getCurrent() {
+    return shooterAngle.getController().getOutputCurrent();
+  }
+
   class ShooterServoWatcherCmd extends ShooterWatcherCmd {
     NetworkTableEntry nt_desiredPosition;
     NetworkTableEntry nt_currentVel;
