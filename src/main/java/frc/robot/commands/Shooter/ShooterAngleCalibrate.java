@@ -21,7 +21,7 @@ public class ShooterAngleCalibrate extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.setServoVelocity(vel);
+    shooter.setShooterAngleVelocity(vel);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -31,7 +31,7 @@ public class ShooterAngleCalibrate extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.setServoVelocity(0.0);
+    shooter.setShooterAngleVelocity(0.0);
   }
 
   // Returns true when the command should end.

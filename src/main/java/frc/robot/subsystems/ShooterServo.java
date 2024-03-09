@@ -22,6 +22,10 @@ public class ShooterServo extends Shooter {
   final static double posTol = 1.0;
   final static double velTol = 1.0;
   private Pose2d targetPose;
+  boolean atLimit;
+  int limitCount;
+  final int actuallyAtLimit = 3;
+  boolean prev_moving;
   //enable for actual testing
   boolean auto_move_test = false;
   boolean auto_move;
@@ -57,6 +61,13 @@ public class ShooterServo extends Shooter {
     else if(!transfer.hasNote() && auto_move_test){
       setShooterAngleSetpoint(0.0); //placeholder (ideal transfer location between shooter and intake)
     }
+
+    if(getShooterAngleSpeed() != 0 && !prev_moving){
+      prev_moving = true;
+    }
+    if(prev_moving && Math.abs(getShooterAngleSpeed()) < 0.1){
+      limitCount++;
+    }
   }
   @Override
   public WatcherCmd getWatcher() {
@@ -83,6 +94,9 @@ public void setTargetPose(Pose2d targetPose){
   public double getShooterAngleSetpoint() {
     return shooterAngle.getSetpoint();
   }
+  public double getShooterAngleVelocity(){
+    return shooterAngle.getVelocity();
+  }
   public void setShooterAnglePosition(double pos){
     shooterAngle.setPosition(pos);
   }
@@ -102,8 +116,12 @@ public void setTargetPose(Pose2d targetPose){
     return shooterAngle.atSetpoint();
   }
 
-  public void setServoVelocity(double vel){
+  public void setShooterAngleVelocity(double vel){
     shooterAngle.setVelocityCmd(vel);
+  }
+  public boolean atLimit(){
+    limitCount = 0;
+    return atLimit;
   }
 
   class ShooterServoWatcherCmd extends ShooterWatcherCmd {
