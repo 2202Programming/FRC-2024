@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
+import frc.robot.commands.Climber.Climb;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
@@ -299,8 +300,8 @@ public class RobotContainer {
     /*
      * WIP THESE BINDINGS ARE NOT AT ALL FINAL
      */
-    sideboard.sw11().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
-    sideboard.sw12().onTrue(new PrintCommand("PlaceholderCMD: Climber Down"));
+    sideboard.sw11().onTrue(new Climb(0.0).andThen(new Climb(100.0)));
+    sideboard.sw12().onTrue(new Climb(0.0));
 
     configureOperator(bindings);
   }
