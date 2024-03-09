@@ -14,23 +14,23 @@ import frc.robot.util.PIDFController;
 public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
   final double GearRatio = 1.0; //have 2 eventually probably lol
-  final double maxVel = 100.0; //placeholder
-    final double maxAccel = 10.0; //placevholder
-    double posTol = 2.0; //placeholder (maybe final posTol??)
-    double velTol = 1.0;
-    final int STALL_CURRENT = 5; //placeholder
-    final int FREE_CURRENT = 15; //placeholder
-  double desiredRightArmPos;
-  double desiredLeftArmPos;
+  final double maxVel = 100.0; //placeholder. cm/s?
+  final double maxAccel = 10.0; //placevholder cm/s^2
+  double posTol = 2.0; //placeholder (maybe final posTol??) cm
+  double velTol = 1.0; // cm/s
+  final int STALL_CURRENT = 5; //placeholder // units?
+  final int FREE_CURRENT = 15; //placeholder // units?
+  double desiredRightArmPos; // cm, 0 is full retract
+  double desiredLeftArmPos;  // cm, 0 is full retract
   boolean sync = false; //if we want to use sync or not
-  double syncComp = 0.0;
+  double syncComp = 0.0; // what is 
 
   PIDController rightPID = new PIDController(0, 0, 0); //sw outer pos pid
   PIDController leftPID = new PIDController(0, 0, 0);
   PIDFController rightHwVelPID = new PIDFController(0, 0, 0, 0); //hw vel pid
   PIDFController leftHwVelPID = new PIDFController(0, 0, 0, 0);
   PIDController syncPID = new PIDController(0.1, 0.0, 0.0); //sync pid left -> right
-  double follow_comp = 0.0; //if for some reason one arm faster than other
+  double followComp = 0.0; //if for some reason one arm faster than other
   final NeoServo rightArm = new NeoServo(Constants.CAN.LEFT_CLIMBER, leftPID, leftHwVelPID, false); // need to find invert
   final NeoServo leftArm = new NeoServo(Constants.CAN.RIGHT_CLIMBER, rightPID, rightHwVelPID, false);
 
@@ -112,6 +112,10 @@ public void setRightArmVelocity(double vel){
   public void setArmSync(boolean sync){
     this.sync = sync;
   }
+  
+  // TODO: Calibration helpers
+  // void SetZero()
+  // double getCurrent()?
 
   @Override
   public void periodic() {
