@@ -39,10 +39,8 @@ import frc.robot.commands.Intake.TestTransfer;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Shooter.ShootTest;
-import frc.robot.commands.Shooter.ShooterAngleCalibrate;
 import frc.robot.commands.Shooter.ShooterAngleVelMove;
 import frc.robot.commands.Shooter.ShooterSequence;
-import frc.robot.commands.Shooter.ShooterServoSequence;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
@@ -55,7 +53,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
-import frc.robot.util.DistanceInterpretor;
 import frc.robot.util.RobotSpecs;
 
 /**

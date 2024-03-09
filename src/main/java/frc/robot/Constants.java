@@ -211,7 +211,7 @@ public final class Constants {
     // Nose Roller
     public static final int NOSE_MOTOR_ANGLE = 54;
     public static final int NOSE_MOTOR_FIRE = 55;
-    public static final int SHOOTER_ANGLE = 56; 
+    public static final int SHOOTER_ANGLE = 35; 
 
     // Transfer
     public static final int TRANSFER_MOTOR = 19; 

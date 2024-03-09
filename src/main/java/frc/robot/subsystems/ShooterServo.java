@@ -1,7 +1,8 @@
 package frc.robot.subsystems;
 
+import frc.robot.subsystems.Swerve.SwerveDrivetrain;
+
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -11,16 +12,14 @@ import frc.robot.Constants.CAN;
 import frc.robot.Constants.Tag_Pose;
 import frc.robot.RobotContainer;
 import frc.robot.commands.utility.WatcherCmd;
-import frc.robot.subsystems.Shooter.ShooterWatcherCmd;
 import frc.robot.util.DistanceInterpretor;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
-import frc.robot.Constants.Tag_Pose;
 
 public class ShooterServo extends Shooter {
   // tbd for all units
   final Transfer transfer = RobotContainer.getSubsystem(Transfer.class);
-  final static double ShooterAngleGearRatio = 10.0;
+  final static double ShooterAngleGearRatio = 70.0;
   final static int STALL_CURRENT = 5;
   final static int FREE_CURRENT = 15;
   final static double maxVel = 10.0;
@@ -93,7 +92,7 @@ public class ShooterServo extends Shooter {
   }
 
   private void calculateTargetAngle(){
-      distanceToTarget = RobotContainer.RC().drivetrain.getDistanceToTranslation(targetTranslation2d);
+      distanceToTarget = RobotContainer.getSubsystem(SwerveDrivetrain.class).getDistanceToTranslation(targetTranslation2d);
       targetAngle = distanceInterpretor.getAngleFromDistance(distanceToTarget);
         
       SmartDashboard.putNumber("Distance to Target", distanceToTarget);

@@ -64,7 +64,7 @@ public class IntakeSequence extends Command {
         System.out.println("***IntakeSequence:WaitingForNote....***");
         break;
       case WaitingForNote:
-        if (transfer.hasNote()) {
+        if (transfer.senseNote()) { //TODO: mayb change to hasnote test it
           intake.setMaxVelocity(120.0);
           phase = Phase.Finished;
           System.out.println("***IntakeSequence:Finished....***");
@@ -100,12 +100,6 @@ public class IntakeSequence extends Command {
     }
     transfer.setSpeed(0.0);
     intake.setIntakeSpeed(0.0);
-    if(transfer.senseNote()){
-      transfer.setHasNote(true);
-    }
-    else{
-      transfer.setHasNote(false);
-    }
   }
 
   // Returns true when the command should end.

@@ -26,14 +26,17 @@ public class InIntake extends Command {
   double count;
   boolean stay_down;
 
-  //State machine 
-  enum Phase { IntakeDown,  WaitingForNote,  Finished  }
+  // State machine
+  enum Phase {
+    IntakeDown, WaitingForNote, Finished
+  }
+
   Phase phase;
 
   /**
    * Intake will hold note in good position for it to deliver.
    * Assumes intake is empty and will pick up from the floor.
-  */
+   */
   public InIntake(boolean stay_down) {
     this.stay_down = stay_down;
     this.intake = RobotContainer.getSubsystem(Intake.class);
@@ -45,7 +48,7 @@ public class InIntake extends Command {
   public void initialize() {
     count = 0;
     phase = Phase.IntakeDown;
-  //   intake.setHoldNote(true);  // we want to keep the note
+    // intake.setHoldNote(true); // we want to keep the note
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -63,7 +66,7 @@ public class InIntake extends Command {
         if (intake.senseNote()) {
           count++;
         }
-        if(count >= DONE_COUNT){
+        if (count >= DONE_COUNT) {
           phase = Phase.Finished;
         }
         break;
@@ -76,12 +79,12 @@ public class InIntake extends Command {
   @Override
   public void end(boolean interrupted) {
     intake.setIntakeSpeed(0.0);
-    if(!stay_down){
-    intake.setAngleVelocity(Intake.TravelUp);
-    intake.setAngleSetpoint(Intake.UpPos);
+    if (!stay_down) {
+      intake.setAngleVelocity(Intake.TravelUp);
+      intake.setAngleSetpoint(Intake.UpPos);
     }
-    if(intake.senseNote()){
-    intake.setHasNote(true);
+    if (intake.senseNote()) {
+      intake.setHasNote(true);
     }
   }
 

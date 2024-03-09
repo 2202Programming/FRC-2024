@@ -9,7 +9,6 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Transfer;
 

@@ -69,9 +69,7 @@ public class IntakeSwap extends Command {
       intake.setHasNote(true);
       transfer.setHasNote(false);
     }
-    else{
-      transfer.setHasNote(true);
-    }
+    //if going into transfer, should all be done automatically
   }
 
   // Returns true when the command should end.
