@@ -21,15 +21,15 @@ import frc.robot.util.PIDFController;
 
 public class Transfer extends SubsystemBase {
 
-  //constants for geometry of transfer
+  // constants for geometry of transfer
   final static double radius = 1.27 * 2.0 * Math.PI; // 1.27 radius in cm
   final static double gearRatio = 1.0 / 35.0; // 35 motor turns -> 1 roller shaft turn [verified gr]
-  final static double conversionFactor = radius * gearRatio;  // [cm/rotations]
+  final static double conversionFactor = radius * gearRatio; // [cm/rotations]
 
-  static final double MIN_SPEED=-1.0, MAX_SPEED=1.0; //example looks like Pct Pwr
+  static final double MIN_SPEED = -1.0, MAX_SPEED = 1.0; // example looks like Pct Pwr
 
   // calc Kff for vel control from measured (RPS / %pwr)
-  final static double  Kff =  (1.0 / 43.2);   //full pwr gave 43.2 [cm/s]
+  final static double Kff = (1.0 / 43.2); // full pwr gave 43.2 [cm/s]
   final PIDFController transferPID = new PIDFController(0.015, 0.0, 0.0, Kff);
 
   DigitalInput lightgate = new DigitalInput(DigitalIO.Transfer_LightGate);
@@ -37,11 +37,22 @@ public class Transfer extends SubsystemBase {
   final SparkPIDController transferMtrPid;
   final RelativeEncoder transferMtrEncoder;
 
-
   // state vars
   boolean has_note = false;
   boolean prev_sense_note = false;
-  double speed_cmd; //for monitoring
+  double speed_cmd; // for monitoring
+
+  /*
+   * S - shooter
+   * I - intake
+   * T - transfer
+   * O - outside
+   * 2 - to
+   * F - from
+   */
+  enum transferNoteState {
+    hasNote, hasNoNote, T2S, I2T, T2I,
+    /* S2T */}
 
   /** Creates a new Transfer. */
   public Transfer() {
@@ -59,6 +70,8 @@ public class Transfer extends SubsystemBase {
 
     transferMtrEncoder.setPosition(0.0);
   }
+
+  transferNoteState state = transferNoteState.hasNoNote;
 
   /*
    * true when note is blocking light gate
@@ -79,33 +92,19 @@ public class Transfer extends SubsystemBase {
    * sets if we have a note or not for powerup or initization in commands
    */
   public void setHasNote(boolean note_state) {
-      has_note = note_state;
-      prev_sense_note = false;
+    has_note = note_state;
+    prev_sense_note = false;
   }
 
   /*
    * speed [cm/s]
    */
   public void setSpeed(double speed) {
-     transferMtrPid.setReference(speed, ControlType.kVelocity, 0);
-     this.speed_cmd = speed;
+    transferMtrPid.setReference(speed, ControlType.kVelocity, 0);
+    this.speed_cmd = speed;
     // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_ON);
   }
 
-  /*
-  // Motor speed will likely need to be chan
-  public void transferMtrOff() {
-    // transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_OFF,
-    // ControlType.kVelocity, 0);
-   // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_OFF);
-  }
-
- /*
-  public void transferMtrReverse() {
-    transferMtrPid.setReference(Transfer_Constants.TRANSFER_MOTOR_REVERSE, ControlType.kVelocity, 0);
-    // transferMtr.set(Transfer_Constants.TRANSFER_MOTOR_REVERSE);
-  }
-*/
   public double getTransferVelocity() {
     return transferMtrEncoder.getVelocity();
   }
@@ -119,14 +118,17 @@ public class Transfer extends SubsystemBase {
    */
   @Override
   public void periodic() {
+    // watch for Note if we don't have one
     // watch gate for high to low change, we have the note where we want it
-    if (senseNote()){
-      prev_sense_note = true;
+    if (!has_note) {
+      if (senseNote()){
+        prev_sense_note = true; // start looking for edge h->s
+      }
+      else if (prev_sense_note) {
+        has_note = true;   // saw it then didn't, so we move past we have it
+        prev_sense_note = false;
+      }
     }
-    else if (prev_sense_note) {
-      has_note = true;   // saw it then didn't, so we move past we have it
-    }
-
   }
 
   class TransferWatcherCmd extends WatcherCmd {
@@ -148,7 +150,7 @@ public class Transfer extends SubsystemBase {
       nt_Vel = table.getEntry("velMeas");
       nt_velcmd = table.getEntry("velCmd");
       nt_have_note = table.getEntry("haveNote");
-      nt_pos  = table.getEntry("pos_");
+      nt_pos = table.getEntry("pos_");
 
       // default value for mutables
       // example nt_maxArbFF.setDouble(maxArbFF);
@@ -160,7 +162,7 @@ public class Transfer extends SubsystemBase {
       nt_velcmd.setDouble(speed_cmd);
       nt_have_note.setBoolean(hasNote());
 
-      nt_pos.setDouble( transferMtrEncoder.getPosition() );
+      nt_pos.setDouble(transferMtrEncoder.getPosition());
 
       // get mutable values
       // example maxArbFF = nt_maxArbFF.getDouble(maxArbFF);

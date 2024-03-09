@@ -59,6 +59,7 @@ public class NeoServo implements VelocityControlled {
     final CANSparkMax ctrl;
     final SparkPIDController pid;
     final RelativeEncoder encoder;
+    RelativeEncoder posEncoder = null;
 
     /*
      * internal constructor shared by other forms, does most of setup
@@ -82,12 +83,14 @@ public class NeoServo implements VelocityControlled {
             //normal, internal encoder based on motor counts
             encoder = ctrl.getEncoder();
             pid = ctrl.getPIDController();
+            posEncoder = encoder;
         }
         else {
             //alternate encoder - relative, external
             encoder = ctrl.getAlternateEncoder(encType, kCPR);
             pid = ctrl.getPIDController();                    
             pid.setFeedbackDevice(encoder);
+            posEncoder = encoder;
         }
         // copy rest of inputs
         this.positionPID = positionPID;
@@ -139,10 +142,25 @@ public class NeoServo implements VelocityControlled {
         return this;
     }
 
+    /*
+     * Add an external Position encoder.  Trying to use motor counts for velocity and external 
+     * encoder for position.
+     * 
+     * encType - Type.kQuadrature
+     * CPR - count / rotation likely 8192
+     * scale_rotation - [units/rotation]
+     */
+    public NeoServo addAltPositionEncoder(Type encType, int CPR, double scale_rotations){
+        posEncoder  = ctrl.getAlternateEncoder(encType, CPR);
+        posEncoder.setPositionConversionFactor(scale_rotations);
+        posEncoder.setVelocityConversionFactor(scale_rotations/60.0);
+        return this;
+    }
+
     // methods to tune the servo very SmartMax Neo specific
     public NeoServo setConversionFactor(double conversionFactor) {
         encoder.setPositionConversionFactor(conversionFactor);
-        encoder.setVelocityConversionFactor(conversionFactor / 60);
+        encoder.setVelocityConversionFactor(conversionFactor / 60.0);
         return this;
     }
 
@@ -220,7 +238,7 @@ public class NeoServo implements VelocityControlled {
 
     // Sets the encoder position (Doesn't move anything)
     public void setPosition(double pos) {
-        encoder.setPosition(pos); // tell our encoder we are at pos
+        posEncoder.setPosition(pos); // tell our encoder we are at pos
         positionPID.reset(); // clear any history in the pid
         positionPID.calculate(pos - trim, pos); // tell our pid we want that position; measured, setpoint same
     }
@@ -272,7 +290,7 @@ public class NeoServo implements VelocityControlled {
 
     public void hold() {
         external_vel_cmd = 0.0;
-        currentPos = encoder.getPosition();
+        currentPos = posEncoder.getPosition();
 
         // set our setpoint, but stay in whatever control mode is being used
         positionPID.calculate(currentPos, currentPos);
@@ -312,7 +330,7 @@ public class NeoServo implements VelocityControlled {
      */
     public void periodic(double compAdjustment) {
         // measure -read encoder for current position and velocity
-        currentPos = encoder.getPosition() - trim;
+        currentPos = posEncoder.getPosition() - trim;
         currentVel = encoder.getVelocity();
 
         // velocity_mode, update position setpoint so we don't jump back on mode switch
@@ -359,8 +377,8 @@ public class NeoServo implements VelocityControlled {
         // simple model - encoder vel is set in sim when a velocity mode is used
         // so move the position based on velocity being commanded
         // no dynamics are modeled
-        double pos = encoder.getPosition() + encoder.getVelocity() * Constants.DT;
-        encoder.setPosition(pos);
+        double pos = posEncoder.getPosition() + encoder.getVelocity() * Constants.DT;
+        posEncoder.setPosition(pos);
     }
 
     public Command getWatcher() {

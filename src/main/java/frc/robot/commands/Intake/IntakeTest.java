@@ -38,6 +38,7 @@ public class IntakeTest extends BlinkyLightUser {
 
     @Override
     public boolean isFinished() {
-        return false;
+        // use limit switches to stop if we go too far
+        return intake.atForwardLimitSwitch() || intake.atReverseLimitSwitch();
     }
 }

@@ -7,15 +7,19 @@ package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Transfer;
-
-public class TransferTest extends Command {
-  /** Creates a new TransferTest. */
+/*
+ * Simple command to pull note through transfer and stop at good Note location.
+ */
+public class TestTransfer extends Command {
   final Transfer transfer;
   final double speed; 
+  final int MAX_COUNT = 1;
+  int count =0;
 
-  public TransferTest(double speed) {
+  public TestTransfer(double speed) {
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
     this.speed = speed;
+    addRequirements(transfer);
   }
 
   // Called when the command is initially scheduled.
@@ -23,6 +27,7 @@ public class TransferTest extends Command {
   public void initialize() {
     transfer.setHasNote(false);
     transfer.setSpeed(speed);
+    count = 0;
   }
 
   // Called once the command ends or is interrupted.
@@ -34,7 +39,8 @@ public class TransferTest extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return transfer.hasNote();
-    //return false;
+    // if we are loading note, speed > 0, then we can stop on count
+    if (speed > 0.0 && transfer.hasNote()) return (++count >= MAX_COUNT);
+    return false;
   }
 }
