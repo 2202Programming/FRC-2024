@@ -249,16 +249,18 @@ public class RobotContainer {
         break;
       
       case auto_shooter_test:
-        driver.a().onTrue(new FaceToTag(4));
+        driver.a().onTrue(new IntakeSequence(true));
         driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.povDown().onTrue(new AutoShooting(ShootingTarget.Speaker));
-        driver.povUp().onTrue(new AutoShooting(ShootingTarget.Trap));
-        driver.povRight().onTrue(new AutoShooting(ShootingTarget.Amp));
+        //driver.povUp().onTrue(new AutoShooting(ShootingTarget.Trap));
+        //driver.povRight().onTrue(new AutoShooting(ShootingTarget.Amp));
         driver.povLeft().onTrue(new TurnFaceShootAuto(4));
         driver.y().onTrue(new AllianceAwareGyroReset(true));
-        driver.x().onTrue(new RotateTo());
+        driver.x().onTrue(new FaceToTag(4));
         driver.b().onTrue(new ShooterSequence(true,2000));
         driver.rightBumper().onTrue(new TestConstantVelocity(0.5, 16));
+        driver.povRight().onTrue(new MoveToAnglePos(91, 60));  // good for alpha 
+        driver.povUp().whileTrue(new AngleCalibration(-15.0)); 
         break;
 
       

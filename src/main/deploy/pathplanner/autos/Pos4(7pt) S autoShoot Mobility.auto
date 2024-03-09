@@ -24,9 +24,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "S to ND"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "S to ND"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "pickup"
+                }
+              }
+            ]
           }
         }
       ]
