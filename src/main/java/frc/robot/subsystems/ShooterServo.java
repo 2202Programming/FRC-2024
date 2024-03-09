@@ -2,14 +2,20 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CAN;
+import frc.robot.Constants.Tag_Pose;
 import frc.robot.RobotContainer;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.subsystems.Shooter.ShooterWatcherCmd;
+import frc.robot.util.DistanceInterpretor;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
+import frc.robot.Constants.Tag_Pose;
 
 public class ShooterServo extends Shooter {
   // tbd for all units
@@ -21,7 +27,12 @@ public class ShooterServo extends Shooter {
   final static double maxAccel = 10.0;
   final static double posTol = 1.0;
   final static double velTol = 1.0;
-  private Pose2d targetPose;
+
+  private double distanceToTarget;
+  private double targetAngle;
+  private DistanceInterpretor distanceInterpretor;
+
+  private Translation2d targetTranslation2d;
   boolean atLimit;
   int limitCount;
   final int actuallyAtLimit = 3;
@@ -49,16 +60,30 @@ public class ShooterServo extends Shooter {
         .setTolerance(posTol, velTol)
         .setMaxVelocity(maxVel)
         .burnFlash();
+
+      distanceInterpretor = new DistanceInterpretor();
+      //set default target
+      if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+      // Blue Alliance
+      targetTranslation2d = Tag_Pose.ID7;
+    } else {
+      // Red Alliance
+      targetTranslation2d = Tag_Pose.ID4;
+    }
+
   }
 
 
   @Override
   public void periodic(){
     super.periodic();
+    calculateTargetAngle();
+
     if(transfer.hasNote() && auto_move_test){
-      setShooterAngleSetpoint(RobotContainer.RC().distanceInterpretor.getAngleFromDistance(RobotContainer.RC().drivetrain.getDistanceToPose(targetPose)));
+      setShooterAngleSetpoint(targetAngle);
     }
     else if(!transfer.hasNote() && auto_move_test){
+      //if no note, shooter needs to be low to allow transfer of loading note
       setShooterAngleSetpoint(0.0); //placeholder (ideal transfer location between shooter and intake)
     }
   }
@@ -66,9 +91,20 @@ public class ShooterServo extends Shooter {
   public WatcherCmd getWatcher() {
     return new ShooterServoWatcherCmd();
   }
-public void setTargetPose(Pose2d targetPose){
-  this.targetPose = targetPose;
-}
+
+  private void calculateTargetAngle(){
+      distanceToTarget = RobotContainer.RC().drivetrain.getDistanceToTranslation(targetTranslation2d);
+      targetAngle = distanceInterpretor.getAngleFromDistance(distanceToTarget);
+        
+      SmartDashboard.putNumber("Distance to Target", distanceToTarget);
+      SmartDashboard.putNumber("Goal Angle for target", targetAngle);
+
+  }
+
+  public void setTargetTranslation(Translation2d targetTranslation2d){
+    this.targetTranslation2d = targetTranslation2d;
+  }
+
   @Override
   public void deploy() {
     setShooterAngleSetpoint(DeployAngle);

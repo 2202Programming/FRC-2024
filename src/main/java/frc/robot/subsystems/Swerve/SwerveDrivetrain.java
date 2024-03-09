@@ -608,10 +608,10 @@ public class SwerveDrivetrain extends SubsystemBase {
     return new Pose2d(pvPose.getTranslation(), pvPose.getRotation());
   }
 
-  public double getDistanceToPose(Pose2d targetPose) {
+  public double getDistanceToTranslation(Translation2d targetTranslation) {
     return Math.sqrt(
-           Math.pow(getPose().getTranslation().getX() - targetPose.getX(), 2)
-              + Math.pow(getPose().getTranslation().getY() - targetPose.getY(), 2));
+           Math.pow(getPose().getTranslation().getX() - targetTranslation.getX(), 2)
+              + Math.pow(getPose().getTranslation().getY() - targetTranslation.getY(), 2));
 
   }
 
