@@ -39,7 +39,6 @@ public class Transfer extends SubsystemBase {
 
   // state vars
   boolean hasNote = false;
-  boolean first_detect;
   double speed_cmd; // for monitoring
   boolean senseNote_prev;
 

@@ -100,7 +100,6 @@ public class IntakeSequence extends Command {
     }
     transfer.setSpeed(0.0);
     intake.setIntakeSpeed(0.0);
-    intake.setHasNote(false);
     if(transfer.senseNote()){
       transfer.setHasNote(true);
     }

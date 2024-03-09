@@ -10,15 +10,19 @@ import frc.robot.subsystems.ShooterServo;
 
 public class ShooterAngleVelMove extends Command {
   ShooterServo shooter;
+  double vel;
   /** Creates a new ShooterAngleVelMove. */
-  public ShooterAngleVelMove() {
+  public ShooterAngleVelMove(double vel) {
     // Use addRequirements() here to declare subsystem dependencies.
     shooter = RobotContainer.getSubsystem(ShooterServo.class);
+    this.vel = vel;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    shooter.setServoVelocity(vel);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -26,7 +30,9 @@ public class ShooterAngleVelMove extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    shooter.setShooterAnglePosition(vel);
+  }
 
   // Returns true when the command should end.
   @Override

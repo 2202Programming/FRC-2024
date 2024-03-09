@@ -42,8 +42,6 @@ public class EjectNote extends Command {
     intake.setAngleSetpoint(0.0);
     intake.setIntakeSpeed(0.0);
     transfer.setSpeed(0.0);
-
-    intake.setHasNote(false);
   }
 
 

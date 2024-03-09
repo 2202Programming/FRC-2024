@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterServo;
 
-public class ShooterAngleCalibrate extends Command {
+public class ShooterAngleSetPos extends Command {
   ShooterServo shooter;
   double desired_pos;
   /** Creates a new ShooterAngleCalibrate. */
-  public ShooterAngleCalibrate(double desired_pos) {
+  public ShooterAngleSetPos(double desired_pos) {
     shooter = RobotContainer.getSubsystem(ShooterServo.class);
     this.desired_pos = desired_pos;
     // Use addRequirements() here to declare subsystem dependencies.

@@ -105,7 +105,6 @@ public void setTargetPose(Pose2d targetPose){
   public void setServoVelocity(double vel){
     shooterAngle.setVelocityCmd(vel);
   }
-}
 
   class ShooterServoWatcherCmd extends ShooterWatcherCmd {
     NetworkTableEntry nt_desiredSetpoint;
