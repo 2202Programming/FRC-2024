@@ -29,7 +29,7 @@ public class ShooterSequence extends BlinkyLightUser {
   final Transfer transfer;
   final Intake intake;
   final int DONE_COUNT = 20;
-  final int PNEUMATICS_DONE_COUNT = 20;
+  final int PNEUMATICS_DONE_COUNT = 5;
   double speed;
   int pneumatics_count = 0;
   int count = 0;
@@ -62,7 +62,7 @@ public class ShooterSequence extends BlinkyLightUser {
     phase = Phase.HasNote;
     if(shootHigh){
       intake.setMaxVelocity(60.0);
-      intake.setAngleSetpoint(Intake.ShootingPos);
+      intake.setAngleSetpoint(95);
     }
   }
 
@@ -121,8 +121,8 @@ public class ShooterSequence extends BlinkyLightUser {
     transfer.setSpeed(0.0);
     shooter.setRPM(0.0, 0.0);
     shooter.retract();
-    intake.setMaxVelocity(120.0);  //[deg/s] 2.sec to retract
-    intake.setAngleSetpoint(0.0);
+    intake.setMaxVelocity(60.0);  //[deg/s] 2.sec to retract
+    intake.setAngleSetpoint(95.0); //TODO: KO JUST FOR NOW WILL MAKE A NEW ARGUMENTN
   }
 
   // Returns true when the command should end.

@@ -4,17 +4,18 @@
 
 package frc.robot.commands.auto;
 
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Swerve.FaceToTag;
+import frc.robot.commands.Swerve.RotateTo;
 import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.Constants.Tag_Pose;
-public class AutoShooting extends SequentialCommandGroup{
+
+public class AutoShooting extends SequentialCommandGroup {
 
   private Limelight_Subsystem limelight;
   SwerveDrivetrain drivetrain;
@@ -32,23 +33,25 @@ public class AutoShooting extends SequentialCommandGroup{
     double tagID = determineTag(target);
 
     if (checkForTarget(tagID)) {
-      addCommands(new FaceToTag(tagID));
-      if (target == ShootingTarget.Speaker) {
-        // addCommands(new SpeakerShooter()); instead of this when we get servo
-        SpeakerShootingPhase phase = getSpeakerPhase();
-        addCommands(new ShooterSequence(phase.isHigh(), phase.getRPM()));
-      } else if (target == ShootingTarget.Amp) {
-        addCommands(new ShooterSequence(true, 800.0));
-      } else {
-        // Trap
-        addCommands(new ShooterSequence(true, 1000.0));
-      }
+      addCommands(new RotateTo());
+    }
+    addCommands(new FaceToTag(tagID));
+    if (target == ShootingTarget.Speaker) {
+      // addCommands(new SpeakerShooter()); instead of this when we get servo
+      SpeakerShootingPhase phase = getSpeakerPhase();
+      addCommands(new ShooterSequence(phase.isHigh(), phase.getRPM()));
+    } else if (target == ShootingTarget.Amp) {
+      addCommands(new ShooterSequence(true, 800.0));
+    } else {
+      // Trap
+      addCommands(new ShooterSequence(true, 1000.0));
     }
   }
 
   /**
    * 
-   * @return Phase(Holder of RPM and angle) of shooting position to the Speaker (Alliance Aware)
+   * @return Phase(Holder of RPM and angle) of shooting position to the Speaker
+   *         (Alliance Aware)
    */
   private SpeakerShootingPhase getSpeakerPhase() {
     // Assuming that limelight has updated
@@ -81,17 +84,16 @@ public class AutoShooting extends SequentialCommandGroup{
    * @return tagID to face
    */
   private double determineTag(ShootingTarget target) {
-    //handle Optional<> from getAlliance()
+    // handle Optional<> from getAlliance()
     var allianceOpt = DriverStation.getAlliance();
-    var alliance = DriverStation.Alliance.Blue;  //default
+    var alliance = DriverStation.Alliance.Blue; // default
     if (allianceOpt.isEmpty()) {
-        System.out.println("Warning: FSM report no alliance, using Blue.");        
-    }
-    else {
-      //use what we are given
+      System.out.println("Warning: FSM report no alliance, using Blue.");
+    } else {
+      // use what we are given
       alliance = allianceOpt.get();
     }
-    
+
     if (alliance == DriverStation.Alliance.Blue) {
       // on Blue Alliance
       if (target == ShootingTarget.Speaker) {

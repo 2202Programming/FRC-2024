@@ -43,9 +43,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "N2 to N1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "N2 to N1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "pickup"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "angle_shoot"
           }
         }
       ]

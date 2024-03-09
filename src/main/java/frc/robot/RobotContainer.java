@@ -136,7 +136,7 @@ public class RobotContainer {
     robotSpecs.mySubsystemConfig.constructAll();
 
     // Set binding to Competition (or your mode for testing)
-    Bindings bindings = Bindings.IntakeTesting;    
+    Bindings bindings = Bindings.auto_shooter_test;    
 
     // Testing, but also to drive the drivers nuts...
     Command random_lights = new RandomLightsCmd();
@@ -156,10 +156,11 @@ public class RobotContainer {
     }
 
     //NamedCommands for use in PathPlanner scripts.
-    NamedCommands.registerCommand("pickup", new IntakeSequence(false));
-    NamedCommands.registerCommand("shoot", new ParallelCommandGroup(new ShooterSequence(true,2000), new WaitCommand(2.0)));
+    NamedCommands.registerCommand("pickup", new IntakeSequence(true));
+    NamedCommands.registerCommand("shoot", new ShooterSequence(true,2000));
     NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker));
     NamedCommands.registerCommand("RotateTo", new RotateTo());
+    NamedCommands.registerCommand("intakeDown", new MoveToAnglePos(92, 60));
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -256,6 +257,7 @@ public class RobotContainer {
         driver.povLeft().onTrue(new TurnFaceShootAuto(4));
         driver.y().onTrue(new AllianceAwareGyroReset(true));
         driver.x().onTrue(new RotateTo());
+        driver.b().onTrue(new ShooterSequence(true,2000));
         driver.rightBumper().onTrue(new TestConstantVelocity(0.5, 16));
         break;
 
