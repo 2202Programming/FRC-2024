@@ -19,13 +19,18 @@ import frc.robot.util.PIDFController;
 public class ShooterServo extends Shooter {
   // tbd for all units
   final Transfer transfer;
-  final static double ShooterAngleGearRatio = 70.0;
-  final static int STALL_CURRENT = 5;
+  final static double ShooterAngleGearRatio = 350.0;
+  final static double ShooterAngleRadius = 12.0; //[cm]
+  final static int STALL_CURRENT = 5; //[amps]
   final static int FREE_CURRENT = 15;
-  final static double maxVel = 10.0;
-  final static double maxAccel = 10.0;
-  final static double posTol = 1.0;
-  final static double velTol = 1.0;
+  final static double maxVel = 10.0; //[cm/sec]
+  final static double maxAccel = 10.0; //[cm/sec^2]
+  final static double posTol = 1.0; //[cm]
+  final static double velTol = 1.0; //[cem/s]
+  final double MIN_POSITION = 20.2184; //[cm]
+  final double MAX_POSITION = 32.4866; //[cm]
+  final double MIN_DEGREES = 28.52; //[deg]
+  final double MAX_DEGREES = 48.00;
 
   private double distanceToTarget;
   private double targetAngle;
@@ -37,15 +42,15 @@ public class ShooterServo extends Shooter {
   boolean prev_moving;
   //enable for actual testing
   boolean auto_move_test = false;
-  boolean auto_move;
+  // double conversionFactor = Math.sin(360.0 / ShooterAngleGearRatio) * Hypotenuse - MIN_POSITION;
 
   final static double DeployAngle = 100.0;// tbd both
   final static double RetractAngle = 50.0;
-  final static double Hypotenuse = 16.748; //hypotenuse of 
+  final static double Hypotenuse = 42.53992; //[cm]
   private final NeoServo shooterAngle;
 
-  PIDController shooterPos = new PIDController(1.0, 0.0, 0.0);
-  PIDFController hwShooterVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0);
+  PIDController shooterPos = new PIDController(0.0, 0.0, 0.0);
+  PIDFController hwShooterVelPID = new PIDFController(0.04, 0.0, 0.0, 0.06);
 
   public ShooterServo() {
     super(false);
@@ -53,7 +58,7 @@ public class ShooterServo extends Shooter {
     transfer =  RobotContainer.getSubsystem(Transfer.class);
     // Servo setup for angle_servo
     hwShooterVelPID.copyTo(shooterAngle.getController().getPIDController(), 0);
-    shooterAngle.setConversionFactor(360.0 / ShooterAngleGearRatio) // [deg] - With conversion factor done in method, it will be set through height, but read in deg still
+    shooterAngle.setConversionFactor(ShooterAngleRadius / ShooterAngleGearRatio) // [cm/rot] 
         .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
         .setVelocityHW_PID(maxVel, maxAccel)
         .setTolerance(posTol, velTol)
@@ -76,6 +81,7 @@ public class ShooterServo extends Shooter {
   @Override
   public void periodic(){
     super.periodic();
+    shooterAngle.periodic();
     calculateTargetAngle();
 
     if(transfer.hasNote() && auto_move_test){
@@ -115,20 +121,20 @@ public class ShooterServo extends Shooter {
   }
 
   public void setShooterAngleSetpoint(double angle) {
-    double convertedPos = Math.sin(angle) * Hypotenuse; //equation to convert
+    double convertedPos = Math.sin(angle) * Hypotenuse - MIN_POSITION;  //[cm]
     shooterAngle.setSetpoint(convertedPos);
   }
 
   public double getShooterAngleSetpoint() {
     return shooterAngle.getSetpoint();
   }
-  public double getShooterAngleVelocity(){
+  public double getShooterAngleVelocity(){ //TODO: Convert to deg in cm rn
     return shooterAngle.getVelocity();
   }
   public void setShooterAnglePosition(double pos){
     shooterAngle.setPosition(pos);
   }
-  public double getShooterAnglePosition(){
+  public double getShooterAnglePosition(){//TODO: convert to deg currently in cm
     return shooterAngle.getPosition();
   }
 
@@ -165,6 +171,7 @@ public class ShooterServo extends Shooter {
     NetworkTableEntry nt_currentVel;
     NetworkTableEntry nt_currentPos;
     NetworkTableEntry nt_atSetpoint;
+    NetworkTableEntry nt_desiredVel;
 
     public String getTableName() {
       return super.getTableName();
@@ -178,15 +185,17 @@ public class ShooterServo extends Shooter {
       nt_currentVel = table.getEntry("currentVel");
       nt_currentPos = table.getEntry("currentPos");
       nt_atSetpoint = table.getEntry("atSetpoint");
+      nt_desiredVel = table.getEntry("desiredVel");
 
     }
-
-    public void ntUpdate() {
+    @Override
+    public void ntupdate() {
       super.ntupdate();
       nt_desiredPosition.setDouble(getShooterAngleSetpoint());
       nt_currentVel.setDouble(getShooterAngleVelocity());
       nt_currentPos.setDouble(getShooterAnglePosition());
       nt_atSetpoint.setBoolean(atShooterAngleSetpoint());
+      nt_desiredVel.setDouble(shooterAngle.getVelocityCmd());
     }
   }
 }

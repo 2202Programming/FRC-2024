@@ -51,14 +51,16 @@ public class Intake extends SubsystemBase {
   double desired_intake_speed = 0.0;
   // Intake Angle, a servo
   final NeoServo angle_servo;
-  
-  //PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.010, 0.00003, 0.0, /* 0.00503 */0.0045); //internal vel
-  PIDFController hwAngleVelPID = new PIDFController(0.0050, 0.0000, 0.0, 0.0075); //3/2/24 improved vel loop match (new encoder)
-  
-  /* inner (hw/vel) go up and divide by 2*/
-  //final PIDController anglePositionPID = new PIDController(4.0, 0.0, 0.0); // outer (pos) for internal enc
-  final PIDController anglePositionPID = new PIDController(1.0, 0.0, 0.0); // outer (pos) ext enc
 
+  // PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.010,
+  // 0.00003, 0.0, /* 0.00503 */0.0045); //internal vel
+  PIDFController hwAngleVelPID = new PIDFController(0.0050, 0.0000, 0.0, 0.0075); // 3/2/24 improved vel loop match (new
+                                                                                  // encoder)
+
+  /* inner (hw/vel) go up and divide by 2 */
+  // final PIDController anglePositionPID = new PIDController(4.0, 0.0, 0.0); //
+  // outer (pos) for internal enc
+  final PIDController anglePositionPID = new PIDController(1.0, 0.0, 0.0); // outer (pos) ext enc
 
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
@@ -76,10 +78,11 @@ public class Intake extends SubsystemBase {
   DigitalInput limitSwitchUp = new DigitalInput(DigitalIO.IntakeIsUp);
   DigitalInput limitSwitchDown = new DigitalInput(DigitalIO.IntakeIsDown);
 
-  //Note State variables
+  // Note State variables
   boolean hasNote = false; // true when Intake has Note
+  // TODO: alpha use this with true
 
-  public Intake() { // TODO: Get values
+  public Intake(boolean altEncoder) { // TODO: Get values
     final int STALL_CURRENT = 15; // [amp]
     final int FREE_CURRENT = 5; // [amp]
     double maxVel = 120.0; // [deg/s]
@@ -87,23 +90,23 @@ public class Intake extends SubsystemBase {
     final double posTol = 2.0; // [deg]
     final double velTol = 1.0; // [deg/s]
 
-    // servo controls angle of intake arm, setup for velocity mode on brushless motor
-    angle_servo = new NeoServo(CAN.ANGLE_MTR, 
-      //MotorType.kBrushless,// uncomment for alt enc  
-      anglePositionPID, hwAngleVelPID,
-      // Type.kQuadrature, Angle_kCPR, // uncomment for alt enc   
-      true, 0);
+    // servo controls angle of intake arm, setup for velocity mode on brushless
+    // motor
+    //using hack (alt encoder used as flag for elvis) - strange inversion
+    angle_servo = new NeoServo(CAN.ANGLE_MTR,
+        anglePositionPID, hwAngleVelPID,
+        altEncoder, 0);
 
     // use velocity control on intake motor
     intakeMtr.clearFaults();
     intakeMtr.restoreFactoryDefaults();
-    intakeMtr.setInverted(true);
+        // alt encoder false for beta & beta inverted from alpha
+      intakeMtr.setInverted(!altEncoder);
     intakeMtrPid = intakeMtr.getPIDController();
     intakeMtrEncoder = intakeMtr.getEncoder();
     intakeMtrEncoder.setPositionConversionFactor(wheelGearRatio);
     intakeMtrEncoder.setVelocityConversionFactor(wheelGearRatio / 60.0); // min to sec
     intakeVelPID.copyTo(intakeMtr.getPIDController(), 0);
-
     // configure hardware pid with our values
     intakeMtr.burnFlash();
 
@@ -111,7 +114,7 @@ public class Intake extends SubsystemBase {
     hwAngleVelPID.copyTo(angle_servo.getController().getPIDController(), 0);
     angle_servo
         .setConversionFactor(360.0 / AngleGearRatio) // [deg] for internal encoder behind gears
-        //.setConversionFactor(360.0)   // [deg] external encoder on arm shaft
+        // .setConversionFactor(360.0) // [deg] external encoder on arm shaft
         .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
         .setVelocityHW_PID(maxVel, maxAccel)
         .setTolerance(posTol, velTol)
@@ -119,22 +122,17 @@ public class Intake extends SubsystemBase {
         .burnFlash();
 
     // Add external Encoder for position, but use Vel mode on inner loop
-    angle_servo.addAltPositionEncoder( Type.kQuadrature, Angle_kCPR, 360.0);
-    
+    if (altEncoder) {
+      angle_servo.addAltPositionEncoder(Type.kQuadrature, Angle_kCPR, 360.0);
+    }
     // power on
     setAnglePosition(UpPos);
     angle_servo.setClamp(UpPos, DownPos + 5.0);
+  }
 
-    // limit switch config
-    // Cannot have alternate encoder and limit switches- error from lib
-    // m_forwardLimit =
-    // angle_servo.getController().getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
-    // m_reverseLimit =
-    // angle_servo.getController().getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyClosed);
-    // m_forwardLimit.enableLimitSwitch(false);
-    // m_reverseLimit.enableLimitSwitch(false);
-    // m_forwardLimit.enableLimitSwitch(true);
-    // m_reverseLimit.enableLimitSwitch(true);
+  // Used for beta (new bot/elvis)
+  public Intake() {
+    this(false);
   }
 
   // TODO: change is we start with the note in the intake; assumes that we do not
@@ -144,7 +142,7 @@ public class Intake extends SubsystemBase {
   // this is the 'state' that we want when the motors turn off
 
   public void setIntakeSpeed(double speed) {
-    intakeMtr.set(speed); //[%pwr] TODO change to velocity mode & tune hwpid for intakeMtr
+    intakeMtr.set(speed); // [%pwr] TODO change to velocity mode & tune hwpid for intakeMtr
     // intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
   }
 
@@ -153,7 +151,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean hasNote() {
-   return hasNote;
+    return hasNote;
   }
 
   public double getIntakeRollerSpeed() {
@@ -196,11 +194,12 @@ public class Intake extends SubsystemBase {
     desired_intake_speed = speed;
     angle_servo.setVelocityCmd(speed);
   }
-  public boolean atVelocity(){
+
+  public boolean atVelocity() {
     return Math.abs(intakeMtr.get() - desired_intake_speed) < 0.05;
   }
 
-  public double getAngleVelocity(){
+  public double getAngleVelocity() {
     return angle_servo.getVelocity();
   }
 
@@ -217,7 +216,7 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean atForwardLimitSwitch() {
-    return !limitSwitchDown.get(); 
+    return !limitSwitchDown.get();
   }
 
   public boolean atReverseLimitSwitch() {
@@ -242,12 +241,11 @@ public class Intake extends SubsystemBase {
   }
 
   public void periodic() {
-    this.angle_servo.periodic();  // do child objects first
-    if(!senseNote()){
+    this.angle_servo.periodic(); // do child objects first
+    if (!senseNote()) {
       hasNote = false;
     }
   }
-  
 
   /*
    * Watcher commmand puts network table data for intake.
@@ -287,8 +285,8 @@ public class Intake extends SubsystemBase {
       nt_angleCmd = table.getEntry("anglePosCmd");
       nt_forwardLimit = table.getEntry("dio_LimitFwd");
       nt_reverseLimit = table.getEntry("dio_LimitRev");
-      //nt_reverseLimitSwitchEnabled = table.getEntry("reverseLimitEnabled");
-      //nt_forwardLimitSwitchEnabled = table.getEntry("forwardLimitSwitch");
+      // nt_reverseLimitSwitchEnabled = table.getEntry("reverseLimitEnabled");
+      // nt_forwardLimitSwitchEnabled = table.getEntry("forwardLimitSwitch");
       nt_desiredSpeed = table.getEntry("desiredSpeed");
       nt_hasNote = table.getEntry("hasNote");
       nt_senseNote = table.getEntry("senseNote");
@@ -306,8 +304,8 @@ public class Intake extends SubsystemBase {
       nt_angleCmd.setDouble(getAngleSetpoint());
       nt_forwardLimit.setBoolean(atForwardLimitSwitch());
       nt_reverseLimit.setBoolean(atReverseLimitSwitch());
-      //nt_reverseLimitSwitchEnabled.setBoolean(limitSwitchEnabled());
-      //nt_forwardLimitSwitchEnabled.setBoolean(forwardSwitchEnabled());
+      // nt_reverseLimitSwitchEnabled.setBoolean(limitSwitchEnabled());
+      // nt_forwardLimitSwitchEnabled.setBoolean(forwardSwitchEnabled());
       nt_desiredSpeed.setDouble(getDesiredVelocity());
       nt_hasNote.setBoolean(hasNote());
       nt_senseNote.setBoolean(senseNote());

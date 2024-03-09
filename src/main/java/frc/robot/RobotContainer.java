@@ -350,19 +350,19 @@ public class RobotContainer {
           // operator.a().onTrue(new IntakeSequence(true)); //works for both modes
           operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0)); 
           // operator.x().onTrue(new InIntake(true));
-          operator.x().whileTrue(new AngleCalibration(15.0));
+          operator.x().onTrue(new AngleCalibration(-15.0));
           operator.a().whileTrue(new TestTransfer(35.0));
           operator.y().whileTrue(new IntakeTest(0.5)); //%
-          operator.povDown().whileTrue(new IntakeAngleTest(-15.0));  // good for alpha 
-          operator.povUp().whileTrue(new IntakeAngleTest(15.0)); // not needed, calibrate with up
+          operator.povDown().whileTrue(new IntakeAngleTest(15.0));  // good for alpha 
+          operator.povUp().whileTrue(new IntakeAngleTest(-15.0)); // not needed, calibrate with up
           operator.povRight().onTrue(new IntakeSwap());
           operator.povLeft().whileTrue(new EjectNote());
           operator.leftBumper().onTrue(new CalibratePos(0.0));
 
           //SHOOTER
           operator.rightTrigger().whileTrue(new ShootTest(500.0));
-          operator.leftTrigger().whileTrue(new ShooterAngleVelMove(5.0));
-          operator.rightBumper().whileTrue(new ShooterAngleVelMove(-5.0));
+          operator.leftTrigger().whileTrue(new ShooterAngleVelMove(1.0));
+          operator.rightBumper().whileTrue(new ShooterAngleVelMove(-1.0));
           // operator.rightBumper().onTrue(new ShooterServoSequence(30.0, 2000.0)); //speaker close /
           
   

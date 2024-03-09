@@ -78,8 +78,8 @@ public class Configs {
         return RobotContainer.getSubsystem(Intake.class).getWatcher();
       })
       .add(Transfer.class)
-      .add(ShooterServo.class, "ShooterServo")
-      .add(Command.class, "ShooterWatcher", () -> {
+      .add(ShooterServo.class)
+      .add(Command.class, "ShooterServoWatcher", () -> {
         // cast to get the correct type of shooter
         return (RobotContainer.getSubsystem(ShooterServo.class)).getWatcher();
       })

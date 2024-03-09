@@ -182,6 +182,7 @@ public final class Constants {
     // shooter CAN IDs -- MOTORS
     public static final int SHOOTER_L = 15;
     public static final int SHOOTER_R = 16;
+    public static final int SHOOTER_ANGLE = 35;
 
 
     // Drive Train IDs 20 - 31
@@ -207,11 +208,7 @@ public final class Constants {
 
     // Intake
     public static final int INTAKE_MTR = 18; 
-    public static final int ANGLE_MTR = 17; 
-    // Nose Roller
-    public static final int NOSE_MOTOR_ANGLE = 54;
-    public static final int NOSE_MOTOR_FIRE = 55;
-    public static final int SHOOTER_ANGLE = 35; 
+    public static final int ANGLE_MTR = 17;  
 
     // Transfer
     public static final int TRANSFER_MOTOR = 19; 

@@ -12,7 +12,7 @@ public class ShooterAngleVelMove extends Command {
   ShooterServo shooter;
   double vel;
   int count;
-  final int DONE_COUNT = 5;
+  final int DONE_COUNT = 500;
 
   /** Creates a new ShooterAngleCalibrate. */
   public ShooterAngleVelMove(double vel) {
@@ -37,6 +37,7 @@ public class ShooterAngleVelMove extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("ENDING FOR NO REASON***************************************");
     shooter.setShooterAngleVelocity(0.0);
   }
 
