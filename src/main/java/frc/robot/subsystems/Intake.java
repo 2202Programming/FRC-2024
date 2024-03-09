@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.DigitalIO;
+import frc.robot.RobotContainer;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
@@ -87,7 +88,10 @@ public class Intake extends SubsystemBase {
     final int FREE_CURRENT = 5; // [amp]
     double maxVel = 120.0; // [deg/s]
     final double maxAccel = 20.0; // [deg/s^2]
-    final double posTol = 2.0; // [deg]
+
+    //WARNING: KO Robot should be defined at this point but first try so not sure if it is going to work fine or not
+    //With or without alternate encoder
+    final double posTol = (RobotContainer.getRobotSpecs().getRobotNameString().equals("CompetitionBotAlpha2024")) ? 5.0: 2.0; // [deg]
     final double velTol = 1.0; // [deg/s]
 
     // servo controls angle of intake arm, setup for velocity mode on brushless motor

@@ -57,7 +57,14 @@ public class IntakeSequence extends Command {
         System.out.println("***IntakeSequence:IntakeDown....***");
         shooter.retract();
         intake.setMaxVelocity(60.0);
-        intake.setAngleSetpoint(100.0);
+
+        //TODO: FOR ALTERNATE ENCODER _KO
+        if(RobotContainer.getRobotSpecs().getRobotNameString().equals("CompetitionBotAlpha2024")){
+          intake.setAngleSetpoint(91.0);
+        }
+        else{
+          intake.setAngleSetpoint(100.0);
+        }
         intake.setIntakeSpeed(0.6); // %
         transfer.setSpeed(35.0);
         phase = Phase.WaitingForNote;
@@ -66,6 +73,7 @@ public class IntakeSequence extends Command {
       case WaitingForNote:
         if (transfer.hasNote()) {
           intake.setMaxVelocity(120.0);
+          intake.setAngleVelocity(0.0);
           phase = Phase.Finished;
           System.out.println("***IntakeSequence:Finished....***");
         }

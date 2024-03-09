@@ -62,7 +62,7 @@ public class ShooterSequence extends BlinkyLightUser {
     phase = Phase.HasNote;
     if(shootHigh){
       intake.setMaxVelocity(60.0);
-      intake.setAngleSetpoint(95);
+      intake.setAngleSetpoint(91);
     }
   }
 
@@ -122,7 +122,7 @@ public class ShooterSequence extends BlinkyLightUser {
     shooter.setRPM(0.0, 0.0);
     shooter.retract();
     intake.setMaxVelocity(60.0);  //[deg/s] 2.sec to retract
-    intake.setAngleSetpoint(95.0); //TODO: KO JUST FOR NOW WILL MAKE A NEW ARGUMENTN
+    intake.setAngleSetpoint(91.0); 
   }
 
   // Returns true when the command should end.
