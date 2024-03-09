@@ -55,7 +55,7 @@ public final class Constants {
     // DEBUG - SET FF first for drive, then add KP
 
     // DriveTrain pid values
-    public static final PIDFController drivePIDF = new PIDFController(0.09 * FTperM, 0.0, 0.0, 0.08076 * FTperM);
+    public static final PIDFController drivePIDF = new PIDFController(0.2 * FTperM, 5.0e-6, 0.0, 0.087782 * FTperM);
     public static final PIDFController anglePIDF = new PIDFController(0.01, 0.0, 0.0, 0.0); // maybe 1.0,0.0,0.1 from
                                                                                             // SDS sample code?
     /*
@@ -85,7 +85,7 @@ public final class Constants {
     public static final ChassisConfig comp2024AlphaBotChassisConfig = new ChassisConfig(
         MperFT * (25 / 12.0) / 2.0,
         MperFT * (20.75 / 12.0) / 2.0,
-        0.999, // scale [] <= 1.0
+        0.957, // scale [] <= 1.0
         MperFT * (4.0 / 12.0),
         21.428,
         8.14); // 3/6 Confirmed with Mechanical

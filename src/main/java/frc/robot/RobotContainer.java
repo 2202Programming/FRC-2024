@@ -42,6 +42,7 @@ import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.Swerve.RotateTo;
+import frc.robot.commands.Swerve.calibrate.TestConstantVelocity;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.TurnFaceShootAuto;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
@@ -151,7 +152,7 @@ public class RobotContainer {
     }
 
     //NamedCommands for use in PathPlanner scripts.
-    NamedCommands.registerCommand("pickup", new IntakeSequence(true));
+    NamedCommands.registerCommand("pickup", new IntakeSequence(false));
     NamedCommands.registerCommand("shoot", new ParallelCommandGroup(new ShooterSequence(true,2000), new WaitCommand(2.0)));
     NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker));
     NamedCommands.registerCommand("RotateTo", new RotateTo());
@@ -243,6 +244,7 @@ public class RobotContainer {
         driver.povLeft().onTrue(new TurnFaceShootAuto(4));
         driver.y().onTrue(new AllianceAwareGyroReset(true));
         driver.x().onTrue(new RotateTo());
+        driver.rightBumper().onTrue(new TestConstantVelocity(0.5, 16));
         break;
 
       
@@ -265,7 +267,7 @@ public class RobotContainer {
 
        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
         operator.a().whileTrue(new IntakePositionHandler());
-        operator.y().whileTrue(new IntakeSequence(true));
+        operator.y().whileTrue(new IntakeSequence(false));
         operator.b().whileTrue(new EjectNote());
         operator.x().whileTrue(new IntakeTest(-1.0));
         operator.leftBumper().onTrue(new SwitchNoteLocation(NoteCommandedLocation.Swap)); 
