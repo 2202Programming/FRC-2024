@@ -13,11 +13,14 @@ public class ShooterServoZero extends Command {
   /** Creates a new ShooterServoZero. */
 
     private final ShooterServo shooterServo;
+
+    //TODO: reasonable tolerance
     private double velTol = 0.1;
+    
     private boolean finished = false;
 
   //Lower the shooter servo until it stops, then set relative encoder to zero.
-  
+
   public ShooterServoZero() {
     shooterServo = RobotContainer.getSubsystem(ShooterServo.class);
 
@@ -42,6 +45,9 @@ public class ShooterServoZero extends Command {
     SmartDashboard.putNumber("Shooter Servo Velocity", shooterServo.getShooterAngleVelocity());
     SmartDashboard.putNumber("Shooter Servo Position", shooterServo.getShooterAnglePosition());
     SmartDashboard.putNumber("Shooter Servo Current", shooterServo.getCurrent());
+    System.out.println("Servo zeroing: velocity="+shooterServo.getShooterAngleVelocity()
+      +" Postion=" + shooterServo.getShooterAnglePosition()
+      +" Current=" + shooterServo.getCurrent());
   }
 
   // Called once the command ends or is interrupted.
