@@ -1,3 +1,4 @@
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -11,32 +12,47 @@ import frc.robot.subsystems.ShooterServo;
 public class ShooterAngleCalibrate extends Command {
   ShooterServo shooter;
   double vel;
-  /** Creates a new ShooterAngleCalibrate. */
+  int count;
+  double prevPos;
+  final int DONE_COUNT = 5; // 0.1 sec
+  /** Creates a new ShooterAngleVelMove. */
   public ShooterAngleCalibrate(double vel) {
-    this.vel = vel;
-    shooter = RobotContainer.getSubsystem(ShooterServo.class);
     // Use addRequirements() here to declare subsystem dependencies.
+    shooter = RobotContainer.getSubsystem(ShooterServo.class);
+    this.vel = vel;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    prevPos = shooter.getShooterAnglePosition();
     shooter.setShooterAngleVelocity(vel);
+    count = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if(shooter.getShooterAnglePosition() == prevPos){
+      count++;
+    }
+    else{
+      prevPos = shooter.getShooterAnglePosition();
+      count = 0;
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    shooter.setShooterAnglePosition(vel);
     shooter.setShooterAngleVelocity(0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return count >= DONE_COUNT;
   }
 }
+

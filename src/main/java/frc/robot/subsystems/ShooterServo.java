@@ -61,13 +61,6 @@ public class ShooterServo extends Shooter {
     else if(!transfer.hasNote() && auto_move_test){
       setShooterAngleSetpoint(0.0); //placeholder (ideal transfer location between shooter and intake)
     }
-
-    if(getShooterAngleSpeed() != 0 && !prev_moving){
-      prev_moving = true;
-    }
-    if(prev_moving && Math.abs(getShooterAngleSpeed()) < 0.1){
-      limitCount++;
-    }
   }
   @Override
   public WatcherCmd getWatcher() {
@@ -125,7 +118,10 @@ public void setTargetPose(Pose2d targetPose){
   }
 
   class ShooterServoWatcherCmd extends ShooterWatcherCmd {
-    NetworkTableEntry nt_desiredSetpoint;
+    NetworkTableEntry nt_desiredPosition;
+    NetworkTableEntry nt_currentVel;
+    NetworkTableEntry nt_currentPos;
+    NetworkTableEntry nt_atSetpoint;
 
     public String getTableName() {
       return super.getTableName();
@@ -135,13 +131,19 @@ public void setTargetPose(Pose2d targetPose){
     public void ntcreate() {
       NetworkTable table = getTable();
       super.ntcreate();
-      nt_desiredSetpoint = table.getEntry("desiredSetpoint");
+      nt_desiredPosition = table.getEntry("desiredPosition");
+      nt_currentVel = table.getEntry("currentVel");
+      nt_currentPos = table.getEntry("currentPos");
+      nt_atSetpoint = table.getEntry("atSetpoint");
 
     }
 
     public void ntUpdate() {
       super.ntupdate();
-      nt_desiredSetpoint.setDouble(getShooterAngleSetpoint());
+      nt_desiredPosition.setDouble(getShooterAngleSetpoint());
+      nt_currentVel.setDouble(getShooterAngleVelocity());
+      nt_currentPos.setDouble(getShooterAnglePosition());
+      nt_atSetpoint.setBoolean(atShooterAngleSetpoint());
     }
   }
 }
