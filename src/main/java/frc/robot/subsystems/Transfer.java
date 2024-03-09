@@ -22,7 +22,7 @@ import frc.robot.util.PIDFController;
 public class Transfer extends SubsystemBase {
 
   // constants for geometry of transfer
-  final static double radius = 1.27 * 2.0 * Math.PI; // 1.27 radius in cm
+  final static double radius = 1.27 * 2.0 * Math.PI; // 1.27 radius in cm --> probably circumference lol
   final static double gearRatio = 1.0 / 35.0; // 35 motor turns -> 1 roller shaft turn [verified gr]
   final static double conversionFactor = radius * gearRatio; // [cm/rotations]
 

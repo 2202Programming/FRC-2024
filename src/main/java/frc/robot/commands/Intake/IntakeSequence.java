@@ -28,8 +28,10 @@ public class IntakeSequence extends Command {
   final Shooter shooter;
   boolean stay_down;
   boolean pneumatics_bot = false;
+  int count;
+  final int DONE_COUNT = 10;
 
-  public enum Phase {IntakeDown, WaitingForNote, Finished  }
+  public enum Phase {IntakeDown, WaitingForNote, Finished, HaveNote  }
   Phase phase;
 
   /*
@@ -46,6 +48,7 @@ public class IntakeSequence extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    count = 0;
     phase = Phase.IntakeDown;
     System.out.println("***Init IntakeSequence....***");
   }
@@ -59,17 +62,23 @@ public class IntakeSequence extends Command {
         if(shooter != null) shooter.retract();
         intake.setMaxVelocity(60.0);
         intake.setAngleSetpoint(100.0);
-        intake.setIntakeSpeed(0.6); // %
+        intake.setIntakeSpeed(0.4); // %
         transfer.setSpeed(35.0);
         phase = Phase.WaitingForNote;
         System.out.println("***IntakeSequence:WaitingForNote....***");
         break;
       case WaitingForNote:
         if (transfer.senseNote()) { //TODO: mayb change to hasnote test it
+          count++;
+        }
+        if(count >= DONE_COUNT){
+          phase = Phase.HaveNote;
+        }
+      case HaveNote:
+
           intake.setMaxVelocity(120.0);
           phase = Phase.Finished;
           System.out.println("***IntakeSequence:Finished....***");
-        }
         break;
       case Finished:
         

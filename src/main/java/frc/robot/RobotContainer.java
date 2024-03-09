@@ -1,3 +1,4 @@
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -39,6 +40,7 @@ import frc.robot.commands.Intake.TestTransfer;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Shooter.ShootTest;
+import frc.robot.commands.Shooter.ShooterAngleSetPos;
 import frc.robot.commands.Shooter.ShooterAngleVelMove;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Shooter.ShooterServoSequence;
@@ -347,11 +349,11 @@ public class RobotContainer {
 
           case new_bot_test:
           //INTAKE & TRANSFER
-          // operator.a().onTrue(new IntakeSequence(true)); //works for both modes
+          operator.a().onTrue(new IntakeSequence(true)); //works for both modes
           operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0)); 
           // operator.x().onTrue(new InIntake(true));
           operator.x().onTrue(new AngleCalibration(-15.0));
-          operator.a().whileTrue(new TestTransfer(35.0));
+          operator.leftTrigger().whileTrue(new TestTransfer(35.0));
           operator.y().whileTrue(new IntakeTest(0.5)); //%
           operator.povDown().whileTrue(new IntakeAngleTest(15.0));  // good for alpha 
           operator.povUp().whileTrue(new IntakeAngleTest(-15.0)); // not needed, calibrate with up
@@ -360,10 +362,14 @@ public class RobotContainer {
           operator.leftBumper().onTrue(new CalibratePos(0.0));
 
           //SHOOTER
-          operator.rightTrigger().whileTrue(new ShootTest(500.0));
-          operator.leftTrigger().whileTrue(new ShooterAngleVelMove(1.0));
-          operator.rightBumper().whileTrue(new ShooterAngleVelMove(-1.0));
-          // operator.rightBumper().onTrue(new ShooterServoSequence(30.0, 2000.0)); //speaker close /
+          // operator.rightTrigger().whileTrue(new ShootTest(500.0));
+          // operator.povDown().whileTrue(new ShooterAngleVelMove(-2.0));
+          // operator.povUp().whileTrue(new ShooterAngleVelMove(2.0));
+          // // operator.leftTrigger().whileTrue(new ShooterAngleVelMove(4.0));
+          // // operator.rightBumper().whileTrue(new ShooterAngleVelMove(-4.0));
+          // // operator.rightBumper().onTrue(new ShooterServoSequence(30.0, 2000.0)); //speaker close /
+          // operator.leftTrigger().onTrue(new ShooterAngleSetPos(30.0));
+          // operator.rightBumper().onTrue(new ShooterAngleSetPos(45.0));
           
   
           // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay in intake
