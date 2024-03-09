@@ -91,11 +91,12 @@ public class ShooterSequence extends BlinkyLightUser {
           shooter.setRPM(speed, speed); // placeholder
           if(pneumatics_count >= PNEUMATICS_DONE_COUNT || !shootHigh){
           phase = Phase.ShooterMotorOn;
+          System.out.println("***ShooterSequence:ShooterMotorOn....***");
           }
       }
         break;
       case ShooterMotorOn:
-        System.out.println("***ShooterSequence:ShooterMotorOn....***");
+
         if (shooter.isAtRPM(100)) {
           transfer.setSpeed(35.0);
           phase = Phase.TransferMotorOn;
