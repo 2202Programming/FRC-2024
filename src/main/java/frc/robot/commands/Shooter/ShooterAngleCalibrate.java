@@ -13,6 +13,7 @@ public class ShooterAngleCalibrate extends Command {
   ShooterServo shooter;
   double vel;
   int count;
+  final double VEL_ZERO_LIMIT = 0.05; //[deg/s]
   final int DONE_COUNT = 5; // 0.1 sec
   /** Creates a new ShooterAngleVelMove. */
   public ShooterAngleCalibrate(double vel) {
@@ -31,12 +32,7 @@ public class ShooterAngleCalibrate extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(Math.abs(shooter.getShooterAngleVelocity()) < 0.05){
-      count++;
-    }
-    else{
-      count = 0;
-    }
+    count = (Math.abs(shooter.getShooterAngleVelocity()) < VEL_ZERO_LIMIT) ? count++ : 0;
   }
 
   // Called once the command ends or is interrupted.

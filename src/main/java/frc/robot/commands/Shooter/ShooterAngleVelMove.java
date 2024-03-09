@@ -11,6 +11,9 @@ import frc.robot.subsystems.ShooterServo;
 public class ShooterAngleVelMove extends Command {
   ShooterServo shooter;
   double vel;
+  int count;
+  final int DONE_COUNT = 5;
+
   /** Creates a new ShooterAngleCalibrate. */
   public ShooterAngleVelMove(double vel) {
     this.vel = vel;
@@ -21,12 +24,15 @@ public class ShooterAngleVelMove extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    count = 0;
     shooter.setShooterAngleVelocity(vel);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    count = (Math.abs(shooter.getShooterAngleVelocity()) < 0.1) ? count++ : 0;
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -37,6 +43,6 @@ public class ShooterAngleVelMove extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return count >= DONE_COUNT;
   }
 }

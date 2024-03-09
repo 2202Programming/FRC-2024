@@ -22,6 +22,8 @@ import frc.robot.subsystems.Transfer;
  * off (command ended)
  */
 
+
+ //TODO: probs can remove all angle stuff
 public class ShooterServoSequence extends BlinkyLightUser {
   /** Creates a new ShooterSequence. */
   //use simple Shooter, even if ShooterServo is created because this command can work with either.

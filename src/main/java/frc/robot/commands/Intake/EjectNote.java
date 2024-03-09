@@ -38,6 +38,7 @@ public class EjectNote extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    transfer.setHasNote(false);
     intake.setMaxVelocity(120.0);
     intake.setAngleSetpoint(0.0);
     intake.setIntakeSpeed(0.0);
