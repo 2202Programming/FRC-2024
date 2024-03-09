@@ -23,7 +23,6 @@ public class Shooter extends SubsystemBase {
 
   final CANSparkMax leftMtr = new CANSparkMax(CAN.SHOOTER_L, CANSparkMax.MotorType.kBrushless);
   final CANSparkMax rightMtr = new CANSparkMax(CAN.SHOOTER_R, CANSparkMax.MotorType.kBrushless);
-
   final SparkPIDController hw_leftPid;
   final SparkPIDController hw_rightPid;
   final RelativeEncoder leftEncoder;
