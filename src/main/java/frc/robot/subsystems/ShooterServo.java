@@ -4,9 +4,12 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.units.Distance;
 import frc.robot.Constants.CAN;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.commands.utility.WatcherCmd;
+import frc.robot.util.DistanceInterpretor;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
@@ -21,8 +24,9 @@ public class ShooterServo extends Shooter {
   final static double posTol = 1.0;
   final static double velTol = 1.0;
   private Pose2d targetPose;
-  //test var
-  boolean auto_move = false;
+  //enable for actual testing
+  boolean auto_move_test = false;
+  boolean auto_move;
 
   final static double DeployAngle = 100.0;// tbd both
   final static double RetractAngle = 50.0;
@@ -49,8 +53,11 @@ public class ShooterServo extends Shooter {
   @Override
   public void periodic(){
     super.periodic();
-    if(transfer.hasNote() && auto_move){
-      setShooterAngleSetpoint(targetPose);
+    if(transfer.hasNote() && auto_move_test){
+      setShooterAngleSetpoint(RobotContainer.RC().distanceInterpretor.getAngleFromDistance(RobotContainer.RC().drivetrain.getDistanceToPose(targetPose)));
+    }
+    else if(!transfer.hasNote() && auto_move_test){
+      setShooterAngleSetpoint(0.0); //placeholder (ideal transfer location between shooter and intake)
     }
   }
   @Override

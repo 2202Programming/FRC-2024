@@ -48,6 +48,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
+import frc.robot.util.DistanceInterpretor;
 import frc.robot.util.RobotSpecs;
 
 /**
@@ -73,7 +74,8 @@ public class RobotContainer {
   static RobotContainer rc;
   final RobotSpecs robotSpecs;
   final HID_Xbox_Subsystem dc;
-  final SwerveDrivetrain drivetrain;
+  public final SwerveDrivetrain drivetrain;
+  public final DistanceInterpretor distanceInterpretor;
 
   // singleton accessor for robot public sub-systems
   @Deprecated
@@ -131,6 +133,7 @@ public class RobotContainer {
     RobotContainer.rc = this;
     robotSpecs = new RobotSpecs();
     robotSpecs.mySubsystemConfig.constructAll();
+    distanceInterpretor = new DistanceInterpretor();
 
     // Set binding to Competition (or your mode for testing)
     Bindings bindings = Bindings.IntakeTesting;    
