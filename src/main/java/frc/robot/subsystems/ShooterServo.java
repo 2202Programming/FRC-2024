@@ -18,7 +18,7 @@ import frc.robot.util.PIDFController;
 
 public class ShooterServo extends Shooter {
   // tbd for all units
-  final Transfer transfer = RobotContainer.getSubsystem(Transfer.class);
+  final Transfer transfer;
   final static double ShooterAngleGearRatio = 70.0;
   final static int STALL_CURRENT = 5;
   final static int FREE_CURRENT = 15;
@@ -34,7 +34,6 @@ public class ShooterServo extends Shooter {
   private Translation2d targetTranslation2d;
   boolean atLimit;
   int limitCount;
-  final int actuallyAtLimit = 3;
   boolean prev_moving;
   //enable for actual testing
   boolean auto_move_test = false;
@@ -51,6 +50,7 @@ public class ShooterServo extends Shooter {
   public ShooterServo() {
     super(false);
     shooterAngle = new NeoServo(CAN.SHOOTER_ANGLE, shooterPos, hwShooterVelPID, false);
+    transfer =  RobotContainer.getSubsystem(Transfer.class);
     // Servo setup for angle_servo
     hwShooterVelPID.copyTo(shooterAngle.getController().getPIDController(), 0);
     shooterAngle.setConversionFactor(360.0 / ShooterAngleGearRatio) // [deg] - With conversion factor done in method, it will be set through height, but read in deg still

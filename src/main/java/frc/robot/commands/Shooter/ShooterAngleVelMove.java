@@ -31,7 +31,7 @@ public class ShooterAngleVelMove extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    count = (Math.abs(shooter.getShooterAngleVelocity()) < 0.1) ? count++ : 0;
+    count = (Math.abs(shooter.getShooterAngleVelocity()) < 0.1) ? ++count : 0;
   }
 
   // Called once the command ends or is interrupted.

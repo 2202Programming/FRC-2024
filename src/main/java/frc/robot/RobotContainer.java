@@ -41,6 +41,7 @@ import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Shooter.ShootTest;
 import frc.robot.commands.Shooter.ShooterAngleVelMove;
 import frc.robot.commands.Shooter.ShooterSequence;
+import frc.robot.commands.Shooter.ShooterServoSequence;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
@@ -93,6 +94,10 @@ public class RobotContainer {
   public static <T> T getSubsystem(String name) {
     return (T) rc.robotSpecs.mySubsystemConfig.getSubsystem(name);
   }
+    @SuppressWarnings("unchecked")
+  public static <T extends Subsystem> T getSubsystemOrNull(String name) {
+    return (T) rc.robotSpecs.mySubsystemConfig.getObjectOrNull(name);
+  }
 
   // Use this when there is only one instance of the Subsystem - preferred
   @SuppressWarnings("unchecked")
@@ -107,6 +112,8 @@ public class RobotContainer {
   public static <T extends Subsystem> T getSubsystemOrNull(Class<T> clz) {
     return (T) rc.robotSpecs.mySubsystemConfig.getObjectOrNull(clz.getSimpleName());
   }
+
+  
 
   // Use this form when the RobotContainer object is NOT a Subsystem
   @SuppressWarnings("unchecked")
@@ -160,8 +167,8 @@ public class RobotContainer {
 
     //NamedCommands for use in PathPlanner scripts.
     NamedCommands.registerCommand("pickup", new IntakeSequence(true));
-    NamedCommands.registerCommand("shoot", new ParallelCommandGroup(new ShooterSequence(true,2000), new WaitCommand(2.0)));
-    NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker));
+    // NamedCommands.registerCommand("shoot", new ParallelCommandGroup(new ShooterServoSequence(true,2000), new WaitCommand(2.0)));
+    // NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker));
     NamedCommands.registerCommand("RotateTo", new RotateTo());
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -346,8 +353,8 @@ public class RobotContainer {
           operator.x().whileTrue(new AngleCalibration(15.0));
           operator.a().whileTrue(new TestTransfer(35.0));
           operator.y().whileTrue(new IntakeTest(0.5)); //%
-          operator.povDown().whileTrue(new IntakeAngleTest(15.0));  // good for alpha 
-          operator.povUp().whileTrue(new IntakeAngleTest(-15.0)); // not needed, calibrate with up
+          operator.povDown().whileTrue(new IntakeAngleTest(-15.0));  // good for alpha 
+          operator.povUp().whileTrue(new IntakeAngleTest(15.0)); // not needed, calibrate with up
           operator.povRight().onTrue(new IntakeSwap());
           operator.povLeft().whileTrue(new EjectNote());
           operator.leftBumper().onTrue(new CalibratePos(0.0));

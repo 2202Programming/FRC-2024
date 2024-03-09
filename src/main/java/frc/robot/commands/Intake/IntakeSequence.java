@@ -27,6 +27,7 @@ public class IntakeSequence extends Command {
   final Transfer transfer;
   final Shooter shooter;
   boolean stay_down;
+  boolean pneumatics_bot = false;
 
   public enum Phase {IntakeDown, WaitingForNote, Finished  }
   Phase phase;
@@ -38,8 +39,8 @@ public class IntakeSequence extends Command {
     this.stay_down = stay_down;
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
-    this.shooter = RobotContainer.getSubsystem("SHOOTER");
-    addRequirements(intake, transfer, shooter);
+    this.shooter = RobotContainer.getSubsystemOrNull("SHOOTER");
+    addRequirements(intake, transfer);
   }
 
   // Called when the command is initially scheduled.
@@ -55,7 +56,7 @@ public class IntakeSequence extends Command {
     switch (phase) {
       case IntakeDown:
         System.out.println("***IntakeSequence:IntakeDown....***");
-        shooter.retract();
+        if(shooter != null) shooter.retract();
         intake.setMaxVelocity(60.0);
         intake.setAngleSetpoint(100.0);
         intake.setIntakeSpeed(0.6); // %

@@ -7,13 +7,17 @@ package frc.robot.commands.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterServo;
 
 public class ShootTest extends Command {
   /** Creates a new ShootTest. */
-  final Shooter shooter;
+  Shooter shooter;
   double speed;
   public ShootTest(double speed) {
-        this.shooter = RobotContainer.getSubsystem("SHOOTER");
+        this.shooter = RobotContainer.getSubsystemOrNull(Shooter.class);
+        if(this.shooter == null){
+          this.shooter = RobotContainer.getSubsystem(ShooterServo.class);
+        }
         this.speed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
   }

@@ -12,7 +12,7 @@ import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 
 public class MoveToAnglePos extends BlinkyLightUser {
   /** Creates a new AnglePos. */
-  public final Intake intake;
+  final Intake intake;
   double posCmd;
   double velLimit;
   

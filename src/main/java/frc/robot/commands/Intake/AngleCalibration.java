@@ -14,6 +14,8 @@ public class AngleCalibration extends  Command {
     /** Creates a new intakeForward. */
     public final Intake intake;
     double angleVelocity; //[deg/s]
+    int count;
+    final int DONE_COUNT = 5;
     public AngleCalibration(double angleVelocity) {
         this.intake = RobotContainer.getSubsystem(Intake.class);
         this.angleVelocity = angleVelocity;
@@ -24,19 +26,22 @@ public class AngleCalibration extends  Command {
     public void initialize() {
         System.out.println("*******SPEED******" + angleVelocity);
         intake.setAngleVelocity(angleVelocity);
+        count = 0;
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        count = (Math.abs(intake.getAngleVelocity()) < 0.1) ? ++count : 0;
     }
+    
 
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) { 
-        intake.setMaxVelocity(1.0); // test worked, turns off vel-cmd at end so bounce isn't chased.
+        // intake.setMaxVelocity(1.0); // test worked, turns off vel-cmd at end so bounce isn't chased.
         intake.setAngleVelocity(0.0);             
-        if (interrupted) return;
+        // if (interrupted) return;
 
         //made it here, then we completed calibration, so set our position
          System.out.println("Calibration at " + intake.getAnglePosition());
@@ -47,7 +52,9 @@ public class AngleCalibration extends  Command {
     // Returns true when the command should end, we end when count hits DONE_COUNT
     @Override
     public boolean isFinished() {
-        return  (angleVelocity < 0.0) ? intake.atReverseLimitSwitch() : intake.atForwardLimitSwitch();      
+        return count >=DONE_COUNT;
+        //for alpha
+        // return  (angleVelocity < 0.0) ? intake.atReverseLimitSwitch() : intake.atForwardLimitSwitch();      
         
     }
 }

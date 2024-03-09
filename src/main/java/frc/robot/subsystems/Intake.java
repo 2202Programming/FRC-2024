@@ -200,6 +200,10 @@ public class Intake extends SubsystemBase {
     return Math.abs(intakeMtr.get() - desired_intake_speed) < 0.05;
   }
 
+  public double getAngleVelocity(){
+    return angle_servo.getVelocity();
+  }
+
   public double getDesiredVelocity() {
     return desired_intake_speed;
   }
