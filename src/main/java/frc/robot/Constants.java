@@ -81,17 +81,29 @@ public final class Constants {
         12.8, // confirmed with vince
         8.14); // confirmed with vince
 
-    public static final WheelOffsets comp2024AlphaBotOffsets = new WheelOffsets(43.85746387, 24.096825 , -65.21481, -43.066333125);
+    public static final WheelOffsets comp2024AlphaBotOffsets = new WheelOffsets(43.85746387, 24.096825,
+     -65.21481, -43.066333125);
     public static final ChassisConfig comp2024AlphaBotChassisConfig = new ChassisConfig(
-        MperFT * (25 / 12.0) / 2.0,
-        MperFT * (20.75 / 12.0) / 2.0,
+        MperFT * (25 / 12.0) / 2.0, // x
+        MperFT * (20.75 / 12.0) / 2.0, // y
         0.999, // scale [] <= 1.0
         MperFT * (4.0 / 12.0),
         21.428,
         6.75);
     // TODO: For 2024 CompetitionBotBeta ***NOT YET CONFIRMED
-    public static final WheelOffsets comp2024BetaBotOffsets = comp2024AlphaBotOffsets;
-    public static final ChassisConfig comp2024BotBetaChassisConfig = comp2024AlphaBotChassisConfig;
+    //FL: offset 0.0, measured 126.474609375, should be -126.474609375
+    //FR: offset 0.0, measured -65.21484375, should be 65.21484375
+    //BL: offset 0.0, measured -28.828125, should be 28.828125
+    //BR: offset 0.0, measured 115.224609375, should be -115.224609375
+    public static final WheelOffsets comp2024BetaBotOffsets = //new WheelOffsets(0.0751953125*180.0, -0.41845703125*180.0, 0.090087890625*180.0, 0.090087890625*180.0);
+      new WheelOffsets(-126.4746, 28.828125, 65.21484, -115.224609);
+    public static final ChassisConfig comp2024BotBetaChassisConfig = new ChassisConfig(
+        MperFT * (24.875 / 12.0) / 2.0, // x
+        MperFT * (20.5 / 12.0) / 2.0, // y
+        0.999, // scale [] <= 1.0
+        MperFT * (4.0 / 12.0),
+        21.428,
+        6.75);;
     
     public static final ChassisInversionSpecs comp2024BotAlphaInversionSpecs = new ChassisInversionSpecs(
 
@@ -102,7 +114,8 @@ public final class Constants {
 
     // TODO: confirm this when start working on 2024 bot Beta
     public static final ChassisInversionSpecs comp2024BotBetaInversionSpecs = new ChassisInversionSpecs(
-        new ModuleInversionSpecs(true, true, false), // FR
+      //weird fr is driving backwards - should be same as alpha
+        new ModuleInversionSpecs(/*true*/ false, true, false), // FR
         new ModuleInversionSpecs(false, true, false), // FL
         new ModuleInversionSpecs(true, true, false), // BR
         new ModuleInversionSpecs(false, true, false)); // BL
