@@ -18,8 +18,10 @@ public class ShooterServo extends Shooter {
   final static double posTol = 1.0;
   final static double velTol = 1.0;
 
-  final static double DeployAngle = 100.0;// tbd both
-  final static double RetractAngle = 50.0;
+  // Measured Jeff/Aaron 3/9
+  // Measured at hard stops with iPhone on Beta/Elvis
+  final static double DeployAngle = 48.0; // deg
+  final static double RetractAngle = 29.0; // deg
 
   private final NeoServo shooterAngle;
 
@@ -54,8 +56,8 @@ public class ShooterServo extends Shooter {
     setShooterAngleSetpoint(RetractAngle);
   }
 
-  public void setShooterAngleSetpoint(double speed) {
-    shooterAngle.setSetpoint(speed);
+  public void setShooterAngleSetpoint(double pos) {
+    shooterAngle.setSetpoint(pos);
   }
 
   public double getShooterAngleSetpoint() {
