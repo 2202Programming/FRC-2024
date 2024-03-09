@@ -1,15 +1,18 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.robot.Constants.CAN;
+import frc.robot.RobotContainer;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
 public class ShooterServo extends Shooter {
   // tbd for all units
+  final Transfer transfer = RobotContainer.getSubsystem(Transfer.class);
   final static double ShooterAngleGearRatio = 10.0;
   final static int STALL_CURRENT = 5;
   final static int FREE_CURRENT = 15;
@@ -17,6 +20,9 @@ public class ShooterServo extends Shooter {
   final static double maxAccel = 10.0;
   final static double posTol = 1.0;
   final static double velTol = 1.0;
+  private Pose2d targetPose;
+  //test var
+  boolean auto_move = false;
 
   final static double DeployAngle = 100.0;// tbd both
   final static double RetractAngle = 50.0;
@@ -39,11 +45,21 @@ public class ShooterServo extends Shooter {
         .burnFlash();
   }
 
+
+  @Override
+  public void periodic(){
+    super.periodic();
+    if(transfer.hasNote() && auto_move){
+      setShooterAngleSetpoint(targetPose);
+    }
+  }
   @Override
   public WatcherCmd getWatcher() {
     return new ShooterServoWatcherCmd();
   }
-
+public void setTargetPose(Pose2d targetPose){
+  this.targetPose = targetPose;
+}
   @Override
   public void deploy() {
     setShooterAngleSetpoint(DeployAngle);
@@ -54,8 +70,8 @@ public class ShooterServo extends Shooter {
     setShooterAngleSetpoint(RetractAngle);
   }
 
-  public void setShooterAngleSetpoint(double speed) {
-    shooterAngle.setSetpoint(speed);
+  public void setShooterAngleSetpoint(double pos) {
+    shooterAngle.setSetpoint(pos);
   }
 
   public double getShooterAngleSetpoint() {
