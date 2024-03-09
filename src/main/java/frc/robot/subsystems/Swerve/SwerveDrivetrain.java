@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveTrain;
 import frc.robot.Constants.NTStrings;
+import frc.robot.Constants.Tag_Pose;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
@@ -605,6 +606,13 @@ public class SwerveDrivetrain extends SubsystemBase {
 
   public Pose2d getPVEstimate() {
     return new Pose2d(pvPose.getTranslation(), pvPose.getRotation());
+  }
+
+  public double getDistanceToPose(Pose2d targetPose) {
+    return Math.sqrt(
+           Math.pow(getPose().getTranslation().getX() - targetPose.getX(), 2)
+              + Math.pow(getPose().getTranslation().getY() - targetPose.getY(), 2));
+
   }
 
   public void disableVisionPoseRotation() {
