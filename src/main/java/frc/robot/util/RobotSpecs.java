@@ -149,7 +149,7 @@ public class RobotSpecs {
             tempRobotName = RobotNames.CompetitionBot2023;
         else if (serialNo.compareTo("032381BF") == 0) 
             tempRobotName = RobotNames.CompetitionBotAlpha2024;
-        else if (serialNo.compareTo("INVALID") == 0) //TODO: Update once known
+        else if (serialNo.compareTo("032D2062") == 0)
             tempRobotName = RobotNames.CompetitionBotBeta2024;
         else
             tempRobotName = RobotNames.UnknownBot;
