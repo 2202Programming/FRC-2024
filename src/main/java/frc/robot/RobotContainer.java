@@ -1,4 +1,5 @@
 
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -42,6 +43,7 @@ import frc.robot.commands.Shooter.ShooterAngleSetPos;
 import frc.robot.commands.Shooter.ShooterAngleVelMove;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Shooter.ShooterServoSequence;
+import frc.robot.commands.Shooter.SpeakerShooter;
 import frc.robot.commands.Shooter.TestShoot;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FaceToTag;
@@ -148,7 +150,7 @@ public class RobotContainer {
     robotSpecs = new RobotSpecs();
     robotSpecs.mySubsystemConfig.constructAll();
     // Set binding to Competition (or your mode for testing)
-    Bindings bindings = Bindings.new_bot_test;
+    Bindings bindings = Bindings.auto_shooter_test;
 
     // Testing, but also to drive the drivers nuts...
     Command random_lights = new RandomLightsCmd();
@@ -175,10 +177,9 @@ public class RobotContainer {
 
     // NamedCommands for use in PathPlanner scripts.
     NamedCommands.registerCommand("pickup", new IntakeSequence(true));
-    NamedCommands.registerCommand("shoot", new ShooterSequence(true,2000));
+    NamedCommands.registerCommand("shoot", new ShooterServoSequence(45.0,2000.0));
     NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker));
     NamedCommands.registerCommand("RotateTo", new RotateTo());
-    NamedCommands.registerCommand("intakeDown", new MoveToAnglePos(92, 60));
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -277,8 +278,9 @@ public class RobotContainer {
         driver.povLeft().onTrue(new TurnFaceShootAuto(4));
         driver.y().onTrue(new AllianceAwareGyroReset(true));
         driver.x().onTrue(new FaceToTag(4));
-        driver.b().onTrue(new ShooterSequence(true,2000));
-        driver.rightBumper().onTrue(new TestConstantVelocity(0.5, 16));
+        //driver.b().onTrue(new ShooterSequence(true,2000));
+        driver.b().onTrue(new SpeakerShooter());
+        driver.rightBumper().onTrue(new TestConstantVelocity(0.25, 8));
         driver.povRight().onTrue(new MoveToAnglePos(91, 60));  // good for alpha 
         driver.povUp().whileTrue(new AngleCalibration(-15.0)); 
         break;
@@ -312,6 +314,7 @@ public class RobotContainer {
       case DriveTest:
         break;
       case auto_shooter_test:
+        break;
       case Competition:
 
         // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor

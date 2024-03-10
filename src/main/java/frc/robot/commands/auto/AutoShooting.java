@@ -7,10 +7,9 @@ package frc.robot.commands.auto;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
-import frc.robot.commands.Shooter.ShooterSequence;
-import frc.robot.commands.Shooter.ShooterSequenceForAuto;
+import frc.robot.commands.Shooter.ShooterServoSequence;
+import frc.robot.commands.Shooter.SpeakerShooter;
 import frc.robot.commands.Swerve.FaceToTag;
-import frc.robot.commands.Swerve.RotateTo;
 import frc.robot.commands.Swerve.RotateUntilSeeTags;
 import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
@@ -37,14 +36,12 @@ public class AutoShooting extends SequentialCommandGroup {
     addCommands(new RotateUntilSeeTags((int)tagID));
     addCommands(new FaceToTag(tagID));
     if (target == ShootingTarget.Speaker) {
-      // addCommands(new SpeakerShooter()); instead of this when we get servo
-      SpeakerShootingPhase phase = getSpeakerPhase();
-      addCommands(new ShooterSequenceForAuto(phase.isHigh(), phase.getRPM())); // TODO: JUST FOR AUTO TESTING - KO
+      addCommands(new SpeakerShooter());
     } else if (target == ShootingTarget.Amp) {
-      addCommands(new ShooterSequence(true, 800.0));
+      addCommands(new ShooterServoSequence(45.0, 800.0));
     } else {
       // Trap
-      addCommands(new ShooterSequence(true, 1000.0));
+      addCommands(new ShooterServoSequence(45.0, 1000.0));
     }
   }
 

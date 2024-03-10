@@ -71,9 +71,8 @@ public class SpeakerShooter extends Command {
       dY = drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID4.getY();
     }
     shooter_angle = Math.atan((SPEAKER_HEIGHT - SHOOTER_Z_OFFSET) / (radius - SHOOTER_Y_OFFSET)) + angle_adjustment;
-    shooter_angle = MathUtil.clamp(shooter_angle, 28.52, 48.0);//TODO:CHange
-    // TODO: set shooter angle to shooter_angle
-    //shooter.setAngleSetPoint(shooter_angle);
+    shooter_angle = MathUtil.clamp(shooter_angle, 28.52, 48.0);
+    shooter.setAngleSetpoint(shooter_angle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -98,8 +97,9 @@ public class SpeakerShooter extends Command {
         double rpm = 7205.19 + -3266.57 * dX + -3266.57 * dY + 935.96 * Math.pow(dX, 2) + 731.54 * dX * dY
             + 935.96 * Math.pow(dY, 2);
         rpm = MathUtil.clamp(rpm,2000,3500);
-        // TODO: schedule SHOOTER command HERE with angle and RPM
         shooter.setRPM(rpm, rpm);
+        Command shooterCmd = new ShooterServoSequence(shooter_angle,rpm);
+        shooterCmd.schedule();
         finished = true;
       }
     }
