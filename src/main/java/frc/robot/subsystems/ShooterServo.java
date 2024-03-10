@@ -4,14 +4,12 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.robot.Constants.CAN;
-import frc.robot.RobotContainer;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
 public class ShooterServo extends Shooter {
-  // tbd for all units
-  final Transfer transfer;
+
   final static double ShooterAngleGearRatio = 350.0;
   final static double ShooterAngleRadius = 12.0; // [cm]
   final static int STALL_CURRENT = 5; // [amps]
@@ -39,7 +37,7 @@ public class ShooterServo extends Shooter {
   public ShooterServo() {
     super(false);
     extension = new NeoServo(CAN.SHOOTER_ANGLE, shooterPos, hwShooterVelPID, false);
-    transfer = RobotContainer.getSubsystem(Transfer.class);
+
     // Servo setup for angle_servo
     hwShooterVelPID.copyTo(extension.getController().getPIDController(), 0);
     extension.setConversionFactor(ShooterAngleRadius / ShooterAngleGearRatio) // [cm/rot]
