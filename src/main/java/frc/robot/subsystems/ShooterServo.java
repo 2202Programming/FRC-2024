@@ -1,18 +1,11 @@
 package frc.robot.subsystems;
 
-import frc.robot.subsystems.Swerve.SwerveDrivetrain;
-
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.CAN;
-import frc.robot.Constants.Tag_Pose;
 import frc.robot.RobotContainer;
 import frc.robot.commands.utility.WatcherCmd;
-import frc.robot.util.DistanceInterpretor;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
 
@@ -35,16 +28,11 @@ public class ShooterServo extends Shooter {
   final double MAX_DEGREES = 48.00;
   double cmd_deg;
 
-  private double distanceToTarget;
-  private double targetAngle;
-  private DistanceInterpretor distanceInterpretor;
-
-  private Translation2d targetTranslation2d;
   boolean atLimit;
   int limitCount;
   boolean prev_moving;
   // enable for actual testing
-  boolean auto_move_test = false;
+
   // double conversionFactor = Math.sin(360.0 / ShooterAngleGearRatio) *
   // Hypotenuse - MIN_POSITION;
 
@@ -69,16 +57,7 @@ public class ShooterServo extends Shooter {
         .setMaxVelocity(maxVel)
         .burnFlash();
     shooterAngle.setClamp(SERVO_MIN, SERVO_MAX); // local [cm]
-    shooterAngle.setPosition(SERVO_MIN); //power on pos
-    distanceInterpretor = new DistanceInterpretor();
-    // set default target
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-      // Blue Alliance
-      targetTranslation2d = Tag_Pose.ID7;
-    } else {
-      // Red Alliance
-      targetTranslation2d = Tag_Pose.ID4;
-    }
+    shooterAngle.setPosition(SERVO_MIN); // power on pos
 
   }
 
@@ -86,33 +65,11 @@ public class ShooterServo extends Shooter {
   public void periodic() {
     super.periodic();
     shooterAngle.periodic();
-    calculateTargetAngle();
-
-    if (transfer.hasNote() && auto_move_test) {
-      setShooterAngleSetpoint(targetAngle);
-    } else if (!transfer.hasNote() && auto_move_test) {
-      // if no note, shooter needs to be low to allow transfer of loading note
-      setShooterAngleSetpoint(0.0); // placeholder (ideal transfer location between shooter and intake)
-    }
   }
 
   @Override
   public WatcherCmd getWatcher() {
     return new ShooterServoWatcherCmd();
-  }
-
-  private void calculateTargetAngle() {
-    distanceToTarget = RobotContainer.getSubsystem(SwerveDrivetrain.class)
-        .getDistanceToTranslation(targetTranslation2d);
-    targetAngle = distanceInterpretor.getAngleFromDistance(distanceToTarget);
-
-    SmartDashboard.putNumber("Distance to Target", distanceToTarget);
-    SmartDashboard.putNumber("Goal Angle for target", targetAngle);
-
-  }
-
-  public void setTargetTranslation(Translation2d targetTranslation2d) {
-    this.targetTranslation2d = targetTranslation2d;
   }
 
   @Override
@@ -132,7 +89,8 @@ public class ShooterServo extends Shooter {
     System.out.println(convertedPos);
     shooterAngle.setSetpoint(convertedPos);
   }
-  public double getShooterAngleDegSetpoint(){
+
+  public double getShooterAngleDegSetpoint() {
     return cmd_deg;
   }
 
