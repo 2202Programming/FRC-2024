@@ -54,7 +54,7 @@ public class CalibrateZero extends Command {
   @Override
   public void end(boolean interrupted) {
     shooterServo.setExtensionVelocity(0.0);
-    shooterServo.zeroEncoder();
+    shooterServo.setExtensionPosition(0.0);
   }
 
   // Returns true when the command should end.

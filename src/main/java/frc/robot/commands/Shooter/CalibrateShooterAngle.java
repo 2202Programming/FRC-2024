@@ -38,8 +38,8 @@ public class CalibrateShooterAngle extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shooter.setAnglePosition(0.0);
-    shooter.setExtensionVelocity(0.0);
+    shooter.setExtensionPosition(0.0); // [cm]
+    shooter.setExtensionVelocity(0.0); // [cm/s]
   }
 
   // Returns true when the command should end.

@@ -86,7 +86,11 @@ public class ShooterServo extends Shooter {
     return extension.getVelocity();
   }
 
-  public void setAnglePosition(double pos) {
+  /*
+   * Sets extension positon [cm], does not move.
+   * Used for calibration.
+   */
+  public void setExtensionPosition(double pos) {
     extension.setPosition(pos);
   }
 
@@ -112,14 +116,6 @@ public class ShooterServo extends Shooter {
    */
   public void setExtensionVelocity(double vel) {
     extension.setVelocityCmd(vel);
-  }
-
-
-  /*
-   * zeros extension encoder, used when calibrating
-   */
-  public void zeroEncoder() {
-    extension.setPosition(0.0);
   }
 
   public double getCurrent() {
