@@ -7,16 +7,16 @@ package frc.robot.commands.Shooter;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.Tag_Pose;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.ShooterServo.ShooterServoWatcherCmd;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 
-public class SpeakerShooter extends Command {
+public class SpeakerShooter extends InstantCommand {
   private SwerveDrivetrain drivetrain;
   private ShooterServo shooter;
-  private boolean finished = false;
   private ShooterServoWatcherCmd shooterNT;
   // Keep these constants here, not needed elsewhere
   // TODO:Check this value. - Estimate
@@ -42,9 +42,13 @@ public class SpeakerShooter extends Command {
 
   /**
    * Command shooting speaker
-   * <p>Requires: ShooterServo and limelight detecting specified tag.
-   * Calculate the angle and RPM to shoot the speaker</p>
-   * <p>Shooter angle- will be calculated by the distance and geometry.</p>
+   * <p>
+   * Requires: ShooterServo and limelight detecting specified tag.
+   * Calculate the angle and RPM to shoot the speaker
+   * </p>
+   * <p>
+   * Shooter angle- will be calculated by the distance and geometry.
+   * </p>
    * RPM- will be calculated using formula based of polar coordinate determined
    * the target is the vertex of the polar coordinate
    */
@@ -58,6 +62,7 @@ public class SpeakerShooter extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // get robot pose in other coordinates
     if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
       dX = drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID7.getX();
       dY = drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID7.getY();
@@ -65,49 +70,32 @@ public class SpeakerShooter extends Command {
       dX = drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID4.getX();
       dY = drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID4.getY();
     }
+    radius = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
+    rot = Math.abs(Math.atan(Math.abs(dY) / Math.abs(dX))) * 180 / Math.PI;
+    System.out.println("SpeakerShooter---Shooting Position: [" + radius + "," + rot + "]");
+
+    //get shooter angle
     shooter_angle = Math.atan((SPEAKER_HEIGHT - SHOOTER_Z_OFFSET) / (radius - SHOOTER_Y_OFFSET)) + angle_adjustment;
     shooter_angle = MathUtil.clamp(shooter_angle, 28.52, 48.0);
-    shooter.setAngleSetpoint(shooter_angle);
-  }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    if (shooter.atSetpoint()) {
-      // for data collection not for actual shooting
-      // run RPMShooter to test the shooting RPM and put value in the array
-      radius = Math.sqrt(Math.pow(dX, 2)+ Math.pow(dY, 2));
-      rot = Math.abs(Math.atan(Math.abs(dY) /Math.abs(dX)))* 180 / Math.PI;
-      System.out.println("Shooting Position: [" + radius + "," + rot + "]"); 
+    // get RPM @see src/main/python/regression.py
+    double rpm = 7205.19 + -3266.57 * dX + -3266.57 * dY + 935.96 * Math.pow(dX, 2) + 731.54 * dX * dY
+        + 935.96 * Math.pow(dY, 2);
+    rpm = MathUtil.clamp(rpm, 2000, 3500);
 
-      // actual shooting
-      // rpm calculation plug collected number into csv in python code -ko
-      double rpm = 7205.19 + -3266.57 * dX + -3266.57 * dY + 935.96 * Math.pow(dX, 2) + 731.54 * dX * dY
-          + 935.96 * Math.pow(dY, 2);
-      rpm = MathUtil.clamp(rpm, 2000, 3500);
+    /* Shooter Cmmand */
+    //test shooting
+    int nt_rpm = shooterNT.getTestCmdRPM();
+    Command shooterCmd = new ShooterServoSequence(shooter_angle, nt_rpm);
 
+    // actual shooting
+    // Command shooterCmd = new ShooterServoSequence(shooter_angle,rpm);
 
-      /*Shooter Cmmand */
-      int nt_rpm = shooterNT.getTestCmdRPM();
-      Command shooterCmd = new ShooterServoSequence(shooter_angle, nt_rpm);
-
-      // actual shooting
-      // Command shooterCmd = new ShooterServoSequence(shooter_angle,rpm);
-
-      shooterCmd.schedule();
-      finished = true;
-    }
+    shooterCmd.schedule();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
   }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return finished;
-  }
-
 }
