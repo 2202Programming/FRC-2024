@@ -16,7 +16,7 @@ public class ContinousAngleTracker extends Command {
     final ShooterServo shooter;
     final SwerveDrivetrain drivetrain;
 
-    // Auto move vars - move angle based on distance to target
+    // Auto angle move based on distance to speaker Tag 
     private double distanceToTarget;
     private double targetAngle;
     private DistanceInterpretor distanceInterpretor;
@@ -33,13 +33,9 @@ public class ContinousAngleTracker extends Command {
 
     @Override
     public void initialize() {
-        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-            // Blue Alliance
-            targetTranslation2d = Tag_Pose.ID7;
-        } else {
-            // Red Alliance
-            targetTranslation2d = Tag_Pose.ID4;
-        }
+        targetTranslation2d = (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) ?    
+            Tag_Pose.ID7 : // Blue Alliance
+            Tag_Pose.ID4; // Red Alliance
     }
 
     @Override

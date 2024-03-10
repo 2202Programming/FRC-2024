@@ -33,6 +33,9 @@ public class ShooterAutoAngle extends Command {
   @Override
   public void initialize() {
     distanceInterpretor = new DistanceInterpretor();
+    targetTranslation2d = (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) ? 
+      Tag_Pose.ID7 : // Blue Alliance
+      Tag_Pose.ID4; // Red Alliance
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,9 +43,9 @@ public class ShooterAutoAngle extends Command {
   public void execute() {
     calculateTargetAngle();
     if (RobotContainer.getSubsystem(Intake.class).hasNote()) {
-      shooterServo.setShooterAnglePosition(targetAngle); //has note, set angle based on distance to target
+      shooterServo.setAngleSetpoint(targetAngle); // has note, set angle based on distance to target
     } else {
-      shooterServo.setShooterAnglePosition(27.0); //no note, keep shooter low to promote note intake
+      shooterServo.setAngleSetpoint(ShooterServo.MIN_DEGREES); // no note, keep shooter low to promote note intake
     }
   }
 
@@ -55,16 +58,6 @@ public class ShooterAutoAngle extends Command {
   @Override
   public boolean isFinished() {
     return false;
-  }
-
-  private Translation2d defaultTarget() {
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-      // Blue Alliance
-      return Tag_Pose.ID7;
-    } else {
-      // Red Alliance
-      return Tag_Pose.ID4;
-    }
   }
 
   private void calculateTargetAngle() {
