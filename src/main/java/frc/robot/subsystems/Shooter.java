@@ -37,15 +37,16 @@ public class Shooter extends SubsystemBase {
   private double currentLeftRPM;
   private double currentRightRPM;
 
-  PIDFController pidConsts = new PIDFController(0.00005, 0.00000009, 0.0, kF);
+  PIDFController pidConsts = new PIDFController(0.00005, 0.00000009, 0.0, kF);  //slot 0  - normal
+  PIDFController pidConsts_freeSpin = new PIDFController(0.0, 0.0, 0.0, 0.0);  //slot 1 - free spin
 
   public Shooter() {
     this(true);
   }
 
   public Shooter(boolean HasSolenoid) {
-    hw_leftPid = motor_config(leftMtr, pidConsts, true);
-    hw_rightPid = motor_config(rightMtr, pidConsts, false);
+    hw_leftPid = motor_config(leftMtr, true);
+    hw_rightPid = motor_config(rightMtr, false);
     leftEncoder = config_encoder(leftMtr);
     rightEncoder = config_encoder(rightMtr);
     if (HasSolenoid) {
@@ -65,13 +66,12 @@ public class Shooter extends SubsystemBase {
         && Math.abs(desiredRightRPM - currentRightRPM) < tolerance;
   }
 
-  @Deprecated
-  public void setSpeed(double foo) {
-  }
 
   public void setRPM(double leftRPM, double rightRPM) {
-    hw_leftPid.setReference(leftRPM, ControlType.kVelocity);
-    hw_rightPid.setReference(rightRPM, ControlType.kVelocity);
+    // slot 0 --> normal op, slot 1 --> free spin
+    int slot = (leftRPM == 0.0 && rightRPM == 0.0) ? 1 : 0;
+    hw_leftPid.setReference(leftRPM, ControlType.kVelocity, slot);
+    hw_rightPid.setReference(rightRPM, ControlType.kVelocity, slot);
     desiredLeftRPM = leftRPM;
     desiredRightRPM = rightRPM;
   }
@@ -88,11 +88,12 @@ public class Shooter extends SubsystemBase {
     return new ShooterWatcherCmd();
   }
 
-  SparkPIDController motor_config(CANSparkMax mtr, PIDFController pid, boolean inverted) {
+  SparkPIDController motor_config(CANSparkMax mtr, boolean inverted) {
     mtr.clearFaults();
     mtr.restoreFactoryDefaults();
     var mtrpid = mtr.getPIDController();
-    pid.copyTo(mtrpid, 0);
+    pidConsts.copyTo(mtrpid, 0);
+    pidConsts_freeSpin.copyTo(mtrpid, 1); 
     mtr.setInverted(inverted);
     return mtrpid;
   }
