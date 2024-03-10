@@ -37,15 +37,9 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "N3 to Pos3"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "angle_shoot"
           }
         },
         {
