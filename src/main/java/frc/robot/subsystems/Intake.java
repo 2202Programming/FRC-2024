@@ -33,8 +33,8 @@ public class Intake extends SubsystemBase {
   public static final double UpPos = 0.0; // [deg]
   public static final double ShootingPos = 20.0; // [deg]
   public static final double DownPos = 96.0; // [deg]
-  public static final double TravelUp = 120.0; // [deg/s]
-  public static final double TravelDown = 120.0; // [deg/s]
+  public static final double TravelUp = 140.0; // [deg/s]
+  public static final double TravelDown = 140.0; // [deg/s]
 
   // External encoder used6
   // https://www.revrobotics.com/rev-11-1271/
@@ -60,7 +60,7 @@ public class Intake extends SubsystemBase {
   /* inner (hw/vel) go up and divide by 2 */
   // final PIDController anglePositionPID = new PIDController(4.0, 0.0, 0.0); //
   // outer (pos) for internal enc
-  final PIDController anglePositionPID = new PIDController(1.0, 0.0, 0.0); // outer (pos) ext enc
+  final PIDController anglePositionPID = new PIDController(2.0, 0.0, 0.0); // outer (pos) ext enc
 
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);

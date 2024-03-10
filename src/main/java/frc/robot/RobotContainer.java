@@ -363,15 +363,15 @@ public class RobotContainer {
         operator.a().onTrue(new IntakeSequence(true)); // works for both modes
         operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0));
         // operator.x().onTrue(new InIntake(true));
-        operator.x().onTrue(new AngleCalibration(-15.0));
+        operator.x().onTrue(new AngleCalibration(-25.0));
         operator.leftTrigger().whileTrue(new TestTransfer(35.0));
         operator.y().whileTrue(new TestIntake(0.5)); // %
-        operator.povDown().whileTrue(new TestIntakeAngle(15.0)); // good for alpha
-        operator.povUp().whileTrue(new TestIntakeAngle(-15.0)); // not needed, calibrate with up
+        operator.povDown().onTrue(new MoveToAnglePos(100.0, 140.0)); // good for alpha
+        operator.povUp().whileTrue(new MoveToAnglePos(0.0, 140.0)); // not needed, calibrate with up
         operator.povRight().onTrue(new IntakeSwap());
-        operator.povLeft().whileTrue(new EjectNote());
+        // operator.povLeft().whileTrue(new EjectNote());
         operator.leftBumper().onTrue(new CalibratePos(0.0));
-        operator.rightBumper().onTrue(new ShooterServoSequence(30, 1000));
+        operator.povLeft().onTrue(new ShooterServoSequence(30, 1000));
         operator.rightTrigger().whileTrue(new TestShoot(1500.0));
         operator.rightBumper().whileTrue(new TestShoot(3500.0));
         // SHOOTER

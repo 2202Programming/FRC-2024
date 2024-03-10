@@ -28,7 +28,7 @@ public class Shooter extends SubsystemBase {
   final RelativeEncoder leftEncoder;
   final RelativeEncoder rightEncoder;
   final double FACTOR = 1.0;
-  final double kF = 1.0 / 5200.0;
+  final double kF = 1.0 / 5650.0;
 
   private DoubleSolenoid shooterAngle; // can be replaced w/ servo in derived class
 
@@ -37,7 +37,7 @@ public class Shooter extends SubsystemBase {
   private double currentLeftRPM;
   private double currentRightRPM;
 
-  PIDFController pidConsts = new PIDFController(0.00005, 0.0, 0.0, kF);
+  PIDFController pidConsts = new PIDFController(0.00005, 0.00000009, 0.0, kF);
 
   public Shooter() {
     this(true);
@@ -74,22 +74,6 @@ public class Shooter extends SubsystemBase {
     hw_rightPid.setReference(rightRPM, ControlType.kVelocity);
     desiredLeftRPM = leftRPM;
     desiredRightRPM = rightRPM;
-  }
-
-  public double getLeftMotorRPM() {
-    return currentLeftRPM;
-  }
-
-  public double getRightMotorRPM() {
-    return currentRightRPM;
-  }
-
-  public double getDesiredLeftRPM() {
-    return desiredLeftRPM;
-  }
-
-  public double getDesiredRightRPM() {
-    return desiredRightRPM;
   }
 
   public void deploy() {
@@ -146,46 +130,12 @@ public class Shooter extends SubsystemBase {
     }
 
     public void ntupdate() {
-      nt_desiredLeftMotorRPM.setDouble(getDesiredLeftRPM());
-      nt_currentLeftMotorRPM.setDouble(getLeftMotorRPM());
-      nt_desiredLeftMotorRPM.setDouble(getDesiredRightRPM());
-      nt_currentLeftMotorRPM.setDouble(getRightMotorRPM());
-      nt_kP.setDouble(getP());
-      // nt_kF.setDouble(getF());
+      nt_desiredLeftMotorRPM.setDouble(desiredLeftRPM);
+      nt_currentLeftMotorRPM.setDouble(currentLeftRPM);
+      nt_desiredRightMotorRPM.setDouble(desiredRightRPM);
+      nt_currentRightMotorRPM.setDouble(currentRightRPM);
+      nt_kP.setDouble(hw_leftPid.getP());
+      nt_kF.setDouble(hw_leftPid.getFF());
     }
   }
-
-  /*
-   * TODO: FOR SHOOTER TUNING
-   * AFTER FINISHING PID TUNING DELETE FOLLOWING
-   */
-  public double getP() {
-    return hw_leftPid.getP();
-  }
-
-  public double getI() {
-    return hw_leftPid.getI();
-  }
-
-  public double getD() {
-    return hw_leftPid.getD();
-  }
-
-  public void setP(double p) {
-    hw_leftPid.setP(p);
-    hw_rightPid.setP(p);
-  }
-
-  public void setI(double i) {
-    hw_leftPid.setI(i);
-    hw_rightPid.setI(i);
-  }
-
-  public void setD(double d) {
-    hw_leftPid.setD(d);
-    hw_rightPid.setD(d);
-  }
-  // public void getF(){
-  // return hw_leftPid.getFF();
-  // }
 }

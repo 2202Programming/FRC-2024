@@ -35,7 +35,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
   double angle;
   int count = 0;
   Phase phase;
-  // boolean sensed_note;
+  boolean sensed_note;
 
   public enum Phase {
     HasNote, ShooterMotorOn, TransferMotorOn, Finished;
@@ -54,7 +54,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // sensed_note = false;
+    sensed_note = false;
     System.out.println("***ShooterSequence:init....***");
     count = 0;
     phase = Phase.HasNote;
@@ -92,8 +92,8 @@ public class ShooterServoSequence extends BlinkyLightUser {
         }
         break;
       case TransferMotorOn:
-        // sensed_note = transfer.senseNote() ? true : false;
-        count++;
+        sensed_note = transfer.senseNote() || sensed_note ? true : false;
+        count = sensed_note ? ++count : 0;
         if (/*sensed_note ||*/ count >= DONE_COUNT) {
           phase = Phase.Finished;
           System.out.println("***ShooterSequence:finished....***");
@@ -113,7 +113,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
     shooter.setRPM(0.0, 0.0);
     shooter.setAngleSetpoint(ShooterServo.MIN_DEGREES);
     intake.setMaxVelocity(120.0); // [deg/s] 2.sec to retract
-    intake.setAngleSetpoint(0.0);
+    // intake.setAngleSetpoint(0.0);
   }
 
   // Returns true when the command should end.

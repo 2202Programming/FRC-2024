@@ -53,9 +53,9 @@ public class RPMShooter extends Command {
     SmartDashboard.putNumber("Requested I", requestedI);
     SmartDashboard.putNumber("Requested D", requestedD);
 
-    currentP = m_shooter.getP();
-    currentI = m_shooter.getI();
-    currentD = m_shooter.getD();
+    // currentP = m_shooter.getP();
+    // currentI = m_shooter.getI();
+    // currentD = m_shooter.getD();
 
     SmartDashboard.putNumber("Current P", currentP);
     SmartDashboard.putNumber("Current I", currentI);
@@ -97,9 +97,9 @@ public class RPMShooter extends Command {
     requestedI = SmartDashboard.getNumber("Requested I", requestedI);
     requestedD = SmartDashboard.getNumber("Requested D", requestedD);
 
-    currentP = m_shooter.getP();
-    currentI = m_shooter.getI();
-    currentD = m_shooter.getD();
+    // currentP = m_shooter.getP();
+    // currentI = m_shooter.getI();
+    // currentD = m_shooter.getD();
 
     SmartDashboard.putNumber("Current P", currentP);
     SmartDashboard.putNumber("Current I", currentI);
@@ -109,12 +109,12 @@ public class RPMShooter extends Command {
   }
 
   private void setPIDs() {
-    if (currentP != requestedP)
-      m_shooter.setP(requestedP);
-    if (currentI != requestedI)
-      m_shooter.setI(requestedI);
-    if (currentD != requestedD)
-      m_shooter.setD(requestedD);
+    // if (currentP != requestedP)
+    //   m_shooter.setP(requestedP);
+    // if (currentI != requestedI)
+    //   m_shooter.setI(requestedI);
+    // if (currentD != requestedD)
+    //   m_shooter.setD(requestedD);
   }
 
   // Called once the command ends or is interrupted.
