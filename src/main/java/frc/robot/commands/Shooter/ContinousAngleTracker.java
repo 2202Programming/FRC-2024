@@ -16,7 +16,7 @@ public class ContinousAngleTracker extends Command {
     final ShooterServo shooter;
     final SwerveDrivetrain drivetrain;
 
-    // Auto angle move based on distance to speaker Tag 
+    // Auto angle move based on distance to speaker Tag
     private double distanceToTarget;
     private double targetAngle;
     private DistanceInterpretor distanceInterpretor;
@@ -33,9 +33,14 @@ public class ContinousAngleTracker extends Command {
 
     @Override
     public void initialize() {
-        targetTranslation2d = (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) ?    
-            Tag_Pose.ID7 : // Blue Alliance
-            Tag_Pose.ID4; // Red Alliance
+        // deal with Optional<> , can be null when simulating without driverstation. 
+        var optAlliance = DriverStation.getAlliance();
+        var alliance = optAlliance.isPresent() ? optAlliance.get() : DriverStation.Alliance.Blue;
+        targetTranslation2d = (alliance == DriverStation.Alliance.Blue) ? Tag_Pose.ID7 : // Blue Alliance
+                Tag_Pose.ID4; // Red Alliance
+
+        if (!optAlliance.isPresent())
+            System.out.println("Warning: Defaulting to Blue Alliance in ContinousAngleTracker cmd.");
     }
 
     @Override
@@ -51,13 +56,11 @@ public class ContinousAngleTracker extends Command {
         }
     }
 
-    private double calculateTargetAngle() {
+    private void calculateTargetAngle() {
         distanceToTarget = drivetrain.getDistanceToTranslation(targetTranslation2d);
         targetAngle = distanceInterpretor.getAngleFromDistance(distanceToTarget);
 
         SmartDashboard.putNumber("Distance to Target", distanceToTarget);
         SmartDashboard.putNumber("Goal Angle for target", targetAngle);
-        return targetAngle;
     }
-
 }

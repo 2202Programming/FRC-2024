@@ -19,6 +19,7 @@ public class DistanceInterpretor {
     
     table = new InterpolatingTreeMap<>(distance, angle);        
     
+    //TODO Set table values key=distance value = RPM(distance)
     //set up table with measured values
     table.put(100.0, 450.0);
     table.put(200.0, 510.0);
