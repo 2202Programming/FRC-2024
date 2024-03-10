@@ -15,7 +15,7 @@ import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.util.DistanceInterpretor;
 
-public class ShooterAutoAngle extends Command {
+public class AutoAngle extends Command {
 
   private double distanceToTarget;
   private double targetAngle;
@@ -23,7 +23,7 @@ public class ShooterAutoAngle extends Command {
   private Translation2d targetTranslation2d;
   private final ShooterServo shooterServo;
 
-  public ShooterAutoAngle(Translation2d target) {
+  public AutoAngle(Translation2d target) {
     targetTranslation2d = target;
     shooterServo = RobotContainer.getSubsystem(ShooterServo.class);
     addRequirements(shooterServo); // we are the captain now
