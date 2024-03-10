@@ -21,7 +21,7 @@ public class ShooterAngleSetPos extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.setShooterAngleSetpoint(desired_pos);
+    shooter.setAngleSetpoint(desired_pos);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,7 +36,7 @@ public class ShooterAngleSetPos extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(shooter.atShooterAngleSetpoint()){
+    if(shooter.atSetpoint()){
       return true;
     }
     return false;

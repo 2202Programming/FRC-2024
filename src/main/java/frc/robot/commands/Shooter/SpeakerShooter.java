@@ -33,7 +33,7 @@ public class SpeakerShooter extends Command {
   // front of the speaker
   private double rot;
 
-  // shooter angle [deg]
+  // shooter angle [deg] -  //TODO WIP angle tracking
   private double shooter_angle;
 
   // Switch to collect data for regression
@@ -91,7 +91,7 @@ public class SpeakerShooter extends Command {
       finished = true;
     } else {
       // actual shooting
-      if (shooter.atShooterAngleSetpoint()) {
+      if (shooter.atSetpoint()) {
         // rpm calculation plug collected number into csv in python code -ko
         double rpm = 7205.19 + -3266.57 * dX + -3266.57 * dY + 935.96 * Math.pow(dX, 2) + 731.54 * dX * dY
             + 935.96 * Math.pow(dY, 2);

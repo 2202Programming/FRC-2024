@@ -76,9 +76,9 @@ public class ShooterServoSequence extends BlinkyLightUser {
       case HasNote:
       System.out.println("***ShooterSequence:HasNote....***");
       if(intake.angleAtSetpoint()){
-      shooter.setShooterAngleSetpoint(angle);
+      shooter.setAngleSetpoint(angle);
           shooter.setRPM(speed, speed); // placeholder
-          if(shooter.atShooterAngleSetpoint()){
+          if(shooter.atSetpoint()){
           phase = Phase.ShooterMotorOn;
           }
       }
@@ -110,7 +110,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
     transfer.setHasNote(false);
     transfer.setSpeed(0.0);
     shooter.setRPM(0.0, 0.0);
-    shooter.setShooterAngleSetpoint(0.0); //whatever back pos is
+    shooter.setAngleSetpoint(ShooterServo.MIN_DEGREES); 
     intake.setMaxVelocity(120.0);  //[deg/s] 2.sec to retract
     intake.setAngleSetpoint(0.0);
   }

@@ -25,20 +25,20 @@ public class ShooterAngleVelMove extends Command {
   @Override
   public void initialize() {
     count = 0;
-    shooter.setShooterAngleVelocity(vel);
+    shooter.setExtensionVelocity(vel);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    count = (Math.abs(shooter.getShooterAngleVelocity()) < 0.1) ? ++count : 0;
+    count = (Math.abs(shooter.getExtensionVelocity()) < 0.1) ? ++count : 0;
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     System.out.println("ENDING FOR NO REASON***************************************");
-    shooter.setShooterAngleVelocity(0.0);
+    shooter.setExtensionVelocity(0.0);
   }
 
   // Returns true when the command should end.
