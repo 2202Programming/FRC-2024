@@ -9,11 +9,11 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterServo;
 
-public class ShootTest extends Command {
+public class TestShoot extends Command {
   /** Creates a new ShootTest. */
   Shooter shooter;
   double speed;
-  public ShootTest(double speed) {
+  public TestShoot(double speed) {
         this.shooter = RobotContainer.getSubsystemOrNull(Shooter.class);
         if(this.shooter == null){
           this.shooter = RobotContainer.getSubsystem(ShooterServo.class);

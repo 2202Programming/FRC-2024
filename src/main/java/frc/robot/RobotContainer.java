@@ -29,10 +29,10 @@ import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.InIntake;
-import frc.robot.commands.Intake.IntakeAngleTest;
+import frc.robot.commands.Intake.TestIntakeAngle;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeSwap;
-import frc.robot.commands.Intake.IntakeTest;
+import frc.robot.commands.Intake.TestIntake;
 import frc.robot.commands.Intake.MoveToAnglePos;
 import frc.robot.commands.Intake.TestTransfer;
 import frc.robot.commands.Shooter.ContinousAngleTracker;
@@ -255,7 +255,7 @@ public class RobotContainer {
         driver.x().whileTrue(new AngleCalibration(5.0));
         driver.y().whileTrue(new AngleCalibration(-5.0));
         // driver.leftBumper().whileTrue(new IntakeCalibrateForwardPos());
-        driver.b().whileTrue(new IntakeTest(0.35)); // % speed
+        driver.b().whileTrue(new TestIntake(0.35)); // % speed
         // driver.leftBumper().whileTrue(new TransferTest(30.0));
         driver.rightTrigger().onTrue(new MoveToAnglePos(Intake.TravelUp, Intake.TravelUp));
         driver.leftTrigger().onTrue(new MoveToAnglePos(Intake.TravelDown, Intake.TravelDown));
@@ -314,7 +314,7 @@ public class RobotContainer {
         // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay
         // in intake
         // operator.leftTrigger().whileTrue(new InAmp()); //works ---> into amp seq
-        operator.povRight().whileTrue(new IntakeTest(0.35));
+        operator.povRight().whileTrue(new TestIntake(0.35));
         // operator.povLeft().onTrue(new CalibratePos(0.0));
         operator.povUp().whileTrue(new AngleCalibration(-25.0));
         // prefer up to calibrate operator.povDown().whileTrue(new
@@ -337,7 +337,7 @@ public class RobotContainer {
         operator.a().onTrue(new IntakeSequence(true)); // works for both modes
         operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0));
         operator.x().onTrue(new InIntake(true));
-        operator.y().whileTrue(new IntakeTest(0.5)); // %
+        operator.y().whileTrue(new TestIntake(0.5)); // %
 
         operator.povDown().onTrue(new AngleCalibration(15.0)); // good for alpha
         operator.povUp().onTrue(new AngleCalibration(-15.0)); // not needed, calibrate with up
@@ -362,9 +362,9 @@ public class RobotContainer {
         // operator.x().onTrue(new InIntake(true));
         operator.x().onTrue(new AngleCalibration(-15.0));
         operator.leftTrigger().whileTrue(new TestTransfer(35.0));
-        operator.y().whileTrue(new IntakeTest(0.5)); // %
-        operator.povDown().whileTrue(new IntakeAngleTest(15.0)); // good for alpha
-        operator.povUp().whileTrue(new IntakeAngleTest(-15.0)); // not needed, calibrate with up
+        operator.y().whileTrue(new TestIntake(0.5)); // %
+        operator.povDown().whileTrue(new TestIntakeAngle(15.0)); // good for alpha
+        operator.povUp().whileTrue(new TestIntakeAngle(-15.0)); // not needed, calibrate with up
         operator.povRight().onTrue(new IntakeSwap());
         operator.povLeft().whileTrue(new EjectNote());
         operator.leftBumper().onTrue(new CalibratePos(0.0));

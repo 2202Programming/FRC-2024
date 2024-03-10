@@ -9,12 +9,12 @@ import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Intake;
 
 
-public class IntakeTest extends BlinkyLightUser {
+public class TestIntake extends BlinkyLightUser {
 
     /** Creates a new intakeForward. */
     public final Intake intake;
     double speed;
-    public IntakeTest(double speed) {
+    public TestIntake(double speed) {
         this.speed = speed;
         this.intake = RobotContainer.getSubsystem(Intake.class);
     }

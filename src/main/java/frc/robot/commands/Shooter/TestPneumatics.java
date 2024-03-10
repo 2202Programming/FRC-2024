@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Shooter;
 
-public class PneumaticsTest extends Command {
+public class TestPneumatics extends Command {
   /** Creates a new PneumaticsTest. */
   final Shooter shooter;
   boolean extend;
 
-  public PneumaticsTest(boolean extend) {
+  public TestPneumatics(boolean extend) {
     this.extend = extend;
     this.shooter = RobotContainer.getSubsystem("SHOOTER");
     // Use addRequirements() here to declare subsystem dependencies.
