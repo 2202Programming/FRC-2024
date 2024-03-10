@@ -12,6 +12,8 @@ public class AngleCalibration extends  Command {
     //Safe speed for moving to limit switch
 
     /** Creates a new intakeForward. */
+    final int DELAY = 3;
+    int delay_count;
     public final Intake intake;
     double angleVelocity; //[deg/s]
     int count;
@@ -27,12 +29,16 @@ public class AngleCalibration extends  Command {
         System.out.println("*******SPEED******" + angleVelocity);
         intake.setAngleVelocity(angleVelocity);
         count = 0;
+        delay_count = 0;
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        delay_count++;
+        if(delay_count >= DELAY){
         count = (Math.abs(intake.getAngleVelocity()) < 0.1) ? ++count : 0;
+        }
     }
     
 

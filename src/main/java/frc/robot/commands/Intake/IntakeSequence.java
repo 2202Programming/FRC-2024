@@ -29,9 +29,13 @@ public class IntakeSequence extends Command {
   boolean stay_down;
   boolean pneumatics_bot = false;
   int count;
-  final int DONE_COUNT = 10;
+  final int DONE_COUNT = 30;
+  boolean sensed_note;
 
-  public enum Phase {IntakeDown, WaitingForNote, Finished, HaveNote  }
+  public enum Phase {
+    IntakeDown, WaitingForNote, Finished, HaveNote
+  }
+
   Phase phase;
 
   /*
@@ -48,9 +52,9 @@ public class IntakeSequence extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    sensed_note = false;
     count = 0;
     phase = Phase.IntakeDown;
-    System.out.println("***Init IntakeSequence....***");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -58,30 +62,24 @@ public class IntakeSequence extends Command {
   public void execute() {
     switch (phase) {
       case IntakeDown:
-        System.out.println("***IntakeSequence:IntakeDown....***");
-        if(shooter != null) shooter.retract();
-        intake.setMaxVelocity(60.0);
+        if (shooter != null)
+          shooter.retract();
+        intake.setMaxVelocity(80.0);
         intake.setAngleSetpoint(100.0);
-        intake.setIntakeSpeed(0.4); // %
+        intake.setIntakeSpeed(0.25); // %
         transfer.setSpeed(35.0);
         phase = Phase.WaitingForNote;
-        System.out.println("***IntakeSequence:WaitingForNote....***");
         break;
       case WaitingForNote:
-        if (transfer.senseNote()) { //TODO: mayb change to hasnote test it
-          count++;
-        }
-        if(count >= DONE_COUNT){
-          phase = Phase.HaveNote;
-        }
+        phase = transfer.senseNote() ? Phase.HaveNote : Phase.WaitingForNote;
+        break;
       case HaveNote:
-
+        if (++count >= DONE_COUNT) {
           intake.setMaxVelocity(120.0);
           phase = Phase.Finished;
-          System.out.println("***IntakeSequence:Finished....***");
+        }
         break;
       case Finished:
-        
         break;
     }
   }
@@ -91,12 +89,14 @@ public class IntakeSequence extends Command {
   public void end(boolean interrupted) {
     // TODO: edge case, the sequential doesn't cancel
     // TODO: Why did the intake angle go back up even when there is no command to
-    //TODO: edge case #2 - If the driver releases button as intake is coming up, it will go down before coming back up again
+    // TODO: edge case #2 - If the driver releases button as intake is coming up, it
+    // will go down before coming back up again
     if (interrupted) {
       // Creates a command to continue going down until we get to the bottom before
       // moving back up, to minimize belt slippage
+      System.out.println("Interrupted intakeSequence");
       var cmd = new SequentialCommandGroup();
-      if(!intake.angleAtSetpoint()){
+      if (!intake.angleAtSetpoint()) {
         cmd.addCommands(new MoveToAnglePos(Intake.DownPos, Intake.TravelDown));
       }
       cmd.addCommands(new MoveToAnglePos(Intake.UpPos, Intake.TravelUp));

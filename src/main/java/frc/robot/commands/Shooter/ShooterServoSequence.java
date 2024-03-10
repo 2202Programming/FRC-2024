@@ -30,11 +30,12 @@ public class ShooterServoSequence extends BlinkyLightUser {
   final ShooterServo shooter;
   final Transfer transfer;
   final Intake intake;
-  final int DONE_COUNT = 20;
+  final int DONE_COUNT = 50; //TODO: find actual value (around 10-20)
   double speed;
   double angle;
   int count = 0;
   Phase phase;
+  boolean sensed_note;
 
   public enum Phase {
     HasNote, ShooterMotorOn, TransferMotorOn, Finished;
@@ -52,11 +53,11 @@ public class ShooterServoSequence extends BlinkyLightUser {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    sensed_note = false;
     System.out.println("***ShooterSequence:init....***");
     count = 0;
     phase = Phase.HasNote;
       intake.setMaxVelocity(60.0);
-      intake.setAngleSetpoint(Intake.ShootingPos);
   }
 
   public Color8Bit colorProvider() {
@@ -75,12 +76,10 @@ public class ShooterServoSequence extends BlinkyLightUser {
     switch (phase) {
       case HasNote:
       System.out.println("***ShooterSequence:HasNote....***");
-      if(intake.angleAtSetpoint()){
       shooter.setAngleSetpoint(angle);
           shooter.setRPM(speed, speed); // placeholder
           if(shooter.atSetpoint()){
           phase = Phase.ShooterMotorOn;
-          }
       }
         break;
       case ShooterMotorOn:
@@ -91,9 +90,10 @@ public class ShooterServoSequence extends BlinkyLightUser {
           System.out.println("***ShooterSequence:TransferMotorOn....***");
         }
         break;
-      case TransferMotorOn:  
-        count++;
-        if (count >= DONE_COUNT) {
+      case TransferMotorOn:
+      sensed_note = transfer.senseNote() ? true: false; 
+      count++;
+        if (sensed_note || count >= DONE_COUNT) {
           phase = Phase.Finished;
           System.out.println("***ShooterSequence:finished....***");
         }

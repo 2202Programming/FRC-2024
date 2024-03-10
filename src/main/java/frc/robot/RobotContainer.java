@@ -39,6 +39,7 @@ import frc.robot.commands.Shooter.ContinousAngleTracker;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Shooter.ShooterSequence;
+import frc.robot.commands.Shooter.ShooterServoSequence;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
@@ -49,6 +50,8 @@ import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 import frc.robot.commands.auto.TurnFaceShootAuto;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterServo;
+import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.RobotSpecs;
@@ -140,7 +143,6 @@ public class RobotContainer {
     RobotContainer.rc = this;
     robotSpecs = new RobotSpecs();
     robotSpecs.mySubsystemConfig.constructAll();
-
     // Set binding to Competition (or your mode for testing)
     Bindings bindings = Bindings.new_bot_test;
 
@@ -368,6 +370,7 @@ public class RobotContainer {
         operator.povRight().onTrue(new IntakeSwap());
         operator.povLeft().whileTrue(new EjectNote());
         operator.leftBumper().onTrue(new CalibratePos(0.0));
+        operator.rightBumper().onTrue(new ShooterServoSequence(30, 500));
 
         // SHOOTER
         // operator.rightTrigger().whileTrue(new ShootTest(500.0));

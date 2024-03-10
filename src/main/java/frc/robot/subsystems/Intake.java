@@ -142,6 +142,7 @@ public class Intake extends SubsystemBase {
   // this is the 'state' that we want when the motors turn off
 
   public void setIntakeSpeed(double speed) {
+        System.out.println("SPEED GETTING SET TO" + speed);
     intakeMtr.set(speed); // [%pwr] TODO change to velocity mode & tune hwpid for intakeMtr
     // intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
   }
