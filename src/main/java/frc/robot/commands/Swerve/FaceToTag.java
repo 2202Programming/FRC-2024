@@ -26,7 +26,7 @@ public class FaceToTag extends Command {
   ChassisSpeeds zero_cs = new ChassisSpeeds(0.0, 0.0, 0.0);
 
   PIDController centeringPid;
-  double centering_kP = 4.5; //Can be increased more a little bit but too much makes it giggly when its far
+  double centering_kP = 3.5; //Can be increased more a little bit but too much makes it giggly when its far
   double centering_kI = 0;
   double centering_kD = 0;
   double centeringPidOutput = 2.0;

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.370840505621532,
-        "y": 2.9462070123024997
+        "x": 3.413611712719609,
+        "y": 1.7128811865766236
       },
       "isLocked": false,
       "linkedName": null
@@ -20,8 +20,8 @@
         "y": 0.78
       },
       "prevControl": {
-        "x": 7.039077502101721,
-        "y": 1.3448536097815682
+        "x": 6.985595650580615,
+        "y": 0.7519966184970535
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 60.0
   },

@@ -2,30 +2,24 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.93,
-      "y": 4.41
+      "x": 1.47,
+      "y": 6.611303604286598
     },
-    "rotation": 121.37
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "shoot"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Pos2 Mobility"
+            "pathName": "test Path 2"
           }
         }
       ]
     }
   },
-  "folder": "Pos2",
+  "folder": null,
   "choreoAuto": false
 }

@@ -9,7 +9,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.ShooterServo;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
 
 /**
@@ -22,10 +22,10 @@ import frc.robot.subsystems.Transfer;
  * off (command ended)
  */
 
-public class ShooterSequence extends BlinkyLightUser {
+public class ShooterSequenceForAuto extends BlinkyLightUser {
   /** Creates a new ShooterSequence. */
   //use simple Shooter, even if ShooterServo is created because this command can work with either.
-  final ShooterServo shooter;
+  final Shooter shooter;
   final Transfer transfer;
   final Intake intake;
   final int DONE_COUNT = 20;
@@ -40,7 +40,7 @@ public class ShooterSequence extends BlinkyLightUser {
     HasNote, ShooterMotorOn, TransferMotorOn, Finished;
   }
 
-  public ShooterSequence(boolean shootHigh, double speed) {
+  public ShooterSequenceForAuto(boolean shootHigh, double speed) {
     this.shootHigh = shootHigh;
     this.speed = speed;
     this.shooter = RobotContainer.getSubsystem("SHOOTER");
@@ -50,7 +50,7 @@ public class ShooterSequence extends BlinkyLightUser {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  public ShooterSequence(double speed){
+  public ShooterSequenceForAuto(double speed){
     this(false, speed);
   }
   // Called when the command is initially scheduled.
@@ -82,7 +82,6 @@ public class ShooterSequence extends BlinkyLightUser {
     switch (phase) {
       case HasNote:
       System.out.println("***ShooterSequence:HasNote....***");
-      if(intake.angleAtSetpoint()){
           if(shootHigh){
             shooter.deploy();
             pneumatics_count++;
@@ -90,12 +89,10 @@ public class ShooterSequence extends BlinkyLightUser {
           shooter.setRPM(speed, speed); // placeholder
           if(pneumatics_count >= PNEUMATICS_DONE_COUNT || !shootHigh){
           phase = Phase.ShooterMotorOn;
-          System.out.println("***ShooterSequence:ShooterMotorOn....***");
           }
-      }
         break;
       case ShooterMotorOn:
-
+        System.out.println("***ShooterSequence:ShooterMotorOn....***");
         if (shooter.isAtRPM(100)) {
           transfer.setSpeed(35.0);
           phase = Phase.TransferMotorOn;

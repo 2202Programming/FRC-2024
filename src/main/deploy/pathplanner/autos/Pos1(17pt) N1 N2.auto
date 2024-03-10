@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.93,
-      "y": 4.41
+      "x": 1.07,
+      "y": 6.6
     },
-    "rotation": 121.37
+    "rotation": -121.37
   },
   "command": {
     "type": "sequential",
@@ -24,7 +24,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pos3 to N3"
+                  "pathName": "Pos1 to N1"
                 }
               },
               {
@@ -37,26 +37,51 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "angle_shoot"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "N3 to Pos3"
+            "pathName": "N1 Rotate For N2"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "N1 to N2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "pickup"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "RotateTo"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Pos3 to ND"
+            "name": "angle_shoot"
           }
         }
       ]
     }
   },
-  "folder": "Pos3",
+  "folder": "Pos1",
   "choreoAuto": false
 }

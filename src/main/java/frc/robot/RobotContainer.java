@@ -48,6 +48,7 @@ import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.Swerve.RotateTo;
+import frc.robot.commands.Swerve.calibrate.TestConstantVelocity;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 import frc.robot.commands.auto.TurnFaceShootAuto;
@@ -174,11 +175,10 @@ public class RobotContainer {
 
     // NamedCommands for use in PathPlanner scripts.
     NamedCommands.registerCommand("pickup", new IntakeSequence(true));
-    // NamedCommands.registerCommand("shoot", new ParallelCommandGroup(new
-    // ShooterServoSequence(true,2000), new WaitCommand(2.0)));
-    // NamedCommands.registerCommand("angle_shoot", new
-    // AutoShooting(ShootingTarget.Speaker));
+    NamedCommands.registerCommand("shoot", new ShooterSequence(true,2000));
+    NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker));
     NamedCommands.registerCommand("RotateTo", new RotateTo());
+    NamedCommands.registerCommand("intakeDown", new MoveToAnglePos(92, 60));
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -269,12 +269,18 @@ public class RobotContainer {
         break;
 
       case auto_shooter_test:
-        driver.a().onTrue(new FaceToTag(4));
+        driver.a().onTrue(new IntakeSequence(true));
+        driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.povDown().onTrue(new AutoShooting(ShootingTarget.Speaker));
-        driver.povUp().onTrue(new AutoShooting(ShootingTarget.Trap));
-        driver.povRight().onTrue(new AutoShooting(ShootingTarget.Amp));
+        //driver.povUp().onTrue(new AutoShooting(ShootingTarget.Trap));
+        //driver.povRight().onTrue(new AutoShooting(ShootingTarget.Amp));
         driver.povLeft().onTrue(new TurnFaceShootAuto(4));
-        driver.x().onTrue(new RotateTo());
+        driver.y().onTrue(new AllianceAwareGyroReset(true));
+        driver.x().onTrue(new FaceToTag(4));
+        driver.b().onTrue(new ShooterSequence(true,2000));
+        driver.rightBumper().onTrue(new TestConstantVelocity(0.5, 16));
+        driver.povRight().onTrue(new MoveToAnglePos(91, 60));  // good for alpha 
+        driver.povUp().whileTrue(new AngleCalibration(-15.0)); 
         break;
 
       case new_bot_test:
