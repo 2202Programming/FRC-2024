@@ -27,15 +27,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
-import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.InIntake;
-import frc.robot.commands.Intake.TestIntakeAngle;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeSwap;
-import frc.robot.commands.Intake.TestIntake;
 import frc.robot.commands.Intake.MoveToAnglePos;
-import frc.robot.commands.Intake.TestTransfer;
+import frc.robot.commands.Intake.TestIntake;
+import frc.robot.commands.Intake.TestIntakeAngle;
 import frc.robot.commands.Shooter.ContinousAngleTracker;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.RPMShooter;
@@ -44,20 +42,14 @@ import frc.robot.commands.Shooter.ShooterAngleVelMove;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Shooter.ShooterServoSequence;
 import frc.robot.commands.Shooter.SpeakerShooter;
-import frc.robot.commands.Shooter.TestShoot;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
-import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.Swerve.RotateTo;
-import frc.robot.commands.Swerve.calibrate.TestConstantVelocity;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
-import frc.robot.commands.auto.TurnFaceShootAuto;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.ShooterServo;
-import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.RobotSpecs;
@@ -270,19 +262,14 @@ public class RobotContainer {
         break;
 
       case auto_shooter_test:
-        driver.a().onTrue(new IntakeSequence(true));
+        driver.y().onTrue(new AllianceAwareGyroReset(true));
         driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
+        driver.a().onTrue(new IntakeSequence(true));
         driver.povDown().onTrue(new AutoShooting(ShootingTarget.Speaker));
+        driver.b().onTrue(new SpeakerShooter());
+        driver.povUp().whileTrue(new AngleCalibration(-25.0)); 
         //driver.povUp().onTrue(new AutoShooting(ShootingTarget.Trap));
         //driver.povRight().onTrue(new AutoShooting(ShootingTarget.Amp));
-        driver.povLeft().onTrue(new TurnFaceShootAuto(4));
-        driver.y().onTrue(new AllianceAwareGyroReset(true));
-        driver.x().onTrue(new FaceToTag(4));
-        //driver.b().onTrue(new ShooterSequence(true,2000));
-        driver.b().onTrue(new SpeakerShooter());
-        driver.rightBumper().onTrue(new TestConstantVelocity(0.25, 8));
-        driver.povRight().onTrue(new MoveToAnglePos(91, 60));  // good for alpha 
-        driver.povUp().whileTrue(new AngleCalibration(-15.0)); 
         break;
 
       case new_bot_test:

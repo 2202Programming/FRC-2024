@@ -14,7 +14,6 @@ import frc.robot.commands.Swerve.RotateUntilSeeTags;
 import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
-import frc.robot.Constants.Tag_Pose;
 
 public class AutoShooting extends SequentialCommandGroup {
 
@@ -42,35 +41,6 @@ public class AutoShooting extends SequentialCommandGroup {
     } else {
       // Trap
       addCommands(new ShooterServoSequence(45.0, 1000.0));
-    }
-  }
-
-  /**
-   * 
-   * @return Phase(Holder of RPM and angle) of shooting position to the Speaker
-   *         (Alliance Aware)
-   */
-  private SpeakerShootingPhase getSpeakerPhase() {
-    // Assuming that limelight has updated
-    double difference;
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-      // Blue Alliance
-      difference = Math.sqrt(
-          Math.pow(drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID7.getX(), 2)
-              + Math.pow(drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID7.getY(), 2));
-    } else {
-      // Red Alliance
-      difference = Math.sqrt(
-          Math.pow(drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID4.getX(), 2)
-              + Math.pow(drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID4.getY(), 2));
-    }
-
-    if (difference < 2.0) {
-      return SpeakerShootingPhase.Phase1;
-    } else if (difference < 4.0) {
-      return SpeakerShootingPhase.Phase2;
-    } else {
-      return SpeakerShootingPhase.Phase3;
     }
   }
 
@@ -140,6 +110,7 @@ public class AutoShooting extends SequentialCommandGroup {
    * @return {@code true} if the target is found in limelight, {@code false} if
    *         not.
    */
+  @SuppressWarnings("unused")
   private boolean checkForTarget(double tagID) {
     LimelightTarget_Fiducial[] tags = limelight.getAprilTagsFromHelper();
     for (LimelightTarget_Fiducial tag : tags) {
@@ -154,30 +125,5 @@ public class AutoShooting extends SequentialCommandGroup {
     Speaker,
     Amp,
     Trap
-  }
-
-  /**
-   * Phase of shooting position to the Speaker This hold the RPM and the angle
-   */
-  public enum SpeakerShootingPhase {
-    Phase1(true, 2000.0), // Close
-    Phase2(false, 2000.0), // Mid
-    Phase3(false, 3500.0);// Far
-
-    boolean high;
-    double RPM;
-
-    SpeakerShootingPhase(boolean high, double RPM) {
-      this.high = high;
-      this.RPM = RPM;
-    }
-
-    public boolean isHigh() {
-      return high;
-    }
-
-    public double getRPM() {
-      return RPM;
-    }
   }
 }

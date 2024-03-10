@@ -122,7 +122,7 @@ public class ShooterServo extends Shooter {
     return extension.getController().getOutputCurrent();
   }
 
-  class ShooterServoWatcherCmd extends ShooterWatcherCmd {
+  public class ShooterServoWatcherCmd extends ShooterWatcherCmd {
     NetworkTableEntry nt_cmd_extension;
     NetworkTableEntry nt_extensionVel;
     NetworkTableEntry nt_cmd_extensionVel;
@@ -136,6 +136,10 @@ public class ShooterServo extends Shooter {
     NetworkTableEntry nt_current_percent;
     NetworkTableEntry nt_RPM;
     NetworkTableEntry nt_at_RPM;
+
+    // Commanded RPM for testing
+    NetworkTableEntry nt_test_cmd_rpm;
+    int test_cmd_rpm = 0;
 
     public String getTableName() {
       return super.getTableName();
@@ -159,7 +163,7 @@ public class ShooterServo extends Shooter {
       nt_RPM = table.getEntry("RPM");
 
       nt_at_RPM = table.getEntry("at_RPM");
-
+      nt_test_cmd_rpm = table.getEntry("commanded_rpm"); // Commanded RPM for testing
     }
 
     @Override
@@ -177,7 +181,10 @@ public class ShooterServo extends Shooter {
       nt_current.setDouble(extension.getController().getOutputCurrent());
       nt_current_percent.setDouble(extension.getController().getAppliedOutput());
       nt_RPM.setDouble(extension.getVelocity() / (ShooterAngleRadius / ShooterAngleGearRatio));
+      test_cmd_rpm = (int) nt_test_cmd_rpm.getInteger(0);
     }
-
+    public int getTestCmdRPM() {
+      return test_cmd_rpm;
+    }
   }
 }

@@ -10,17 +10,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Tag_Pose;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterServo;
+import frc.robot.subsystems.ShooterServo.ShooterServoWatcherCmd;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 
 public class SpeakerShooter extends Command {
   private SwerveDrivetrain drivetrain;
   private ShooterServo shooter;
   private boolean finished = false;
-
-  // Keep these constants here, not needed elsewhere.
-  private final double SHOOTER_Y_OFFSET = 0.0; // [m] pivotal point of shooter from the center(direction of shooter is+)
-  private final double SHOOTER_Z_OFFSET = 0.0; // [m] shooter z position from floor
-  // TODO:Check this value
+  private ShooterServoWatcherCmd shooterNT;
+  // Keep these constants here, not needed elsewhere
+  // TODO:Check this value. - Estimate
+  private final double SHOOTER_Y_OFFSET = -0.20; // [m] pivotal point of shooter from the center
+  private final double SHOOTER_Z_OFFSET = 0.17; // [m] shooter z position from floor
   private final double SPEAKER_HEIGHT = 1.98; // [m] speaker height from the floor
 
   private final double angle_adjustment = 0.0; // [deg] angle gain/lose for tuning
@@ -34,29 +35,23 @@ public class SpeakerShooter extends Command {
   // front of the speaker
   private double rot;
 
-  // shooter angle [deg] -  //TODO WIP angle tracking
+  // shooter angle [deg]
   private double shooter_angle;
-
-  // Switch to collect data for regression
-  private boolean collectData = true;
   private double dX;
   private double dY;
 
   /**
    * Command shooting speaker
-   * <p>
-   * Requires: ShooterServo and limelight detecting specified tag.
-   * Calculate the angle and RPM to shoot the speaker
-   * </p>
-   * <p>
-   * Shooter angle- will be calculated by the distance and geometry.
-   * </p>
+   * <p>Requires: ShooterServo and limelight detecting specified tag.
+   * Calculate the angle and RPM to shoot the speaker</p>
+   * <p>Shooter angle- will be calculated by the distance and geometry.</p>
    * RPM- will be calculated using formula based of polar coordinate determined
    * the target is the vertex of the polar coordinate
    */
   public SpeakerShooter() {
     drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
     shooter = RobotContainer.getSubsystem(ShooterServo.class);
+    shooterNT = RobotContainer.getSubsystem("ShooterServoWatcherCmd");
     addRequirements(shooter);
   }
 
@@ -78,30 +73,29 @@ public class SpeakerShooter extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (collectData) {
+    if (shooter.atSetpoint()) {
       // for data collection not for actual shooting
       // run RPMShooter to test the shooting RPM and put value in the array
-      radius = Math.sqrt(
-          Math.pow(dX, 2)
-              + Math.pow(dY, 2));
-      rot = Math.abs(Math.atan(
-          Math.abs(dY) /
-              Math.abs(dX)))
-          * 180 / Math.PI;
-      System.out.println("[" + radius + "," + rot + "]");
-      finished = true;
-    } else {
+      radius = Math.sqrt(Math.pow(dX, 2)+ Math.pow(dY, 2));
+      rot = Math.abs(Math.atan(Math.abs(dY) /Math.abs(dX)))* 180 / Math.PI;
+      System.out.println("Shooting Position: [" + radius + "," + rot + "]"); 
+
       // actual shooting
-      if (shooter.atSetpoint()) {
-        // rpm calculation plug collected number into csv in python code -ko
-        double rpm = 7205.19 + -3266.57 * dX + -3266.57 * dY + 935.96 * Math.pow(dX, 2) + 731.54 * dX * dY
-            + 935.96 * Math.pow(dY, 2);
-        rpm = MathUtil.clamp(rpm,2000,3500);
-        shooter.setRPM(rpm, rpm);
-        Command shooterCmd = new ShooterServoSequence(shooter_angle,rpm);
-        shooterCmd.schedule();
-        finished = true;
-      }
+      // rpm calculation plug collected number into csv in python code -ko
+      double rpm = 7205.19 + -3266.57 * dX + -3266.57 * dY + 935.96 * Math.pow(dX, 2) + 731.54 * dX * dY
+          + 935.96 * Math.pow(dY, 2);
+      rpm = MathUtil.clamp(rpm, 2000, 3500);
+
+
+      /*Shooter Cmmand */
+      int nt_rpm = shooterNT.getTestCmdRPM();
+      Command shooterCmd = new ShooterServoSequence(shooter_angle, nt_rpm);
+
+      // actual shooting
+      // Command shooterCmd = new ShooterServoSequence(shooter_angle,rpm);
+
+      shooterCmd.schedule();
+      finished = true;
     }
   }
 
