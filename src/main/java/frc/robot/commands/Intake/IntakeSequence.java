@@ -66,8 +66,8 @@ public class IntakeSequence extends Command {
           shooter.retract();
         intake.setMaxVelocity(Intake.TravelDown);
         intake.setAngleSetpoint(100.0);
-        intake.setIntakeSpeed(0.7); // %
-        transfer.setSpeed(35.0);
+        intake.setIntakeSpeed(0.8); // %
+        transfer.setSpeed(40.0);
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:

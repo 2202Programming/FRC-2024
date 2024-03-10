@@ -30,7 +30,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
   final ShooterServo shooter;
   final Transfer transfer;
   final Intake intake;
-  final int DONE_COUNT = 50; // TODO: find actual value (around 10-20)
+  final int DONE_COUNT = 100; // TODO: find actual value (around 10-20)
   double speed;
   double angle;
   int count = 0;
@@ -86,14 +86,14 @@ public class ShooterServoSequence extends BlinkyLightUser {
       case ShooterMotorOn:
         System.out.println("***ShooterSequence:ShooterMotorOn....***");
         if (shooter.isAtRPM(100)) {
-          transfer.setSpeed(35.0);
+          transfer.setSpeed(40.0);
           phase = Phase.TransferMotorOn;
           System.out.println("***ShooterSequence:TransferMotorOn....***");
         }
         break;
       case TransferMotorOn:
-        sensed_note = transfer.senseNote() || sensed_note ? true : false;
-        count = sensed_note ? ++count : 0;
+        // sensed_note = transfer.senseNote() || sensed_note ? true : false;
+        count++;
         if (/*sensed_note ||*/ count >= DONE_COUNT) {
           phase = Phase.Finished;
           System.out.println("***ShooterSequence:finished....***");

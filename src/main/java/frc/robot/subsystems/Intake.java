@@ -32,9 +32,9 @@ import frc.robot.util.PIDFController;
 public class Intake extends SubsystemBase {
   public static final double UpPos = 0.0; // [deg]
   public static final double ShootingPos = 20.0; // [deg]
-  public static final double DownPos = 96.0; // [deg]
-  public static final double TravelUp = 140.0; // [deg/s]
-  public static final double TravelDown = 140.0; // [deg/s]
+  public static final double DownPos = 108.0; // [deg]
+  public static final double TravelUp = 180.0; // [deg/s]
+  public static final double TravelDown = 170.0; // [deg/s]
 
   // External encoder used6
   // https://www.revrobotics.com/rev-11-1271/
@@ -54,13 +54,13 @@ public class Intake extends SubsystemBase {
 
   // PIDFController hwAngleVelPID = new PIDFController(/* 0.002141 */0.010,
   // 0.00003, 0.0, /* 0.00503 */0.0045); //internal vel
-  PIDFController hwAngleVelPID = new PIDFController(0.0050, 0.0000, 0.0, 0.0075); // 3/2/24 improved vel loop match (new
+  PIDFController hwAngleVelPID = new PIDFController(0.0050, 0.0, 0.0, 0.0075); // 3/2/24 improved vel loop match (new
                                                                                   // encoder)
 
   /* inner (hw/vel) go up and divide by 2 */
   // final PIDController anglePositionPID = new PIDController(4.0, 0.0, 0.0); //
   // outer (pos) for internal enc
-  final PIDController anglePositionPID = new PIDController(2.0, 0.0, 0.0); // outer (pos) ext enc
+  final PIDController anglePositionPID = new PIDController(7.0, 1.0, 0.0); // outer (pos) ext enc
 
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
@@ -83,10 +83,10 @@ public class Intake extends SubsystemBase {
   // TODO: alpha use this with true
 
   public Intake(boolean altEncoder) { // TODO: Get values
-    final int STALL_CURRENT = 15; // [amp]
-    final int FREE_CURRENT = 5; // [amp]
-    double maxVel = 120.0; // [deg/s]
-    final double maxAccel = 20.0; // [deg/s^2]
+    final int STALL_CURRENT = 5; // [amp]
+    final int FREE_CURRENT = 20; // [amp]
+    double maxVel = 200.0; // [deg/s]
+    final double maxAccel = 200.0; // [deg/s^2]
     final double posTol = 2.0; // [deg]
     final double velTol = 1.0; // [deg/s]
 
