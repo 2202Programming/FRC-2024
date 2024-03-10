@@ -29,7 +29,7 @@ public class IntakeSequence extends Command {
   boolean stay_down;
   boolean pneumatics_bot = false;
   int count;
-  final int DONE_COUNT = 30;
+  final int DONE_COUNT = 20;
   boolean sensed_note;
 
   public enum Phase {
@@ -64,7 +64,7 @@ public class IntakeSequence extends Command {
       case IntakeDown:
         if (shooter != null)
           shooter.retract();
-        intake.setMaxVelocity(80.0);
+        intake.setMaxVelocity(Intake.TravelDown);
         intake.setAngleSetpoint(100.0);
         intake.setIntakeSpeed(0.25); // %
         transfer.setSpeed(35.0);
@@ -75,7 +75,7 @@ public class IntakeSequence extends Command {
         break;
       case HaveNote:
         if (++count >= DONE_COUNT) {
-          intake.setMaxVelocity(120.0);
+          intake.setMaxVelocity(Intake.TravelUp);
           phase = Phase.Finished;
         }
         break;

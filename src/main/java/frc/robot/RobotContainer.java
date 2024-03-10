@@ -40,6 +40,7 @@ import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Shooter.ShooterServoSequence;
+import frc.robot.commands.Shooter.TestShoot;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.FieldCentricDrive;
@@ -370,8 +371,9 @@ public class RobotContainer {
         operator.povRight().onTrue(new IntakeSwap());
         operator.povLeft().whileTrue(new EjectNote());
         operator.leftBumper().onTrue(new CalibratePos(0.0));
-        operator.rightBumper().onTrue(new ShooterServoSequence(30, 500));
-
+        operator.rightBumper().onTrue(new ShooterServoSequence(30, 1000));
+        operator.rightTrigger().whileTrue(new TestShoot(1500.0));
+        operator.rightBumper().whileTrue(new TestShoot(3500.0));
         // SHOOTER
         // operator.rightTrigger().whileTrue(new ShootTest(500.0));
         // operator.povDown().whileTrue(new ShooterAngleVelMove(-2.0));

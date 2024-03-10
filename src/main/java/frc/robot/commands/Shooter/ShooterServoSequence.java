@@ -22,20 +22,20 @@ import frc.robot.subsystems.Transfer;
  * off (command ended)
  */
 
-
- //TODO: probs can remove all angle stuff
+// TODO: probs can remove all angle stuff
 public class ShooterServoSequence extends BlinkyLightUser {
   /** Creates a new ShooterSequence. */
-  //use simple Shooter, even if ShooterServo is created because this command can work with either.
+  // use simple Shooter, even if ShooterServo is created because this command can
+  // work with either.
   final ShooterServo shooter;
   final Transfer transfer;
   final Intake intake;
-  final int DONE_COUNT = 50; //TODO: find actual value (around 10-20)
+  final int DONE_COUNT = 50; // TODO: find actual value (around 10-20)
   double speed;
   double angle;
   int count = 0;
   Phase phase;
-  boolean sensed_note;
+  // boolean sensed_note;
 
   public enum Phase {
     HasNote, ShooterMotorOn, TransferMotorOn, Finished;
@@ -50,14 +50,15 @@ public class ShooterServoSequence extends BlinkyLightUser {
     addRequirements(shooter, transfer, intake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    sensed_note = false;
+    // sensed_note = false;
     System.out.println("***ShooterSequence:init....***");
     count = 0;
     phase = Phase.HasNote;
-      intake.setMaxVelocity(60.0);
+    intake.setMaxVelocity(60.0);
   }
 
   public Color8Bit colorProvider() {
@@ -75,12 +76,12 @@ public class ShooterServoSequence extends BlinkyLightUser {
   public void execute() {
     switch (phase) {
       case HasNote:
-      System.out.println("***ShooterSequence:HasNote....***");
-      shooter.setAngleSetpoint(angle);
-          shooter.setRPM(speed, speed); // placeholder
-          if(shooter.atSetpoint()){
+        System.out.println("***ShooterSequence:HasNote....***");
+        shooter.setAngleSetpoint(angle);
+        shooter.setRPM(speed, speed); // placeholder
+        if (shooter.atSetpoint()) {
           phase = Phase.ShooterMotorOn;
-      }
+        }
         break;
       case ShooterMotorOn:
         System.out.println("***ShooterSequence:ShooterMotorOn....***");
@@ -91,15 +92,15 @@ public class ShooterServoSequence extends BlinkyLightUser {
         }
         break;
       case TransferMotorOn:
-      sensed_note = transfer.senseNote() ? true: false; 
-      count++;
-        if (sensed_note || count >= DONE_COUNT) {
+        // sensed_note = transfer.senseNote() ? true : false;
+        count++;
+        if (/*sensed_note ||*/ count >= DONE_COUNT) {
           phase = Phase.Finished;
           System.out.println("***ShooterSequence:finished....***");
         }
         break;
       case Finished:
-        
+
         break;
     }
   }
@@ -110,8 +111,8 @@ public class ShooterServoSequence extends BlinkyLightUser {
     transfer.setHasNote(false);
     transfer.setSpeed(0.0);
     shooter.setRPM(0.0, 0.0);
-    shooter.setAngleSetpoint(ShooterServo.MIN_DEGREES); 
-    intake.setMaxVelocity(120.0);  //[deg/s] 2.sec to retract
+    shooter.setAngleSetpoint(ShooterServo.MIN_DEGREES);
+    intake.setMaxVelocity(120.0); // [deg/s] 2.sec to retract
     intake.setAngleSetpoint(0.0);
   }
 

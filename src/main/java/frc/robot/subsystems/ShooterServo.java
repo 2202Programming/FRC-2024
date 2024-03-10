@@ -135,6 +135,7 @@ public class ShooterServo extends Shooter {
     NetworkTableEntry nt_current;
     NetworkTableEntry nt_current_percent;
     NetworkTableEntry nt_RPM;
+    NetworkTableEntry nt_at_RPM;
 
     public String getTableName() {
       return super.getTableName();
@@ -157,6 +158,8 @@ public class ShooterServo extends Shooter {
       nt_current_percent = table.getEntry("nt_output_percent");
       nt_RPM = table.getEntry("RPM");
 
+      nt_at_RPM = table.getEntry("at_RPM");
+
     }
 
     @Override
@@ -170,10 +173,11 @@ public class ShooterServo extends Shooter {
       nt_angle.setDouble(getAngle());
 
       nt_atSetpoint.setBoolean(atSetpoint());
-
+      nt_at_RPM.setBoolean(isAtRPM(100));
       nt_current.setDouble(extension.getController().getOutputCurrent());
       nt_current_percent.setDouble(extension.getController().getAppliedOutput());
       nt_RPM.setDouble(extension.getVelocity() / (ShooterAngleRadius / ShooterAngleGearRatio));
     }
+
   }
 }

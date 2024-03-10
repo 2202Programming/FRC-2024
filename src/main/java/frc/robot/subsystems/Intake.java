@@ -34,7 +34,7 @@ public class Intake extends SubsystemBase {
   public static final double ShootingPos = 20.0; // [deg]
   public static final double DownPos = 96.0; // [deg]
   public static final double TravelUp = 120.0; // [deg/s]
-  public static final double TravelDown = 60.0; // [deg/s]
+  public static final double TravelDown = 120.0; // [deg/s]
 
   // External encoder used6
   // https://www.revrobotics.com/rev-11-1271/
