@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -95,6 +96,7 @@ public class Shooter extends SubsystemBase {
     pidConsts.copyTo(mtrpid, 0);
     pidConsts_freeSpin.copyTo(mtrpid, 1); 
     mtr.setInverted(inverted);
+    mtr.setIdleMode(IdleMode.kBrake);
     return mtrpid;
   }
 
