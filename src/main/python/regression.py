@@ -19,7 +19,8 @@ X1 = data['Radius'] * np.cos(np.radians(data['Degrees']))
 X2 = data['Radius'] * np.sin(np.radians(data['Degrees']))
 y = data['RPM']
 
-model = make_pipeline(PolynomialFeatures(degree=2), LinearRegression())
+#Can get any degree equation by changing degree
+model = make_pipeline(PolynomialFeatures(degree=3), LinearRegression())
 model.fit(np.vstack((X1, X2)).T, y)
 linear_regression_model = model.named_steps['linearregression']
 scatter_trace = go.Scatter3d(
@@ -55,19 +56,24 @@ layout = go.Layout(
     ),
     margin=dict(l=0, r=0, b=0, t=0)
 )
-
-
 fig = go.Figure(data=[scatter_trace, surface_trace], layout=layout)
 fig.show()
+
 intercept = linear_regression_model.intercept_
-print(f"Intercept: {intercept}  ")
 weights = linear_regression_model.coef_
+variableOrder = model.steps[0][1].get_feature_names_out()
+
+print(f"Intercept: {intercept}  ")
 print(f"Weights: {weights}  ")
+print(f"Variable to weights: {variableOrder}  ")
 
-print(f"General Equation: RPM = " + round(intercept,2).astype(str) + " + " + round(weights[1],2).astype(str) + " * X + " + round(weights[2],2).astype(str) + " * Y + " + round(weights[3],2).astype(str) + " * X^2 + " + round(weights[4],2).astype(str) + " * X * Y + " + round(weights[5],2).astype(str) + " * Y^2")
+#print(f"General Equation: RPM = " + round(intercept,2).astype(str) + " + " + round(weights[1],2).astype(str) + " * X + " + round(weights[2],2).astype(str) + " * Y + " + round(weights[3],2).astype(str) + " * X^2 + " + round(weights[4],2).astype(str) + " * X * Y + " + round(weights[5],2).astype(str) + " * Y^2")
+print(f"General Equation: Z = " + round(intercept,2).astype(str), end=" ")
+for i in range(len(variableOrder) -1):
+    print("+ "+round(weights[i+1],2).astype(str) + " * " + variableOrder[i+1] , end=" ")
 
 
-
+# %%
 #test
 X1 = 1.496
 X2 = 0.105
