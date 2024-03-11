@@ -5,8 +5,14 @@
 package frc.robot.subsystems.Climber;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.commands.Climber.Climb;
+import frc.robot.commands.utility.WatcherCmd;
+import frc.robot.subsystems.Intake;
 import frc.robot.util.NeoServo;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.util.PIDFController;
@@ -21,6 +27,7 @@ public class Climber extends SubsystemBase {
   final int STALL_CURRENT = 5; // placeholder // units?
   final int FREE_CURRENT = 15; // placeholder // units?
   double desiredPos; // cm, 0 is full retract
+  double desiredVel;
 
   PIDController posPID = new PIDController(0, 0, 0);
   PIDFController hwVelPID = new PIDFController(0, 0, 0, 0);
@@ -53,10 +60,11 @@ public class Climber extends SubsystemBase {
    * @param vel Sets arms to a specific velocity (in cm/sec)
    */
   public void setArmVelocity(double vel) {
+    desiredVel = vel;
     climber.setVelocityCmd(vel);
   }
 
-  public double getClimberHeight() {
+  public double getClimberPos() {
     return climber.getPosition();
   }
 
@@ -75,6 +83,9 @@ public class Climber extends SubsystemBase {
   public void ClampAccel(double accel) {
     MathUtil.clamp(accel, maxAccel, -maxAccel);
   }
+    public Command getWatcher() {
+    return new ClimberWatcherCmd();
+  }
 
   // TODO: Calibration helpers
   // void SetZero()
@@ -86,4 +97,39 @@ public class Climber extends SubsystemBase {
     climber.periodic();
 
   }
+   /*
+   * Watcher commmand puts network table data for intake.
+   * 
+   */
+  class ClimberWatcherCmd extends WatcherCmd {
+    NetworkTableEntry nt_desiredVel;
+    NetworkTableEntry nt_desiredPos;
+    NetworkTableEntry nt_currentVel;
+    NetworkTableEntry nt_currentPos;
+    NetworkTableEntry nt_atSetpoint;
+
+    @Override
+    public String getTableName() {
+      return Climber.this.getName();
+    }
+
+    public void ntcreate() {
+      NetworkTable table = getTable();
+      nt_desiredVel = table.getEntry("desiredSpeed");
+      nt_desiredPos = table.getEntry("desiredPos");
+      nt_currentVel = table.getEntry("currentSpeed");
+      nt_currentPos = table.getEntry("currentPos");
+      nt_atSetpoint = table.getEntry("atSetpoint");
+
+    }
+
+    public void ntupdate() {
+      nt_desiredVel.setDouble(desiredVel);
+      nt_desiredPos.setDouble(desiredPos);
+      nt_currentVel.setDouble(getClimberVelocity());
+      nt_currentPos.setDouble(getClimberPos());
+      nt_atSetpoint.setBoolean(atSetpoint());
+    }
+  } // watcher command
+
 }
