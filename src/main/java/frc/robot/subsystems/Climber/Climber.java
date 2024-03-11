@@ -20,31 +20,15 @@ public class Climber extends SubsystemBase {
   double velTol = 1.0; // cm/s
   final int STALL_CURRENT = 5; // placeholder // units?
   final int FREE_CURRENT = 15; // placeholder // units?
-  double desiredRightArmPos; // cm, 0 is full retract
-  double desiredLeftArmPos; // cm, 0 is full retract
-  boolean sync = false; // if we want to use sync or not
-  double syncComp = 0.0; // what is
+  double desiredPos; // cm, 0 is full retract
 
-  PIDController rightPID = new PIDController(0, 0, 0); // sw outer pos pid
-  PIDController leftPID = new PIDController(0, 0, 0);
-  PIDFController rightHwVelPID = new PIDFController(0, 0, 0, 0); // hw vel pid
-  PIDFController leftHwVelPID = new PIDFController(0, 0, 0, 0);
-  PIDController syncPID = new PIDController(0.1, 0.0, 0.0); // sync pid left -> right
-  double followComp = 0.0; // if for some reason one arm faster than other
-  final NeoServo rightArm = new NeoServo(Constants.CAN.LEFT_CLIMBER, leftPID, leftHwVelPID, false); // need to find
-                                                                                                    // invert
-  final NeoServo leftArm = new NeoServo(Constants.CAN.RIGHT_CLIMBER, rightPID, rightHwVelPID, false);
+  PIDController posPID = new PIDController(0, 0, 0);
+  PIDFController hwVelPID = new PIDFController(0, 0, 0, 0);
+  final NeoServo climber = new NeoServo(Constants.CAN.RIGHT_CLIMBER, posPID, hwVelPID, false); //check invert
 
   public Climber() {
-    leftHwVelPID.copyTo(leftArm.getController().getPIDController(), 0);
-    leftArm.setConversionFactor(1.0 / GearRatio) // find this
-        .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
-        .setVelocityHW_PID(maxVel, maxAccel)
-        .setTolerance(posTol, velTol)
-        .setMaxVelocity(maxVel)
-        .burnFlash();
-    rightHwVelPID.copyTo(rightArm.getController().getPIDController(), 0);
-    rightArm.setConversionFactor(1.0 / GearRatio) // find this
+    hwVelPID.copyTo(climber.getController().getPIDController(), 0);
+    climber.setConversionFactor(1.0 / GearRatio) // find this
         .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
         .setVelocityHW_PID(maxVel, maxAccel)
         .setTolerance(posTol, velTol)
@@ -58,31 +42,8 @@ public class Climber extends SubsystemBase {
    * @param pos Desired position in cm from fully retracted position
    */
   public void setArmHeight(double pos) {
-    desiredLeftArmPos = pos;
-    desiredRightArmPos = pos;
-    leftArm.setSetpoint(pos);
-    rightArm.setSetpoint(pos);
-    sync = true;
-  }
-  /**
-   * Extend Left arm to position given.
-   *
-   * @param pos Desired position in cm from fully retracted position
-   */
-  public void setLeftArmHeight(double pos) {
-    desiredLeftArmPos = pos;
-    leftArm.setSetpoint(pos);
-    sync = false;
-  }
-  /**
-   * Extend Right arm to position given.
-   *
-   * @param pos Desired position in cm from fully retracted position
-   */
-  public void setRightArmHeight(double pos) {
-    desiredRightArmPos = pos;
-    rightArm.setSetpoint(pos);
-    sync = false;
+    desiredPos = pos;
+    climber.setSetpoint(pos);
   }
 
   // lines 46-56 are for testing only
@@ -92,53 +53,19 @@ public class Climber extends SubsystemBase {
    * @param vel Sets arms to a specific velocity (in cm/sec)
    */
   public void setArmVelocity(double vel) {
-    leftArm.setVelocityCmd(vel);
-    rightArm.setVelocityCmd(vel);
-    sync = false;
+    climber.setVelocityCmd(vel);
   }
 
-  /**
-   * Run left arm at given velocity
-   *
-   * @param vel Velocity to run arm at in cm/s. Pos extends arm
-   */
-  public void setLeftArmVelocity(double vel) {
-    leftArm.setVelocityCmd(vel);
-    sync = false;
+  public double getClimberHeight() {
+    return climber.getPosition();
   }
 
-  /**
-   * Run right arm at given velocity
-   *
-   * @param vel Velocity to run arm at in cm/s. Pos extends arm
-   */
-  public void setRightArmVelocity(double vel) {
-    rightArm.setVelocityCmd(vel);
-    sync = false;
+  public double getClimberVelocity() {
+    return climber.getVelocity();
   }
 
-  public double getLeftArmHeight() {
-    return leftArm.getPosition();
-  }
-
-  public double getRightArmHeight() {
-    return rightArm.getPosition();
-  }
-
-  public double getLeftArmVelocity() {
-    return leftArm.getVelocity();
-  }
-
-  public double getRightArmVelocity() {
-    return rightArm.getVelocity();
-  }
-
-  public boolean leftArmAtSetpoint() {
-    return leftArm.atSetpoint();
-  }
-
-  public boolean rightArmAtSetpoint() {
-    return rightArm.atSetpoint();
+  public boolean atSetpoint() {
+    return climber.atSetpoint();
   }
 
   public void ClampVel(double vel) {
@@ -149,15 +76,6 @@ public class Climber extends SubsystemBase {
     MathUtil.clamp(accel, maxAccel, -maxAccel);
   }
 
-  /**
-   * Tells the arms to move in sync, or not to. 
-   *
-   * @param sync sets the arms to be synced or not.
-   */
-  public void setArmSync(boolean sync) {
-    this.sync = sync;
-  }
-
   // TODO: Calibration helpers
   // void SetZero()
   // double getCurrent()?
@@ -165,9 +83,7 @@ public class Climber extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    syncComp = sync ? syncPID.calculate(leftArm.getPosition(), rightArm.getPosition()) : 0.0;
-    leftArm.periodic(syncComp);
-    rightArm.periodic(0.0);
+    climber.periodic();
 
   }
 }

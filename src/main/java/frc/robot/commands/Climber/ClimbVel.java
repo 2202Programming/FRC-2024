@@ -10,8 +10,6 @@ import frc.robot.subsystems.Climber.Climber;
 
 public class ClimbVel extends Command {
   Climber climber;
-  boolean right;
-  boolean left;
   double speed;
   
 
@@ -19,15 +17,10 @@ public class ClimbVel extends Command {
    * Create a new ClimbVel Command
    * The arm will move the entire time this command is running, therefore
    * this command should be run are whileTrue() only
-   *
-   * @param right Are we moving the right arm?
-   * @param left Are we moving the left arm?
    * @param speed Arm movment vel, cm/s
    */
-  public ClimbVel(boolean right, boolean left, double speed) {
+  public ClimbVel(double speed) {
     climber = RobotContainer.getSubsystem(Climber.class);
-    this.right = right;
-    this.left = left;
     this.speed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
   }
@@ -35,13 +28,8 @@ public class ClimbVel extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(left){
-    climber.setLeftArmVelocity(speed);
+    climber.setArmVelocity(speed);
     }
-    if(right){
-    climber.setRightArmVelocity(speed);
-    }
-  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -50,8 +38,7 @@ public class ClimbVel extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    climber.setLeftArmVelocity(0.0);
-    climber.setRightArmVelocity(0.0);
+climber.setArmVelocity(0.0);
   }
 
   // Returns true when the command should end.

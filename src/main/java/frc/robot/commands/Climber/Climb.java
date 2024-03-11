@@ -35,7 +35,7 @@ public class Climb extends Command {
   @Override
   public void execute() {
     // TODO: Do we want to monitor current while this is occuring?
-    if(climber.leftArmAtSetpoint() && climber.rightArmAtSetpoint()){
+    if(climber.atSetpoint()){
       done = true;
     }
   }
