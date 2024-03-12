@@ -150,7 +150,7 @@ public class RobotContainer {
     robotSpecs = new RobotSpecs();
     robotSpecs.mySubsystemConfig.constructAll();
     // Set binding to Competition (or your mode for testing)
-    Bindings bindings = Bindings.auto_shooter_test;
+    Bindings bindings = Bindings.new_bot_test;
 
     // Testing, but also to drive the drivers nuts...
     Command random_lights = new RandomLightsCmd();
@@ -371,32 +371,39 @@ public class RobotContainer {
 
       case new_bot_test:
         // INTAKE & TRANSFER
-        operator.a().onTrue(new IntakeSequence(true)); // works for both modes
-        operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0));
+        operator.a().onTrue(new InIntake(false)); // works for both modes
+        // operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0));
         // operator.x().onTrue(new InIntake(true));
         operator.x().onTrue(new AngleCalibration(-25.0));
         // operator.leftTrigger().whileTrue(new TestTransfer(35.0));
         // operator.y().whileTrue(new TestIntake(0.5)); // %
-        operator.povDown().onTrue(new MoveToAnglePos(Intake.DownPos, Intake.TravelDown)); // good for alpha
-        operator.povUp().onTrue(new MoveToAnglePos(Intake.UpPos, Intake.TravelUp)); // not needed, calibrate with up
-        operator.povRight().onTrue(new IntakeSwap());
+        // operator.povDown().onTrue(new MoveToAnglePos(Intake.DownPos, Intake.TravelDown)); // good for alpha
+        // operator.povUp().onTrue(new MoveToAnglePos(Intake.UpPos, Intake.TravelUp)); // not needed, calibrate with up
+        // operator.povRight().onTrue(new IntakeSwap());
         // operator.leftBumper().whileTrue(new TestIntakeAngle(-25.0));
         operator.y().whileTrue(new TestIntakeAngle(25.0));
+        operator.povRight().onTrue(new MoveToAnglePos(9.63, 10.0));
         // operator.povLeft().whileTrue(new EjectNote());
         // operator.leftBumper().onTrue(new CalibratePos(0.0));
-        operator.povLeft().onTrue(new ShooterServoSequence(30, 3500));
+        operator.povLeft().onTrue(new TestShoot(1500.0));
         // operator.rightTrigger().whileTrue(new TestShoot(1500.0));
         // operator.rightBumper().whileTrue(new TestShoot(3500.0));
         // SHOOTER
         // operator.rightTrigger().whileTrue(new ShootTest(500.0));
         // operator.povDown().whileTrue(new ShooterAngleVelMove(-2.0));
         // operator.povUp().whileTrue(new ShooterAngleVelMove(2.0));
-        operator.rightTrigger().whileTrue(new ShooterAngleVelMove(4.0));
-        operator.leftBumper().whileTrue(new ShooterAngleVelMove(-4.0));
+        // operator.rightTrigger().whileTrue(new ShooterAngleVelMove(4.0));
+        // operator.leftBumper().whileTrue(new ShooterAngleVelMove(-4.0));
         // // operator.rightBumper().onTrue(new ShooterServoSequence(30.0, 2000.0));
         // //speaker close /
         operator.leftTrigger().onTrue(new ShooterAngleSetPos(30.0));
         operator.rightBumper().onTrue(new ShooterAngleSetPos(45.0));
+        operator.rightTrigger().whileTrue(new TestIntake(-1.0 ));
+        operator.povDown().whileTrue(new TestIntakeAngle(15.0));
+        operator.povUp().whileTrue(new TestIntakeAngle(-15.0));
+        operator.leftBumper(
+
+        ).whileTrue(new TestIntake(0.5));
 
         // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay
         // in intake
