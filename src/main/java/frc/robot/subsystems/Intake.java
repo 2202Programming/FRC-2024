@@ -16,6 +16,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkMaxAlternateEncoder.Type;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
@@ -35,13 +36,14 @@ public class Intake extends SubsystemBase {
   public static final double DownPos = 108.0; // [deg]
   public static final double TravelUp = 180.0; // [deg/s]
   public static final double TravelDown = 170.0; // [deg/s]
+  final static double kff = 0.0; //find it
 
   // External encoder used6
   // https://www.revrobotics.com/rev-11-1271/
   // https://docs.revrobotics.com/sparkmax/operating-modes/using-encoders/alternate-encoder-mode
   static final int Angle_kCPR = 8192; // alt encoder angle [counts per rotation]
 
-  final double wheelGearRatio = 1.0; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean
+  final double wheelGearRatio = 1.0/7.0; // TODO set this correctly for intake speed - note vel [cm/s] - does this mean
 
   // anything or just gear raito works? (the comment before)
   final double AngleGearRatio = 405.0; // Gear ratio
@@ -64,7 +66,7 @@ public class Intake extends SubsystemBase {
 
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
-  final PIDFController intakeVelPID = new PIDFController(0.0, 0.0, 0.0, 0.0); // wip - use pwr for sussex
+  final PIDFController intakeVelPID = new PIDFController(1.0, 0.0, 0.0, kff); // wip - use pwr for sussex
   final SparkPIDController intakeMtrPid;
   final RelativeEncoder intakeMtrEncoder;
 
@@ -89,6 +91,8 @@ public class Intake extends SubsystemBase {
     final double maxAccel = 200.0; // [deg/s^2]
     final double posTol = 2.0; // [deg]
     final double velTol = 1.0; // [deg/s]
+    final double wheel_radius = 1.55*2.54; //in --> [cm]
+    double conversionFactor = wheel_radius*wheelGearRatio;
 
     // servo controls angle of intake arm, setup for velocity mode on brushless
     // motor
@@ -104,8 +108,8 @@ public class Intake extends SubsystemBase {
       intakeMtr.setInverted(!altEncoder);
     intakeMtrPid = intakeMtr.getPIDController();
     intakeMtrEncoder = intakeMtr.getEncoder();
-    intakeMtrEncoder.setPositionConversionFactor(wheelGearRatio);
-    intakeMtrEncoder.setVelocityConversionFactor(wheelGearRatio / 60.0); // min to sec
+    intakeMtrEncoder.setPositionConversionFactor(conversionFactor);
+    intakeMtrEncoder.setVelocityConversionFactor(conversionFactor / 60.0); // min to sec
     intakeVelPID.copyTo(intakeMtr.getPIDController(), 0);
     // configure hardware pid with our values
     intakeMtr.burnFlash();
@@ -143,8 +147,8 @@ public class Intake extends SubsystemBase {
 
   public void setIntakeSpeed(double speed) {
         System.out.println("SPEED GETTING SET TO" + speed);
-    intakeMtr.set(speed); // [%pwr] TODO change to velocity mode & tune hwpid for intakeMtr
-    // intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
+    // intakeMtr.set(speed); // [%pwr] TODO change to velocity mode & tune hwpid for intakeMtr
+    intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
   }
 
   public boolean senseNote() {
