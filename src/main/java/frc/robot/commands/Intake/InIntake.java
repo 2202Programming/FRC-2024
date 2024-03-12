@@ -22,7 +22,7 @@ import frc.robot.subsystems.Intake;
 public class InIntake extends Command {
 
   final Intake intake;
-  final double DONE_COUNT = 1;
+  final double DONE_COUNT = 2;
   double count;
   boolean stay_down;
 
