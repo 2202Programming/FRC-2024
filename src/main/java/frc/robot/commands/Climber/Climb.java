@@ -22,6 +22,7 @@ public class Climb extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     climber = RobotContainer.getSubsystem(Climber.class);
     this.pos = pos;
+    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.

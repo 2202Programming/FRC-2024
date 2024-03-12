@@ -89,14 +89,17 @@ public class Climber extends SubsystemBase {
 
   // TODO: Calibration helpers
   // void SetZero()
-  // double getCurrent()?
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     climber.periodic();
-
   }
+
+  public double getCurrent() {
+    return climber.getController().getOutputCurrent();
+  }
+
    /*
    * Watcher commmand puts network table data for intake.
    * 
