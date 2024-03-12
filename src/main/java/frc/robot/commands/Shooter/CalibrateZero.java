@@ -16,30 +16,29 @@ import frc.robot.subsystems.ShooterServo;
 public class CalibrateZero extends Command {
     private final ShooterServo shooterServo;
     private final double VelTol = 0.1; //[cm/s]
-    
+    final int DelayCount = 5;
+    private int count;
     private boolean finished = false;
 
   //Lower the shooter servo until it stops, then set relative encoder to zero.
-
   public CalibrateZero() {
     shooterServo = RobotContainer.getSubsystem(ShooterServo.class);
-
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(shooterServo);
-
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterServo.setExtensionVelocity(-0.2);
+    shooterServo.setExtensionVelocity(-1.0);
+    finished = false;
+    count = 0;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     //TODO: may want to also watch current
-    if (Math.abs(shooterServo.getExtensionVelocity()) <  VelTol){
+    if ((++count > DelayCount) && (Math.abs(shooterServo.getExtensionVelocity()) <  VelTol)) {
       finished = true;
     }
     SmartDashboard.putNumber("Shooter Servo Velocity", shooterServo.getExtensionVelocity());
