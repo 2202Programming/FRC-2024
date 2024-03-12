@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
-import frc.robot.commands.Intake.DelayEject;
 import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakeSequence;
@@ -35,6 +34,7 @@ import frc.robot.commands.Intake.IntakeSwap;
 import frc.robot.commands.Intake.MoveToAnglePos;
 import frc.robot.commands.Intake.TestIntake;
 import frc.robot.commands.Intake.TestIntakeAngle;
+import frc.robot.commands.Shooter.CalibrateZero;
 import frc.robot.commands.Shooter.ContinousAngleTracker;
 import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.RPMShooter;
@@ -266,14 +266,15 @@ public class RobotContainer {
         driver.y().onTrue(new AllianceAwareGyroReset(true));
         driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
         //I KNOW THIS IS BAD BUT I DONT REALLY CARE IF IT WORKS
-        driver.povUp().onTrue(new AutoShooting(ShootingTarget.Speaker, 3500.0));
-        driver.povLeft().onTrue(new AutoShooting(ShootingTarget.Speaker, 3250.0));
-        driver.povRight().onTrue(new AutoShooting(ShootingTarget.Speaker, 3000.0));
-        driver.povDown().onTrue(new AutoShooting(ShootingTarget.Speaker, 2750.0));
-        driver.a().onTrue(new AutoShooting(ShootingTarget.Speaker, 2500.0));
-        driver.b().onTrue(new AutoShooting(ShootingTarget.Speaker, 2250.0));
-        driver.x().onTrue(new AutoShooting(ShootingTarget.Speaker, 2000.0));
-        driver.rightBumper().onTrue(new AutoShooting(ShootingTarget.Speaker, 1750.0));
+        driver.povUp().onTrue(new SpeakerShooter( 3500.0));
+        driver.povLeft().onTrue(new SpeakerShooter( 3250.0));
+        driver.povRight().onTrue(new SpeakerShooter( 3000.0));
+        driver.povDown().onTrue(new SpeakerShooter( 2750.0));
+        driver.a().onTrue(new SpeakerShooter( 2500.0));
+        driver.b().onTrue(new
+         SpeakerShooter( 2250.0));
+        driver.x().onTrue(new SpeakerShooter( 2000.0));
+        driver.rightBumper().onTrue(new SpeakerShooter( 1750.0));
         break;
 
       case new_bot_test:
@@ -310,6 +311,11 @@ public class RobotContainer {
         operator.a().onTrue(new IntakeSequence(false));
         operator.x().onTrue(new AngleCalibration(-25.0));
         operator.b().onTrue(new AutoShooting(ShootingTarget.Speaker));
+        operator.y().whileTrue(new EjectNote());
+        operator.povUp().onTrue(new ShooterAngleSetPos(45));
+        operator.rightBumper().onTrue(new ShooterAngleSetPos(28.6));
+        operator.povDown().onTrue(new ShooterAngleSetPos(30));
+        operator.povLeft().onTrue(new CalibrateZero());
         break;
       case Competition:
 
@@ -397,7 +403,6 @@ public class RobotContainer {
         operator.povDown().whileTrue(new TestIntakeAngle(15.0));
         operator.povUp().whileTrue(new TestIntakeAngle(-15.0));
         operator.leftBumper().whileTrue(new TestIntake(0.5));
-        operator.b().onTrue(new DelayEject());
 
         // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay
         // in intake

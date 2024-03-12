@@ -542,7 +542,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     // return;
     // }
 
-    if ((limelight != null) && (llPose != null) && (limelight.getNumApriltags() > 0) && (limelight.getTA() > 0.125)) { // just use LL for now
+    if ((limelight != null) && (llPose != null) && (limelight.getNumApriltags() > 0) && (limelight.getTA() > 0.13)) { // just use LL for now
       Pose2d prev_m_Pose = m_pose;
       if (visionPoseEnabled) {
         watchdog.update(prev_m_Pose, llPose);

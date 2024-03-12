@@ -70,7 +70,13 @@ public class Shooter extends SubsystemBase {
 
   public void setRPM(double leftRPM, double rightRPM) {
     // slot 0 --> normal op, slot 1 --> free spin
-    int slot = (leftRPM == 0.0 && rightRPM == 0.0) ? 1 : 0;
+    int slot =0; // (leftRPM == 0.0 && rightRPM == 0.0) ? 1 : 0;
+    if (leftRPM == 0.0 && rightRPM == 0.0) {
+      hw_leftPid.setIAccum(0.0);
+      hw_rightPid.setIAccum(0.0);
+      slot = 1;
+    } 
+    
     hw_leftPid.setReference(leftRPM, ControlType.kVelocity, slot);
     hw_rightPid.setReference(rightRPM, ControlType.kVelocity, slot);
     desiredLeftRPM = leftRPM;
@@ -95,6 +101,7 @@ public class Shooter extends SubsystemBase {
     var mtrpid = mtr.getPIDController();
     pidConsts.copyTo(mtrpid, 0);
     pidConsts_freeSpin.copyTo(mtrpid, 1); 
+    mtrpid.setIMaxAccum(0.0, 1);
     mtr.setInverted(inverted);
     mtr.setIdleMode(IdleMode.kBrake);
     return mtrpid;

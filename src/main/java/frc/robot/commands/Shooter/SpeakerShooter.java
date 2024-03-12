@@ -20,11 +20,11 @@ public class SpeakerShooter extends InstantCommand {
   private ShooterServoWatcherCmd shooterNT;
   // Keep these constants here, not needed elsewhere
   // TODO:Check this value. - Estimate
-  private final double SHOOTER_Y_OFFSET = 0.20; // [m] pivotal point of shooter from the center
+  private final double SHOOTER_Y_OFFSET = 0.55; // [m] pivotal point of shooter from the center
   private final double SHOOTER_Z_OFFSET = 0.17; // [m] shooter z position from floor
-  private final double SPEAKER_HEIGHT = 1.98; // [m] speaker height from the floor
+  private final double SPEAKER_HEIGHT = 2.1; // [m] speaker height from the floor
 
-  private final double angle_adjustment = 0.0; // [deg] angle gain/lose for tuning
+  private final double angle_adjustment = 5.25; // [deg] angle gain/lose for tuning
 
   // RobotPose with polar coordinate(origin is tag)
   private double radius; // [m] distance from the speaker to the robot
@@ -90,7 +90,8 @@ public class SpeakerShooter extends InstantCommand {
 
     // get shooter angle
     shooter_angle = Math.atan2((SPEAKER_HEIGHT - SHOOTER_Z_OFFSET) , (radius - SHOOTER_Y_OFFSET)) * 180 /Math.PI + angle_adjustment;
-    shooter_angle = MathUtil.clamp(shooter_angle, 28.52, 48.0);
+    System.out.println("Before:" + shooter_angle);
+    shooter_angle = MathUtil.clamp(shooter_angle, 28.52, 47.5);
     // get RPM @see src/main/python/regression.py
     // if test mode, use the rpm from parameter
     if (!test) {
