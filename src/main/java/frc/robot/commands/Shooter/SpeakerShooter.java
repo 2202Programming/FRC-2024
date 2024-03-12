@@ -20,7 +20,7 @@ public class SpeakerShooter extends InstantCommand {
   private ShooterServoWatcherCmd shooterNT;
   // Keep these constants here, not needed elsewhere
   // TODO:Check this value. - Estimate
-  private final double SHOOTER_Y_OFFSET = -0.20; // [m] pivotal point of shooter from the center
+  private final double SHOOTER_Y_OFFSET = 0.20; // [m] pivotal point of shooter from the center
   private final double SHOOTER_Z_OFFSET = 0.17; // [m] shooter z position from floor
   private final double SPEAKER_HEIGHT = 1.98; // [m] speaker height from the floor
 
@@ -39,6 +39,8 @@ public class SpeakerShooter extends InstantCommand {
   private double shooter_angle;
   private double dX;
   private double dY;
+  private boolean test = false;
+  private double rpm;
 
   /**
    * Command shooting speaker
@@ -55,7 +57,19 @@ public class SpeakerShooter extends InstantCommand {
   public SpeakerShooter() {
     drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
     shooter = RobotContainer.getSubsystem(ShooterServo.class);
-    shooterNT = RobotContainer.getSubsystem("ShooterServoWatcherCmd");
+    addRequirements(shooter);
+  }
+
+  /**
+   * For testing purpose setting rpm by parameter
+   * 
+   * @param rpm shooter rpm
+   */
+  public SpeakerShooter(double rpm) {
+    test = true;
+    this.rpm = rpm;
+    drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
+    shooter = RobotContainer.getSubsystem(ShooterServo.class);
     addRequirements(shooter);
   }
 
@@ -64,34 +78,33 @@ public class SpeakerShooter extends InstantCommand {
   public void initialize() {
     // get robot pose in other coordinates
     if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-      dX = drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID7.getX();
-      dY = drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID7.getY();
+      dX = Math.abs(drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID7.getX());
+      dY = Math.abs(drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID7.getY());
     } else {
-      dX = drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID4.getX();
-      dY = drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID4.getY();
+      dX = Math.abs(drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID4.getX());
+      dY = Math.abs(drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID4.getY());
     }
     radius = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
-    rot = Math.abs(Math.atan(Math.abs(dY) / Math.abs(dX))) * 180 / Math.PI;
+    rot = Math.abs(Math.atan2(dY, dX)) * 180 / Math.PI;
     System.out.println("SpeakerShooter---Shooting Position: [" + radius + "," + rot + "]");
 
-    //get shooter angle
-    shooter_angle = Math.atan((SPEAKER_HEIGHT - SHOOTER_Z_OFFSET) / (radius - SHOOTER_Y_OFFSET)) + angle_adjustment;
+    // get shooter angle
+    shooter_angle = Math.atan2((SPEAKER_HEIGHT - SHOOTER_Z_OFFSET) , (radius - SHOOTER_Y_OFFSET)) * 180 /Math.PI + angle_adjustment;
     shooter_angle = MathUtil.clamp(shooter_angle, 28.52, 48.0);
-
     // get RPM @see src/main/python/regression.py
-    double rpm = 7205.19 + -3266.57 * dX + -3266.57 * dY + 935.96 * Math.pow(dX, 2) + 731.54 * dX * dY
-        + 935.96 * Math.pow(dY, 2);
-    rpm = MathUtil.clamp(rpm, 2000, 3500);
+    // if test mode, use the rpm from parameter
+    if (!test) {
+      rpm = 7205.19 + -3266.57 * dX + -3266.57 * dY + 935.96 * Math.pow(dX, 2) + 731.54 * dX * dY
+          + 935.96 * Math.pow(dY, 2);
+      rpm = MathUtil.clamp(rpm, 2000, 3500);
+    }
 
-    /* Shooter Cmmand */
-    //test shooting
-    int nt_rpm = shooterNT.getTestCmdRPM();
-    Command shooterCmd = new ShooterServoSequence(shooter_angle, nt_rpm);
-
-    // actual shooting
-    // Command shooterCmd = new ShooterServoSequence(shooter_angle,rpm);
+    Command shooterCmd = new ShooterServoSequence(shooter_angle, rpm);
 
     shooterCmd.schedule();
+    
+    System.out.println("SpeakerShooter---Shooter Angle: " + shooter_angle + " [deg]");
+    System.out.println("SpeakerShooter---Shooter RPM: " + rpm + " [rpm]");
   }
 
   // Called once the command ends or is interrupted.

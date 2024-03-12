@@ -43,6 +43,25 @@ public class AutoShooting extends SequentialCommandGroup {
       addCommands(new ShooterServoSequence(45.0, 1000.0));
     }
   }
+  
+  /**Test code */
+  public AutoShooting(ShootingTarget target, double rpm) {
+    drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
+    limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
+
+    double tagID = determineTag(target);
+
+    addCommands(new RotateUntilSeeTags((int)tagID));
+    addCommands(new FaceToTag(tagID));
+    if (target == ShootingTarget.Speaker) {
+      addCommands(new SpeakerShooter(rpm));
+    } else if (target == ShootingTarget.Amp) {
+      addCommands(new ShooterServoSequence(45.0, 800.0));
+    } else {
+      // Trap
+      addCommands(new ShooterServoSequence(45.0, 1000.0));
+    }
+  }
 
   /**
    * Determine the tag to face based on the alliance and the target.

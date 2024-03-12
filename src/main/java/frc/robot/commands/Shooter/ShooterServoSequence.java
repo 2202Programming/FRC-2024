@@ -76,7 +76,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
   public void execute() {
     switch (phase) {
       case HasNote:
-        System.out.println("***ShooterSequence:HasNote....***");
+        //System.out.println("***ShooterSequence:HasNote....***");
         shooter.setAngleSetpoint(angle);
         shooter.setRPM(speed, speed); // placeholder
         if (shooter.atSetpoint()) {
@@ -84,7 +84,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
         }
         break;
       case ShooterMotorOn:
-        System.out.println("***ShooterSequence:ShooterMotorOn....***");
+        //System.out.println("***ShooterSequence:ShooterMotorOn....***");
         if (shooter.isAtRPM(100)) {
           transfer.setSpeed(40.0);
           phase = Phase.TransferMotorOn;
