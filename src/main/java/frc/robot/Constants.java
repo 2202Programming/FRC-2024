@@ -115,10 +115,10 @@ public final class Constants {
 
     // TODO: confirm this when start working on 2024 bot Beta
     public static final ChassisInversionSpecs comp2024BotBetaInversionSpecs = new ChassisInversionSpecs(
-        new ModuleInversionSpecs(true, false, false), // FR
-        new ModuleInversionSpecs(false, false, false), // FL
-        new ModuleInversionSpecs(true, false, false), // BR
-        new ModuleInversionSpecs(false, false, false)); // BL
+        new ModuleInversionSpecs(false, true, false), // FR
+        new ModuleInversionSpecs(true, true, false), // FL
+        new ModuleInversionSpecs(false, true, false), // BR
+        new ModuleInversionSpecs(true, true, false)); // BL
 
     public static final ChassisInversionSpecs swerveBotChassisInversionSpecs = new ChassisInversionSpecs(
         new ModuleInversionSpecs(true, false, false), // FR
