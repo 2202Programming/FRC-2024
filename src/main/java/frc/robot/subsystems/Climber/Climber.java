@@ -65,6 +65,10 @@ public class Climber extends SubsystemBase {
     climber.setVelocityCmd(vel);
   }
 
+  public void setClimberPos(double pos){
+    climber.setPosition(pos);
+  }
+
   public double getClimberPos() {
     return climber.getPosition();
   }
