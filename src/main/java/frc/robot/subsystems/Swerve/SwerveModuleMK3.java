@@ -412,7 +412,6 @@ public class SwerveModuleMK3 {
                                                                                                             // direction
                                                                                                             // over
     // turning > 90 degrees
-
     state = m_state; // uncomment to use optimized angle command
     // use position control on angle with INTERNAL encoder, scaled internally for
     // degrees

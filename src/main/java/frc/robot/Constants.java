@@ -97,7 +97,7 @@ public final class Constants {
     //BL: offset 0.0, measured -28.828125, should be 28.828125
     //BR: offset 0.0, measured 115.224609375, should be -115.224609375
     public static final WheelOffsets comp2024BetaBotOffsets = //new WheelOffsets(0.0751953125*180.0, -0.41845703125*180.0, 0.090087890625*180.0, 0.090087890625*180.0);
-      new WheelOffsets(-126.4746, 28.828125, 65.21484, -115.224609);
+      new WheelOffsets(-125.595, 28.125, -114.785, -115.752 );
     public static final ChassisConfig comp2024BotBetaChassisConfig = new ChassisConfig(
         MperFT * (24.875 / 12.0) / 2.0, // x
         MperFT * (20.5 / 12.0) / 2.0, // y
@@ -115,11 +115,10 @@ public final class Constants {
 
     // TODO: confirm this when start working on 2024 bot Beta
     public static final ChassisInversionSpecs comp2024BotBetaInversionSpecs = new ChassisInversionSpecs(
-      //weird fr is driving backwards - should be same as alpha
-        new ModuleInversionSpecs(/*true*/ false, true, false), // FR
-        new ModuleInversionSpecs(false, true, false), // FL
-        new ModuleInversionSpecs(true, true, false), // BR
-        new ModuleInversionSpecs(false, true, false)); // BL
+        new ModuleInversionSpecs(false, true, false), // FR
+        new ModuleInversionSpecs(true, true, false), // FL
+        new ModuleInversionSpecs(false, true, false), // BR
+        new ModuleInversionSpecs(true, true, false)); // BL
 
     public static final ChassisInversionSpecs swerveBotChassisInversionSpecs = new ChassisInversionSpecs(
         new ModuleInversionSpecs(true, false, false), // FR
