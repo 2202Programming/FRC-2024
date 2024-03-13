@@ -384,10 +384,10 @@ public class RobotContainer {
         // operator.povRight().onTrue(new IntakeSwap());
         // operator.leftBumper().whileTrue(new TestIntakeAngle(-25.0));
         operator.y().whileTrue(new TestIntakeAngle(25.0));
-        operator.povRight().onTrue(new MoveToAnglePos(9.63, 10.0));
-        // operator.povLeft().whileTrue(new EjectNote());
-        // operator.leftBumper().onTrue(new CalibratePos(0.0));
-        operator.povLeft().onTrue(new TestShoot(1500.0));
+        // operator.povRight().onTrue(new MoveToAnglePos(9.63, 10.0));
+        // // operator.povLeft().whileTrue(new EjectNote());
+        // // operator.leftBumper().onTrue(new CalibratePos(0.0));
+        // operator.povLeft().onTrue(new TestShoot(1500.0));
         // operator.rightTrigger().whileTrue(new TestShoot(1500.0));
         // operator.rightBumper().whileTrue(new TestShoot(3500.0));
         // SHOOTER
@@ -403,6 +403,8 @@ public class RobotContainer {
         operator.rightTrigger().whileTrue(new TestIntake(-1.0 ));
         operator.povUp().whileTrue(new ClimbVel(6.0));
         operator.povDown().whileTrue(new ClimbVel(-6.0));
+        operator.povLeft().onTrue(new Climb(28.5));
+        operator.povRight().onTrue(new Climb(-1.0));
         // operator.povDown().whileTrue(new TestIntakeAngle(15.0));
         // operator.povUp().whileTrue(new TestIntakeAngle(-15.0));
         // operator.leftBumper(
