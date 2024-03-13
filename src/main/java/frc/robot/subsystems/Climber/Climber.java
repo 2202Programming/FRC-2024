@@ -36,7 +36,7 @@ public class Climber extends SubsystemBase {
 
   public Climber() {
     hwVelPID.copyTo(climber.getController().getPIDController(), 0);
-    climber.setConversionFactor(conversionFactor) // find this
+    climber.setConversionFactor(conversionFactor) // in cm
         .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
         .setVelocityHW_PID(maxVel, maxAccel)
         .setTolerance(posTol, velTol)
