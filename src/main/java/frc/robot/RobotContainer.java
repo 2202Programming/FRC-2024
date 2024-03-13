@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Climber.Climb;
+import frc.robot.commands.Climber.ClimbVel;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.CalibratePos;
 import frc.robot.commands.Intake.EjectNote;
@@ -400,11 +401,13 @@ public class RobotContainer {
         operator.leftTrigger().onTrue(new ShooterAngleSetPos(30.0));
         operator.rightBumper().onTrue(new ShooterAngleSetPos(45.0));
         operator.rightTrigger().whileTrue(new TestIntake(-1.0 ));
-        operator.povDown().whileTrue(new TestIntakeAngle(15.0));
-        operator.povUp().whileTrue(new TestIntakeAngle(-15.0));
-        operator.leftBumper(
+        operator.povUp().whileTrue(new ClimbVel(2));
+        operator.povDown().whileTrue(new ClimbVel(-2.0));
+        // operator.povDown().whileTrue(new TestIntakeAngle(15.0));
+        // operator.povUp().whileTrue(new TestIntakeAngle(-15.0));
+        // operator.leftBumper(
 
-        ).whileTrue(new TestIntake(0.5));
+        // ).whileTrue(new TestIntake(0.5));
 
         // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay
         // in intake

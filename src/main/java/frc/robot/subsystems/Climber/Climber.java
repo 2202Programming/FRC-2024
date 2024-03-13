@@ -20,7 +20,7 @@ import frc.robot.util.PIDFController;
 public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
   final double GearRatio = 1.0/25.0; // have 2 eventually probably lol
-  double conversionFactor = 0; //calculation here
+  double conversionFactor = 3.5 * 2.54 * GearRatio; //calculation here
   final double maxVel = 100.0; // placeholder. cm/s?
   final double maxAccel = 10.0; // placevholder cm/s^2
   double posTol = 2.0; // placeholder (maybe final posTol??) cm
@@ -30,13 +30,13 @@ public class Climber extends SubsystemBase {
   double desiredPos; // cm, 0 is full retract
   double desiredVel;
 
-  PIDController posPID = new PIDController(0, 0, 0);
-  PIDFController hwVelPID = new PIDFController(0, 0, 0, 0);
+  PIDController posPID = new PIDController(7.0, 0, 0);
+  PIDFController hwVelPID = new PIDFController(0.05, 0, 0, 0.0075);
   final NeoServo climber = new NeoServo(Constants.CAN.CLIMBER, posPID, hwVelPID, false); //check invert
 
   public Climber() {
     hwVelPID.copyTo(climber.getController().getPIDController(), 0);
-    climber.setConversionFactor(GearRatio) // find this
+    climber.setConversionFactor(conversionFactor) // find this
         .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
         .setVelocityHW_PID(maxVel, maxAccel)
         .setTolerance(posTol, velTol)
