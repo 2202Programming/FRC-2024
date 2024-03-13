@@ -29,6 +29,7 @@ import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.EjectNote;
+import frc.robot.commands.Intake.InAmp;
 import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeSwap;
@@ -228,7 +229,7 @@ public class RobotContainer {
         new PDPMonitorCmd(); // auto scheduled, runs when disabled
         break;
 
-        // i dont like that test commands and bindings are in here but we need them ig --er
+        // MR LAUFENBERG WHY DO WE NEED ALL OF THIS IN MASTER ITS SO CLUNKY - ER
       case IntakeTesting:
         driver.rightBumper().whileTrue(new IntakeSequence(false));
         driver.povUp().onTrue(new ShooterSequence(true, 2000.0));
@@ -262,11 +263,10 @@ public class RobotContainer {
 
     // Sideboard buttons (Default/Competition)
     var sideboard = dc.SwitchBoard();
-    /*
-     * WIP THESE BINDINGS ARE NOT AT ALL FINAL
-     */
-    sideboard.sw11().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
-    sideboard.sw12().onTrue(new PrintCommand("PlaceholderCMD: Climber Down"));
+    
+    // TODO replace with actual climber cmds one they are merged - er
+    sideboard.sw21().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
+    sideboard.sw22().onTrue(new PrintCommand("PlaceholderCMD: Climber Down"));
 
     configureOperator(bindings);
   }
@@ -275,30 +275,24 @@ public class RobotContainer {
     CommandXboxController operator = dc.Operator();
 
     switch (bindings) {
-      // all the same for now since they are placeholders -- fall through ok
+
       default:
       case DriveTest:
         break;
-      case auto_shooter_test:
       case Competition:
 
-        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor On"));
+      // REAL COMPETITION BINDINGS. DO NOT UNDER ANY CIRCUMSTANCES TOUCH W/O CONSULTING ME. - xoxo ER
+      	operator.a().whileTrue(new IntakeSequence(true));
+        operator.b().whileTrue(new EjectNote()); // eject note from intake
+        operator.x().whileTrue(new InIntake()); // works ---> seq for stay in intake for amp shoot
         operator.y().whileTrue(new IntakeSequence(true));
-        operator.b().whileTrue(new EjectNote());
-        // operator.x().whileTrue(new IntakeTest(-1.0));
-        operator.leftBumper().onTrue(new SetNoteLocation(NoteCommandedLocation.Swap)); 
-        //BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
 
-        // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay in intake
-        // operator.leftTrigger().whileTrue(new InAmp()); //works ---> into amp seq
-        operator.povRight().whileTrue(new IntakeTest(0.35)); 
-        //operator.povLeft().onTrue(new CalibratePos(0.0));
-        operator.povUp().whileTrue(new AngleCalibration(-25.0));
-        // prefer up to calibrate   operator.povDown().whileTrue(new AngleCalibration(25.0));
-        //operator.x().onTrue(new CalibratePos(0.0));
-        operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); //speaker close
-        operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); //amp - NO WORK RN
-        operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
+        operator.povUp().onTrue(new AngleCalibration(-25.0));// intake calibrate
+
+        operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); // speaker close
+
+        operator.leftTrigger().whileTrue(new InAmp()); // shoot into amp bc noah's strength is not in naming conventions
+        operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far 
         
         break;
        
