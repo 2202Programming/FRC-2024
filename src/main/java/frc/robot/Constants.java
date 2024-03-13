@@ -220,8 +220,7 @@ public final class Constants {
     public static final int PIGEON_IMU_CAN = 60;
 
     //Climber
-    public static final int LEFT_CLIMBER = 743; //palceholder
-    public static final int RIGHT_CLIMBER = 742; //placeholder
+    public static final int CLIMBER = 36; //palceholder
 
 
     // Whether to burn flash or not

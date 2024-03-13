@@ -81,10 +81,10 @@ public class Configs {
       .add(Transfer.class)
       .add(ShooterServo.class)
       //TODO: Comment in when we have climber
-      // .add(Climber.class)
-      // .add(Command.class, "ClimberWatcher", () ->{
-      //   return RobotContainer.getSubsystem(Climber.class).getWatcher();
-      // })
+      .add(Climber.class)
+      .add(Command.class, "ClimberWatcher", () ->{
+        return RobotContainer.getSubsystem(Climber.class).getWatcher();
+      })
       .add(Command.class, "ShooterServoWatcher", () -> {
         // cast to get the correct type of shooter
         return (RobotContainer.getSubsystem(ShooterServo.class)).getWatcher();
