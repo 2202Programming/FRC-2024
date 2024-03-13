@@ -25,8 +25,8 @@ public class Climber extends SubsystemBase {
   final double maxAccel = 10.0; // placevholder cm/s^2
   double posTol = 2.0; // placeholder (maybe final posTol??) cm
   double velTol = 1.0; // cm/s
-  final int STALL_CURRENT = 5; // placeholder // units?
-  final int FREE_CURRENT = 15; // placeholder // units?
+  final int STALL_CURRENT = 60; // placeholder // units?
+  final int FREE_CURRENT = 30; // placeholder // units?
   double desiredPos; // cm, 0 is full retract
   double desiredVel;
 

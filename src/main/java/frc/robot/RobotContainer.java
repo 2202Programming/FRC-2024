@@ -401,8 +401,8 @@ public class RobotContainer {
         operator.leftTrigger().onTrue(new ShooterAngleSetPos(30.0));
         operator.rightBumper().onTrue(new ShooterAngleSetPos(45.0));
         operator.rightTrigger().whileTrue(new TestIntake(-1.0 ));
-        operator.povUp().whileTrue(new ClimbVel(2));
-        operator.povDown().whileTrue(new ClimbVel(-2.0));
+        operator.povUp().whileTrue(new ClimbVel(6.0));
+        operator.povDown().whileTrue(new ClimbVel(-6.0));
         // operator.povDown().whileTrue(new TestIntakeAngle(15.0));
         // operator.povUp().whileTrue(new TestIntakeAngle(-15.0));
         // operator.leftBumper(
