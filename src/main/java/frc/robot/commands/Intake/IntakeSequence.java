@@ -29,8 +29,8 @@ public class IntakeSequence extends Command {
   boolean stay_down;
   boolean pneumatics_bot = false;
   int count;
-  final int DONE_COUNT = 15;
-  boolean sensed_note;
+  final int DONE_COUNT = 14;
+    boolean sensed_note;
 
   public enum Phase {
     IntakeDown, WaitingForNote, Finished, HaveNote
@@ -71,10 +71,11 @@ public class IntakeSequence extends Command {
         else{
         intake.setAngleSetpoint(100.0);
         }
-        intake.setIntakeSpeed(0.8); // %
-        transfer.setSpeed(40.0);
+        intake.setIntakeSpeed(0.75); // %
+        transfer.setSpeed(50.0);
         phase = Phase.WaitingForNote;
         break;
+
       case WaitingForNote:
         phase = transfer.senseNote() ? Phase.HaveNote : Phase.WaitingForNote;
         break;

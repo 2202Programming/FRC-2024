@@ -43,6 +43,7 @@ import frc.robot.commands.Shooter.ShooterAngleVelMove;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Shooter.ShooterServoSequence;
 import frc.robot.commands.Shooter.SpeakerShooter;
+import frc.robot.commands.Shooter.TestShoot;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
@@ -143,7 +144,7 @@ public class RobotContainer {
     robotSpecs = new RobotSpecs();
     robotSpecs.mySubsystemConfig.constructAll();
     // Set binding to Competition (or your mode for testing)
-    Bindings bindings = Bindings.new_bot_test;
+    Bindings bindings = Bindings.auto_shooter_test;
 
     // Testing, but also to drive the drivers nuts...
     Command random_lights = new RandomLightsCmd();
@@ -246,7 +247,7 @@ public class RobotContainer {
       // i dont like that test commands and bindings are in here but we need them ig
       // --er
       case IntakeTesting:
-        driver.rightBumper().whileTrue(new IntakeSequence(false));
+        driver.rightBumper().whileTrue(new IntakeSequence(true));
         driver.povUp().onTrue(new ShooterSequence(true, 2000.0));
         driver.povRight().onTrue(new ShooterSequence(true, 1200.0));
         driver.povDown().whileTrue(new ShooterSequence(3200.0)); // RPM
@@ -308,7 +309,7 @@ public class RobotContainer {
       case auto_shooter_test:
         operator.rightTrigger().whileTrue(new ShooterAngleVelMove(4.0));
         operator.leftBumper().whileTrue(new ShooterAngleVelMove(-4.0));
-        operator.a().onTrue(new IntakeSequence(false));
+        operator.a().onTrue(new IntakeSequence(true));
         operator.x().onTrue(new AngleCalibration(-25.0));
         operator.b().onTrue(new AutoShooting(ShootingTarget.Speaker));
         operator.y().whileTrue(new EjectNote());
@@ -404,8 +405,6 @@ public class RobotContainer {
         operator.povDown().whileTrue(new TestIntakeAngle(15.0));
         operator.povUp().whileTrue(new TestIntakeAngle(-15.0));
         operator.leftBumper().whileTrue(new TestIntake(0.5));
-
-        ).whileTrue(new TestIntake(0.5));
 
         // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay
         // in intake
