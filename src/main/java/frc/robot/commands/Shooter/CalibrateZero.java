@@ -15,8 +15,8 @@ import frc.robot.subsystems.ShooterServo;
  */
 public class CalibrateZero extends Command {
     private final ShooterServo shooterServo;
-    private final double VelTol = 0.1; //[cm/s]
-    final int DelayCount = 5;
+    private final double VelTol = 0.5; //[cm/s]
+    final int DelayCount = 20;
     private int count;
     private boolean finished = false;
 

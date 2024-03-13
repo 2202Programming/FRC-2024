@@ -71,7 +71,7 @@ public class IntakeSequence extends Command {
         else{
         intake.setAngleSetpoint(100.0);
         }
-        intake.setIntakeSpeed(0.4); // %
+        intake.setIntakeSpeed(0.8); // %
         transfer.setSpeed(40.0);
         phase = Phase.WaitingForNote;
         break;
