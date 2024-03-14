@@ -311,7 +311,7 @@ public class RobotContainer {
       case auto_shooter_test:
         operator.rightTrigger().whileTrue(new ShooterAngleVelMove(4.0));
         operator.leftBumper().whileTrue(new ShooterAngleVelMove(-4.0));
-        operator.a().onTrue(new IntakeSequence(true));
+        operator.a().onTrue(new IntakeSequence(false));
         operator.x().onTrue(new AngleCalibration(-25.0));
         operator.b().onTrue(new AutoShooting(ShootingTarget.Speaker));
         operator.y().whileTrue(new EjectNote());
@@ -376,7 +376,7 @@ public class RobotContainer {
 
       case new_bot_test:
         // INTAKE & TRANSFER
-        operator.a().onTrue(new InIntake(false)); // works for both modes
+        operator.a().onTrue(new InIntake(true)); // works for both modes
         // operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0));
         // operator.x().onTrue(new InIntake(true));
         operator.x().onTrue(new AngleCalibration(-25.0));
