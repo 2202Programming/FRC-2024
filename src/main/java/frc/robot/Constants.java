@@ -219,6 +219,9 @@ public final class Constants {
     // IMU
     public static final int PIGEON_IMU_CAN = 60;
 
+    //Climber
+    public static final int CLIMBER = 36; //palceholder
+
 
     // Whether to burn flash or not
     public static final boolean BURN_FLASH = false; // swerve-mk3
