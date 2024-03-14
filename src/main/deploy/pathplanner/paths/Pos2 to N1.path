@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": -0.890508952378754,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Pos2",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 0.14473312097470342,
     "velocity": 0
   },
   "useDefaultConstraints": true
