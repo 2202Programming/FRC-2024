@@ -30,6 +30,7 @@ import frc.robot.commands.Climber.Climb;
 import frc.robot.commands.Climber.ClimbVel;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.EjectNote;
+import frc.robot.commands.Intake.InAmp;
 import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeSwap;
@@ -45,7 +46,6 @@ import frc.robot.commands.Shooter.ShooterAngleVelMove;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Shooter.ShooterServoSequence;
 import frc.robot.commands.Shooter.SpeakerShooter;
-import frc.robot.commands.Shooter.TestShoot;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.commands.Swerve.RobotCentricDrive;
@@ -238,7 +238,6 @@ public class RobotContainer {
         break;
 
       case Competition:
-
         driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.y().onTrue(new AllianceAwareGyroReset(false));
 
@@ -291,23 +290,29 @@ public class RobotContainer {
 
     // Sideboard buttons (Default/Competition)
     var sideboard = dc.SwitchBoard();
-    /*
-     * WIP THESE BINDINGS ARE NOT AT ALL FINAL
-     */
-    sideboard.sw11().onTrue(new Climb(0.0).andThen(new Climb(100.0)));
-    sideboard.sw12().onTrue(new Climb(0.0));
+    sideboard.sw21().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
+    sideboard.sw22().onTrue(new PrintCommand("PlaceholderCMD: Climber Down"));
 
     configureOperator(bindings);
   }
 
   private void configureOperator(Bindings bindings) {
     CommandXboxController operator = dc.Operator();
+    switch (bindings) {      
+      case Competition:
+        /***************************************************************************************/
+        // REAL COMPETITION BINDINGS. DO NOT UNDER ANY CIRCUMSTANCES TOUCH W/O CONSULTING ME. - xoxo ER
+      	operator.a().onTrue(new IntakeSequence(true));
+        operator.b().whileTrue(new EjectNote()); // eject note from intake
+        operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot
+        operator.povUp().onTrue(new AngleCalibration(-25.0));// intake calibrate
+        operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); // speaker close
 
-    switch (bindings) {
-      // all the same for now since they are placeholders -- fall through ok
-      default:
-      case DriveTest:
+        operator.leftTrigger().whileTrue(new InAmp()); // shoot into amp bc noah's strength is not in naming conventions
+        operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far         
+        /****************************************************************************************/
         break;
+ 
       case auto_shooter_test:
         operator.rightTrigger().whileTrue(new ShooterAngleVelMove(4.0));
         operator.leftBumper().whileTrue(new ShooterAngleVelMove(-4.0));
@@ -319,30 +324,6 @@ public class RobotContainer {
         operator.rightBumper().onTrue(new ShooterAngleSetPos(28.6));
         operator.povDown().onTrue(new ShooterAngleSetPos(30));
         operator.povLeft().onTrue(new CalibrateZero());
-        break;
-      case Competition:
-
-        // operator.rightBumper().onTrue(new PrintCommand("PlaceholderCMD: Intake Motor
-        // On"));
-        operator.y().whileTrue(new IntakeSequence(true));
-        operator.b().whileTrue(new EjectNote());
-        // operator.x().whileTrue(new IntakeTest(-1.0));
-        operator.leftBumper().onTrue(new IntakeSwap());
-        // BELOW 3 PIT ALIGNMENT OF INTAKE (Emergency driver calibration)
-
-        // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay
-        // in intake
-        // operator.leftTrigger().whileTrue(new InAmp()); //works ---> into amp seq
-        operator.povRight().whileTrue(new TestIntake(0.35));
-        // operator.povLeft().onTrue(new CalibratePos(0.0));
-        operator.povUp().whileTrue(new AngleCalibration(-25.0));
-        // prefer up to calibrate operator.povDown().whileTrue(new
-        // AngleCalibration(25.0));
-        // operator.x().onTrue(new CalibratePos(0.0));
-        operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); // speaker close
-        operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); // amp - NO WORK RN
-        operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
-
         break;
 
       case Shooter_test:
@@ -418,6 +399,8 @@ public class RobotContainer {
         // in intake
         // operator.leftTrigger().whileTrue(new InAmp()); //works ---> into amp seq
         // operator.povRight().whileTrue(new IntakeTest(0.35));
+        break;
+      default:
         break;
     }
   }
