@@ -146,7 +146,7 @@ public class RobotContainer {
     robotSpecs = new RobotSpecs();
     robotSpecs.mySubsystemConfig.constructAll();
     // Set binding to Competition (or your mode for testing)
-    Bindings bindings = Bindings.auto_shooter_test;
+    Bindings bindings = Bindings.new_bot_test;
 
     // Testing, but also to drive the drivers nuts...
     Command random_lights = new RandomLightsCmd();
@@ -385,10 +385,11 @@ public class RobotContainer {
         operator.leftTrigger().onTrue(new ShooterAngleSetPos(30.0));
         operator.rightBumper().onTrue(new ShooterAngleSetPos(45.0));
         operator.rightTrigger().whileTrue(new TestIntake(-1.0 ));
-        operator.povUp().whileTrue(new ClimbVel(6.0));
-        operator.povDown().whileTrue(new ClimbVel(-6.0));
-        operator.povLeft().onTrue(new Climb(28.5));
-        operator.povRight().onTrue(new Climb(-1.0));
+        operator.povUp().whileTrue(new ClimbVel(10.0));
+        operator.povDown().whileTrue(new ClimbVel(-10.0));
+        operator.povLeft().onTrue(new Climb(28.0));
+        operator.povRight().onTrue(new Climb(-2.5));
+        operator.leftBumper().onTrue(new Climb(-0.0));
         // operator.povDown().whileTrue(new TestIntakeAngle(15.0));
         // operator.povUp().whileTrue(new TestIntakeAngle(-15.0));
         // operator.leftBumper(
