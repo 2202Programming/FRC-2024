@@ -268,8 +268,11 @@ public class RobotContainer {
         driver.y().onTrue(new AllianceAwareGyroReset(true));
         driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
         //I KNOW THIS IS BAD BUT I DONT REALLY CARE IF IT WORKS
-        driver.povUp().onTrue(new SpeakerShooter( 3500.0));
-        driver.povLeft().onTrue(new SpeakerShooter( 3250.0));
+        driver.povUp().onTrue(new ShooterServoSequence(28.52,3000.0));
+        driver.povLeft().onTrue(new ShooterServoSequence(46.0,3000.0));
+        
+        //driver.povUp().onTrue(new SpeakerShooter( 3500.0));
+        //driver.povLeft().onTrue(new SpeakerShooter( 3250.0));
         driver.povRight().onTrue(new SpeakerShooter( 3000.0));
         driver.povDown().onTrue(new SpeakerShooter( 2750.0));
         driver.a().onTrue(new SpeakerShooter( 2500.0));

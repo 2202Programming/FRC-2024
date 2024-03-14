@@ -13,6 +13,7 @@ import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.RotateUntilSeeTags;
 import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
+import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 
 public class AutoShooting extends SequentialCommandGroup {
@@ -32,7 +33,7 @@ public class AutoShooting extends SequentialCommandGroup {
 
     double tagID = determineTag(target);
 
-    addCommands(new RotateUntilSeeTags((int)tagID));
+    addCommands(new RotateUntilSeeTags((int) tagID));
     addCommands(new FaceToTag(tagID));
     if (target == ShootingTarget.Speaker) {
       addCommands(new SpeakerShooter());
@@ -43,15 +44,15 @@ public class AutoShooting extends SequentialCommandGroup {
       addCommands(new ShooterServoSequence(45.0, 1000.0));
     }
   }
-  
-  /**Test code */
+
+  /** Test code using speakerShooter */
   public AutoShooting(ShootingTarget target, double rpm) {
     drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
     limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
 
     double tagID = determineTag(target);
 
-    addCommands(new RotateUntilSeeTags((int)tagID));
+    addCommands(new RotateUntilSeeTags((int) tagID));
     addCommands(new FaceToTag(tagID));
     if (target == ShootingTarget.Speaker) {
       addCommands(new SpeakerShooter(rpm));
@@ -60,6 +61,26 @@ public class AutoShooting extends SequentialCommandGroup {
     } else {
       // Trap
       addCommands(new ShooterServoSequence(45.0, 1000.0));
+    }
+
+  }
+
+  /** Face to and shooter sequence just for temporary */
+  public AutoShooting(ShootingTarget target, double rpm, double angle) {
+    drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
+    limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
+
+    double tagID = determineTag(target);
+
+    addCommands(new RotateUntilSeeTags((int) tagID));
+    addCommands(new FaceToTag(tagID));
+    if (target == ShootingTarget.Speaker) {
+      addCommands(new ShooterServoSequence(angle,rpm));
+    } else if (target == ShootingTarget.Amp) {
+      addCommands(new ShooterServoSequence(angle, 800.0));
+    } else {
+      // Trap
+      addCommands(new ShooterServoSequence(angle, 1000.0));
     }
   }
 
