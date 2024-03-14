@@ -38,6 +38,10 @@ public final class Constants {
   public static final class DriveTrain {
     // motor constraints
     public static final double motorMaxRPM = 5600; // motor limit
+    //see https://docs.revrobotics.com/sparkmax/software-resources/configuration-parameters
+    public static final int driveStallAmp = 30;
+    public static final int angleStallAmp = 20;
+    public static final int freeAmp = 20;
 
     // Constraints on speeds enforeced in DriveTrain
     public static final double kMaxSpeed = 21.0 * MperFT; // [m/s]
