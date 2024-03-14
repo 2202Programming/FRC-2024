@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Pos2 ShootingPose"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "shoot"
@@ -22,15 +28,28 @@
           "data": {
             "commands": [
               {
-                "type": "path",
-                "data": {
-                  "pathName": "Pos2 to N2"
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "pickup"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Pos2 to N2"
+                      }
+                    }
+                  ]
                 }
               }
             ]

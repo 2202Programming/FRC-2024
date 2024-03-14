@@ -173,8 +173,10 @@ public class RobotContainer {
 
     // NamedCommands for use in PathPlanner scripts.
     NamedCommands.registerCommand("pickup", new IntakeSequence(true));
-    NamedCommands.registerCommand("shoot", new ShooterServoSequence(45.0,2000.0));
-    NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker));
+    //NamedCommands.registerCommand("shoot", new ShooterServoSequence(45.0,2000.0));
+    //Elvis
+    NamedCommands.registerCommand("shoot", new ShooterServoSequence(46.0,3000.0));
+    NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker,3200.0,38));
     NamedCommands.registerCommand("RotateTo", new RotateTo());
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
