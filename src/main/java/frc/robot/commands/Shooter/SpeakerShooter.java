@@ -91,7 +91,7 @@ public class SpeakerShooter extends InstantCommand {
     // get shooter angle
     shooter_angle = Math.atan2((SPEAKER_HEIGHT - SHOOTER_Z_OFFSET) , (radius - SHOOTER_Y_OFFSET)) * 180 /Math.PI + angle_adjustment;
     System.out.println("Before:" + shooter_angle);
-    shooter_angle = MathUtil.clamp(shooter_angle, 28.52, 46);
+    shooter_angle = MathUtil.clamp(shooter_angle, 28.52, 46.5);
     // get RPM @see src/main/python/regression.py
     // if test mode, use the rpm from parameter
     if (!test) {
