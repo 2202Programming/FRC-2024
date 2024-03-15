@@ -30,8 +30,8 @@ public class Climber extends SubsystemBase {
   double desiredPos; // cm, 0 is full retract
   double desiredVel;
 
-  PIDController posPID = new PIDController(7.0, 0, 0);
-  PIDFController hwVelPID = new PIDFController(0.05, 0, 0, 0.0075);
+  PIDController posPID = new PIDController(4.0, 0.0015, 0.125);
+  PIDFController hwVelPID = new PIDFController(0.02, 0.0, 0, 0.0285);
   final NeoServo climber = new NeoServo(Constants.CAN.CLIMBER, posPID, hwVelPID, false); //check invert
 
   public Climber() {
@@ -42,6 +42,7 @@ public class Climber extends SubsystemBase {
         .setTolerance(posTol, velTol)
         .setMaxVelocity(maxVel)
         .burnFlash();
+    climber.setPosition(0.0);
   }
 
   /**

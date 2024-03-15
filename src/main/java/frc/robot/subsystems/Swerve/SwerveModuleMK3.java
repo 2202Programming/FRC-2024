@@ -137,6 +137,10 @@ public class SwerveModuleMK3 {
     // SparkMax PID values
     DriveTrain.anglePIDF.copyTo(angleMotorPID, kSlot); // position mode
     DriveTrain.drivePIDF.copyTo(driveMotorPID, kSlot); // velocity mode
+
+    // new current limits
+    driveMotor.setSmartCurrentLimit(DriveTrain.driveStallAmp, DriveTrain.freeAmp);
+    angleMotor.setSmartCurrentLimit(DriveTrain.angleStallAmp, DriveTrain.freeAmp);
     sleep(100);
 
     // burn the motor flash if BURN_FLASH is true in frc.robot.Constants.CAN
