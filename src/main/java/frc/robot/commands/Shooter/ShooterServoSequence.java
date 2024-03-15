@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Transfer;
 
@@ -27,9 +26,9 @@ public class ShooterServoSequence extends BlinkyLightUser {
   /** Creates a new ShooterSequence. */
   // use simple Shooter, even if ShooterServo is created because this command can
   // work with either.
+  boolean stay;
   final ShooterServo shooter;
   final Transfer transfer;
-  final Intake intake;
   final int DONE_COUNT = 100; // TODO: find actual value (around 10-20)
   double speed;
   double angle;
@@ -41,14 +40,18 @@ public class ShooterServoSequence extends BlinkyLightUser {
     HasNote, ShooterMotorOn, TransferMotorOn, Finished;
   }
 
-  public ShooterServoSequence(double angle, double speed) {
+  public ShooterServoSequence(double angle, double speed, boolean stay) {
+    this.stay = stay;
     this.angle = angle;
     this.speed = speed;
     this.shooter = RobotContainer.getSubsystem(ShooterServo.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
-    this.intake = RobotContainer.getSubsystem(Intake.class);
-    addRequirements(shooter, transfer, intake);
+    addRequirements(shooter, transfer);
     // Use addRequirements() here to declare subsystem dependencies.
+  }
+  public ShooterServoSequence(double angle, double speed) {
+    this(angle, speed, false);
+
   }
 
   // Called when the command is initially scheduled.
@@ -58,7 +61,6 @@ public class ShooterServoSequence extends BlinkyLightUser {
     System.out.println("***ShooterSequence:init....***");
     count = 0;
     phase = Phase.HasNote;
-    intake.setMaxVelocity(60.0);
   }
 
   public Color8Bit colorProvider() {
@@ -111,9 +113,8 @@ public class ShooterServoSequence extends BlinkyLightUser {
     transfer.setHasNote(false);
     transfer.setSpeed(0.0);
     shooter.setRPM(0.0, 0.0);
-    //3/14/24 don't change angle shooter.setAngleSetpoint(ShooterServo.MIN_DEGREES);
-    intake.setMaxVelocity(120.0); // [deg/s] 2.sec to retract
-    // intake.setAngleSetpoint(0.0);
+    if(!stay){shooter.setAngleSetpoint(ShooterServo.MIN_DEGREES);
+    }
   }
 
   // Returns true when the command should end.
