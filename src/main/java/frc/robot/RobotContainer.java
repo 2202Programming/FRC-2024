@@ -24,10 +24,12 @@ import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Climber.Climb;
 import frc.robot.commands.Climber.ClimbVel;
+import frc.robot.commands.Climber.ClimberMoveCalibrate;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.InAmp;
@@ -56,6 +58,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
+import frc.robot.subsystems.hid.SwitchboardController.SBButton;
 import frc.robot.util.RobotSpecs;
 
 /**
@@ -300,20 +303,29 @@ public class RobotContainer {
     CommandXboxController operator = dc.Operator();
     switch (bindings) {      
       case Competition:
+          var sideboard = dc.SwitchBoard();
+          Trigger ManualShoot = sideboard.sw16();
+          Trigger ClimberCalibrate = sideboard.sw11();
+          Trigger ShooterCalibrate = sideboard.sw12();
         /***************************************************************************************/
-        // REAL COMPETITION BINDINGS. DO NOT UNDER ANY CIRCUMSTANCES TOUCH W/O CONSULTING ME. - xoxo ER
+        // REAL COMPETITION BINDINGS. don't change. final for wi regional.
       	operator.a().whileTrue(new IntakeSequence(false));
         operator.b().whileTrue(new EjectNote()); // eject note from intake
         operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot
         operator.povUp().onTrue(new AngleCalibration(-25.0));// intake calibrate
-        operator.rightBumper().onTrue(new AutoShooting(ShootingTarget.Speaker, 45.0, 2000.0)); // speaker close
-        operator.rightTrigger().onTrue(new AutoShooting(ShootingTarget.Speaker, 29.0, 3500.0));
+        ManualShoot.and(operator.rightBumper()).onTrue(new ShooterServoSequence(45.0, 2000.0)); // switchboard active (manual rotate)
+        ManualShoot.and(operator.rightTrigger()).onTrue(new ShooterServoSequence(29.0, 3500.0));
+        ManualShoot.negate().and(operator.rightBumper()).onTrue(new AutoShooting(ShootingTarget.Speaker, 45.0, 2000.0)); //no switchboard (default rotateto)
+        ManualShoot.negate().and(operator.rightTrigger()).onTrue(new AutoShooting(ShootingTarget.Speaker, 29.0, 3500.0));
+        ShooterCalibrate.and(operator.povUp()).whileTrue(new ShooterAngleVelMove(2.0)); //calibration commands for this and below
+        ShooterCalibrate.and(operator.povDown()).whileTrue(new ShooterAngleVelMove(-2.0));
+        ClimberCalibrate.and(operator.povUp()).whileTrue(new ClimbVel(2.0));
+        ClimberCalibrate.and(operator.povDown().whileTrue(new ClimbVel(-2.0)));
+;        break;
 
 
         // operator.leftTrigger().whileTrue(new InAmp()); // shoot into amp bc noah's strength is not in naming conventions   ---- if we use     
         /****************************************************************************************/
-        break;
- 
       case auto_shooter_test:
         operator.rightTrigger().whileTrue(new ShooterAngleVelMove(4.0));
         operator.leftBumper().whileTrue(new ShooterAngleVelMove(-4.0));
