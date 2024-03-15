@@ -307,12 +307,13 @@ public class RobotContainer {
           Trigger ManualShoot = sideboard.sw16();
           Trigger ClimberCalibrate = sideboard.sw11();
           Trigger ShooterCalibrate = sideboard.sw12();
+          Trigger IntakeCalibrate = sideboard.sw13();
         /***************************************************************************************/
         // REAL COMPETITION BINDINGS. don't change. final for wi regional.
       	operator.a().whileTrue(new IntakeSequence(false));
         operator.b().whileTrue(new EjectNote()); // eject note from intake
         operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot
-        operator.povUp().onTrue(new AngleCalibration(-25.0));// intake calibrate
+        IntakeCalibrate.and(operator.povUp()).onTrue(new AngleCalibration(-25.0));// intake calibrate
         ManualShoot.and(operator.rightBumper()).onTrue(new ShooterServoSequence(45.0, 2000.0)); // switchboard active (manual rotate)
         ManualShoot.and(operator.rightTrigger()).onTrue(new ShooterServoSequence(29.0, 3500.0));
         ManualShoot.negate().and(operator.rightBumper()).onTrue(new AutoShooting(ShootingTarget.Speaker, 45.0, 2000.0)); //no switchboard (default rotateto)
