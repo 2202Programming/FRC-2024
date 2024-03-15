@@ -11,6 +11,7 @@ import frc.robot.subsystems.ShooterServo;
 public class ShooterAngleSetPos extends Command {
   ShooterServo shooter;
   double desired_pos;
+  boolean done;
   /** Creates a new ShooterAngleCalibrate. */
   public ShooterAngleSetPos(double desired_pos) {
     shooter = RobotContainer.getSubsystem(ShooterServo.class);
@@ -21,7 +22,8 @@ public class ShooterAngleSetPos extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooter.setAngleSetpoint(desired_pos);
+    shooter.setExtensionPosition(desired_pos);
+    done = true;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,9 +38,6 @@ public class ShooterAngleSetPos extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if(shooter.atSetpoint()){
-      return true;
-    }
-    return false;
+    return done;
   }
 }
