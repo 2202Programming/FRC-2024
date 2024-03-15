@@ -111,7 +111,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
     transfer.setHasNote(false);
     transfer.setSpeed(0.0);
     shooter.setRPM(0.0, 0.0);
-    shooter.setAngleSetpoint(ShooterServo.MIN_DEGREES);
+    //3/14/24 don't change angle shooter.setAngleSetpoint(ShooterServo.MIN_DEGREES);
     intake.setMaxVelocity(120.0); // [deg/s] 2.sec to retract
     // intake.setAngleSetpoint(0.0);
   }
