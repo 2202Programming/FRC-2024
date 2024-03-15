@@ -3,6 +3,7 @@ package frc.robot.commands.Swerve;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -12,6 +13,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveTrain;
+import frc.robot.Constants.Tag_Pose;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.Intake;
@@ -30,9 +32,17 @@ public class TargetCentricDrive extends Command {
   final HID_Xbox_Subsystem dc;
   private final Limelight_Subsystem limelight;
   private final Intake intake;
-  
+
+  private PIDController blindPid;
+  private final double blindPid_kp = 0.05;
+  private final double blindPid_ki = 0.0;
+  private final double blindPid_kd = 0.0;
+  private double targetRot;
+  private Pose2d currentPose;
+  private Translation2d targetPose; // Position want to face to
+
   PIDController centeringPid;
-  double centering_kP = 3.5; // Can be increased more a little bit but too much makes it giggly when its far
+  double centering_kP = 3.5;
   double centering_kI = 0;
   double centering_kD = 0;
   double centeringPidOutput = 2.0;
@@ -60,29 +70,52 @@ public class TargetCentricDrive extends Command {
     this.kinematics = drivetrain.getKinematics();
     this.TagID = TagID;
     limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
+
+    targetPose = Tag_Pose.tagLocations[(int) TagID];
+
+    // PID for when tag is in view
     centeringPid = new PIDController(centering_kP, centering_kI, centering_kD);
     centeringPid.setTolerance(pos_tol, vel_tol);
+
+    // PID for when tag is not visable
+    blindPid = new PIDController(blindPid_kp, blindPid_ki, blindPid_kd);
+    blindPid.enableContinuousInput(-180.0, 180.0);
+    blindPid.setTolerance(pos_tol, vel_tol);
+
   }
 
   @Override
   public void initialize() {
+
   }
 
   @Override
   public void execute() {
-    if(checkForTarget(TagID) && intake.hasNote()){ //computer controls rotation/facing if sees target and has note.
-      calculateRotFromTarget();
-    } 
-    else{
-      calculateRotFromJoystick(); //otherwise human controls rotation
+
+    if (intake.hasNote()) {
+      if (checkForTarget(TagID)) { // has note, can see target tag, close loop via limelight
+        calculateRotFromTarget();
+      } else { // has note, but can't see target, use odometery
+        calculateRotFromOdometery();
+      }
+    } else {
+      calculateRotFromJoystick(); // otherwise human controls rotation
     }
-    calculate();
+    calculate();  // X and Y from joysticks, and rotation from one of methods above
     drivetrain.drive(output_states);
   }
 
   @Override
   public void end(boolean interrupted) {
     drivetrain.stop();
+  }
+
+  private void calculateRotFromOdometery() {
+        currentPose = drivetrain.getPose();
+        targetRot = (Math.atan2(currentPose.getTranslation().getY() - targetPose.getY(),
+            currentPose.getTranslation().getX() - targetPose.getX())) // [-pi, pi]
+            * 180 / Math.PI - 180;
+        rot = blindPid.calculate(currentPose.getRotation().getDegrees(), targetRot);
   }
 
   private void calculateRotFromTarget() {
@@ -119,6 +152,7 @@ public class TargetCentricDrive extends Command {
   }
 
   void calculate() {
+    // X and Y from joysticks; rot from previous calculations
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     xSpeed = xspeedLimiter.calculate(dc.getVelocityX()) * DriveTrain.kMaxSpeed;
