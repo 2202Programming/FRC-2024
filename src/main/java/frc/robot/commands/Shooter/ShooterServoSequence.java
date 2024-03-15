@@ -87,7 +87,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
         }
         break;
       case ShooterMotorOn:
-        if (shooter.isAtRPM(50)) {
+        if (shooter.isAtRPM(100)) {
           transfer.setSpeed(40.0);
           phase = Phase.TransferMotorOn;
           System.out.println("***ShooterSequence:TransferMotorOn....***");

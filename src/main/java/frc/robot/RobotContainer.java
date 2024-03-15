@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -29,10 +28,8 @@ import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Climber.Climb;
 import frc.robot.commands.Climber.ClimbVel;
-import frc.robot.commands.Climber.ClimberMoveCalibrate;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.EjectNote;
-import frc.robot.commands.Intake.InAmp;
 import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.IntakeSwap;
@@ -58,7 +55,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
-import frc.robot.subsystems.hid.SwitchboardController.SBButton;
 import frc.robot.util.RobotSpecs;
 
 /**
@@ -176,8 +172,10 @@ public class RobotContainer {
 
     // NamedCommands for use in PathPlanner scripts.
     NamedCommands.registerCommand("pickup", new IntakeSequence(true));
-    NamedCommands.registerCommand("shoot", new ShooterServoSequence(45.0,2000.0));
-    NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker));
+    //NamedCommands.registerCommand("shoot", new ShooterServoSequence(45.0,2000.0));
+    //Elvis
+    NamedCommands.registerCommand("shoot", new ShooterServoSequence(46.0,3000.0));
+    NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker,38,3200.0));
     NamedCommands.registerCommand("RotateTo", new RotateTo());
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -242,7 +240,7 @@ public class RobotContainer {
 
       case Competition:
         driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
-        driver.y().onTrue(new AllianceAwareGyroReset(false));
+        driver.y().onTrue(new AllianceAwareGyroReset(true));
 
         // Start any watcher commands
         new PDPMonitorCmd(); // auto scheduled, runs when disabled
@@ -271,8 +269,11 @@ public class RobotContainer {
         driver.y().onTrue(new AllianceAwareGyroReset(true));
         driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
         //I KNOW THIS IS BAD BUT I DONT REALLY CARE IF IT WORKS
-        driver.povUp().onTrue(new SpeakerShooter( 3500.0));
-        driver.povLeft().onTrue(new SpeakerShooter( 3250.0));
+        driver.povUp().onTrue(new ShooterServoSequence(28.52,3000.0));
+        driver.povLeft().onTrue(new ShooterServoSequence(46.0,3000.0));
+        
+        //driver.povUp().onTrue(new SpeakerShooter( 3500.0));
+        //driver.povLeft().onTrue(new SpeakerShooter( 3250.0));
         driver.povRight().onTrue(new SpeakerShooter( 3000.0));
         driver.povDown().onTrue(new SpeakerShooter( 2750.0));
         driver.a().onTrue(new SpeakerShooter( 2500.0));
@@ -295,6 +296,7 @@ public class RobotContainer {
     var sideboard = dc.SwitchBoard();
     sideboard.sw21().onTrue(new Climb(28.0));
     sideboard.sw22().onTrue(new Climb(-2.0));
+    sideboard.sw23().onTrue(new MoveToAnglePos(Intake.DownPos, Intake.TravelUp));
 
     configureOperator(bindings);
   }
@@ -310,14 +312,16 @@ public class RobotContainer {
           Trigger IntakeCalibrate = sideboard.sw13();
         /***************************************************************************************/
         // REAL COMPETITION BINDINGS. don't change. final for wi regional.
-      	operator.a().whileTrue(new IntakeSequence(false));
+      	operator.a().whileTrue(new IntakeSequence(false)
+                      .andThen(new ShooterAngleSetPos(40.0))  );
         operator.b().whileTrue(new EjectNote()); // eject note from intake
         operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot
         IntakeCalibrate.and(operator.povUp()).onTrue(new AngleCalibration(-25.0));// intake calibrate
-        ManualShoot.and(operator.rightBumper()).onTrue(new ShooterServoSequence(45.0, 2000.0)); // switchboard active (manual rotate)
-        ManualShoot.and(operator.rightTrigger()).onTrue(new ShooterServoSequence(29.0, 3500.0));
-        ManualShoot.negate().and(operator.rightBumper()).onTrue(new AutoShooting(ShootingTarget.Speaker, 45.0, 2000.0)); //no switchboard (default rotateto)
-        ManualShoot.negate().and(operator.rightTrigger()).onTrue(new AutoShooting(ShootingTarget.Speaker, 29.0, 3500.0));
+        IntakeCalibrate.and(operator.povDown()).whileTrue(new TestIntake(0.0));
+        ManualShoot.and(operator.rightBumper()).onTrue(new ShooterServoSequence(46.5, 2800.0)); // switchboard active (manual rotate)
+        ManualShoot.and(operator.rightTrigger()).onTrue(new ShooterServoSequence(35.0, 3000.0));
+        ManualShoot.negate().and(operator.rightBumper()).onTrue(new AutoShooting(ShootingTarget.Speaker, 45.0, 3000.0)); //no switchboard (default rotateto)
+        ManualShoot.negate().and(operator.rightTrigger()).onTrue(new AutoShooting(ShootingTarget.Speaker, 34,3200.0));
         ShooterCalibrate.and(operator.povUp()).whileTrue(new ShooterAngleVelMove(2.0)); //calibration commands for this and below
         ShooterCalibrate.and(operator.povDown()).whileTrue(new ShooterAngleVelMove(-2.0));
         ClimberCalibrate.and(operator.povUp()).whileTrue(new ClimbVel(2.0));
