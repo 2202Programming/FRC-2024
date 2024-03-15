@@ -28,6 +28,8 @@ import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.RandomLightsCmd;
 import frc.robot.commands.Climber.Climb;
 import frc.robot.commands.Climber.ClimbVel;
+import frc.robot.commands.Climber.ClimberCalibrate;
+import frc.robot.commands.Climber.ClimberMoveCalibrate;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.InIntake;
@@ -36,6 +38,7 @@ import frc.robot.commands.Intake.IntakeSwap;
 import frc.robot.commands.Intake.MoveToAnglePos;
 import frc.robot.commands.Intake.TestIntake;
 import frc.robot.commands.Intake.TestIntakeAngle;
+import frc.robot.commands.Shooter.CalibrateShooterAngle;
 import frc.robot.commands.Shooter.CalibrateZero;
 import frc.robot.commands.Shooter.ContinousAngleTracker;
 import frc.robot.commands.Shooter.PneumaticsSequence;
@@ -324,9 +327,12 @@ public class RobotContainer {
         ManualShoot.negate().and(operator.rightTrigger()).onTrue(new AutoShooting(ShootingTarget.Speaker, 34,3200.0));
         ShooterCalibrate.and(operator.povUp()).whileTrue(new ShooterAngleVelMove(2.0)); //calibration commands for this and below
         ShooterCalibrate.and(operator.povDown()).whileTrue(new ShooterAngleVelMove(-2.0));
+        ShooterCalibrate.and(operator.povLeft().onTrue(new ShooterAngleSetPos(0.0)));
         ClimberCalibrate.and(operator.povUp()).whileTrue(new ClimbVel(2.0));
         ClimberCalibrate.and(operator.povDown().whileTrue(new ClimbVel(-2.0)));
-;        break;
+        ClimberCalibrate.and(operator.povLeft().onTrue(new ClimberCalibrate()));
+
+            break;
 
 
         // operator.leftTrigger().whileTrue(new InAmp()); // shoot into amp bc noah's strength is not in naming conventions   ---- if we use     
