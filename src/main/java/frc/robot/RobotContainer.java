@@ -146,7 +146,7 @@ public class RobotContainer {
     robotSpecs = new RobotSpecs();
     robotSpecs.mySubsystemConfig.constructAll();
     // Set binding to Competition (or your mode for testing)
-    Bindings bindings = Bindings.new_bot_test;
+    Bindings bindings = Bindings.auto_shooter_test;
 
     // Testing, but also to drive the drivers nuts...
     Command random_lights = new RandomLightsCmd();

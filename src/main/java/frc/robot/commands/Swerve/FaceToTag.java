@@ -146,7 +146,7 @@ public class FaceToTag extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return centeringPid.atSetpoint() || timer.hasElapsed(5.0);// end if it takes more than 3 sec checkForTarget to make sure
+    return centeringPid.atSetpoint() || timer.hasElapsed(1.0);// end if it takes more than 3 sec checkForTarget to make sure
   }
 
   /**
