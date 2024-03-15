@@ -146,7 +146,7 @@ public class RobotContainer {
     robotSpecs = new RobotSpecs();
     robotSpecs.mySubsystemConfig.constructAll();
     // Set binding to Competition (or your mode for testing)
-    Bindings bindings = Bindings.new_bot_test;
+    Bindings bindings = Bindings.Competition;
 
     // Testing, but also to drive the drivers nuts...
     Command random_lights = new RandomLightsCmd();
@@ -290,8 +290,8 @@ public class RobotContainer {
 
     // Sideboard buttons (Default/Competition)
     var sideboard = dc.SwitchBoard();
-    sideboard.sw21().onTrue(new PrintCommand("PlaceholderCMD: Climber UP"));
-    sideboard.sw22().onTrue(new PrintCommand("PlaceholderCMD: Climber Down"));
+    sideboard.sw21().onTrue(new Climb(28.0));
+    sideboard.sw22().onTrue(new Climb(-2.0));
 
     configureOperator(bindings);
   }
@@ -302,14 +302,15 @@ public class RobotContainer {
       case Competition:
         /***************************************************************************************/
         // REAL COMPETITION BINDINGS. DO NOT UNDER ANY CIRCUMSTANCES TOUCH W/O CONSULTING ME. - xoxo ER
-      	operator.a().onTrue(new IntakeSequence(true));
+      	operator.a().whileTrue(new IntakeSequence(false));
         operator.b().whileTrue(new EjectNote()); // eject note from intake
         operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot
         operator.povUp().onTrue(new AngleCalibration(-25.0));// intake calibrate
-        operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); // speaker close
+        operator.rightBumper().onTrue(new AutoShooting(ShootingTarget.Speaker, 45.0, 2000.0)); // speaker close
+        operator.rightTrigger().onTrue(new AutoShooting(ShootingTarget.Speaker, 29.0, 3500.0));
 
-        operator.leftTrigger().whileTrue(new InAmp()); // shoot into amp bc noah's strength is not in naming conventions
-        operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far         
+
+        // operator.leftTrigger().whileTrue(new InAmp()); // shoot into amp bc noah's strength is not in naming conventions   ---- if we use     
         /****************************************************************************************/
         break;
  
