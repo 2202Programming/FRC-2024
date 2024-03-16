@@ -44,7 +44,7 @@ public final class Constants {
     public static final int freeAmp = 20;
 
     // Constraints on speeds enforeced in DriveTrain
-    public static final double kMaxSpeed = 23.0 * MperFT; // [m/s]  // dpl 3/15 was 21
+    public static final double kMaxSpeed = 15.0 * MperFT; // [m/s]  // dpl 3/15 was 21
     public static final double kMaxAngularSpeed = 2 * Math.PI; // [rad/s]
     // TODO: FROM LAST YEAR, NEED TO REVIEW
     /****

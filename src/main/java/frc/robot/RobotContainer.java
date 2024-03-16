@@ -296,7 +296,7 @@ public class RobotContainer {
 
     // Sideboard buttons (Default/Competition)
     var sideboard = dc.SwitchBoard();
-    sideboard.sw21().onTrue(new Climb(28.0));
+    sideboard.sw21().onTrue(new Climb(29.0));
     sideboard.sw22().onTrue(new Climb(-2.0));
     sideboard.sw23().onTrue(new MoveToAnglePos(Intake.DownPos, Intake.TravelUp));
 
