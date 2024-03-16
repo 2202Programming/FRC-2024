@@ -78,12 +78,13 @@ public class FaceToTag extends Command {
     timer = new Timer();
     this.TagID = TagID;
     kinematics = drivetrain.getKinematics();
-    no_turn_states = kinematics.toSwerveModuleStates(zero_cs);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    no_turn_states = kinematics.toSwerveModuleStates(zero_cs);
+    vision_out = kinematics.toSwerveModuleStates(zero_cs);
     timer.restart();
     if (!checkForTarget(TagID)) {// Avoid error time lag of running isFinished()
       hasTarget = false;
