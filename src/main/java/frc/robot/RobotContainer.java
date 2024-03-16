@@ -315,15 +315,15 @@ public class RobotContainer {
         /***************************************************************************************/
         // REAL COMPETITION BINDINGS. don't change. final for wi regional.
       	operator.a().whileTrue(new IntakeSequence(false)
-                      .andThen(new ShooterAngleSetPos(40.0))  );
+                      .andThen(new ShooterAngleSetPos(36.0))  );
         operator.b().whileTrue(new EjectNote()); // eject note from intake
         operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot
         IntakeCalibrate.and(operator.povUp()).onTrue(new AngleCalibration(-25.0));// intake calibrate
         IntakeCalibrate.and(operator.povDown()).whileTrue(new TestIntake(0.0));
         ManualShoot.and(operator.rightBumper()).onTrue(new ShooterServoSequence(46.5, 2800.0)); // switchboard active (manual rotate)
-        ManualShoot.and(operator.rightTrigger()).onTrue(new ShooterServoSequence(37.0, 3000.0)); //was 35 
+        ManualShoot.and(operator.rightTrigger()).onTrue(new ShooterServoSequence(36.0, 3000.0)); //was 35 
         ManualShoot.negate().and(operator.rightBumper()).onTrue(new AutoShooting(ShootingTarget.Speaker, 45.0, 3000.0)); //no switchboard (default rotateto)
-        ManualShoot.negate().and(operator.rightTrigger()).onTrue(new AutoShooting(ShootingTarget.Speaker, 34,3200.0));
+        ManualShoot.negate().and(operator.rightTrigger()).onTrue(new AutoShooting(ShootingTarget.Speaker, 36.0,3200.0));
         ShooterCalibrate.and(operator.povUp()).whileTrue(new ShooterAngleVelMove(2.0)); //calibration commands for this and below
         ShooterCalibrate.and(operator.povDown()).whileTrue(new ShooterAngleVelMove(-2.0));
         ShooterCalibrate.and(operator.povLeft().onTrue(new CalibrateSetZero()));
