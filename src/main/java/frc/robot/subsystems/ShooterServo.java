@@ -12,7 +12,7 @@ public class ShooterServo extends Shooter {
 
   final static double ShooterAngleGearRatio = 350.0;
   final static double ShooterAngleRadius = 12.0; // [cm]
-  final static int STALL_CURRENT = 0; // [amps]
+  final static int STALL_CURRENT = 30; // [amps]
   final static int FREE_CURRENT = 25;
   final static double SERVO_MIN = 0.0; // [cm]
   final static double SERVO_MAX = 12.0; // [cm]
