@@ -4,27 +4,30 @@
 
 package frc.robot.subsystems.Climber;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.Climber.Climb;
 import frc.robot.commands.utility.WatcherCmd;
-import frc.robot.subsystems.Intake;
 import frc.robot.util.NeoServo;
-import edu.wpi.first.math.MathUtil;
 import frc.robot.util.PIDFController;
 
 public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
+  public final static double StartPosition = 0.0; //[cm]
+  public final static double ExtendPosition = 28.0; //[cm]
+  public final static double ClimbPosition = -2.5; //[cm]
+  public final static double ClimbCalibrateVel = 2.0; //[cm/s]
+
   final double GearRatio = 1.0/25.0; // have 2 eventually probably lol
   double conversionFactor = 3.5 * 2.54 * GearRatio; //calculation here
   final double maxVel = 100.0; // placeholder. cm/s?
   final double maxAccel = 10.0; // placevholder cm/s^2
-  double posTol = 2.0; // placeholder (maybe final posTol??) cm
-  double velTol = 1.0; // cm/s
+  double posTol = 0.25; // [cm]
+  double velTol = .50; // [cm/s]
   final int STALL_CURRENT = 60; // placeholder // units?
   final int FREE_CURRENT = 30; // placeholder // units?
   double desiredPos; // cm, 0 is full retract
@@ -32,17 +35,17 @@ public class Climber extends SubsystemBase {
 
   PIDController posPID = new PIDController(4.0, 0.0015, 0.125);
   PIDFController hwVelPID = new PIDFController(0.02, 0.0, 0, 0.0285);
-  final NeoServo climber = new NeoServo(Constants.CAN.CLIMBER, posPID, hwVelPID, false); //check invert
+  final NeoServo servo = new NeoServo(Constants.CAN.CLIMBER, posPID, hwVelPID, false); //check invert
 
   public Climber() {
-    hwVelPID.copyTo(climber.getController().getPIDController(), 0);
-    climber.setConversionFactor(conversionFactor) // in cm
+    hwVelPID.copyTo(servo.getController().getPIDController(), 0);
+    servo.setConversionFactor(conversionFactor) // in cm
         .setSmartCurrentLimit(STALL_CURRENT, FREE_CURRENT)
         .setVelocityHW_PID(maxVel, maxAccel)
         .setTolerance(posTol, velTol)
         .setMaxVelocity(maxVel)
         .burnFlash();
-    climber.setPosition(0.0);
+    servo.setPosition(StartPosition);
   }
 
   /**
@@ -50,9 +53,9 @@ public class Climber extends SubsystemBase {
    *
    * @param pos Desired position in cm from fully retracted position
    */
-  public void setArmHeight(double pos) {
+  public void setSetpoint(double pos) {
     desiredPos = pos;
-    climber.setSetpoint(pos);
+    servo.setSetpoint(pos);
   }
 
   // lines 46-56 are for testing only
@@ -63,23 +66,23 @@ public class Climber extends SubsystemBase {
    */
   public void setArmVelocity(double vel) {
     desiredVel = vel;
-    climber.setVelocityCmd(vel);
+    servo.setVelocityCmd(vel);
   }
 
   public void setClimberPos(double pos){
-    climber.setPosition(pos);
+    servo.setPosition(pos);
   }
 
   public double getClimberPos() {
-    return climber.getPosition();
+    return servo.getPosition();
   }
 
   public double getClimberVelocity() {
-    return climber.getVelocity();
+    return servo.getVelocity();
   }
 
   public boolean atSetpoint() {
-    return climber.atSetpoint();
+    return servo.atSetpoint();
   }
 
   public void ClampVel(double vel) {
@@ -99,11 +102,11 @@ public class Climber extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    climber.periodic();
+    servo.periodic();
   }
 
   public double getCurrent() {
-    return climber.getController().getOutputCurrent();
+    return servo.getController().getOutputCurrent();
   }
 
    /*
