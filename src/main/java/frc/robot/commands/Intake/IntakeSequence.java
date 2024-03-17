@@ -69,7 +69,7 @@ public class IntakeSequence extends Command {
           intake.setAngleSetpoint(91.0);
         }
         else{
-        intake.setAngleSetpoint(100.0);
+        intake.setAngleSetpoint(105.0);
         }
         intake.setIntakeSpeed(0.75); // %
         transfer.setSpeed(50.0);
