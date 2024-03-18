@@ -31,6 +31,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
   final int DONE_COUNT = (int) Math.ceil((NoteTravelDist / TransferSpeed) / Constants.DT);
 
   double speed;
+  double percent_rpm = 0.03; //3%
   double angle;
   int count = 0;
   Phase phase;
@@ -79,7 +80,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
   public void execute() {
     switch (phase) {
       case WaitingForSetpoints:
-        if (shooter.atSetpoint() && shooter.isAtRPM(100.0)) {
+        if (shooter.atSetpoint() && shooter.isAtRPM(speed*percent_rpm)) {
           transfer.setSpeed(40.0);
           System.out.println("***ShooterSequence:Setpoints reached, transfer moving ....***");
           phase = Phase.WaitingForFinish;
