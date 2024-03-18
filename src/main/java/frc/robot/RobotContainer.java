@@ -43,12 +43,6 @@ public class RobotContainer {
   final SwerveDrivetrain drivetrain;
   final SendableChooser<Command> autoChooser;
 
-  // singleton accessor for robot public sub-systems
-  @Deprecated
-  public static RobotContainer RC() {
-    return rc;
-  }
-
   // The following methods are unchecked, but the SystemConfig class does
   // check the types.
   // Use the string name when there are multiple instance of the subsystem
@@ -126,18 +120,15 @@ public class RobotContainer {
     drivetrain = getSubsystem(SwerveDrivetrain.class);
     dc = getSubsystem("DC");
 
-    // uncomment to enable shooter angle tracking
-    @SuppressWarnings("unused")
-    var angleTracker = new ContinousAngleTracker();
-    // angleTracker.schedule();
-
     /* Setup the commands below */
     if (drivetrain != null) {
       drivetrain.setDefaultCommand(new FieldCentricDrive());
     }
 
     new PDPMonitorCmd(); // auto scheduled, runs when disabled
-
+    // uncomment to enable shooter angle tracking
+    new ContinousAngleTracker(true);  //auto schedules
+  
     // make some noise if we are not on Competion bindings
     if (bindings != Bindings.Competition) {
       System.out.println(

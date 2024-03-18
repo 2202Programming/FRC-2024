@@ -111,13 +111,11 @@ public final class Constants {
         8.14);;
     
     public static final ChassisInversionSpecs comp2024BotAlphaInversionSpecs = new ChassisInversionSpecs(
-
         new ModuleInversionSpecs(true, true, false), // FR
         new ModuleInversionSpecs(false, true, false), // FL
         new ModuleInversionSpecs(true, true, false), // BR
         new ModuleInversionSpecs(false, true, false)); // BL
 
-    // TODO: confirm this when start working on 2024 bot Beta
     public static final ChassisInversionSpecs comp2024BotBetaInversionSpecs = new ChassisInversionSpecs(
         new ModuleInversionSpecs(false, true, false), // FR
         new ModuleInversionSpecs(true, true, false), // FL
