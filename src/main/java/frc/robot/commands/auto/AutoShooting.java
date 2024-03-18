@@ -13,10 +13,15 @@ import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.RotateUntilSeeTags;
 import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
-import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 
 public class AutoShooting extends SequentialCommandGroup {
+
+  final double AmpRPM = 800.0;
+  final double AmpAngle = 45.0;
+  
+  final double TrapRPM = 1000.0;
+  final double TrapAngle = 45.0;
 
   private Limelight_Subsystem limelight;
   SwerveDrivetrain drivetrain;
@@ -38,15 +43,16 @@ public class AutoShooting extends SequentialCommandGroup {
     if (target == ShootingTarget.Speaker) {
       addCommands(new SpeakerShooter());
     } else if (target == ShootingTarget.Amp) {
-      addCommands(new ShooterServoSequence(45.0, 800.0));
+      addCommands(new ShooterServoSequence(AmpAngle, AmpRPM));
     } else {
       // Trap
-      addCommands(new ShooterServoSequence(45.0, 1000.0));
+      addCommands(new ShooterServoSequence(TrapAngle, TrapRPM));
     }
   }
 
   /** Test code using speakerShooter */
   public AutoShooting(ShootingTarget target, double rpm) {
+    this(target);
     drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
     limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
 
@@ -57,10 +63,10 @@ public class AutoShooting extends SequentialCommandGroup {
     if (target == ShootingTarget.Speaker) {
       addCommands(new SpeakerShooter(rpm));
     } else if (target == ShootingTarget.Amp) {
-      addCommands(new ShooterServoSequence(45.0, 800.0));
+      addCommands(new ShooterServoSequence(AmpAngle, AmpRPM));
     } else {
       // Trap
-      addCommands(new ShooterServoSequence(45.0, 1000.0));
+      addCommands(new ShooterServoSequence(TrapAngle, TrapRPM));
     }
 
   }
@@ -76,10 +82,10 @@ public class AutoShooting extends SequentialCommandGroup {
     if (target == ShootingTarget.Speaker) {
       addCommands(new ShooterServoSequence(angle, rpm));
     } else if (target == ShootingTarget.Amp) {
-      addCommands(new ShooterServoSequence(45.0, 800.0));
+      addCommands(new ShooterServoSequence(AmpAngle, AmpRPM));
     } else {
       // Trap
-      addCommands(new ShooterServoSequence(45.0, 1000.0));
+      addCommands(new ShooterServoSequence(TrapAngle, TrapRPM));
     }
   }
 
