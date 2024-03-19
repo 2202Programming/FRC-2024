@@ -50,7 +50,6 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public double intake_speed = 0.0;
   double desired_intake_speed = 0.0;
-  final double kFF = (1.0/187.8); //max vel 100% pwr abt
   // Intake Angle, a servo
   final NeoServo angle_servo;
 

@@ -198,6 +198,7 @@ public class BindingsOther {
             case new_bot_test:
                 // // INTAKE & TRANSFER
                 operator.x().whileTrue(new TestShoot(3000.0));
+                operator.a().whileTrue(new TestIntake(140.0));
                 // operator.a().onTrue(new InIntake(true)); // works for both modes
                 // // operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0));
                 // // operator.x().onTrue(new InIntake(true));
