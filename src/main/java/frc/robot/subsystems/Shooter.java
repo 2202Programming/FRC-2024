@@ -29,8 +29,8 @@ public class Shooter extends SubsystemBase {
   final RelativeEncoder leftEncoder;
   final RelativeEncoder rightEncoder;
   final double FACTOR = 1.0;
-  final double left_kF = 1.0 / 5500.0;
-  final double right_kF = 1.0 / 5000.0;
+  final double left_kF = 1.0 / 5100.0;
+  final double right_kF = 1.0 / 4700-.0;
 
   private DoubleSolenoid shooterAngle; // can be replaced w/ servo in derived class
 
