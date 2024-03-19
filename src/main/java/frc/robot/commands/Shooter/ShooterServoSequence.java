@@ -31,7 +31,8 @@ public class ShooterServoSequence extends BlinkyLightUser {
   final int DONE_COUNT = (int) Math.ceil((NoteTravelDist / TransferSpeed) / Constants.DT);
 
   double speed;
-  double rpm_tolerance = 0.03; // 3%
+  double rpm_tolerance = 0.005; // was 3%, .5% used for testing accuracy 
+  //TODO .5% worked but was slow speed it up
   double angle;
   int count = 0;
   Phase phase;
