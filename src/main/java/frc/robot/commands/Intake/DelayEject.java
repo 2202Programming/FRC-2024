@@ -21,7 +21,7 @@ public class DelayEject extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.setIntakeSpeed(-0.5);
+    intake.setIntakeSpeed(Intake.RollerEjectSpeed);
     count = 0;
   }
 

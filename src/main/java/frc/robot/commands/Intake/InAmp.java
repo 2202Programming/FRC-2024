@@ -29,9 +29,9 @@ public class InAmp extends Command {
   @Override
   public void execute() {
     if(intake.angleAtSetpoint()){
-      intake.setIntakeSpeed(-1.0);
+      intake.setIntakeSpeed(Intake.RollerAmpSpeed); //[cm/s]
     }
-    if(intake.atVelocity()){
+    if(intake.rollerAtVelocity()){
       count++;
     }
   }
