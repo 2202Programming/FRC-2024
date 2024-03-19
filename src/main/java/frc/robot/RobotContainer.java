@@ -108,6 +108,7 @@ public class RobotContainer {
     RobotContainer.rc = this;
     robotSpecs = new RobotSpecs();
     robotSpecs.mySubsystemConfig.constructAll();
+    autoChooser = RegisteredCommands.RegisterCommands();
 
     // Testing, but also to drive the drivers nuts...
     Command random_lights = new RandomLightsCmd();
@@ -141,8 +142,6 @@ public class RobotContainer {
       BindingsCompetition.ConfigueCompetition(dc);
     }
 
-    // Finally, setup the autoChooser
-    autoChooser = RegisteredCommands.RegisterCommands();
   }
 
   /**
