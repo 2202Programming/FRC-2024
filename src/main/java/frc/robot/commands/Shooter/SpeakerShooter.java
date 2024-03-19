@@ -5,19 +5,21 @@
 package frc.robot.commands.Shooter;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.Tag_Pose;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterServo;
-import frc.robot.subsystems.ShooterServo.ShooterServoWatcherCmd;
+//import frc.robot.subsystems.ShooterServo.ShooterServoWatcherCmd;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 
 public class SpeakerShooter extends InstantCommand {
   private SwerveDrivetrain drivetrain;
-  private ShooterServo shooter;
-  private ShooterServoWatcherCmd shooterNT;
+  // private ShooterServoWatcherCmd shooterNT;
+
   // Keep these constants here, not needed elsewhere
   // TODO:Check this value. - Estimate
   private final double SHOOTER_Y_OFFSET = 0.55; // [m] pivotal point of shooter from the center
@@ -39,7 +41,7 @@ public class SpeakerShooter extends InstantCommand {
   private double shooter_angle;
   private double dX;
   private double dY;
-  private boolean test = false;
+  private boolean rpm_given = false;
   private double rpm;
 
   /**
@@ -56,60 +58,58 @@ public class SpeakerShooter extends InstantCommand {
    */
   public SpeakerShooter() {
     drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
-    shooter = RobotContainer.getSubsystem(ShooterServo.class);
-    addRequirements(shooter);
+    rpm_given = false;
+    // addRequirements(shooter) not be needed, this cmd schedules another
   }
 
   /**
-   * For testing purpose setting rpm by parameter
+   * Using a given RPM purpose setting rpm by parameter
    * 
    * @param rpm shooter rpm
    */
   public SpeakerShooter(double rpm) {
-    test = true;
+    this();
+    rpm_given = true;
     this.rpm = rpm;
-    drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
-    shooter = RobotContainer.getSubsystem(ShooterServo.class);
-    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // get robot pose in other coordinates
+    // get robot pose in field coordinates
+    Pose2d pose = drivetrain.getPose();
+    Translation2d pos = pose.getTranslation();
+
     if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
-      dX = Math.abs(drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID7.getX());
-      dY = Math.abs(drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID7.getY());
+      dX = Math.abs(pos.getX() - Tag_Pose.ID7.getX());
+      dY = Math.abs(pos.getY() - Tag_Pose.ID7.getY());
     } else {
-      dX = Math.abs(drivetrain.getPose().getTranslation().getX() - Tag_Pose.ID4.getX());
-      dY = Math.abs(drivetrain.getPose().getTranslation().getY() - Tag_Pose.ID4.getY());
+      dX = Math.abs(pos.getX() - Tag_Pose.ID4.getX());
+      dY = Math.abs(pos.getY() - Tag_Pose.ID4.getY());
     }
     radius = Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
     rot = Math.abs(Math.atan2(dY, dX)) * 180 / Math.PI;
     System.out.println("SpeakerShooter---Shooting Position: [" + radius + "," + rot + "]");
 
     // get shooter angle
-    shooter_angle = Math.atan2((SPEAKER_HEIGHT - SHOOTER_Z_OFFSET) , (radius - SHOOTER_Y_OFFSET)) * 180 /Math.PI + angle_adjustment;
-    System.out.println("Before:" + shooter_angle);
-    shooter_angle = MathUtil.clamp(shooter_angle, 28.52, 46);
+    shooter_angle = Math.atan2((SPEAKER_HEIGHT - SHOOTER_Z_OFFSET), (radius - SHOOTER_Y_OFFSET)) * 180 / Math.PI
+        + angle_adjustment;
+    System.out.println("SpeakerShooter---Before:" + shooter_angle);
+    shooter_angle = MathUtil.clamp(shooter_angle, ShooterServo.MIN_DEGREES, ShooterServo.MAX_DEGREES);
     // get RPM @see src/main/python/regression.py
-    // if test mode, use the rpm from parameter
-    if (!test) {
+    // if rpm_given mode, use the rpm from parameter
+    if (!rpm_given) {
       rpm = 7205.19 + -3266.57 * dX + -3266.57 * dY + 935.96 * Math.pow(dX, 2) + 731.54 * dX * dY
           + 935.96 * Math.pow(dY, 2);
       rpm = MathUtil.clamp(rpm, 2000, 3500);
     }
 
     Command shooterCmd = new ShooterServoSequence(shooter_angle, rpm);
-
     shooterCmd.schedule();
-    
-    System.out.println("SpeakerShooter---Shooter Angle: " + shooter_angle + " [deg]");
-    System.out.println("SpeakerShooter---Shooter RPM: " + rpm + " [rpm]");
-  }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
+    System.out.println("SpeakerShooter--- SSS scheduled @ Angle: " +
+        shooter_angle + " [deg]" +
+        " RPM: " + rpm + " [rpm]");
+
   }
 }

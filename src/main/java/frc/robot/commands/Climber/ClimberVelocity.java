@@ -6,45 +6,34 @@ package frc.robot.commands.Climber;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Climber.Climber;
+import frc.robot.subsystems.Climber;
 
-public class ClimbVel extends Command {
+public class ClimberVelocity extends Command {
   Climber climber;
   double speed;
-  
 
   /**
-   * Create a new ClimbVel Command
+   * 
    * The arm will move the entire time this command is running, therefore
    * this command should be run are whileTrue() only
+   * 
    * @param speed Arm movment vel, cm/s
    */
-  public ClimbVel(double speed) {
+  public ClimberVelocity(double speed) {
     climber = RobotContainer.getSubsystem(Climber.class);
     this.speed = speed;
-    // Use addRequirements() here to declare subsystem dependencies.
-    // addRequirements(climber);
+    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     climber.setArmVelocity(speed);
-    }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-climber.setArmVelocity(0.0);
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+    climber.setArmVelocity(0.0);
   }
 }

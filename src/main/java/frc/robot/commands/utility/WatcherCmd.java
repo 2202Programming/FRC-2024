@@ -11,7 +11,7 @@ import frc.robot.util.NetworkTableUtil;
 
 public abstract class WatcherCmd extends Command implements NetworkTableUtil{
   /** Creates a new Watcher. */
-   final NetworkTable table;
+  final NetworkTable table;
   final String name;
    
   public WatcherCmd() {

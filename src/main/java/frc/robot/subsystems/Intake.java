@@ -85,7 +85,7 @@ public class Intake extends SubsystemBase {
   // TODO: alpha use this with true
 
   public Intake(boolean altEncoder) { // TODO: Get values
-    final int STALL_CURRENT = 5; // [amp]
+    final int STALL_CURRENT = 30; // [amp]
     final int FREE_CURRENT = 20; // [amp]
     double maxVel = 200.0; // [deg/s]
     final double maxAccel = 200.0; // [deg/s^2]

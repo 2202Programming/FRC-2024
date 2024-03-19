@@ -38,9 +38,13 @@ public final class Constants {
   public static final class DriveTrain {
     // motor constraints
     public static final double motorMaxRPM = 5600; // motor limit
+    //see https://docs.revrobotics.com/sparkmax/software-resources/configuration-parameters
+    public static final int driveStallAmp = 40;  //dpl 3/15 was 30
+    public static final int angleStallAmp = 20;
+    public static final int freeAmp = 20;
 
     // Constraints on speeds enforeced in DriveTrain
-    public static final double kMaxSpeed = 21.0 * MperFT; // [m/s]
+    public static final double kMaxSpeed = 13.5 * MperFT; // [m/s]  // dpl 3/15 was 21 (23 pre wi comp change)
     public static final double kMaxAngularSpeed = 2 * Math.PI; // [rad/s]
     // TODO: FROM LAST YEAR, NEED TO REVIEW
     /****
@@ -107,13 +111,11 @@ public final class Constants {
         8.14);;
     
     public static final ChassisInversionSpecs comp2024BotAlphaInversionSpecs = new ChassisInversionSpecs(
-
         new ModuleInversionSpecs(true, true, false), // FR
         new ModuleInversionSpecs(false, true, false), // FL
         new ModuleInversionSpecs(true, true, false), // BR
         new ModuleInversionSpecs(false, true, false)); // BL
 
-    // TODO: confirm this when start working on 2024 bot Beta
     public static final ChassisInversionSpecs comp2024BotBetaInversionSpecs = new ChassisInversionSpecs(
         new ModuleInversionSpecs(false, true, false), // FR
         new ModuleInversionSpecs(true, true, false), // FL

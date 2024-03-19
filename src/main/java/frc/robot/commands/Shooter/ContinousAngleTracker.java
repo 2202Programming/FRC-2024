@@ -2,27 +2,31 @@ package frc.robot.commands.Shooter;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.Tag_Pose;
 import frc.robot.RobotContainer;
+import frc.robot.commands.utility.TargetWatcherCmd;
 import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.util.DistanceInterpretor;
 
-public class ContinousAngleTracker extends Command {
+public class ContinousAngleTracker extends TargetWatcherCmd {
     final Transfer transfer;
     final ShooterServo shooter;
     final SwerveDrivetrain drivetrain;
 
     // Auto angle move based on distance to speaker Tag
-    private double distanceToTarget;
-    private double targetAngle;
+    double targetDistance;
+    double targetAngle;
+    double targetRPM;
+
+    boolean dont_move;
+
     private DistanceInterpretor distanceInterpretor;
     private Translation2d targetTranslation2d;
 
-    public ContinousAngleTracker() {
+    public ContinousAngleTracker(boolean dont_move) {
+        this.dont_move = dont_move;
         shooter = RobotContainer.getSubsystem(ShooterServo.class);
         transfer = RobotContainer.getSubsystem(Transfer.class);
         drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
@@ -45,7 +49,11 @@ public class ContinousAngleTracker extends Command {
 
     @Override
     public void execute() {
-        calculateTargetAngle();
+        super.execute();  // calls calculate, does network table work.
+
+        // for testing, this command can run, NT will update, but won't move shooter
+        if (dont_move)
+            return;
 
         if (transfer.hasNote()) {
             shooter.setAngleSetpoint(targetAngle);
@@ -56,11 +64,22 @@ public class ContinousAngleTracker extends Command {
         }
     }
 
-    private void calculateTargetAngle() {
-        distanceToTarget = drivetrain.getDistanceToTranslation(targetTranslation2d);
-        targetAngle = distanceInterpretor.getAngleFromDistance(distanceToTarget);
+    // Implementations for TargetWatcherCmd
+    public double getTargetAngle(){
+        return targetAngle;
+    }
 
-        SmartDashboard.putNumber("Distance to Target", distanceToTarget);
-        SmartDashboard.putNumber("Goal Angle for target", targetAngle);
+    public double getTargetRPM(){
+        return targetRPM;
+    }
+    public double getTargetDistance(){
+        return targetDistance;
+    }
+
+    @Override
+    public void calculate() {
+        targetDistance = drivetrain.getDistanceToTranslation(targetTranslation2d);
+        targetAngle = distanceInterpretor.getAngleFromDistance(targetDistance);
+        targetRPM = 3000.0;  //TODO calc rpm
     }
 }

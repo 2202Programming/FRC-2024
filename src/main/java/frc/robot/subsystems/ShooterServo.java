@@ -16,8 +16,8 @@ public class ShooterServo extends Shooter {
   final static int FREE_CURRENT = 25;
   final static double SERVO_MIN = 0.0; // [cm]
   final static double SERVO_MAX = 12.0; // [cm]
-  final static double maxVel = 20.0; // [cm/sec]
-  final static double maxAccel = 10.0; // [cm/sec^2]
+  final static double maxVel = 40.0; // [cm/sec]
+  final static double maxAccel = 20.0; // [cm/sec^2]
   final static double posTol = 1.0; // [cm]
   final static double velTol = 1.0; // [cm/s]
   final static double MIN_POSITION = 20.2184; // [cm]

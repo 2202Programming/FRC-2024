@@ -33,10 +33,10 @@ public class Shooter extends SubsystemBase {
 
   private DoubleSolenoid shooterAngle; // can be replaced w/ servo in derived class
 
-  private double desiredLeftRPM;
-  private double desiredRightRPM;
-  private double currentLeftRPM;
-  private double currentRightRPM;
+  private double cmdLeftRPM;
+  private double cmdRightRPM;
+  private double measLeftRPM;
+  private double measRightRPM;
 
   PIDFController pidConsts = new PIDFController(0.00005, 0.00000009, 0.0, kF);  //slot 0  - normal
   PIDFController pidConsts_freeSpin = new PIDFController(0.0, 0.0, 0.0, 0.0);  //slot 1 - free spin
@@ -58,13 +58,13 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    currentLeftRPM = leftEncoder.getVelocity();
-    currentRightRPM = rightEncoder.getVelocity();
+    measLeftRPM = leftEncoder.getVelocity();
+    measRightRPM = rightEncoder.getVelocity();
   }
 
-  public boolean isAtRPM(int tolerance) {
-    return Math.abs(desiredLeftRPM - currentLeftRPM) < tolerance
-        && Math.abs(desiredRightRPM - currentRightRPM) < tolerance;
+  public boolean isAtRPM(double tolerance) {
+    return Math.abs(cmdLeftRPM - measLeftRPM) < tolerance
+        && Math.abs(cmdRightRPM - measRightRPM) < tolerance;
   }
 
 
@@ -79,8 +79,8 @@ public class Shooter extends SubsystemBase {
     
     hw_leftPid.setReference(leftRPM, ControlType.kVelocity, slot);
     hw_rightPid.setReference(rightRPM, ControlType.kVelocity, slot);
-    desiredLeftRPM = leftRPM;
-    desiredRightRPM = rightRPM;
+    cmdLeftRPM = leftRPM;
+    cmdRightRPM = rightRPM;
   }
 
   public void deploy() {
@@ -116,10 +116,10 @@ public class Shooter extends SubsystemBase {
 
   // Network tables
   class ShooterWatcherCmd extends WatcherCmd {
-    NetworkTableEntry nt_desiredLeftMotorRPM;
-    NetworkTableEntry nt_currentLeftMotorRPM;
-    NetworkTableEntry nt_desiredRightMotorRPM;
-    NetworkTableEntry nt_currentRightMotorRPM;
+    NetworkTableEntry nt_cmdLeftMotorRPM;
+    NetworkTableEntry nt_measLeftMotorRPM;
+    NetworkTableEntry nt_cmdRightMotorRPM;
+    NetworkTableEntry nt_measRightMotorRPM;
     NetworkTableEntry nt_kP;
     NetworkTableEntry nt_kF;
 
@@ -131,19 +131,19 @@ public class Shooter extends SubsystemBase {
 
     public void ntcreate() {
       NetworkTable table = getTable();
-      nt_desiredLeftMotorRPM = table.getEntry("desiredLeftMotorRPM");
-      nt_currentLeftMotorRPM = table.getEntry("currentLeftMotorRPM");
-      nt_desiredRightMotorRPM = table.getEntry("desiredRightMotorRPM");
-      nt_currentRightMotorRPM = table.getEntry("currentRightMotorRPM");
+      nt_cmdLeftMotorRPM = table.getEntry("cmdLeftMotorRPM");
+      nt_measLeftMotorRPM = table.getEntry("measLeftMotorRPM");
+      nt_cmdRightMotorRPM = table.getEntry("cmdRightMotorRPM");
+      nt_measRightMotorRPM = table.getEntry("measRightMotorRPM");
       nt_kP = table.getEntry("kP");
       nt_kF = table.getEntry("kF");
     }
 
     public void ntupdate() {
-      nt_desiredLeftMotorRPM.setDouble(desiredLeftRPM);
-      nt_currentLeftMotorRPM.setDouble(currentLeftRPM);
-      nt_desiredRightMotorRPM.setDouble(desiredRightRPM);
-      nt_currentRightMotorRPM.setDouble(currentRightRPM);
+      nt_cmdLeftMotorRPM.setDouble(cmdLeftRPM);
+      nt_measLeftMotorRPM.setDouble(measLeftRPM);
+      nt_cmdRightMotorRPM.setDouble(cmdRightRPM);
+      nt_measRightMotorRPM.setDouble(measRightRPM);
       nt_kP.setDouble(hw_leftPid.getP());
       nt_kF.setDouble(hw_leftPid.getFF());
     }

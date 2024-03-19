@@ -4,12 +4,12 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CAN;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.PneumaticsControl;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Transfer;
-import frc.robot.subsystems.Climber.Climber;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Sensors.Sensors_Subsystem;
 //import frc.robot.subsystems.Swerve.DTMonitorCmd;
@@ -49,7 +49,6 @@ public class Configs {
         return RobotContainer.getSubsystem(Intake.class).getWatcher();
       })
       .add(Shooter.class, "SHOOTER")
-      // .add(ShooterServo.class, "ShooterServo")
       .add(Command.class, "ShooterWatcher", () -> {
         // cast to get the correct type of shooter
         return ((Shooter) RobotContainer.getSubsystem("SHOOTER")).getWatcher();
@@ -80,9 +79,8 @@ public class Configs {
       })
       .add(Transfer.class)
       .add(ShooterServo.class)
-      //TODO: Comment in when we have climber
       .add(Climber.class)
-      .add(Command.class, "ClimberWatcher", () ->{
+      .add(Command.class, "ClimberWatcher", () -> {
         return RobotContainer.getSubsystem(Climber.class).getWatcher();
       })
       .add(Command.class, "ShooterServoWatcher", () -> {

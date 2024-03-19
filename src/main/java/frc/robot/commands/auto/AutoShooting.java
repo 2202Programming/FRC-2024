@@ -17,6 +17,12 @@ import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 
 public class AutoShooting extends SequentialCommandGroup {
 
+  final double AmpRPM = 800.0;
+  final double AmpAngle = 45.0;
+  
+  final double TrapRPM = 1000.0;
+  final double TrapAngle = 45.0;
+
   private Limelight_Subsystem limelight;
   SwerveDrivetrain drivetrain;
 
@@ -32,20 +38,40 @@ public class AutoShooting extends SequentialCommandGroup {
 
     double tagID = determineTag(target);
 
-    addCommands(new RotateUntilSeeTags((int)tagID));
+    addCommands(new RotateUntilSeeTags((int) tagID));
     addCommands(new FaceToTag(tagID));
     if (target == ShootingTarget.Speaker) {
       addCommands(new SpeakerShooter());
     } else if (target == ShootingTarget.Amp) {
-      addCommands(new ShooterServoSequence(45.0, 800.0));
+      addCommands(new ShooterServoSequence(AmpAngle, AmpRPM));
     } else {
       // Trap
-      addCommands(new ShooterServoSequence(45.0, 1000.0));
+      addCommands(new ShooterServoSequence(TrapAngle, TrapRPM));
     }
   }
-  
-  /**Test code */
+
+  /** Test code using speakerShooter */
   public AutoShooting(ShootingTarget target, double rpm) {
+    this(target);
+    drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
+    limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
+
+    double tagID = determineTag(target);
+
+    addCommands(new RotateUntilSeeTags((int) tagID));
+    addCommands(new FaceToTag(tagID));
+    if (target == ShootingTarget.Speaker) {
+      addCommands(new SpeakerShooter(rpm));
+    } else if (target == ShootingTarget.Amp) {
+      addCommands(new ShooterServoSequence(AmpAngle, AmpRPM));
+    } else {
+      // Trap
+      addCommands(new ShooterServoSequence(TrapAngle, TrapRPM));
+    }
+
+  }
+    /**Test code */
+  public AutoShooting(ShootingTarget target, double angle, double rpm) {
     drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
     limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
 
@@ -54,12 +80,12 @@ public class AutoShooting extends SequentialCommandGroup {
     addCommands(new RotateUntilSeeTags((int)tagID));
     addCommands(new FaceToTag(tagID));
     if (target == ShootingTarget.Speaker) {
-      addCommands(new SpeakerShooter(rpm));
+      addCommands(new ShooterServoSequence(angle, rpm));
     } else if (target == ShootingTarget.Amp) {
-      addCommands(new ShooterServoSequence(45.0, 800.0));
+      addCommands(new ShooterServoSequence(AmpAngle, AmpRPM));
     } else {
       // Trap
-      addCommands(new ShooterServoSequence(45.0, 1000.0));
+      addCommands(new ShooterServoSequence(TrapAngle, TrapRPM));
     }
   }
 

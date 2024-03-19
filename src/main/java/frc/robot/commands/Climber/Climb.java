@@ -6,17 +6,16 @@ package frc.robot.commands.Climber;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.Climber.Climber;
+import frc.robot.subsystems.Climber;
 
 public class Climb extends Command {
   /** Creates a new Climber. */
   private Climber climber;
   private double pos;
-  private boolean done;
   /** 
    * Climb will just set both arms to a single position. It does nothing more than that.
    * 
-   * @param pos position that we want BOTH arms to go to.
+   * @param pos [cm] position that we want BOTH arms to go to.
    */
   public Climb(double pos) {  
     // Use addRequirements() here to declare subsystem dependencies.
@@ -28,27 +27,14 @@ public class Climb extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    climber.setArmHeight(pos);
-    done = false;
+    climber.setSetpoint(pos);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    // TODO: Do we want to monitor current while this is occuring?
-    if(climber.atSetpoint()){
-      done = true;
-    }
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-  }
-
+  
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return done;
+    return  climber.atSetpoint();    
+    //note: climber will remain running, holding the last setpoint
   }
 }

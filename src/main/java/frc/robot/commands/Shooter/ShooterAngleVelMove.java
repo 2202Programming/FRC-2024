@@ -37,7 +37,7 @@ public class ShooterAngleVelMove extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println("ENDING FOR NO REASON***************************************");
+    System.out.println("Shooter Extension velcmd ENDING FOR NO REASON***************************************");
     shooter.setExtensionVelocity(0.0);
   }
 

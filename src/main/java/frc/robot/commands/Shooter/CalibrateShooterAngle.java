@@ -10,16 +10,18 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterServo;
 
 public class CalibrateShooterAngle extends Command {
+  final double VEL_ZERO_LIMIT = 0.2; //[cm/s]
+  final int DELAY_COUNT = 5; // 0.1 sec to let it start moving before checking
+
   ShooterServo shooter;
   double vel;
   int count;
-  final double VEL_ZERO_LIMIT = 0.05; //[deg/s]
-  final int DONE_COUNT = 5; // 0.1 sec
+  
   /** Creates a new ShooterAngleVelMove. */
   public CalibrateShooterAngle(double vel) {
-    // Use addRequirements() here to declare subsystem dependencies.
     shooter = RobotContainer.getSubsystem(ShooterServo.class);
     this.vel = vel;
+    addRequirements(shooter);
   }
 
   // Called when the command is initially scheduled.
@@ -27,12 +29,6 @@ public class CalibrateShooterAngle extends Command {
   public void initialize() {
     shooter.setExtensionVelocity(vel);
     count = 0;
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    count = (Math.abs(shooter.getExtensionVelocity()) < VEL_ZERO_LIMIT) ? ++count : 0;
   }
 
   // Called once the command ends or is interrupted.
@@ -45,7 +41,11 @@ public class CalibrateShooterAngle extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return count >= DONE_COUNT;
+    if (++count <= DELAY_COUNT) {
+      return false;
+    }
+    // watch for it to stop moving
+    return (Math.abs(shooter.getExtensionVelocity()) <= VEL_ZERO_LIMIT);
   }
 }
 

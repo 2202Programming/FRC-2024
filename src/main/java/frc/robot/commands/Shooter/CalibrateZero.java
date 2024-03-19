@@ -14,9 +14,11 @@ import frc.robot.subsystems.ShooterServo;
  * and stopping when the servo stops moving.
  */
 public class CalibrateZero extends Command {
-    private final ShooterServo shooterServo;
-    private final double VelTol = 0.5; //[cm/s]
-    final int DelayCount = 20;
+    final ShooterServo shooterServo;
+    final double CalVelocity = -1.0;
+    final double VelTol = 0.25; //[cm/s]
+    final int DelayCount = 5;
+    
     private int count;
     private boolean finished = false;
 
@@ -29,7 +31,7 @@ public class CalibrateZero extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shooterServo.setExtensionVelocity(-1.0);
+    shooterServo.setExtensionVelocity(CalVelocity);
     finished = false;
     count = 0;
   }
@@ -37,13 +39,12 @@ public class CalibrateZero extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //TODO: may want to also watch current
     if ((++count > DelayCount) && (Math.abs(shooterServo.getExtensionVelocity()) <  VelTol)) {
       finished = true;
     }
-    SmartDashboard.putNumber("Shooter Servo Velocity", shooterServo.getExtensionVelocity());
-    SmartDashboard.putNumber("Shooter Servo Position", shooterServo.getAngle());
-    SmartDashboard.putNumber("Shooter Servo Current", shooterServo.getCurrent());
+    SmartDashboard.putNumber("ShooterServo/Velocity", shooterServo.getExtensionVelocity());
+    SmartDashboard.putNumber("ShooterServo/Position", shooterServo.getAngle());
+    SmartDashboard.putNumber("ShooterServo/Current", shooterServo.getCurrent());
     System.out.println("Servo zeroing: velocity="+shooterServo.getExtensionVelocity()
       +" Postion=" + shooterServo.getAngle()
       +" Current=" + shooterServo.getCurrent());

@@ -47,7 +47,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.0,
-      "rotationDegrees": 180.0,
+      "rotationDegrees": -1.7567491238498254,
       "rotateFast": false
     }
   ],
@@ -84,13 +84,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0,
+    "rotation": -0.19242709157020862,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Pos3",
   "previewStartingState": {
-    "rotation": 121.37,
+    "rotation": -56.47446452243571,
     "velocity": 0
   },
   "useDefaultConstraints": true
