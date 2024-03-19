@@ -46,7 +46,7 @@ public class Intake extends SubsystemBase {
 
   // anything or just gear raito works? (the comment before)
   final double AngleGearRatio = 405.0; // Gear ratio
-
+  final double kFF = (1.0/187.8); //max vel 100% pwr abt
   /** Creates a new Intake. */
   public double intake_speed = 0.0;
   double desired_intake_speed = 0.0;
@@ -66,7 +66,7 @@ public class Intake extends SubsystemBase {
 
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
-  final PIDFController intakeVelPID = new PIDFController(0.0008, 0.0000012, 0.0, kFF); // wip - use pwr for sussex
+  final PIDFController intakeVelPID = new PIDFController(0.0008, 0.0000012, 0.0, kFF); // tuned 3/19 (pls check NR)
   final SparkPIDController intakeMtrPid;
   final RelativeEncoder intakeMtrEncoder;
 
@@ -144,8 +144,6 @@ public class Intake extends SubsystemBase {
   // this is the 'state' that we want when the motors turn off
 
   public void setIntakeSpeed(double speed) {
-        System.out.println("SPEED GETTING SET TO" + speed);
-    // intakeMtr.set(speed); // [%pwr] TODO change to velocity mode & tune hwpid for intakeMtr
     intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
   }
 
