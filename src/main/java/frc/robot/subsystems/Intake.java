@@ -38,8 +38,8 @@ public class Intake extends SubsystemBase {
   public static final double TravelDown = 170.0; // [deg/s]
   
   //roller constants for commands TODO set these consts 
-  public static final double RollerMaxSpeed = 40.0; //[cm/s]
-  public static final double RollerEjectSpeed = -40.0; //[cm/s]
+  public static final double RollerMaxSpeed = 42.7; //[cm/s]
+  public static final double RollerEjectSpeed = -42.7; //[cm/s]
   public static final double RollerAmpSpeed = -40.0; //[cm/s]
 
   //angle constants - internal
@@ -52,7 +52,7 @@ public class Intake extends SubsystemBase {
 
   // roller constants
   final double RollerVelTol = 0.1; //[cm/s]
-  final static double kff = 0.0; //TODO find it
+  final static double kff = 1.0/RollerMaxSpeed; //TODO find it
   final double wheelGearRatio = 1.0/(7.0*3.0*4.4); // [cm/s] - 7x3 on motor, 4.4 big gears
 
   // Intake devices 
@@ -67,7 +67,7 @@ public class Intake extends SubsystemBase {
 
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
-  final PIDFController intakeVelPID = new PIDFController(1.0, 0.0, 0.0, kff); 
+  final PIDFController intakeVelPID = new PIDFController(0.0008, 0.0000012, 0.0, kff); // tuned 3/19 (pls check NR)
   final SparkPIDController intakeMtrPid;
   final RelativeEncoder intakeMtrEncoder;
   double cmdVelocity = 0.0; //[cm/s] latest commanded velocity
