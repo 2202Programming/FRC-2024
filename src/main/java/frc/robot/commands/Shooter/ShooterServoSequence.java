@@ -31,7 +31,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
   final int DONE_COUNT = (int) Math.ceil((NoteTravelDist / TransferSpeed) / Constants.DT);
 
   double speed;
-  double percent_rpm = 0.03; //3%
+  double percent_rpm = 0.005; //3%
   double angle;
   int count = 0;
   Phase phase;
