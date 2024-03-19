@@ -16,6 +16,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkMaxAlternateEncoder.Type;
 import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
@@ -49,6 +50,7 @@ public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
   public double intake_speed = 0.0;
   double desired_intake_speed = 0.0;
+  final double kFF = (1.0/187.8); //max vel 100% pwr abt
   // Intake Angle, a servo
   final NeoServo angle_servo;
 
@@ -64,7 +66,7 @@ public class Intake extends SubsystemBase {
 
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
-  final PIDFController intakeVelPID = new PIDFController(0.0, 0.0, 0.0, 0.0); // wip - use pwr for sussex
+  final PIDFController intakeVelPID = new PIDFController(0.0008, 0.0000012, 0.0, kFF); // wip - use pwr for sussex
   final SparkPIDController intakeMtrPid;
   final RelativeEncoder intakeMtrEncoder;
 
@@ -143,8 +145,8 @@ public class Intake extends SubsystemBase {
 
   public void setIntakeSpeed(double speed) {
         System.out.println("SPEED GETTING SET TO" + speed);
-    intakeMtr.set(speed); // [%pwr] TODO change to velocity mode & tune hwpid for intakeMtr
-    // intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
+    // intakeMtr.set(speed); // [%pwr] TODO change to velocity mode & tune hwpid for intakeMtr
+    intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
   }
 
   public boolean senseNote() {

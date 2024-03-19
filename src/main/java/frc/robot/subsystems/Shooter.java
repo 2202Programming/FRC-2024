@@ -38,7 +38,7 @@ public class Shooter extends SubsystemBase {
   private double measLeftRPM;
   private double measRightRPM;
 
-  PIDFController pidConsts = new PIDFController(0.00005, 0.00000009, 0.0, kF);  //slot 0  - normal
+  PIDFController pidConsts = new PIDFController(0.00005, 0.000000085, 0.006, kF);  //slot 0  - normal
   PIDFController pidConsts_freeSpin = new PIDFController(0.0, 0.0, 0.0, 0.0);  //slot 1 - free spin
 
   public Shooter() {
