@@ -29,7 +29,8 @@ public class Shooter extends SubsystemBase {
   final RelativeEncoder leftEncoder;
   final RelativeEncoder rightEncoder;
   final double FACTOR = 1.0;
-  final double kF = 1.0 / 5650.0;
+  final double left_kF = 1.0 / 5500.0;
+  final double right_kF = 1.0 / 5000.0;
 
   private DoubleSolenoid shooterAngle; // can be replaced w/ servo in derived class
 
@@ -38,7 +39,8 @@ public class Shooter extends SubsystemBase {
   private double measLeftRPM;
   private double measRightRPM;
 
-  PIDFController pidConsts = new PIDFController(/*0.00005*/0.0, /* .000000085*/0.0, /*0.006*/0.0, kF);  //slot 0  - normal
+  PIDFController leftPidConsts = new PIDFController(/*0.00005*/0.0, /* .000000085*/0.0, /*0.006*/0.0, left_kF);  //slot 0  - normal
+  PIDFController rightPidConsts = new PIDFController(0.0, 0.0, 0.0, right_kF);
   PIDFController pidConsts_freeSpin = new PIDFController(0.0, 0.0, 0.0, 0.0);  //slot 1 - free spin
 
   public Shooter() {
@@ -46,8 +48,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public Shooter(boolean HasSolenoid) {
-    hw_leftPid = motor_config(leftMtr, true);
-    hw_rightPid = motor_config(rightMtr, false);
+    hw_leftPid = motor_config(leftMtr, leftPidConsts, true);
+    hw_rightPid = motor_config(rightMtr, rightPidConsts, false);
     leftEncoder = config_encoder(leftMtr);
     rightEncoder = config_encoder(rightMtr);
     if (HasSolenoid) {
@@ -95,11 +97,11 @@ public class Shooter extends SubsystemBase {
     return new ShooterWatcherCmd();
   }
 
-  SparkPIDController motor_config(CANSparkMax mtr, boolean inverted) {
+  SparkPIDController motor_config(CANSparkMax mtr, PIDFController hwPidConsts, boolean inverted) {
     mtr.clearFaults();
     mtr.restoreFactoryDefaults();
     var mtrpid = mtr.getPIDController();
-    pidConsts.copyTo(mtrpid, 0);
+    hwPidConsts.copyTo(mtrpid, 0);
     pidConsts_freeSpin.copyTo(mtrpid, 1); 
     mtrpid.setIMaxAccum(0.0, 1);
     mtr.setInverted(inverted);
