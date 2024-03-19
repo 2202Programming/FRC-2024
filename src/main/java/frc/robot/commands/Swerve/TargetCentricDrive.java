@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveTrain;
 import frc.robot.Constants.Tag_Pose;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.subsystems.Intake;
@@ -24,6 +25,9 @@ import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 /*
   Driver controls the robot using field coordinates.
     X,Y, Rotation
+  
+  While the robot has a note, the robot will _always_ be pointing at the target
+  This command is envisioned to be used in a WhileTrue() similar to RobotCentric
 */
 public class TargetCentricDrive extends Command {
 
@@ -66,12 +70,17 @@ public class TargetCentricDrive extends Command {
     this.dc = RobotContainer.getSubsystem("DC"); // driverControls
     this.drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
     this.intake = RobotContainer.getSubsystem(Intake.class);
-    addRequirements(drivetrain);
     this.kinematics = drivetrain.getKinematics();
-    this.TagID = TagID;
-    limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
+    this.limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
 
+    addRequirements(drivetrain); // This means we area read-only for everything but drivetrain
+                                 // limelight and intake are used as read-only  
+
+    this.TagID = TagID;
     targetPose = Tag_Pose.tagLocations[(int) TagID];
+
+    // Centering uses radians, blind uses degrees
+    // These should be combined and use one unit
 
     // PID for when tag is in view
     centeringPid = new PIDController(centering_kP, centering_kI, centering_kD);
@@ -91,7 +100,7 @@ public class TargetCentricDrive extends Command {
 
   @Override
   public void execute() {
-
+    // If the robot has a note
     if (intake.hasNote()) {
       if (checkForTarget(TagID)) { // has note, can see target tag, close loop via limelight
         calculateRotFromTarget();
@@ -113,8 +122,8 @@ public class TargetCentricDrive extends Command {
   private void calculateRotFromOdometery() {
         currentPose = drivetrain.getPose();
         targetRot = (Math.atan2(currentPose.getTranslation().getY() - targetPose.getY(),
-            currentPose.getTranslation().getX() - targetPose.getX())) // [-pi, pi]
-            * 180 / Math.PI - 180;
+                                currentPose.getTranslation().getX() - targetPose.getX())) // [-pi, pi]
+                                * 180 / Math.PI - 180;
         rot = blindPid.calculate(currentPose.getRotation().getDegrees(), targetRot);
   }
 
@@ -135,8 +144,8 @@ public class TargetCentricDrive extends Command {
 
       centeringPidOutput = centeringPid.calculate(tagXfromCenter, 0.0);
       double min_rot = Math.signum(centeringPidOutput) * min_rot_rate;
-      rot = MathUtil.clamp(centeringPidOutput + min_rot, -max_rot_rate, max_rot_rate) / 57.3; // convert to radians
-
+      rot = MathUtil.clamp(centeringPidOutput + min_rot, -max_rot_rate, max_rot_rate) / Constants.DEGperRAD; // convert to radians
+    
     }
   }
 
@@ -151,7 +160,7 @@ public class TargetCentricDrive extends Command {
 
   }
 
-  void calculate() {
+  void calculate() {  // lets use arguments and returns please
     // X and Y from joysticks; rot from previous calculations
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
