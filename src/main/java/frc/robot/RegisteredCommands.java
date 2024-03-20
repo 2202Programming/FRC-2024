@@ -18,14 +18,14 @@ import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 public class RegisteredCommands {
 
     public static SendableChooser<Command> RegisterCommands() {
-        SendableChooser<Command> autoChooser = AutoBuilder.buildAutoChooser();        
+        SendableChooser<Command> autoChooser;
         
         // NamedCommands for use in PathPlanner scripts.
         NamedCommands.registerCommand("pickup", new IntakeSequence(true));
         NamedCommands.registerCommand("shoot", new ShooterServoSequence(46.0, 3000.0));
         NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker, 38, 3200.0));
         NamedCommands.registerCommand("RotateTo", new RotateTo());
-        
+        autoChooser = AutoBuilder.buildAutoChooser(); 
         // select our auto
         SmartDashboard.putData("Auto Chooser", autoChooser);
         return autoChooser;

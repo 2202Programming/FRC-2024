@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Pos2 ShootingPose"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "shoot"
