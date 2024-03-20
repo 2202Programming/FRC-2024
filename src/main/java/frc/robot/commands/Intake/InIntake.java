@@ -58,7 +58,7 @@ public class InIntake extends Command {
       case IntakeDown:
         intake.setMaxVelocity(Intake.TravelDown);
         intake.setAngleSetpoint(Intake.DownPos);
-        intake.setIntakeSpeed(0.8); // %
+        intake.setIntakeSpeed(Intake.RollerMaxSpeed); // [cm/s]
         phase = Phase.WaitingForNote;
         break;
       case WaitingForNote:
