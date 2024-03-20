@@ -50,9 +50,10 @@ public class BindingsOther {
     }
 
     static void DriverBinding(HID_Xbox_Subsystem dc) {
-        var driver = dc.Operator();
+        var driver = dc.Driver();
         var bindings = RobotContainer.bindings;
         var drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
+        var intake = RobotContainer.getSubsystem(Intake.class);
 
         switch (bindings) {
 
@@ -101,6 +102,8 @@ public class BindingsOther {
             // i dont like that test commands and bindings are in here but we need them ig
             // --er
             case IntakeTesting:
+                
+                /*
                 driver.rightBumper().whileTrue(new IntakeSequence(true));
                 driver.povUp().onTrue(new ShooterSequence(true, 2000.0));
                 driver.povRight().onTrue(new ShooterSequence(true, 1200.0));
@@ -115,6 +118,15 @@ public class BindingsOther {
                 driver.leftTrigger().onTrue(new MoveToAnglePos(Intake.TravelDown, Intake.TravelDown));
                 // driver.rightTrigger().onTrue(new AnglePos(50.0));
                 // driver.a().onTrue(new CalibratePos(0.0));
+                */
+                driver.a().whileTrue(new InstantCommand( ()-> { 
+                    intake.setIntakeSpeed(2.0);}));
+                driver.b().whileTrue(new InstantCommand( ()-> { 
+                    intake.setIntakeSpeed(-2.0);}));
+                driver.x().onTrue(new InstantCommand( ()-> { 
+                    intake.setAngleSetpoint(105.0);}));
+                driver.y().onTrue(new InstantCommand( ()-> { 
+                    intake.setAngleSetpoint(0.0);}));
                 break;
 
             case auto_shooter_test:
@@ -174,6 +186,7 @@ public class BindingsOther {
                 break;
 
             case IntakeTesting:
+            /*
                 operator.a().onTrue(new IntakeSequence(true)); // works for both modes
                 operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0));
                 operator.x().onTrue(new InIntake(true));
@@ -193,6 +206,7 @@ public class BindingsOther {
                 operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); // speaker close
                 operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); // amp - NO WORK RN
                 operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
+                */
                 break;
 
             case new_bot_test:

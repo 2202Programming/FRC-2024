@@ -53,7 +53,7 @@ public class Intake extends SubsystemBase {
   // roller constants
   final double RollerVelTol = 0.1; //[cm/s]
   final static double kff = 1.0/RollerMaxSpeed; //TODO find it
-  final double wheelGearRatio = 1.0/(7.0*3.0*4.4); // [cm/s] - 7x3 on motor, 4.4 big gears
+  final double wheelGearRatio = 1.0/(7.0*3.0); // [cm/s] - 7x3 on motor, 4.4 big gears
 
   // Intake devices 
   final NeoServo angle_servo;
@@ -151,6 +151,7 @@ public class Intake extends SubsystemBase {
    */
   public void setIntakeSpeed(double speed) {
     intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
+    cmdVelocity = speed;
   }
 
   public boolean senseNote() {
