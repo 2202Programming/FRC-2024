@@ -150,6 +150,7 @@ public class Intake extends SubsystemBase {
    * @param speed [cm/s]
    */
   public void setIntakeSpeed(double speed) {
+        System.out.println("SPEED GETTING SET TO" + speed);
     intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
     cmdVelocity = speed;
   }
