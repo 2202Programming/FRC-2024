@@ -29,8 +29,8 @@ public class Shooter extends SubsystemBase {
   final RelativeEncoder leftEncoder;
   final RelativeEncoder rightEncoder;
   final double FACTOR = 1.0;
-  final double left_kF = 1.0 / 5100.0;
-  final double right_kF = 1.0 / 4700.0;
+  final double left_kF = 1.0 / 5425.0;
+  final double right_kF = 1.0 / 5100.0;
 
   private DoubleSolenoid shooterAngle; // can be replaced w/ servo in derived class
 
@@ -39,8 +39,9 @@ public class Shooter extends SubsystemBase {
   private double measLeftRPM;
   private double measRightRPM;
 
-  PIDFController leftPidConsts = new PIDFController(/*0.00005*/0.0, /* .000000085*/0.0, /*0.006*/0.0, left_kF);  //slot 0  - normal
-  PIDFController rightPidConsts = new PIDFController(0.0, 0.0, 0.0, right_kF);
+  // left and right match pretty well.  25-50 rpm overshoot. 
+  PIDFController leftPidConsts = new  PIDFController(0.000050, 0.00000025, 0.0, left_kF);  //slot 0  - normal
+  PIDFController rightPidConsts = new PIDFController(0.000050, 0.0000005, 0.0, right_kF);
   PIDFController pidConsts_freeSpin = new PIDFController(0.0, 0.0, 0.0, 0.0);  //slot 1 - free spin
 
   public Shooter() {
@@ -102,6 +103,7 @@ public class Shooter extends SubsystemBase {
     mtr.restoreFactoryDefaults();
     var mtrpid = mtr.getPIDController();
     hwPidConsts.copyTo(mtrpid, 0);
+    mtrpid.setIZone(750.0, 0);
     pidConsts_freeSpin.copyTo(mtrpid, 1); 
     mtrpid.setIMaxAccum(0.0, 1);
     mtr.setInverted(inverted);
