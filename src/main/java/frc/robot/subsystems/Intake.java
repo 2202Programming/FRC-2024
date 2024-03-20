@@ -67,7 +67,7 @@ public class Intake extends SubsystemBase {
 
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
-  final PIDFController intakeVelPID = new PIDFController(0.0008, 0.0000012, 0.0, kff); // tuned 3/19 (pls check NR)
+  final PIDFController intakeVelPID = new PIDFController(0.008, 0.000012, 0.0, kff); // tuned 3/19 (pls check NR)
   final SparkPIDController intakeMtrPid;
   final RelativeEncoder intakeMtrEncoder;
   double cmdVelocity = 0.0; //[cm/s] latest commanded velocity
@@ -149,8 +149,7 @@ public class Intake extends SubsystemBase {
    * Set the intake's speed to given value
    * @param speed [cm/s]
    */
-  public void setIntakeSpeed(double speed) {
-        System.out.println("SPEED GETTING SET TO" + speed);
+  public void setIntakeSpeed(double speed) {      
     intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
     cmdVelocity = speed;
   }

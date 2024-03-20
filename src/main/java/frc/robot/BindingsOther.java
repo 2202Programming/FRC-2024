@@ -119,9 +119,9 @@ public class BindingsOther {
                 // driver.rightTrigger().onTrue(new AnglePos(50.0));
                 // driver.a().onTrue(new CalibratePos(0.0));
                 */
-                driver.a().whileTrue(new InstantCommand( ()-> { 
-                    intake.setIntakeSpeed(2.0);}));
-                driver.b().whileTrue(new InstantCommand( ()-> { 
+                driver.rightBumper().onTrue(new InstantCommand( ()-> { intake.setIntakeSpeed(0.0);}));
+                driver.a().onTrue(new InstantCommand( ()-> { intake.setIntakeSpeed(2.0);}));
+                driver.b().onTrue(new InstantCommand( ()-> { 
                     intake.setIntakeSpeed(-2.0);}));
                 driver.x().onTrue(new InstantCommand( ()-> { 
                     intake.setAngleSetpoint(105.0);}));
