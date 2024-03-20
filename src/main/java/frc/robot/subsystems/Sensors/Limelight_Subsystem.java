@@ -14,7 +14,10 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
+import frc.robot.Constants.Tag_Pose;
 import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
+import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 
 public class Limelight_Subsystem extends SubsystemBase {
   /** Creates a new Limelight_Subsystem. */
@@ -35,6 +38,7 @@ public class Limelight_Subsystem extends SubsystemBase {
   private NetworkTableEntry outputTv;
   private NetworkTableEntry pipelineNTE;
   private NetworkTableEntry nt_numApriltags;
+  private NetworkTableEntry distanceToTag4;
   // private NetworkTableEntry nt_botpose; //todo: merge in helpers_util
 
   private double x;
@@ -90,6 +94,7 @@ public class Limelight_Subsystem extends SubsystemBase {
     NT_hasTarget = outputTable.getEntry("/LL hasTarget");
     outputTv = outputTable.getEntry("/Limelight Valid");
     outputTx = outputTable.getEntry("/Limelight X error");
+    distanceToTag4 = outputTable.getEntry("/Distance To 4");
     disableLED();
   }
 
@@ -253,6 +258,7 @@ public class Limelight_Subsystem extends SubsystemBase {
 
       outputTv.setValue(target);
       outputTx.setDouble(x);
+      distanceToTag4.setDouble(RobotContainer.getSubsystem(SwerveDrivetrain.class).getDistanceToTranslation(Tag_Pose.ID4));
     }
   }
 }
