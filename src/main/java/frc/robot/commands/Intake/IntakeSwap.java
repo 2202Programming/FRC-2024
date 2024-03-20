@@ -37,13 +37,13 @@ public class IntakeSwap extends Command {
       target = intake::senseNote;
       DONE_COUNT = 10; // Delay for transfer --> intake
       transfer.setSpeed(-35.0);// [cm/s]
-      intake.setIntakeSpeed(-0.8); // %
+      intake.setIntakeSpeed(Intake.RollerEjectSpeed); // [cm/s] eject is neg
       checkIntake = true;
     } else if (intake.hasNote()) {
       target = transfer::senseNote;
       DONE_COUNT = 5; // Delay for intake --> transfer
       transfer.setSpeed(35.0); // [cm/s]
-      intake.setIntakeSpeed(0.8); // [%pwr]
+      intake.setIntakeSpeed(Intake.RollerMaxSpeed); // [cm/s]
       checkIntake = false;
     } else {
       // handle case where neither has note

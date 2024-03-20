@@ -30,7 +30,7 @@ public class EjectNote extends Command {
   @Override
   public void execute() {
     if(intake.getAnglePosition() >50.0){
-    intake.setIntakeSpeed(-0.5);
+    intake.setIntakeSpeed(Intake.RollerEjectSpeed);
     transfer.setSpeed(-35.0);
     }
   }
