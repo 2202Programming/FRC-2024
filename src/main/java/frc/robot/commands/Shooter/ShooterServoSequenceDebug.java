@@ -63,6 +63,9 @@ public class ShooterServoSequenceDebug extends BlinkyLightUser {
     shooter.setAngleSetpoint(angle);
     shooter.setRPM(speed, speed); // placeholder
     System.out.println("***ShooterSequence:init.... motors on ***");
+    System.out.println("***REQUESTED ANGLE ="+angle);
+    System.out.println("***REQUESTED SPEED ="+speed);
+
   }
 
   public Color8Bit colorProvider() {
