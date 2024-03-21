@@ -13,6 +13,7 @@ import frc.robot.commands.Intake.TestIntake;
 import frc.robot.commands.Shooter.ShooterAngleSetPos;
 import frc.robot.commands.Shooter.ShooterAngleVelMove;
 import frc.robot.commands.Shooter.ShooterServoSequence;
+import frc.robot.commands.Shooter.ShooterServoSequenceDebug;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.auto.AutoShooting;
@@ -72,6 +73,7 @@ public final class BindingsCompetition {
 
         ManualShoot.and(operator.rightBumper()).onTrue(new ShooterServoSequence(46.5, 2800.0));                                                                                                
         ManualShoot.and(operator.rightTrigger()).onTrue(new ShooterServoSequence(36.0, 3000.0)); // was 35
+        ManualShoot.and(operator.leftTrigger()).onTrue(new ShooterServoSequenceDebug());
         // AutoShootm 
         ManualShoot.negate().and(operator.rightBumper())
             .onTrue(new AutoShooting(ShootingTarget.Speaker, 45.0, 3000.0));
