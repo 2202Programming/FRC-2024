@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
@@ -86,9 +87,7 @@ public class FaceToTag extends Command {
     no_turn_states = kinematics.toSwerveModuleStates(zero_cs);
     vision_out = kinematics.toSwerveModuleStates(zero_cs);
     timer.restart();
-    if (!checkForTarget(TagID)) {// Avoid error time lag of running isFinished()
-      hasTarget = false;
-    }
+
     System.out.println("FaceToTag: initialize, initial heading: " + drivetrain.getPose().getRotation().getDegrees());
   }
 
@@ -96,13 +95,12 @@ public class FaceToTag extends Command {
   @Override
   public void execute() {
     SwerveModuleState[] output;
+    
+    calculate();
     if(!hasTarget){//To avoid error if not seeing tag
       return;
     }
-
-    calculate();
-    valid_tag = true;
-    output = (valid_tag) ? vision_out : no_turn_states;
+    output = (hasTarget) ? vision_out : no_turn_states;
     drivetrain.drive(output);
   }
 
@@ -110,7 +108,7 @@ public class FaceToTag extends Command {
     // getting value from limelight
     LimelightTarget_Fiducial[] tags = limelight.getAprilTagsFromHelper();
     double tagXfromCenter = 0;
-    boolean hasTarget = false;
+    hasTarget = false;
 
     for (LimelightTarget_Fiducial tag : tags) {
       if (tag.fiducialID == TagID) {
@@ -119,6 +117,10 @@ public class FaceToTag extends Command {
         break;
       }
     }
+    
+    SmartDashboard.putNumber("TagXFromCenter", tagXfromCenter);
+    SmartDashboard.putBoolean("hasTarget", hasTarget);
+
     if (hasTarget) {// this should be true all the time unless the tag is lost
 
       centeringPidOutput = centeringPid.calculate(tagXfromCenter, 0.0);
