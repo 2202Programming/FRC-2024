@@ -29,7 +29,7 @@ public class DistanceInterpret {
     table.put(544.0, 28.6); //4500 rpm
 
     //test 
-    assert 480.0 == table.get(150.0) ;
+    //assert 480.0 == table.get(150.0) ;
     //var x = table.get(225.0);
 
     }

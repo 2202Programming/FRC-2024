@@ -189,6 +189,7 @@ public class BindingsOther {
                 operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot
                 operator.povUp().onTrue(new AngleCalibration(-25.0));// intake calibrate
                 operator.leftTrigger().onTrue(new ShooterServoSequenceDebug());
+                operator.rightTrigger().onTrue(new ShooterServoSequence()); // auto shoot
                 // Shooter calibrate
                 operator.povDown().whileTrue(new ShooterAngleVelMove(-2.0));
                 operator.povRight().whileTrue(new ShooterAngleVelMove(2.0));
