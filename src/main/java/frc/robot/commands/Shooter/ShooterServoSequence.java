@@ -4,16 +4,13 @@
 
 package frc.robot.commands.Shooter;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.Constants;
-import frc.robot.Constants.Tag_Pose;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Transfer;
-import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 
 /**
  * Button pressed starts command
@@ -38,7 +35,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
   double angle;
   int count = 0;
   Phase phase;
-  final DistanceInterpret interp = new DistanceInterpret();
+  final DistanceInterpretor interp;
   boolean useInterp = false;
   public enum Phase {
     WaitingForSetpoints, WaitingForFinish, Finished;
@@ -50,6 +47,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
     this.speed = speed;
     this.shooter = RobotContainer.getSubsystem(ShooterServo.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
+    interp = DistanceInterpretor.getSingleton();
     addRequirements(shooter, transfer);
   }
 
@@ -67,12 +65,9 @@ public class ShooterServoSequence extends BlinkyLightUser {
   @Override
   public void initialize() {
     if(useInterp){//Just if we are changing rpm automatically
-      double distance = (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) ? 
-        RobotContainer.getSubsystem(SwerveDrivetrain.class).getDistanceToTranslation(Tag_Pose.ID7) :
-        RobotContainer.getSubsystem(SwerveDrivetrain.class).getDistanceToTranslation(Tag_Pose.ID4);
-      angle = interp.getAngleFromDistance(distance);
-      speed = 3000.0; //Changed depeding on distance??
-
+      interp.setTarget();  //uses alliance and speaker tag
+      angle = interp.getTargetAngle();
+      speed = interp.getTargetRPM();
     }
     count = 0;
     phase = Phase.WaitingForSetpoints;

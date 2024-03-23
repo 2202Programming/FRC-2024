@@ -21,6 +21,7 @@ import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 public class FaceToTag extends Command {
   private final SwerveDrivetrain drivetrain;
   private final Limelight_Subsystem limelight;
+  double TimeOut = 1.0;  //giveup if we take too long
 
   double xSpeed, ySpeed, rot;
   SwerveModuleState[] vision_out;
@@ -47,7 +48,7 @@ public class FaceToTag extends Command {
   boolean lastValidity = false;
   boolean currentValidity = false;
   private Timer timer;
-  private boolean valid_tag = false;
+  //private boolean valid_tag = false;
   private double TagID;
   private final SwerveDriveKinematics kinematics;
   private SwerveModuleState[] no_turn_states;
@@ -149,7 +150,7 @@ public class FaceToTag extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return centeringPid.atSetpoint() || timer.hasElapsed(1.0);// end if it takes more than 3 sec checkForTarget to make sure
+    return centeringPid.atSetpoint() || timer.hasElapsed(TimeOut);// end if it takes more than 3 sec checkForTarget to make sure
   }
 
   /**
@@ -159,6 +160,7 @@ public class FaceToTag extends Command {
    * @return {@code true} if the target is found in limelight, {@code false} if
    *         not.
    */
+  @SuppressWarnings("unused")
   private boolean checkForTarget(double tagID) {
     LimelightTarget_Fiducial[] tags = limelight.getAprilTagsFromHelper();
     for (LimelightTarget_Fiducial tag : tags) {

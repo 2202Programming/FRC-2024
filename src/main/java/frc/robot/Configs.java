@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CAN;
+import frc.robot.commands.Shooter.DistanceInterpretor;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.PneumaticsControl;
@@ -89,7 +90,9 @@ public class Configs {
       })
       .add(Command.class, "TransferWatcher", () -> {
         return RobotContainer.getSubsystem(Transfer.class).getWatcher();
-      });
+      })
+      .add(DistanceInterpretor.class, "TargetingTable", () ->{ return DistanceInterpretor.getSingleton();})
+      ;
 
   // Subsystems and hardware on Tim 2.0
   public static final SubsystemConfig swerveBotSubsystemConfig = new SubsystemConfig()
