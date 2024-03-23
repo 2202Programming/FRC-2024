@@ -264,26 +264,37 @@ public final class Constants {
   }
 
   public static final class Tag_Pose {
-    public static final Translation2d ID0 = new Translation2d(0, 0);
+    /**Blue source right */
     public static final Translation2d ID1 = new Translation2d(15.079472, 0.245872);
+    /**Blue source left */
     public static final Translation2d ID2 = new Translation2d(16.185134, 0.883666);
+    /**Red speaker right */
     public static final Translation2d ID3 = new Translation2d(16.579342, 4.982718);
+    /**Red speaker left */
     public static final Translation2d ID4 = new Translation2d(16.579342, 5.547868);
+    /**Red amp */
     public static final Translation2d ID5 = new Translation2d(14.700758, 8.2042);
+    /**Blue amp */
     public static final Translation2d ID6 = new Translation2d(1.8415, 8.2042);
+    /**Blue speaker right */
     public static final Translation2d ID7 = new Translation2d(0.0381, 5.547868);
+    /**Blue speaker left */
     public static final Translation2d ID8 = new Translation2d(0.0381, 4.982718);
+    /**Red source right */
     public static final Translation2d ID9 = new Translation2d(0.356108, 0.883666);
+    /**Red source left */
     public static final Translation2d ID10 = new Translation2d(1.461516, 0.245872);
+    /**Red stage (counter-clockwse starting at Stage Left) */
     public static final Translation2d ID11 = new Translation2d(11.904726, 3.713226);
     public static final Translation2d ID12 = new Translation2d(11.904726, 4.49834);
     public static final Translation2d ID13 = new Translation2d(11.220196, 4.105148);
+    /**Blue state (counter-clockwise starting at Center Stage) */
     public static final Translation2d ID14 = new Translation2d(5.320792, 4.105148);
     public static final Translation2d ID15 = new Translation2d(4.641342, 4.49834);
     public static final Translation2d ID16 = new Translation2d(4.641342, 3.713226);
 
-    public static final Translation2d[] tagLocations = { ID0, ID1, ID2, ID3, ID4, ID5, ID6, ID7, ID8, ID9, ID10, ID11, ID12,
-        ID13, ID14, ID15, ID16 };
+    public static enum tagLocations { ID1, ID2, ID3, ID4, ID5, ID6, ID7, ID8, ID9, ID10, ID11, ID12,
+                                      ID13, ID14, ID15, ID16 };
 
   }
 
