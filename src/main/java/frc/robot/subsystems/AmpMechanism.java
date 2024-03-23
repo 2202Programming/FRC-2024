@@ -9,7 +9,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.CAN;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.NeoServo;
@@ -29,7 +28,7 @@ public class AmpMechanism extends SubsystemBase {
   /** Creates a new AmpMechanism. */
   final PIDController posPID = new PIDController(1.0, 0.0, 0.0); //find
   final PIDFController hwVelPID = new PIDFController(1.0, 0.0, 0.0, 0.0); //find
-  final NeoServo angleServo = new NeoServo(Constants.CAN.AMP_MECHANISM, posPID, hwVelPID, false);
+  final NeoServo angleServo = new NeoServo(CAN.AMP_MECHANISM, posPID, hwVelPID, false);
   public AmpMechanism() {
     hwVelPID.copyTo(angleServo.getController().getPIDController(), 0);
     angleServo.setConversionFactor(GearRatio) // in cm
