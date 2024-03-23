@@ -44,17 +44,10 @@ public final class Constants {
     public static final int freeAmp = 20;
 
     // Constraints on speeds enforeced in DriveTrain
-    public static final double kMaxSpeed = 13.5 * MperFT; // [m/s]  // dpl 3/15 was 21 (23 pre wi comp change)
+    // TODO make kMaxSpeed Bot dependent
+    public static final double kMaxSpeed = 16.2 * MperFT; // [m/s] new gears 3/23/24 16.6 m/s max
     public static final double kMaxAngularSpeed = 2 * Math.PI; // [rad/s]
-    // TODO: FROM LAST YEAR, NEED TO REVIEW
-    /****
-     * ### REMINDER - enable these once we have basics working
-     * // Other constraints
-     * public static final int smartCurrentMax = 60; //amps in SparkMax, max setting
-     * public static final int smartCurrentLimit = 35; //amps in SparkMax, inital
-     * setting
-     */
-
+  
     // SmartMax PID values [kp, ki, kd, kff] - these get sent to hardware controller
     // DEBUG - SET FF first for drive, then add KP
 
@@ -84,7 +77,7 @@ public final class Constants {
         0.999, // scale [] <= 1.0
         MperFT * (4.0 / 12.0), // wheel diameter[m] Comp bot is 4" wheels
         12.8, // confirmed with vince
-        8.14); // confirmed with vince
+        6.12); // confirmed with vince
 
     public static final WheelOffsets comp2024AlphaBotOffsets = new WheelOffsets(43.85746387, 24.096825,
      -65.21481, -43.066333125);
