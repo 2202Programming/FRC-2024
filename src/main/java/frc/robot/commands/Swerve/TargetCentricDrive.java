@@ -56,6 +56,7 @@ public class TargetCentricDrive extends Command {
   private final Limelight_Subsystem limelight;
   private final Intake intake;
 
+  // Limelight PID
   private PIDController blindPid;
   private final double blindPid_kp = 0.05;
   private final double blindPid_ki = 0.0;
@@ -64,6 +65,7 @@ public class TargetCentricDrive extends Command {
   private Pose2d currentPose;
   private Translation2d targetPose; // Position want to face to
 
+  // odometery PID
   PIDController centeringPid;
   double centering_kP = 3.5;
   double centering_kI = 0;
@@ -79,6 +81,8 @@ public class TargetCentricDrive extends Command {
   double xSpeed, ySpeed, rot;
   Rotation2d currrentHeading;
   SwerveModuleState[] output_states;
+  double tagXfromCenter = 0;
+  boolean hasTarget = false;
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   final SlewRateLimiter xspeedLimiter = new SlewRateLimiter(3);
@@ -97,9 +101,6 @@ public class TargetCentricDrive extends Command {
 
     this.TagID = TagID;
     targetPose = Tag_Pose.tagLocations[(int) TagID];
-
-    // Centering uses radians, blind uses degrees
-    // These should be combined and use one unit
 
     // PID for when tag is in view
     centeringPid = new PIDController(centering_kP, centering_kI, centering_kD);
@@ -121,10 +122,12 @@ public class TargetCentricDrive extends Command {
   @Override
   public void execute() {
 
+    checkForTarget(TagID); // checkForTarget is updating tagXfromCenter, hasTarget
+
     if (!intake.hasNote()) {
       currentState = state.NoNote;
     } else {
-      if (checkForTarget(TagID)) { 
+      if (hasTarget) {
         currentState = state.TagTrack;
       } else {
         currentState = state.BlindTrack;
@@ -142,13 +145,17 @@ public class TargetCentricDrive extends Command {
       case TagTrack:
         calculateRotFromTarget(); // has note, can see target tag, close loop via limelight
         break;
+      case Init: //should never get here
+        System.out.println("***Impossible state reached in TargetCentricDrive***");
+        break;
       case BlindTrack:
-        // has note, but can't see target, use odometery (already run)
+        // has note, but can't see target, use odometery for rot (already run)
         break;
     }
 
     SmartDashboard.putNumber("TargetCentricDrive rot", rot);
-    calculate(); // X and Y from joysticks, and rotation from one of methods above
+    calculate(); // used to calculate X and Y from joysticks, and rotation from one of methods
+                 // above
     drivetrain.drive(output_states);
   }
 
@@ -167,27 +174,11 @@ public class TargetCentricDrive extends Command {
   }
 
   private void calculateRotFromTarget() {
-    // getting value from limelight
-    LimelightTarget_Fiducial[] tags = limelight.getAprilTagsFromHelper();
-    double tagXfromCenter = 0;
-    boolean hasTarget = false;
+    centeringPidOutput = centeringPid.calculate(tagXfromCenter, 0.0);
+    double min_rot = Math.signum(centeringPidOutput) * min_rot_rate;
+    rot = MathUtil.clamp(centeringPidOutput + min_rot, -max_rot_rate, max_rot_rate) / Constants.DEGperRAD; // convert to
+                                                                                                           // radians
 
-    for (LimelightTarget_Fiducial tag : tags) {
-      if (tag.fiducialID == TagID) {
-        tagXfromCenter = tag.tx;
-        hasTarget = true;
-        break;
-      }
-    }
-    if (hasTarget) {// this should be true all the time unless the tag is lost
-      SmartDashboard.putNumber("TargetCentricDrive TagX", tagXfromCenter);
-      centeringPidOutput = centeringPid.calculate(tagXfromCenter, 0.0);
-      double min_rot = Math.signum(centeringPidOutput) * min_rot_rate;
-      rot = MathUtil.clamp(centeringPidOutput + min_rot, -max_rot_rate, max_rot_rate) / Constants.DEGperRAD; // convert
-                                                                                                             // to
-                                                                                                             // radians
-
-    }
   }
 
   void calculateRotFromJoystick() {
@@ -220,20 +211,21 @@ public class TargetCentricDrive extends Command {
                                                                                          // looking at robot from
                                                                                          // opposite. Pose is in blue
                                                                                          // coordinates so flip if red
-
     output_states = kinematics.toSwerveModuleStates(tempChassisSpeed);
   }
 
-  private boolean checkForTarget(double tagID) {
+  private void checkForTarget(double tagID) {
     LimelightTarget_Fiducial[] tags = limelight.getAprilTagsFromHelper();
-    boolean hasTarget = false;
+    hasTarget = false;
     for (LimelightTarget_Fiducial tag : tags) {
       if (tag.fiducialID == tagID) {
-        hasTarget = true;
+        tagXfromCenter = tag.tx; // update global variables
+        hasTarget = true; // update global variables
       }
     }
+    SmartDashboard.putNumber("TargetCentricDrive TagX", tagXfromCenter);
     SmartDashboard.putBoolean("TargetCentricDrive hasTarget", hasTarget);
-    return hasTarget;
+    return;
   }
 
 }
