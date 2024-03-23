@@ -195,9 +195,6 @@ public class BindingsOther {
                 // Shooter calibrate
                 operator.povDown().whileTrue(new ShooterAngleVelMove(-2.0));
                 operator.povRight().whileTrue(new ShooterAngleVelMove(2.0));
-                operator.povLeft().onTrue(new InstantCommand(() -> {
-                    shooter.setExtensionPosition(0.0);
-                }));
                 break;
 
             case IntakeTesting:
@@ -236,6 +233,12 @@ public class BindingsOther {
                 operator.y().whileTrue(new IntakeSequence(true));
                 operator.b().whileTrue(new IntakeSequence(false));
                 operator.rightBumper().onTrue(new CalibrateWithLS(-1.0));
+                                operator.leftBumper().onTrue(new InstantCommand(() -> {
+                    shooter.setAngleSetpoint(28.52);
+                }));
+                                operator.leftTrigger().onTrue(new InstantCommand(() -> {
+                    shooter.setAngleSetpoint(36.0);
+                }));
                 // operator.a().onTrue(new InIntake(true)); // works for both modes
                 // // operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0));
                 // // operator.x().onTrue(new InIntake(true));
