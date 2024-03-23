@@ -128,10 +128,10 @@ public class ShooterServo extends Shooter {
     return extension.getController().getOutputCurrent();
   }
   public boolean atHighLimit(){
-    return highLimitSwitch.get();
+    return !highLimitSwitch.get();
   }
   public boolean atLowLimit(){
-    return lowLimitSwitch.get();
+    return !lowLimitSwitch.get();
   }
 
   public class ShooterServoWatcherCmd extends ShooterWatcherCmd {

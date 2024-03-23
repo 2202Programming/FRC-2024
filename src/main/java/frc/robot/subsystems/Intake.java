@@ -76,8 +76,8 @@ public class Intake extends SubsystemBase {
   final DigitalInput lightgate = new DigitalInput(DigitalIO.Intake_LightGate);
 
   // limit switch - only on alpha bot
-  DigitalInput limitSwitchUp = new DigitalInput(DigitalIO.IntakeIsUp);
-  DigitalInput limitSwitchDown = new DigitalInput(DigitalIO.IntakeIsDown);
+  // DigitalInput limitSwitchUp = new DigitalInput(DigitalIO.IntakeIsUp);
+  // DigitalInput limitSwitchDown = new DigitalInput(DigitalIO.IntakeIsDown);
 
   // Note State variables
   boolean hasNote = false; // true when Intake has Note
@@ -222,13 +222,13 @@ public class Intake extends SubsystemBase {
     return angle_servo.atSetpoint(); // are we there yet?
   }
 
-  public boolean atForwardLimitSwitch() {
-    return !limitSwitchDown.get();
-  }
+  // public boolean atForwardLimitSwitch() {
+  //   return !limitSwitchDown.get();
+  // }
 
-  public boolean atReverseLimitSwitch() {
-    return !limitSwitchUp.get();
-  }
+  // public boolean atReverseLimitSwitch() {
+  //   return !limitSwitchUp.get();
+  // }
 
   public Command getWatcher() {
     return new IntakeWatcherCmd();
@@ -300,8 +300,8 @@ public class Intake extends SubsystemBase {
       
       nt_anglePos.setDouble(getAnglePosition());
       nt_angleCmd.setDouble(getAngleSetpoint());
-      nt_forwardLimit.setBoolean(atForwardLimitSwitch());
-      nt_reverseLimit.setBoolean(atReverseLimitSwitch());
+      // nt_forwardLimit.setBoolean(atForwardLimitSwitch());
+      // nt_reverseLimit.setBoolean(atReverseLimitSwitch());
 
       nt_rollerCmdSpeed.setDouble(getRollerCmdVelocity());
       nt_rollerSpeed.setDouble(getIntakeRollerSpeed());

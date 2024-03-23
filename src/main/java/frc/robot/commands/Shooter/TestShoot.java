@@ -8,23 +8,27 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterServo;
+import frc.robot.subsystems.Transfer;
 
 public class TestShoot extends Command {
   /** Creates a new ShootTest. */
   Shooter shooter;
   double speed;
+  Transfer transfer;
   public TestShoot(double speed) {
         this.shooter = RobotContainer.getSubsystemOrNull(Shooter.class);
         if(this.shooter == null){
           this.shooter = RobotContainer.getSubsystem(ShooterServo.class);
         }
         this.speed = speed;
+        this.transfer = RobotContainer.getSubsystem(Transfer.class);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    transfer.setSpeed(20.0);
     shooter.setRPM(speed, speed);
   }
 

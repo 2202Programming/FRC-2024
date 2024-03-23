@@ -250,9 +250,7 @@ public final class Constants {
   public final class DigitalIO {
     public static final int Transfer_LightGate = 0;
     public static final int Intake_LightGate = 1;
-    public static final int IntakeIsDown = 2; 
-    public static final int IntakeIsUp = 3; 
-    public static final int Shooter_HighLimitSwitch = 3;
+    public static final int Shooter_HighLimitSwitch = 3; 
     public static final int Shooter_LowLimitSwitch = 2;
   }
 

@@ -39,10 +39,10 @@ public class CalibrateAngle extends Command {
   @Override
   public void end(boolean interrupted) {
     if(shooter.atHighLimit()){
-    shooter.setExtensionPosition(1.0); // [cm] - find how much off from actual zeor
+    shooter.setExtensionPosition(0.0); // [cm] - find how much off from actual zeor
     }
     else if(shooter.atLowLimit()){
-        shooter.setExtensionPosition(10.0); //[cm] - find how much off from actual zero
+        shooter.setExtensionPosition(0.0); //[cm] - find how much off from actual zero
     }
     shooter.setExtensionVelocity(0.0); // [cm/s]
   }

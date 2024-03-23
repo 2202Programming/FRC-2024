@@ -29,7 +29,7 @@ public class IntakeSequence extends Command {
   boolean stay_down;
   boolean pneumatics_bot = false;
   int count;
-  final int DONE_COUNT = 9;
+  final int DONE_COUNT = 10;
     boolean sensed_note;
 
   public enum Phase {

@@ -49,8 +49,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public Shooter(boolean HasSolenoid) {
-    hw_leftPid = motor_config(leftMtr, leftPidConsts, true);
-    hw_rightPid = motor_config(rightMtr, rightPidConsts, false);
+    hw_leftPid = motor_config(leftMtr, leftPidConsts, false);
+    hw_rightPid = motor_config(rightMtr, rightPidConsts, true);
     leftEncoder = config_encoder(leftMtr);
     rightEncoder = config_encoder(rightMtr);
     if (HasSolenoid) {
