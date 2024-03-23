@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Elvis;
+package frc.robot.commands.Etude;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -22,7 +22,7 @@ import frc.robot.subsystems.Transfer;
  * to green!!
  */
 
-public class ElvisIntake extends Command {
+public class EtudeIntake extends Command {
 
   final Intake intake;
   final Transfer transfer;
@@ -43,7 +43,7 @@ public class ElvisIntake extends Command {
   /*
    * stay_down = true for No defense rapid shoot
    */
-  public ElvisIntake(boolean stay_down) {
+  public EtudeIntake(boolean stay_down) {
     this.stay_down = stay_down;
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);

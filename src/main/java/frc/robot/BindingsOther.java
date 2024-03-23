@@ -11,7 +11,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.PDPMonitorCmd;
-import frc.robot.commands.Elvis.ElvisIntake;
+import frc.robot.commands.Etude.EtudeIntake;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.IntakeSequence;
@@ -142,7 +142,7 @@ public class BindingsOther {
                 driver.x().onTrue(new TurnFaceShootAuto(4));
                 driver.rightBumper().onTrue(new SpeakerShooter(1750.0));
                 break;
-            case Elvis:
+            case Etude:
             case new_bot_test:
                 driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
                 driver.y().onTrue(new AllianceAwareGyroReset(false));
@@ -256,8 +256,8 @@ public class BindingsOther {
                 // operator.leftTrigger().whileTrue(new InAmp()); //works ---> into amp seq
                 // operator.povRight().whileTrue(new IntakeTest(0.35));
                 break;
-            case Elvis:
-                operator.a().whileTrue(new ElvisIntake(false));
+            case Etude:
+                operator.a().whileTrue(new EtudeIntake(false));
                 operator.b().whileTrue(new EjectNote());
 
                 operator.povUp().whileTrue(new AngleCalibration(8.0));
