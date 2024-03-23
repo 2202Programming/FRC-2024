@@ -11,18 +11,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.PDPMonitorCmd;
-import frc.robot.commands.Climber.Climb;
-import frc.robot.commands.Climber.ClimberVelocity;
+import frc.robot.commands.Elvis.ElvisIntake;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.EjectNote;
-import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakeSequence;
-import frc.robot.commands.Intake.IntakeSwap;
-import frc.robot.commands.Intake.MoveToAnglePos;
 import frc.robot.commands.Intake.TestIntake;
-import frc.robot.commands.Intake.TestIntakeAngle;
 import frc.robot.commands.Shooter.CalibrateZero;
-import frc.robot.commands.Shooter.PneumaticsSequence;
 import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Shooter.ShooterAngleSetPos;
 import frc.robot.commands.Shooter.ShooterAngleVelMove;
@@ -35,8 +29,8 @@ import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.Swerve.RotateTo;
 import frc.robot.commands.auto.AutoShooting;
-import frc.robot.commands.auto.TurnFaceShootAuto;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
+import frc.robot.commands.auto.TurnFaceShootAuto;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
@@ -148,7 +142,7 @@ public class BindingsOther {
                 driver.x().onTrue(new TurnFaceShootAuto(4));
                 driver.rightBumper().onTrue(new SpeakerShooter(1750.0));
                 break;
-
+            case Elvis:
             case new_bot_test:
                 driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
                 driver.y().onTrue(new AllianceAwareGyroReset(false));
@@ -261,6 +255,15 @@ public class BindingsOther {
                 // in intake
                 // operator.leftTrigger().whileTrue(new InAmp()); //works ---> into amp seq
                 // operator.povRight().whileTrue(new IntakeTest(0.35));
+                break;
+            case Elvis:
+                operator.a().whileTrue(new ElvisIntake(false));
+                operator.b().whileTrue(new EjectNote());
+
+                operator.povUp().whileTrue(new AngleCalibration(8.0));
+                operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0));
+                operator.leftBumper().onTrue(new ShooterSequence(true, 800.0)); 
+                operator.rightTrigger().onTrue(new ShooterSequence(3500.0));
                 break;
             default:
                 break;
