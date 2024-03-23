@@ -17,6 +17,10 @@ public class CalibrateWithLS extends  Command {
     public final ShooterServo shooter;
     double angleVelocity; //[deg/s]
     int count;
+    public enum Phase {
+        Start, BeyondLS
+      }
+    Phase phase;
     public CalibrateWithLS(double angleVelocity) {
         this.shooter = RobotContainer.getSubsystem(ShooterServo.class);
         this.angleVelocity = angleVelocity;
@@ -25,6 +29,7 @@ public class CalibrateWithLS extends  Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        phase = Phase.Start;
         shooter.setExtensionVelocity(angleVelocity);
         done = false;
     }
@@ -32,11 +37,24 @@ public class CalibrateWithLS extends  Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if(shooter.atLowLimit() &&!done){
+        switch(phase){
+            case Start:
+            if(shooter.atLowLimit()){
+                shooter.setExtensionVelocity(1.0);
+            }
+                if(!shooter.atLowLimit()){
+                    phase = Phase.BeyondLS;
+                }
+                break;
+             case BeyondLS:
+                shooter.setExtensionVelocity(-1.0); 
+            if(shooter.atLowLimit() &&!done){
             shooter.setExtensionVelocity(0.0);
             shooter.setAngleSetpoint(shooter.getAngle() - 3.818581);
             System.out.println(shooter.getAngle() - 3.818581);
             done = true;
+        }  
+        break;
         }
     }
     
