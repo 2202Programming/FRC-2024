@@ -24,8 +24,7 @@ public class PIDFController extends PIDController {
     double m_smartMaxAccel = .01;
 
     double m_Kf = 0.0;
-    double m_izone = 0.0;
-
+    
     public PIDFController(double Kp, double Ki, double Kd, double Kf) {
         this(Kp, Ki, Kd, Kf, DT);
     }
@@ -52,7 +51,7 @@ public class PIDFController extends PIDController {
     public void setF(double Kf) {
         m_Kf = Kf;
     }
-
+/*
     public void setIzone(double izone) {
         this.m_izone = Math.abs(izone);
         // PIDController does support asymetric, but sparkmax doesn't
@@ -65,7 +64,7 @@ public class PIDFController extends PIDController {
     public double getIzone() {
         return m_izone;
     }
-
+*/
     /**
      * Returns the next output of the PID controller.
      *
@@ -94,7 +93,7 @@ public class PIDFController extends PIDController {
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
         builder.addDoubleProperty("f", this::getF, this::setF);
-        builder.addDoubleProperty("iZone", this::getIzone, this::setIzone);
+        builder.addDoubleProperty("iZone", this::getIZone, this::setIZone);
     }
 
     public boolean equals(PIDFController other) {
@@ -121,7 +120,7 @@ public class PIDFController extends PIDController {
         dest.setI(this.getI(), slot);
         dest.setD(this.getD(), slot);
         dest.setFF(this.getF(), slot);
-        dest.setIZone(this.getIzone(), slot);
+        dest.setIZone(this.getIZone(), slot);
         dest.setSmartMotionMaxVelocity(smartMaxVel, slot);
         dest.setSmartMotionMaxAccel(smartMaxAccel, slot);
         sparkMaxController = dest;
@@ -152,9 +151,9 @@ public class PIDFController extends PIDController {
             dest.setFF(getF(), slot);
         }
 
-        if (getIzone() != updated.getIzone()) {
-            setIzone(updated.getIzone());
-            dest.setIZone(getIzone(), slot);
+        if (getIZone() != updated.getIZone()) {
+            setIZone(updated.getIZone());
+            dest.setIZone(getIZone(), slot);
         }
     }
 

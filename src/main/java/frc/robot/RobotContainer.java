@@ -30,7 +30,7 @@ public class RobotContainer {
   // enum for bindings add when needed
   public enum Bindings {
     Competition,
-    DriveTest, Shooter_test, IntakeTesting, auto_shooter_test, new_bot_test
+    DriveTest, Shooter_test, IntakeTesting, auto_shooter_test, new_bot_test, Etude
   }
 
   // Change the line below for testing, try not to commit a change 
@@ -128,8 +128,10 @@ public class RobotContainer {
 
     new PDPMonitorCmd(); // auto scheduled, runs when disabled
     // uncomment to enable shooter angle tracking
+    if(RobotContainer.getRobotSpecs().myRobotName.toString().equals("CompetitionBotBeta2024")){
+    //TODO: DO WE NEED THIS?
     new ContinousAngleTracker(true);  //auto schedules
-  
+  }
     // make some noise if we are not on Competion bindings
     if (bindings != Bindings.Competition) {
       System.out.println(

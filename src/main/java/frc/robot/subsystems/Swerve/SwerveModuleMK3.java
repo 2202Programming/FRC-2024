@@ -430,6 +430,9 @@ public class SwerveModuleMK3 {
     // now add that delta to unbounded Neo angle, m_internal isn't range bound
     angleMotorPID.setReference(angleCmdInvert * (m_internalAngle + delta), ControlType.kPosition);
 
+    //save target vel for plots
+    m_vel_target =m_state.speedMetersPerSecond;
+    
     // use velocity control
     driveMotorPID.setReference(m_state.speedMetersPerSecond, ControlType.kVelocity);
   }
