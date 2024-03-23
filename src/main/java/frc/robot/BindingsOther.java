@@ -17,6 +17,7 @@ import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.TestIntake;
 import frc.robot.commands.Shooter.CalibrateAngle;
+import frc.robot.commands.Shooter.CalibrateWithLS;
 import frc.robot.commands.Shooter.CalibrateZero;
 import frc.robot.commands.Shooter.ShooterAngleSetPos;
 import frc.robot.commands.Shooter.ShooterAngleVelMove;
@@ -233,6 +234,7 @@ public class BindingsOther {
                 operator.povRight().onTrue(new CalibrateAngle(1.0));
                 operator.y().whileTrue(new IntakeSequence(true));
                 operator.b().whileTrue(new IntakeSequence(false));
+                operator.rightBumper().onTrue(new CalibrateWithLS(-1.0));
                 // operator.a().onTrue(new InIntake(true)); // works for both modes
                 // // operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0));
                 // // operator.x().onTrue(new InIntake(true));
