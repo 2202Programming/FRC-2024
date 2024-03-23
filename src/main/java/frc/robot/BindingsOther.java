@@ -31,8 +31,11 @@ import frc.robot.commands.Shooter.ShooterServoSequence;
 import frc.robot.commands.Shooter.SpeakerShooter;
 import frc.robot.commands.Shooter.TestShoot;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
+import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.RobotCentricDrive;
+import frc.robot.commands.Swerve.RotateTo;
 import frc.robot.commands.auto.AutoShooting;
+import frc.robot.commands.auto.TurnFaceShootAuto;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
@@ -140,9 +143,9 @@ public class BindingsOther {
                 // driver.povLeft().onTrue(new SpeakerShooter( 3250.0));
                 driver.povRight().onTrue(new SpeakerShooter(3000.0));
                 driver.povDown().onTrue(new SpeakerShooter(2750.0));
-                driver.a().onTrue(new SpeakerShooter(2500.0));
-                driver.b().onTrue(new SpeakerShooter(2250.0));
-                driver.x().onTrue(new SpeakerShooter(2000.0));
+                driver.a().onTrue(new FaceToTag(4.0));
+                driver.b().onTrue(new RotateTo());
+                driver.x().onTrue(new TurnFaceShootAuto(4));
                 driver.rightBumper().onTrue(new SpeakerShooter(1750.0));
                 break;
 
