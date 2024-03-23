@@ -67,7 +67,7 @@ public class TargetCentricDrive extends Command {
 
   // odometery PID
   PIDController centeringPid;
-  double centering_kP = 3.5;
+  double centering_kP = 0.06; //used to be 3.5 when we were in degrees
   double centering_kI = 0;
   double centering_kD = 0;
   double centeringPidOutput = 2.0;
@@ -108,7 +108,7 @@ public class TargetCentricDrive extends Command {
 
     // PID for when tag is not visable
     blindPid = new PIDController(blindPid_kp, blindPid_ki, blindPid_kd);
-    blindPid.enableContinuousInput(-180.0, 180.0);
+    blindPid.enableContinuousInput(-Math.PI, Math.PI);
     blindPid.setTolerance(pos_tol, vel_tol);
 
   }
@@ -124,7 +124,9 @@ public class TargetCentricDrive extends Command {
 
     checkForTarget(TagID); // checkForTarget is updating tagXfromCenter, hasTarget
 
-    if (!intake.hasNote()) {
+    SmartDashboard.putBoolean("TargetCentricDrive hasNote", intake.hasNote());
+
+    if (intake.hasNote()) { //HACK WARNING -JR
       currentState = state.NoNote;
     } else {
       if (hasTarget) {
@@ -167,10 +169,10 @@ public class TargetCentricDrive extends Command {
   private void calculateRotFromOdometery() {
     currentPose = drivetrain.getPose();
     targetRot = (Math.atan2(currentPose.getTranslation().getY() - targetPose.getY(),
-        currentPose.getTranslation().getX() - targetPose.getX())) // [-pi, pi]
-        * 180 / Math.PI - 180;
+        currentPose.getTranslation().getX() - targetPose.getX())); // [-pi, pi]
+    targetRot = targetRot - Math.PI; //invert facing to have shooter face target
     SmartDashboard.putNumber("TargetCentricDrive Odo target", targetRot);
-    rot = blindPid.calculate(currentPose.getRotation().getDegrees(), targetRot);
+    rot = blindPid.calculate(currentPose.getRotation().getRadians(), targetRot); //in radians
   }
 
   private void calculateRotFromTarget() {

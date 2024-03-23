@@ -100,31 +100,40 @@ public class BindingsOther {
             // i dont like that test commands and bindings are in here but we need them ig
             // --er
             case IntakeTesting:
-                
+
                 /*
-                driver.rightBumper().whileTrue(new IntakeSequence(true));
-                driver.povUp().onTrue(new ShooterSequence(true, 2000.0));
-                driver.povRight().onTrue(new ShooterSequence(true, 1200.0));
-                driver.povDown().whileTrue(new ShooterSequence(3200.0)); // RPM
-                driver.leftBumper().whileTrue(new PneumaticsSequence());
-                driver.x().whileTrue(new AngleCalibration(5.0));
-                driver.y().whileTrue(new AngleCalibration(-5.0));
-                // driver.leftBumper().whileTrue(new IntakeCalibrateForwardPos());
-                driver.b().whileTrue(new TestIntake(0.35)); // % speed
-                // driver.leftBumper().whileTrue(new TransferTest(30.0));
-                driver.rightTrigger().onTrue(new MoveToAnglePos(Intake.TravelUp, Intake.TravelUp));
-                driver.leftTrigger().onTrue(new MoveToAnglePos(Intake.TravelDown, Intake.TravelDown));
-                // driver.rightTrigger().onTrue(new AnglePos(50.0));
-                // driver.a().onTrue(new CalibratePos(0.0));
-                */
-                driver.rightBumper().onTrue(new InstantCommand( ()-> { intake.setIntakeSpeed(0.0);}));
-                driver.a().onTrue(new InstantCommand( ()-> { intake.setIntakeSpeed(2.0);}));
-                driver.b().onTrue(new InstantCommand( ()-> { 
-                    intake.setIntakeSpeed(-2.0);}));
-                driver.x().onTrue(new InstantCommand( ()-> { 
-                    intake.setAngleSetpoint(105.0);}));
-                driver.y().onTrue(new InstantCommand( ()-> { 
-                    intake.setAngleSetpoint(0.0);}));
+                 * driver.rightBumper().whileTrue(new IntakeSequence(true));
+                 * driver.povUp().onTrue(new ShooterSequence(true, 2000.0));
+                 * driver.povRight().onTrue(new ShooterSequence(true, 1200.0));
+                 * driver.povDown().whileTrue(new ShooterSequence(3200.0)); // RPM
+                 * driver.leftBumper().whileTrue(new PneumaticsSequence());
+                 * driver.x().whileTrue(new AngleCalibration(5.0));
+                 * driver.y().whileTrue(new AngleCalibration(-5.0));
+                 * // driver.leftBumper().whileTrue(new IntakeCalibrateForwardPos());
+                 * driver.b().whileTrue(new TestIntake(0.35)); // % speed
+                 * // driver.leftBumper().whileTrue(new TransferTest(30.0));
+                 * driver.rightTrigger().onTrue(new MoveToAnglePos(Intake.TravelUp,
+                 * Intake.TravelUp));
+                 * driver.leftTrigger().onTrue(new MoveToAnglePos(Intake.TravelDown,
+                 * Intake.TravelDown));
+                 * // driver.rightTrigger().onTrue(new AnglePos(50.0));
+                 * // driver.a().onTrue(new CalibratePos(0.0));
+                 */
+                driver.rightBumper().onTrue(new InstantCommand(() -> {
+                    intake.setIntakeSpeed(0.0);
+                }));
+                driver.a().onTrue(new InstantCommand(() -> {
+                    intake.setIntakeSpeed(2.0);
+                }));
+                driver.b().onTrue(new InstantCommand(() -> {
+                    intake.setIntakeSpeed(-2.0);
+                }));
+                driver.x().onTrue(new InstantCommand(() -> {
+                    intake.setAngleSetpoint(105.0);
+                }));
+                driver.y().onTrue(new InstantCommand(() -> {
+                    intake.setAngleSetpoint(0.0);
+                }));
                 break;
 
             case auto_shooter_test:
@@ -145,6 +154,8 @@ public class BindingsOther {
                 driver.leftTrigger().whileTrue(new TargetCentricDrive(4.0));
                 break;
             case Etude:
+                driver.y().onTrue(new AllianceAwareGyroReset(true));
+                driver.leftTrigger().whileTrue(new TargetCentricDrive(4.0));
             case new_bot_test:
                 driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
                 driver.y().onTrue(new AllianceAwareGyroReset(false));
@@ -185,27 +196,32 @@ public class BindingsOther {
                 break;
 
             case IntakeTesting:
-            /*
-                operator.a().onTrue(new IntakeSequence(true)); // works for both modes
-                operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0));
-                operator.x().onTrue(new InIntake(true));
-                operator.y().whileTrue(new TestIntake(0.5)); // %
-
-                operator.povDown().onTrue(new AngleCalibration(15.0)); // good for alpha
-                operator.povUp().onTrue(new AngleCalibration(-15.0)); // not needed, calibrate with up
-
-                operator.povRight().onTrue(new IntakeSwap());
-                operator.povLeft().whileTrue(new EjectNote());
-
-                // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for stay
-                // in intake
-                // operator.leftTrigger().whileTrue(new InAmp()); //works ---> into amp seq
-                // operator.povRight().whileTrue(new IntakeTest(0.35));
-
-                operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); // speaker close
-                operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); // amp - NO WORK RN
-                operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far - NO WORK RN
-                */
+                /*
+                 * operator.a().onTrue(new IntakeSequence(true)); // works for both modes
+                 * operator.b().onTrue(new MoveToAnglePos(Intake.DownPos, 60.0));
+                 * operator.x().onTrue(new InIntake(true));
+                 * operator.y().whileTrue(new TestIntake(0.5)); // %
+                 * 
+                 * operator.povDown().onTrue(new AngleCalibration(15.0)); // good for alpha
+                 * operator.povUp().onTrue(new AngleCalibration(-15.0)); // not needed,
+                 * calibrate with up
+                 * 
+                 * operator.povRight().onTrue(new IntakeSwap());
+                 * operator.povLeft().whileTrue(new EjectNote());
+                 * 
+                 * // operator.rightBumper().whileTrue(new InIntake()); //works ---> seq for
+                 * stay
+                 * // in intake
+                 * // operator.leftTrigger().whileTrue(new InAmp()); //works ---> into amp seq
+                 * // operator.povRight().whileTrue(new IntakeTest(0.35));
+                 * 
+                 * operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0)); // speaker
+                 * close
+                 * operator.leftTrigger().onTrue(new ShooterSequence(true, 800.0)); // amp - NO
+                 * WORK RN
+                 * operator.rightTrigger().onTrue(new ShooterSequence(3500.0)); // speaker far -
+                 * NO WORK RN
+                 */
                 break;
 
             case new_bot_test:
@@ -220,8 +236,9 @@ public class BindingsOther {
                 // // operator.y().whileTrue(new TestIntake(0.5)); // %
                 // // operator.povDown().onTrue(new MoveToAnglePos(Intake.DownPos,
                 // // Intake.TravelDown)); // good for alpha
-                // // operator.povUp().onTrue(new MoveToAnglePos(Intake.UpPos, Intake.TravelUp));
-                // // // not needed, calibrate with  up
+                // // operator.povUp().onTrue(new MoveToAnglePos(Intake.UpPos,
+                // Intake.TravelUp));
+                // // // not needed, calibrate with up
                 // // operator.povRight().onTrue(new IntakeSwap());
                 // // operator.leftBumper().whileTrue(new TestIntakeAngle(-25.0));
                 // operator.y().whileTrue(new TestIntakeAngle(25.0));
@@ -264,7 +281,7 @@ public class BindingsOther {
 
                 operator.povUp().whileTrue(new AngleCalibration(8.0));
                 operator.rightBumper().onTrue(new ShooterSequence(true, 2000.0));
-                operator.leftBumper().onTrue(new ShooterSequence(true, 800.0)); 
+                operator.leftBumper().onTrue(new ShooterSequence(true, 800.0));
                 operator.rightTrigger().onTrue(new ShooterSequence(3500.0));
                 break;
             default:
