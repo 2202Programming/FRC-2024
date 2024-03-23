@@ -14,6 +14,7 @@ import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.Etude.EtudeIntake;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.EjectNote;
+import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.TestIntake;
 import frc.robot.commands.Shooter.CalibrateAngle;
