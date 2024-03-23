@@ -85,9 +85,6 @@ public class TargetCentricDrive extends Command {
   final SlewRateLimiter yspeedLimiter = new SlewRateLimiter(3);
   final SlewRateLimiter rotLimiter = new SlewRateLimiter(3);
 
-
-
-
   public TargetCentricDrive(double TagID) {
     this.dc = RobotContainer.getSubsystem("DC"); // driverControls
     this.drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
@@ -96,7 +93,7 @@ public class TargetCentricDrive extends Command {
     this.limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
 
     addRequirements(drivetrain); // This means we area read-only for everything but drivetrain
-                                 // limelight and intake are used as read-only  
+                                 // limelight and intake are used as read-only
 
     this.TagID = TagID;
     targetPose = Tag_Pose.tagLocations[(int) TagID];
@@ -124,32 +121,34 @@ public class TargetCentricDrive extends Command {
   @Override
   public void execute() {
 
-    if (intake.hasNote()) {
-      if (checkForTarget(TagID)) { // has note, can see target tag, close loop via limelight
+    if (!intake.hasNote()) {
+      currentState = state.NoNote;
+    } else {
+      if (checkForTarget(TagID)) { 
         currentState = state.TagTrack;
-      } else { 
+      } else {
         currentState = state.BlindTrack;
       }
-    } else {
-      currentState = state.NoNote;
     }
 
     SmartDashboard.putString("TargetCentricDrive State", currentState.toString());
 
-    switch (currentState){
+    calculateRotFromOdometery(); // always feed PID, even if rot gets overwritten later.
+
+    switch (currentState) {
       case NoNote:
         calculateRotFromJoystick(); // human controls rotation
         break;
-      case BlindTrack:
-        calculateRotFromOdometery(); // has note, but can't see target, use odometery
-        break;
       case TagTrack:
-        calculateRotFromTarget();
+        calculateRotFromTarget(); // has note, can see target tag, close loop via limelight
+        break;
+      case BlindTrack:
+        // has note, but can't see target, use odometery (already run)
         break;
     }
 
-
-    calculate();  // X and Y from joysticks, and rotation from one of methods above
+    SmartDashboard.putNumber("TargetCentricDrive rot", rot);
+    calculate(); // X and Y from joysticks, and rotation from one of methods above
     drivetrain.drive(output_states);
   }
 
@@ -159,12 +158,12 @@ public class TargetCentricDrive extends Command {
   }
 
   private void calculateRotFromOdometery() {
-        currentPose = drivetrain.getPose();
-        targetRot = (Math.atan2(currentPose.getTranslation().getY() - targetPose.getY(),
-                                currentPose.getTranslation().getX() - targetPose.getX())) // [-pi, pi]
-                                * 180 / Math.PI - 180;
-        SmartDashboard.putNumber("TargetCentricDrive Odo Rot", targetRot);
-        rot = blindPid.calculate(currentPose.getRotation().getDegrees(), targetRot);
+    currentPose = drivetrain.getPose();
+    targetRot = (Math.atan2(currentPose.getTranslation().getY() - targetPose.getY(),
+        currentPose.getTranslation().getX() - targetPose.getX())) // [-pi, pi]
+        * 180 / Math.PI - 180;
+    SmartDashboard.putNumber("TargetCentricDrive Odo target", targetRot);
+    rot = blindPid.calculate(currentPose.getRotation().getDegrees(), targetRot);
   }
 
   private void calculateRotFromTarget() {
@@ -184,8 +183,10 @@ public class TargetCentricDrive extends Command {
       SmartDashboard.putNumber("TargetCentricDrive TagX", tagXfromCenter);
       centeringPidOutput = centeringPid.calculate(tagXfromCenter, 0.0);
       double min_rot = Math.signum(centeringPidOutput) * min_rot_rate;
-      rot = MathUtil.clamp(centeringPidOutput + min_rot, -max_rot_rate, max_rot_rate) / Constants.DEGperRAD; // convert to radians
-      
+      rot = MathUtil.clamp(centeringPidOutput + min_rot, -max_rot_rate, max_rot_rate) / Constants.DEGperRAD; // convert
+                                                                                                             // to
+                                                                                                             // radians
+
     }
   }
 
@@ -200,7 +201,7 @@ public class TargetCentricDrive extends Command {
 
   }
 
-  void calculate() {  // lets use arguments and returns please
+  void calculate() { // lets use arguments and returns please
     // X and Y from joysticks; rot from previous calculations
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
@@ -234,5 +235,5 @@ public class TargetCentricDrive extends Command {
     SmartDashboard.putBoolean("TargetCentricDrive hasTarget", hasTarget);
     return hasTarget;
   }
-  
+
 }
