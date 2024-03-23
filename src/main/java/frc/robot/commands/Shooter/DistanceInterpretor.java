@@ -122,5 +122,7 @@ public class DistanceInterpretor extends TargetWatcherCmd {
         calculate();
     }
 
+    @Override
+    public boolean necessaryForCompetition() {return true;}
 
 }

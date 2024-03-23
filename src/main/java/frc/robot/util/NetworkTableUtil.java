@@ -13,7 +13,7 @@ public interface NetworkTableUtil {
     /*
      * Tell us who you are for the table
      */
-    default String getTableName() {return this.getClass().getCanonicalName(); };
+    default String getTableName() {return this.getClass().getSimpleName(); };
 
     /**
      * Create NetworkTables here
