@@ -11,23 +11,17 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.PDPMonitorCmd;
-import frc.robot.commands.Climber.Climb;
-import frc.robot.commands.Climber.ClimberVelocity;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakeSequence;
-import frc.robot.commands.Intake.IntakeSwap;
-import frc.robot.commands.Intake.MoveToAnglePos;
 import frc.robot.commands.Intake.TestIntake;
-import frc.robot.commands.Intake.TestIntakeAngle;
 import frc.robot.commands.Shooter.CalibrateZero;
-import frc.robot.commands.Shooter.PneumaticsSequence;
-import frc.robot.commands.Shooter.RPMShooter;
 import frc.robot.commands.Shooter.ShooterAngleSetPos;
 import frc.robot.commands.Shooter.ShooterAngleVelMove;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Shooter.ShooterServoSequence;
+import frc.robot.commands.Shooter.ShooterServoSequenceDebug;
 import frc.robot.commands.Shooter.SpeakerShooter;
 import frc.robot.commands.Shooter.TestShoot;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
@@ -35,10 +29,10 @@ import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.Swerve.RotateTo;
 import frc.robot.commands.auto.AutoShooting;
-import frc.robot.commands.auto.TurnFaceShootAuto;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
+import frc.robot.commands.auto.TurnFaceShootAuto;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 
@@ -148,7 +142,7 @@ public class BindingsOther {
                 driver.x().onTrue(new TurnFaceShootAuto(4));
                 driver.rightBumper().onTrue(new SpeakerShooter(1750.0));
                 break;
-
+            case Shooter_test:
             case new_bot_test:
                 driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
                 driver.y().onTrue(new AllianceAwareGyroReset(false));
@@ -182,10 +176,25 @@ public class BindingsOther {
                 break;
 
             case Shooter_test:
-                var shooter = RobotContainer.getSubsystem(Shooter.class);
-                if (shooter != null) {
-                    shooter.setDefaultCommand(new RPMShooter());
-                }
+                // before changes by KO on 3/22/24
+                // var shooter = RobotContainer.getSubsystem(Shooter.class);
+                // if (shooter != null) {
+                // shooter.setDefaultCommand(new RPMShooter());
+                // }
+                var shooter = RobotContainer.getSubsystem(ShooterServo.class);
+
+                operator.a().whileTrue(new IntakeSequence(false)
+                        .andThen(new ShooterAngleSetPos(36.0)));
+                operator.b().whileTrue(new EjectNote()); // eject note from intake
+                operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot
+                operator.povUp().onTrue(new AngleCalibration(-25.0));// intake calibrate
+                operator.leftTrigger().onTrue(new ShooterServoSequenceDebug());
+                // Shooter calibrate
+                operator.povDown().whileTrue(new ShooterAngleVelMove(-2.0));
+                operator.povRight().whileTrue(new ShooterAngleVelMove(2.0));
+                operator.povLeft().onTrue(new InstantCommand(() -> {
+                    shooter.setExtensionPosition(0.0);
+                }));
                 break;
 
             case IntakeTesting:
