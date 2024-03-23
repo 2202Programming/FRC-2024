@@ -51,20 +51,7 @@ public class PIDFController extends PIDController {
     public void setF(double Kf) {
         m_Kf = Kf;
     }
-/*
-    public void setIzone(double izone) {
-        this.m_izone = Math.abs(izone);
-        // PIDController does support asymetric, but sparkmax doesn't
-        if ((getI() != 0.0) && (m_izone != 0.0)) {
-            // PIDF integration is normalized +- 1.0
-            super.setIntegratorRange(-m_izone, m_izone);
-        }
-    }
-
-    public double getIzone() {
-        return m_izone;
-    }
-*/
+    
     /**
      * Returns the next output of the PID controller.
      *

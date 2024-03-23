@@ -171,8 +171,12 @@ public class BindingsOther {
 
             case Shooter_test:
             case new_bot_test:
+                driver.a().onTrue(new TestConstantVelocity(1.0, 4.0));
+                driver.b().onTrue(new TestRotateVelocity(15.0, 6.0));
+                driver.y().onTrue(new AllianceAwareGyroReset(true));
+                driver.leftTrigger().whileTrue(new TargetCentricDrive(4.0));
                 driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
-                driver.y().onTrue(new AllianceAwareGyroReset(false));
+                
                 break;
 
             default:
@@ -263,10 +267,10 @@ public class BindingsOther {
                 operator.y().whileTrue(new IntakeSequence(true));
                 operator.b().whileTrue(new IntakeSequence(false));
                 operator.rightBumper().onTrue(new CalibrateWithLS(-1.0));
-                                operator.leftBumper().onTrue(new InstantCommand(() -> {
+                operator.leftBumper().onTrue(new InstantCommand(() -> {
                     shooter.setAngleSetpoint(28.52);
                 }));
-                                operator.leftTrigger().onTrue(new InstantCommand(() -> {
+                operator.leftTrigger().onTrue(new InstantCommand(() -> {
                     shooter.setAngleSetpoint(36.0);
                 }));
                 // operator.a().onTrue(new InIntake(true)); // works for both modes

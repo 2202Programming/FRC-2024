@@ -108,10 +108,10 @@ public final class Constants {
     public static final ChassisConfig comp2024BotBetaChassisConfig = new ChassisConfig(
         MperFT * (24.875 / 12.0) / 2.0, // x
         MperFT * (20.5 / 12.0) / 2.0, // y
-        0.999, // scale [] <= 1.0
+        0.987, // scale [] <= 1.0
         MperFT * (4.0 / 12.0),
         21.428,
-        8.14);;
+        6.12);;
 
     public static final ChassisInversionSpecs comp2024BotAlphaInversionSpecs = new ChassisInversionSpecs(
         new ModuleInversionSpecs(true, true, false), // FR

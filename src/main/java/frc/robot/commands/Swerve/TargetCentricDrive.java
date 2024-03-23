@@ -58,7 +58,7 @@ public class TargetCentricDrive extends Command {
 
   // Limelight PID
   private PIDController blindPid;
-  private final double blindPid_kp = 0.05;
+  private final double blindPid_kp = 3.0;
   private final double blindPid_ki = 0.0;
   private final double blindPid_kd = 0.0;
   private double targetRot;
@@ -67,12 +67,12 @@ public class TargetCentricDrive extends Command {
 
   // odometery PID
   PIDController centeringPid;
-  double centering_kP = 0.06; //used to be 3.5 when we were in degrees
+  double centering_kP = 3.0; //used to be 3.5 when we were in degrees
   double centering_kI = 0;
   double centering_kD = 0;
   double centeringPidOutput = 2.0;
-  double vel_tol = 1.0;
-  double pos_tol = 1.0;
+  double vel_tol = 1.0 / 57.3; // [rad/sec]
+  double pos_tol = 2.0/ 57.3; // [rad]
   double max_rot_rate = 45.0; // [deg/s]
   double min_rot_rate = 6.0;
   private double TagID;
@@ -81,7 +81,6 @@ public class TargetCentricDrive extends Command {
   double xSpeed, ySpeed, rot;
   Rotation2d currrentHeading;
   SwerveModuleState[] output_states;
-  double tagXfromCenter = 0;
   boolean hasTarget = false;
 
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
@@ -107,9 +106,9 @@ public class TargetCentricDrive extends Command {
     centeringPid.setTolerance(pos_tol, vel_tol);
 
     // PID for when tag is not visable
-    blindPid = new PIDController(blindPid_kp, blindPid_ki, blindPid_kd);
-    blindPid.enableContinuousInput(-Math.PI, Math.PI);
-    blindPid.setTolerance(pos_tol, vel_tol);
+    blindPid = new PIDController(blindPid_kp, blindPid_ki, blindPid_kd); //[rad]
+    blindPid.enableContinuousInput(-Math.PI, Math.PI); //[rad]
+    blindPid.setTolerance(pos_tol, vel_tol);  // Not being used
 
   }
 
@@ -122,7 +121,7 @@ public class TargetCentricDrive extends Command {
   @Override
   public void execute() {
 
-    checkForTarget(TagID); // checkForTarget is updating tagXfromCenter, hasTarget
+    double tagXfromCenter = checkForTarget(TagID); // checkForTarget is updating tagXfromCenter, hasTarget
 
     SmartDashboard.putBoolean("TargetCentricDrive hasNote", intake.hasNote());
 
@@ -145,7 +144,8 @@ public class TargetCentricDrive extends Command {
         calculateRotFromJoystick(); // human controls rotation
         break;
       case TagTrack:
-        calculateRotFromTarget(); // has note, can see target tag, close loop via limelight
+        // 3/23/24 Seems to be working  
+        calculateRotFromTarget(tagXfromCenter); // has note, can see target tag, close loop via limelight
         break;
       case Init: //should never get here
         System.out.println("***Impossible state reached in TargetCentricDrive***");
@@ -170,12 +170,12 @@ public class TargetCentricDrive extends Command {
     currentPose = drivetrain.getPose();
     targetRot = (Math.atan2(currentPose.getTranslation().getY() - targetPose.getY(),
         currentPose.getTranslation().getX() - targetPose.getX())); // [-pi, pi]
-    targetRot = targetRot - Math.PI; //invert facing to have shooter face target
+    //targetRot = targetRot - Math.PI; //invert facing to have shooter face target - Not needed for betabot
     SmartDashboard.putNumber("TargetCentricDrive Odo target", targetRot);
     rot = blindPid.calculate(currentPose.getRotation().getRadians(), targetRot); //in radians
   }
 
-  private void calculateRotFromTarget() {
+  private void calculateRotFromTarget( double tagXfromCenter) {
     centeringPidOutput = centeringPid.calculate(tagXfromCenter, 0.0);
     double min_rot = Math.signum(centeringPidOutput) * min_rot_rate;
     rot = MathUtil.clamp(centeringPidOutput + min_rot, -max_rot_rate, max_rot_rate) / Constants.DEGperRAD; // convert to
@@ -216,8 +216,9 @@ public class TargetCentricDrive extends Command {
     output_states = kinematics.toSwerveModuleStates(tempChassisSpeed);
   }
 
-  private void checkForTarget(double tagID) {
+  private double checkForTarget(double tagID) {
     LimelightTarget_Fiducial[] tags = limelight.getAprilTagsFromHelper();
+    double tagXfromCenter = 0.0;
     hasTarget = false;
     for (LimelightTarget_Fiducial tag : tags) {
       if (tag.fiducialID == tagID) {
@@ -227,7 +228,7 @@ public class TargetCentricDrive extends Command {
     }
     SmartDashboard.putNumber("TargetCentricDrive TagX", tagXfromCenter);
     SmartDashboard.putBoolean("TargetCentricDrive hasTarget", hasTarget);
-    return;
+    return tagXfromCenter;
   }
 
 }
