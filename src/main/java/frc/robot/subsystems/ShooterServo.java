@@ -3,7 +3,10 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.Constants;
 import frc.robot.Constants.CAN;
+import frc.robot.Constants.DigitalIO;
 import frc.robot.commands.utility.WatcherCmd;
 import frc.robot.util.NeoServo;
 import frc.robot.util.PIDFController;
@@ -33,6 +36,9 @@ public class ShooterServo extends Shooter {
   private final NeoServo extension;
   PIDController shooterPos = new PIDController(6.0, 0.0, 0.0);
   PIDFController hwShooterVelPID = new PIDFController(0.2, 0.0, 0.0, 0.14);
+  //limit switch
+    final DigitalInput highLimitSwitch = new DigitalInput(Constants.DigitalIO.Shooter_HighLimitSwitch);
+    final DigitalInput lowLimitSwitch = new DigitalInput(Constants.DigitalIO.Shooter_LowLimitSwitch);
 
   public ShooterServo() {
     super(false);
@@ -121,6 +127,12 @@ public class ShooterServo extends Shooter {
   public double getCurrent() {
     return extension.getController().getOutputCurrent();
   }
+  public boolean atHighLimit(){
+    return highLimitSwitch.get();
+  }
+  public boolean atLowLimit(){
+    return lowLimitSwitch.get();
+  }
 
   public class ShooterServoWatcherCmd extends ShooterWatcherCmd {
     NetworkTableEntry nt_cmd_extension;
@@ -136,6 +148,9 @@ public class ShooterServo extends Shooter {
     NetworkTableEntry nt_current_percent;
     NetworkTableEntry nt_RPM;
     NetworkTableEntry nt_at_RPM;
+
+    NetworkTableEntry nt_HighLimitSwitch;
+    NetworkTableEntry nt_LowLimitSwitch;
 
     // Commanded RPM for testing
     NetworkTableEntry nt_test_cmd_rpm;
@@ -163,6 +178,9 @@ public class ShooterServo extends Shooter {
       nt_RPM = table.getEntry("RPM");
 
       nt_at_RPM = table.getEntry("at_RPM");
+
+      nt_HighLimitSwitch = table.getEntry("HighSwitchPressed");
+      nt_LowLimitSwitch = table.getEntry("LowSwitchPressed");
     }
 
     @Override
@@ -180,6 +198,9 @@ public class ShooterServo extends Shooter {
       nt_current.setDouble(extension.getController().getOutputCurrent());
       nt_current_percent.setDouble(extension.getController().getAppliedOutput());
       nt_RPM.setDouble(extension.getVelocity() / (ShooterAngleRadius / ShooterAngleGearRatio));
+
+      nt_HighLimitSwitch.setBoolean(atHighLimit());
+      nt_LowLimitSwitch.setBoolean(atLowLimit());
     }
   }
 }
