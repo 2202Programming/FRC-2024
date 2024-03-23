@@ -224,6 +224,8 @@ public final class Constants {
     //Climber
     public static final int CLIMBER = 36; //palceholder
 
+    // AmpMechanism
+    public static final int AMP_MECHANISM = 10; //placeholder
 
     // Whether to burn flash or not
     public static final boolean BURN_FLASH = false; // swerve-mk3

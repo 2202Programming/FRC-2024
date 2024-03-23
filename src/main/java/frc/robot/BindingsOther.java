@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.PDPMonitorCmd;
+import frc.robot.commands.AmpMechanism.TestAmpMechanismVel;
 import frc.robot.commands.Climber.Climb;
 import frc.robot.commands.Climber.ClimberVelocity;
 import frc.robot.commands.Intake.AngleCalibration;
@@ -37,6 +38,7 @@ import frc.robot.commands.Swerve.RotateTo;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.TurnFaceShootAuto;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
+import frc.robot.subsystems.AmpMechanism;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
@@ -162,6 +164,7 @@ public class BindingsOther {
     static void OperatorBindings(HID_Xbox_Subsystem dc) {
         var operator = dc.Operator();
         var bindings = RobotContainer.bindings;
+        var AmpMechanism = RobotContainer.getSubsystem(AmpMechanism.class);
 
         switch (bindings) {
             case Competition:
@@ -214,6 +217,11 @@ public class BindingsOther {
 
             case new_bot_test:
                 // // INTAKE & TRANSFER
+                operator.povRight().onTrue(new InstantCommand( ()-> { AmpMechanism.setSetpoint(10.0);})); //find actual value
+                operator.povLeft().onTrue(new InstantCommand( ()-> { AmpMechanism.setSetpoint(0.0);})); // default pos
+                operator.leftBumper().onTrue(new InstantCommand( ()-> { AmpMechanism.setPosition(0.0);})); // calibrate
+                operator.povUp().whileTrue(new TestAmpMechanismVel(1.0));
+                operator.povDown().whileTrue(new TestAmpMechanismVel(-1.0));
                 operator.x().whileTrue(new TestShoot(3000.0));
                 operator.a().whileTrue(new TestIntake(140.0));
                 // operator.a().onTrue(new InIntake(true)); // works for both modes
