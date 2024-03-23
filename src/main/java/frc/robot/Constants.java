@@ -56,7 +56,10 @@ public final class Constants {
     // DriveTrain pid values
     // alpha constant public static final PIDFController drivePIDF = new
     // PIDFController(0.2 * FTperM, 5.0e-6, 0.0, 0.087782 * FTperM);
-    public static final PIDFController drivePIDF = new PIDFController(0.02 * FTperM, 0.0, 0.0, 0.07782 * FTperM);
+    public static final PIDFController drivePIDF =  new PIDFController(0.085, 0.00055, 0.0, 0.21292);
+    static {
+        drivePIDF.setIZone(0.2); // limit Ki to small region of error to prevent windup.
+    }
    // org 3/23: public static final PIDFController drivePIDF = new PIDFController(0.09 * FTperM, 5.0e-6, 0.0, 0.087782 * FTperM);
     public static final PIDFController anglePIDF = new PIDFController(0.01, 0.0, 0.0, 0.0); // maybe 1.0,0.0,0.1 from
                                                                                             // SDS sample code?

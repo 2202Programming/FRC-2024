@@ -157,7 +157,7 @@ public class BindingsOther {
                 break;
 
             case Etude:
-                driver.a().onTrue(new TestConstantVelocity(0.5, 6.0));
+                driver.a().onTrue(new TestConstantVelocity(3.0, 6.0));
                 driver.b().onTrue(new TestRotateVelocity(15.0, 6.0));
                 driver.y().onTrue(new AllianceAwareGyroReset(true));
                 driver.leftTrigger().whileTrue(new TargetCentricDrive(4.0));
