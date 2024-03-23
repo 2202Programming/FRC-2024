@@ -257,6 +257,7 @@ public final class Constants {
   }
 
   public static final class Tag_Pose {
+    public static final Translation2d ID0 = new Translation2d(0,0); //dont use tag ID 0, placeholder for array
     /**Blue source right */
     public static final Translation2d ID1 = new Translation2d(15.079472, 0.245872);
     /**Blue source left */
@@ -286,8 +287,8 @@ public final class Constants {
     public static final Translation2d ID15 = new Translation2d(4.641342, 4.49834);
     public static final Translation2d ID16 = new Translation2d(4.641342, 3.713226);
 
-    public static enum tagLocations { ID1, ID2, ID3, ID4, ID5, ID6, ID7, ID8, ID9, ID10, ID11, ID12,
-                                      ID13, ID14, ID15, ID16 };
+    public static Translation2d[] tagLocations = {ID0, ID1, ID2, ID3, ID4, ID5, ID6, ID7, ID8, ID9, ID10, ID11, ID12,
+                                      ID13, ID14, ID15, ID16};
 
   }
 
