@@ -11,6 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveTrain;
 import frc.robot.Constants.Tag_Pose;
@@ -31,6 +32,24 @@ import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 */
 public class TargetCentricDrive extends Command {
 
+  public enum state {
+    Init("Init"),
+    BlindTrack("BlindTrack"),
+    NoNote("NoNote"),
+    TagTrack("TagTrack");
+
+    private String name;
+
+    private state(String name) {
+      this.name = name;
+    }
+
+    public String toString() {
+      return name;
+    }
+  }
+
+  private state currentState;
   final SwerveDrivetrain drivetrain;
   final SwerveDriveKinematics kinematics;
   final HID_Xbox_Subsystem dc;
@@ -66,6 +85,9 @@ public class TargetCentricDrive extends Command {
   final SlewRateLimiter yspeedLimiter = new SlewRateLimiter(3);
   final SlewRateLimiter rotLimiter = new SlewRateLimiter(3);
 
+
+
+
   public TargetCentricDrive(double TagID) {
     this.dc = RobotContainer.getSubsystem("DC"); // driverControls
     this.drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
@@ -95,21 +117,38 @@ public class TargetCentricDrive extends Command {
 
   @Override
   public void initialize() {
-
+    currentState = state.Init;
+    SmartDashboard.putString("TargetCentricDrive State", currentState.toString());
   }
 
   @Override
   public void execute() {
-    // If the robot has a note
+
     if (intake.hasNote()) {
       if (checkForTarget(TagID)) { // has note, can see target tag, close loop via limelight
-        calculateRotFromTarget();
-      } else { // has note, but can't see target, use odometery
-        calculateRotFromOdometery();
+        currentState = state.TagTrack;
+      } else { 
+        currentState = state.BlindTrack;
       }
     } else {
-      calculateRotFromJoystick(); // otherwise human controls rotation
+      currentState = state.NoNote;
     }
+
+    SmartDashboard.putString("TargetCentricDrive State", currentState.toString());
+
+    switch (currentState){
+      case NoNote:
+        calculateRotFromJoystick(); // human controls rotation
+        break;
+      case BlindTrack:
+        calculateRotFromOdometery(); // has note, but can't see target, use odometery
+        break;
+      case TagTrack:
+        calculateRotFromTarget();
+        break;
+    }
+
+
     calculate();  // X and Y from joysticks, and rotation from one of methods above
     drivetrain.drive(output_states);
   }
@@ -124,6 +163,7 @@ public class TargetCentricDrive extends Command {
         targetRot = (Math.atan2(currentPose.getTranslation().getY() - targetPose.getY(),
                                 currentPose.getTranslation().getX() - targetPose.getX())) // [-pi, pi]
                                 * 180 / Math.PI - 180;
+        SmartDashboard.putNumber("TargetCentricDrive Odo Rot", targetRot);
         rot = blindPid.calculate(currentPose.getRotation().getDegrees(), targetRot);
   }
 
@@ -141,11 +181,11 @@ public class TargetCentricDrive extends Command {
       }
     }
     if (hasTarget) {// this should be true all the time unless the tag is lost
-
+      SmartDashboard.putNumber("TargetCentricDrive TagX", tagXfromCenter);
       centeringPidOutput = centeringPid.calculate(tagXfromCenter, 0.0);
       double min_rot = Math.signum(centeringPidOutput) * min_rot_rate;
       rot = MathUtil.clamp(centeringPidOutput + min_rot, -max_rot_rate, max_rot_rate) / Constants.DEGperRAD; // convert to radians
-    
+      
     }
   }
 
@@ -185,12 +225,14 @@ public class TargetCentricDrive extends Command {
 
   private boolean checkForTarget(double tagID) {
     LimelightTarget_Fiducial[] tags = limelight.getAprilTagsFromHelper();
+    boolean hasTarget = false;
     for (LimelightTarget_Fiducial tag : tags) {
       if (tag.fiducialID == tagID) {
-        return true;
+        hasTarget = true;
       }
     }
-    return false;
+    SmartDashboard.putBoolean("TargetCentricDrive hasTarget", hasTarget);
+    return hasTarget;
   }
-
+  
 }
