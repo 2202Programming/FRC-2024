@@ -39,13 +39,14 @@ public final class Constants {
   public static final class DriveTrain {
     // motor constraints
     public static final double motorMaxRPM = 5600; // motor limit
-    //see https://docs.revrobotics.com/sparkmax/software-resources/configuration-parameters
-    public static final int driveStallAmp = 40;  //dpl 3/15 was 30
+    // see
+    // https://docs.revrobotics.com/sparkmax/software-resources/configuration-parameters
+    public static final int driveStallAmp = 40; // dpl 3/15 was 30
     public static final int angleStallAmp = 20;
     public static final int freeAmp = 20;
 
     // Constraints on speeds enforeced in DriveTrain
-    public static final double kMaxSpeed = 13.5 * MperFT; // [m/s]  // dpl 3/15 was 21 (23 pre wi comp change)
+    public static final double kMaxSpeed = 13.5 * MperFT; // [m/s] // dpl 3/15 was 21 (23 pre wi comp change)
     public static final double kMaxAngularSpeed = 2 * Math.PI; // [rad/s]
     // TODO: FROM LAST YEAR, NEED TO REVIEW
     /****
@@ -60,7 +61,8 @@ public final class Constants {
     // DEBUG - SET FF first for drive, then add KP
 
     // DriveTrain pid values
-    //alpha constant public static final PIDFController drivePIDF = new PIDFController(0.2 * FTperM, 5.0e-6, 0.0, 0.087782 * FTperM); 
+    // alpha constant public static final PIDFController drivePIDF = new
+    // PIDFController(0.2 * FTperM, 5.0e-6, 0.0, 0.087782 * FTperM);
     public static final PIDFController drivePIDF = new PIDFController(0.09 * FTperM, 5.0e-6, 0.0, 0.087782 * FTperM);
     public static final PIDFController anglePIDF = new PIDFController(0.01, 0.0, 0.0, 0.0); // maybe 1.0,0.0,0.1 from
                                                                                             // SDS sample code?
@@ -88,7 +90,7 @@ public final class Constants {
         8.14); // confirmed with vince
 
     public static final WheelOffsets comp2024AlphaBotOffsets = new WheelOffsets(43.85746387, 24.096825,
-     -65.21481, -43.066333125);
+        -65.21481, -43.066333125);
     public static final ChassisConfig comp2024AlphaBotChassisConfig = new ChassisConfig(
         MperFT * (25 / 12.0) / 2.0,
         MperFT * (20.75 / 12.0) / 2.0,
@@ -97,12 +99,14 @@ public final class Constants {
         21.428,
         8.14); // 3/6 Confirmed with Mechanical
     // TODO: For 2024 CompetitionBotBeta ***NOT YET CONFIRMED
-    //FL: offset 0.0, measured 126.474609375, should be -126.474609375
-    //FR: offset 0.0, measured -65.21484375, should be 65.21484375
-    //BL: offset 0.0, measured -28.828125, should be 28.828125
-    //BR: offset 0.0, measured 115.224609375, should be -115.224609375
-    public static final WheelOffsets comp2024BetaBotOffsets = //new WheelOffsets(0.0751953125*180.0, -0.41845703125*180.0, 0.090087890625*180.0, 0.090087890625*180.0);
-      new WheelOffsets(-125.595, 28.125, -114.785, -115.752 );
+    // FL: offset 0.0, measured 126.474609375, should be -126.474609375
+    // FR: offset 0.0, measured -65.21484375, should be 65.21484375
+    // BL: offset 0.0, measured -28.828125, should be 28.828125
+    // BR: offset 0.0, measured 115.224609375, should be -115.224609375
+    public static final WheelOffsets comp2024BetaBotOffsets = // new WheelOffsets(0.0751953125*180.0,
+                                                              // -0.41845703125*180.0, 0.090087890625*180.0,
+                                                              // 0.090087890625*180.0);
+        new WheelOffsets(-125.595, 28.125, -114.785, -115.752);
     public static final ChassisConfig comp2024BotBetaChassisConfig = new ChassisConfig(
         MperFT * (24.875 / 12.0) / 2.0, // x
         MperFT * (20.5 / 12.0) / 2.0, // y
@@ -110,7 +114,7 @@ public final class Constants {
         MperFT * (4.0 / 12.0),
         21.428,
         8.14);;
-    
+
     public static final ChassisInversionSpecs comp2024BotAlphaInversionSpecs = new ChassisInversionSpecs(
         new ModuleInversionSpecs(true, true, false), // FR
         new ModuleInversionSpecs(false, true, false), // FL
@@ -177,7 +181,7 @@ public final class Constants {
     public static final int PCM1 = 2; // for rev
 
     // lights
-    public static final int CANDLE1 = 3; 
+    public static final int CANDLE1 = 3;
     public static final int CANDLE2 = 4;
 
     // Warning: CAN 7 is used for CANCoder on swerveBot aka Tim 2.0
@@ -186,7 +190,6 @@ public final class Constants {
     public static final int SHOOTER_L = 15;
     public static final int SHOOTER_R = 16;
     public static final int SHOOTER_ANGLE = 35;
-
 
     // Drive Train IDs 20 - 31
     // drive train CAN addresses are set above with CANModuleConfig to support
@@ -210,11 +213,11 @@ public final class Constants {
     // Please move to correct location when ID is assigned
 
     // Intake
-    public static final int INTAKE_MTR = 18; 
-    public static final int ANGLE_MTR = 17;  
+    public static final int INTAKE_MTR = 18;
+    public static final int ANGLE_MTR = 17;
 
     // Transfer
-    public static final int TRANSFER_MOTOR = 19; 
+    public static final int TRANSFER_MOTOR = 19;
 
     // Claw
     public static final int CLAW_WHEEL_MOTOR = 16;
@@ -222,9 +225,8 @@ public final class Constants {
     // IMU
     public static final int PIGEON_IMU_CAN = 60;
 
-    //Climber
-    public static final int CLIMBER = 36; //palceholder
-
+    // Climber
+    public static final int CLIMBER = 36; // palceholder
 
     // Whether to burn flash or not
     public static final boolean BURN_FLASH = false; // swerve-mk3
@@ -248,29 +250,42 @@ public final class Constants {
   public final class DigitalIO {
     public static final int Transfer_LightGate = 0;
     public static final int Intake_LightGate = 1;
-    public static final int IntakeIsDown = 2; 
-    public static final int IntakeIsUp = 3; 
+    public static final int IntakeIsDown = 2;
+    public static final int IntakeIsUp = 3;
   }
 
   public static final class Transfer_Constants {
-    public enum NoteCommandedLocation { Transfer, Intake, Swap; }
+    public enum NoteCommandedLocation {
+      Transfer, Intake, Swap;
+    }
+
     public static final double TRANSFER_MOTOR_ON = 0.8;
     public static final double TRANSFER_MOTOR_REVERSE = -0.5;
   }
 
   public static final class Tag_Pose {
-    /**Blue Speaker center tag*/
-    public static final Translation2d ID7 = new Translation2d(0.0381, 5.55);
-    /**Red Speaker center tag*/
-    public static final Translation2d ID4 = new Translation2d(16.58, 5.55);
+    public static final Translation2d ID0 = new Translation2d(0, 0);
+    public static final Translation2d ID1 = new Translation2d(15.079472, 0.245872);
+    public static final Translation2d ID2 = new Translation2d(16.185134, 0.883666);
+    public static final Translation2d ID3 = new Translation2d(16.579342, 4.982718);
+    public static final Translation2d ID4 = new Translation2d(16.579342, 5.547868);
+    public static final Translation2d ID5 = new Translation2d(14.700758, 8.2042);
+    public static final Translation2d ID6 = new Translation2d(1.8415, 8.2042);
+    public static final Translation2d ID7 = new Translation2d(0.0381, 5.547868);
+    public static final Translation2d ID8 = new Translation2d(0.0381, 4.982718);
+    public static final Translation2d ID9 = new Translation2d(0.356108, 0.883666);
+    public static final Translation2d ID10 = new Translation2d(1.461516, 0.245872);
+    public static final Translation2d ID11 = new Translation2d(11.904726, 3.713226);
+    public static final Translation2d ID12 = new Translation2d(11.904726, 4.49834);
+    public static final Translation2d ID13 = new Translation2d(11.220196, 4.105148);
+    public static final Translation2d ID14 = new Translation2d(5.320792, 4.105148);
+    public static final Translation2d ID15 = new Translation2d(4.641342, 4.49834);
+    public static final Translation2d ID16 = new Translation2d(4.641342, 3.713226);
 
-    public static final Translation2d[] tagLocations = {ID4,ID4,ID4,ID4,ID4,ID4,ID4,ID7,ID4,ID4};
-
-
+    public static final Translation2d[] tagLocations = { ID0, ID1, ID2, ID3, ID4, ID5, ID6, ID7, ID8, ID9, ID10, ID11, ID12,
+        ID13, ID14, ID15, ID16 };
 
   }
-
-
 
   /*-------NT------- */
   public final static class NTStrings {
