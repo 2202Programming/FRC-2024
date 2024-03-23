@@ -158,6 +158,7 @@ public class BindingsOther {
     static void OperatorBindings(HID_Xbox_Subsystem dc) {
         var operator = dc.Operator();
         var bindings = RobotContainer.bindings;
+        var shooter = RobotContainer.getSubsystem(ShooterServo.class);
 
         switch (bindings) {
             case Competition:
@@ -183,7 +184,6 @@ public class BindingsOther {
                 // if (shooter != null) {
                 // shooter.setDefaultCommand(new RPMShooter());
                 // }
-                var shooter = RobotContainer.getSubsystem(ShooterServo.class);
 
                 operator.a().whileTrue(new IntakeSequence(false)
                         .andThen(new ShooterAngleSetPos(36.0)));
@@ -228,6 +228,7 @@ public class BindingsOther {
                 // // INTAKE & TRANSFER
                 operator.x().whileTrue(new TestShoot(3000.0));
                 operator.a().onTrue(new AngleCalibration(-10.0));
+                operator.rightTrigger().onTrue(new InstantCommand( ()-> { shooter.setExtensionPosition(0.0);}));
                 operator.povUp().whileTrue(new ShooterAngleVelMove(1.0));
                 operator.povDown().whileTrue(new ShooterAngleVelMove(-1.0));
                 operator.povLeft().onTrue(new CalibrateAngle(-1.0));

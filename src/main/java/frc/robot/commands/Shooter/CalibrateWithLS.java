@@ -34,12 +34,12 @@ public class CalibrateWithLS extends  Command {
     public void execute() {
         if(shooter.atLowLimit() &&!done){
             shooter.setExtensionVelocity(0.0);
-            shooter.setAngleSetpoint(shooter.getAngle() - 1.818581);
+            shooter.setAngleSetpoint(shooter.getAngle() - 3.818581);
+            System.out.println(shooter.getAngle() - 3.818581);
             done = true;
         }
     }
     
-
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) { 
@@ -52,7 +52,7 @@ public class CalibrateWithLS extends  Command {
     @Override
     public boolean isFinished() {
         if(done){
-        return shooter.atSetpoint();
+        return (shooter.atSetpoint());
         }
         return false;
         //for alpha
