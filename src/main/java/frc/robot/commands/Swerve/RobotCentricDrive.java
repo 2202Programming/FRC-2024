@@ -5,6 +5,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.DriveTrain;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
@@ -46,6 +47,7 @@ public class RobotCentricDrive extends Command {
 
   @Override
   public void initialize() {
+    SmartDashboard.putBoolean("RobotCentricDrive Enabled", true);
   }
 
   void calculate() {
@@ -71,6 +73,7 @@ public class RobotCentricDrive extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    SmartDashboard.putBoolean("RobotCentricDrive Enabled", false);
     drivetrain.stop();
   }
 

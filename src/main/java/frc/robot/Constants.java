@@ -56,7 +56,8 @@ public final class Constants {
     // DriveTrain pid values
     // alpha constant public static final PIDFController drivePIDF = new
     // PIDFController(0.2 * FTperM, 5.0e-6, 0.0, 0.087782 * FTperM);
-    public static final PIDFController drivePIDF = new PIDFController(0.09 * FTperM, 5.0e-6, 0.0, 0.087782 * FTperM);
+    public static final PIDFController drivePIDF = new PIDFController(0.02 * FTperM, 0.0, 0.0, 0.07782 * FTperM);
+   // org 3/23: public static final PIDFController drivePIDF = new PIDFController(0.09 * FTperM, 5.0e-6, 0.0, 0.087782 * FTperM);
     public static final PIDFController anglePIDF = new PIDFController(0.01, 0.0, 0.0, 0.0); // maybe 1.0,0.0,0.1 from
                                                                                             // SDS sample code?
     /*
@@ -90,7 +91,8 @@ public final class Constants {
         0.957, // scale [] <= 1.0
         MperFT * (4.0 / 12.0),
         21.428,
-        8.14); // 3/6 Confirmed with Mechanical
+        6.12); // 3/6 Confirmed with Mechanical
+
     // TODO: For 2024 CompetitionBotBeta ***NOT YET CONFIRMED
     // FL: offset 0.0, measured 126.474609375, should be -126.474609375
     // FR: offset 0.0, measured -65.21484375, should be 65.21484375

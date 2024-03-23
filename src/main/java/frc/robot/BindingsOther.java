@@ -29,6 +29,8 @@ import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.Swerve.RotateTo;
 import frc.robot.commands.Swerve.TargetCentricDrive;
+import frc.robot.commands.Swerve.calibrate.TestConstantVelocity;
+import frc.robot.commands.Swerve.calibrate.TestRotateVelocity;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 import frc.robot.commands.auto.TurnFaceShootAuto;
@@ -153,9 +155,16 @@ public class BindingsOther {
                 driver.rightBumper().onTrue(new SpeakerShooter(1750.0));
                 driver.leftTrigger().whileTrue(new TargetCentricDrive(4.0));
                 break;
+
             case Etude:
+                driver.a().onTrue(new TestConstantVelocity(0.5, 6.0));
+                driver.b().onTrue(new TestRotateVelocity(15.0, 6.0));
                 driver.y().onTrue(new AllianceAwareGyroReset(true));
                 driver.leftTrigger().whileTrue(new TargetCentricDrive(4.0));
+                driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
+                
+                break;
+
             case new_bot_test:
                 driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
                 driver.y().onTrue(new AllianceAwareGyroReset(false));
