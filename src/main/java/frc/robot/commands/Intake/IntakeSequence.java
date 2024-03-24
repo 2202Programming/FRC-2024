@@ -138,14 +138,4 @@ public class IntakeSequence extends Command {
 
   }
 
-  /*
-   * If a note started, we need to let it finish going through.
-   * This should prevent the interrupt... nope.
-   */
-  @Override
-  public InterruptionBehavior getInterruptionBehavior() {
-    // If we saw a note, don't let the interrupt happen, otherwise it is ok
-    return (saw_note) ? InterruptionBehavior.kCancelIncoming : InterruptionBehavior.kCancelSelf;
-  }
-
 }
