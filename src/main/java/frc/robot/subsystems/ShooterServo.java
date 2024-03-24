@@ -4,7 +4,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DigitalInput;
-import frc.robot.Constants;
 import frc.robot.Constants.CAN;
 import frc.robot.Constants.DigitalIO;
 import frc.robot.commands.utility.WatcherCmd;
@@ -37,8 +36,8 @@ public class ShooterServo extends Shooter {
   PIDController shooterPos = new PIDController(6.0, 0.0, 0.0);
   PIDFController hwShooterVelPID = new PIDFController(0.2, 0.0, 0.0, 0.14);
   //limit switch
-    final DigitalInput highLimitSwitch = new DigitalInput(Constants.DigitalIO.Shooter_HighLimitSwitch);
-    final DigitalInput lowLimitSwitch = new DigitalInput(Constants.DigitalIO.Shooter_LowLimitSwitch);
+    final DigitalInput highLimitSwitch = new DigitalInput(DigitalIO.Shooter_HighLimitSwitch);
+    final DigitalInput lowLimitSwitch = new DigitalInput(DigitalIO.Shooter_LowLimitSwitch);
 
   public ShooterServo() {
     super(false);

@@ -56,12 +56,12 @@ public final class Constants {
     // DriveTrain pid values
     // alpha constant public static final PIDFController drivePIDF = new
     // PIDFController(0.2 * FTperM, 5.0e-6, 0.0, 0.087782 * FTperM);
-    public static final PIDFController drivePIDF =  new PIDFController(0.085, 0.00055, 0.0, 0.21292);
-    static {
-        drivePIDF.setIZone(0.2); // limit Ki to small region of error to prevent windup.
-    }
+    //public static final PIDFController drivePIDF =  new PIDFController(0.085, 0.00055, 0.0, 0.21292);
+    //static {
+    //    drivePIDF.setIZone(0.2); // limit Ki to small region of error to prevent windup.
+    //}
    // org 3/23: public static final PIDFController drivePIDF = new PIDFController(0.09 * FTperM, 5.0e-6, 0.0, 0.087782 * FTperM);
-    public static final PIDFController anglePIDF = new PIDFController(0.01, 0.0, 0.0, 0.0); // maybe 1.0,0.0,0.1 from
+   // public static final PIDFController anglePIDF = new PIDFController(0.01, 0.0, 0.0, 0.0); // maybe 1.0,0.0,0.1 from
                                                                                             // SDS sample code?
     /*
      * Settings for different swerve bot chassis
@@ -84,7 +84,10 @@ public final class Constants {
         0.999, // scale [] <= 1.0
         MperFT * (4.0 / 12.0), // wheel diameter[m] Comp bot is 4" wheels
         12.8, // confirmed with vince
-        6.12); // confirmed with vince
+        6.12,
+        new PIDFController(0.085, 0.00055, 0.0, 0.21292),
+        new PIDFController(0.01, 0.0, 0.0, 0.0) //angle
+        ); // confirmed with vince
 
     public static final WheelOffsets comp2024AlphaBotOffsets = new WheelOffsets(43.85746387, 24.096825,
         -65.21481, -43.066333125);
@@ -94,7 +97,15 @@ public final class Constants {
         0.957, // scale [] <= 1.0
         MperFT * (4.0 / 12.0),
         21.428,
-        6.12); // 3/6 Confirmed with Mechanical
+        6.12,
+        new PIDFController(0.085, 0.00055, 0.0, 0.21292), // drive
+        new PIDFController(0.01, 0.0, 0.0, 0.0)  // angle
+        );
+        // finish AlphaBot's drivePIDF 
+        static {
+          comp2024AlphaBotChassisConfig.drivePIDF.setIZone(0.2);
+        }
+
 
     // TODO: For 2024 CompetitionBotBeta ***NOT YET CONFIRMED
     // FL: offset 0.0, measured 126.474609375, should be -126.474609375
@@ -111,7 +122,15 @@ public final class Constants {
         0.987, // scale [] <= 1.0
         MperFT * (4.0 / 12.0),
         21.428,
-        6.12);;
+        6.12,
+        new PIDFController(0.085, 0.00055, 0.0, 0.21292), // drive
+        new PIDFController(0.01, 0.0, 0.0, 0.0)  // angle
+        );
+        // finish BetaBot's drivePIDF 
+        static {
+          comp2024BotBetaChassisConfig.drivePIDF.setIZone(0.2);
+        }
+
 
     public static final ChassisInversionSpecs comp2024BotAlphaInversionSpecs = new ChassisInversionSpecs(
         new ModuleInversionSpecs(true, true, false), // FR

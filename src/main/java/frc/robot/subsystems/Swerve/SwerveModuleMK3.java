@@ -135,8 +135,8 @@ public class SwerveModuleMK3 {
     angleEncoder.setVelocityConversionFactor(360.0 / cc.kSteeringGR / 60.0); // rpm to deg/s
 
     // SparkMax PID values
-    DriveTrain.anglePIDF.copyTo(angleMotorPID, kSlot); // position mode
-    DriveTrain.drivePIDF.copyTo(driveMotorPID, kSlot); // velocity mode
+    cc.anglePIDF.copyTo(angleMotorPID, kSlot); // position mode
+    cc.drivePIDF.copyTo(driveMotorPID, kSlot); // velocity mode
 
     // new current limits
     driveMotor.setSmartCurrentLimit(DriveTrain.driveStallAmp, DriveTrain.freeAmp);
