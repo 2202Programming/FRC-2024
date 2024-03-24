@@ -15,7 +15,7 @@ public class TestPneumatics extends Command {
 
   public TestPneumatics(boolean extend) {
     this.extend = extend;
-    this.shooter = RobotContainer.getSubsystem("SHOOTER");
+    this.shooter = RobotContainer.getSubsystem(Shooter.class);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

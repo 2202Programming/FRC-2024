@@ -86,6 +86,21 @@ public class Shooter extends SubsystemBase {
     cmdRightRPM = rightRPM;
   }
 
+  /* 
+   * Add compatibilty with ShooterServo
+   */
+  public void setAngleSetpoint(double angle) {
+    // fake it as best as this one can...
+    if (angle > 35.0)  deploy();
+    else retract();
+  }
+/* 
+   * Add compatibilty with ShooterServo
+   */
+  public void setExtensionPosition(double x) {
+    //unused in base shooter
+  }
+
   public void deploy() {
     shooterAngle.set(DoubleSolenoid.Value.kForward);
   }

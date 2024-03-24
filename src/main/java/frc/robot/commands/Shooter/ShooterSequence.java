@@ -43,7 +43,7 @@ public class ShooterSequence extends BlinkyLightUser {
   public ShooterSequence(boolean shootHigh, double speed) {
     this.shootHigh = shootHigh;
     this.speed = speed;
-    this.shooter = RobotContainer.getSubsystem("SHOOTER");
+    this.shooter = RobotContainer.getSubsystem(Shooter.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
     this.intake = RobotContainer.getSubsystem(Intake.class);
     addRequirements(shooter, transfer, intake);

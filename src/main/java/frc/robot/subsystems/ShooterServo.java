@@ -75,6 +75,7 @@ public class ShooterServo extends Shooter {
     setAngleSetpoint(RetractAngle);
   }
 
+  @Override
   public void setAngleSetpoint(double angle) {
     cmd_deg = angle;
     double rad_angle = angle * Math.PI / 180.0;
@@ -94,6 +95,7 @@ public class ShooterServo extends Shooter {
    * Sets extension positon [cm], does not move.
    * Used for calibration.
    */
+  @Override
   public void setExtensionPosition(double pos) {
     extension.setPosition(pos);
   }

@@ -15,7 +15,7 @@ public class PneumaticsSequence extends Command {
   final Intake intake;
   
   public PneumaticsSequence() {
-    this.shooter = RobotContainer.getSubsystem("SHOOTER");
+    this.shooter = RobotContainer.getSubsystem(Shooter.class);
     this.intake = RobotContainer.getSubsystem(Intake.class);
     // Use addRequirements() here to declare subsystem dependencies.
   }
