@@ -1,0 +1,62 @@
+package frc.robot.commands.Intake;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Transfer;
+
+/*
+ * This is used if the intakeSequence is interrupted but we had a note
+ * in flight.  It finishes the count and stops the rollers.
+ *
+ */
+
+public class FinishIntakeSequence extends Command {
+    final Intake intake;
+    final Transfer transfer;
+    //use DONE_COUNT defined in IntakeSequence
+    final int DONE_COUNT = IntakeSequence.DONE_COUNT; 
+    int count;
+    boolean stay_down;
+
+    /**
+     * 
+     * @param count - where were were when interrupted
+     * @param stay_down
+     */
+    public FinishIntakeSequence(int count, boolean stay_down){
+        this.count = count;
+        this.stay_down = stay_down;
+        this.intake = RobotContainer.getSubsystem(Intake.class);
+        this.transfer = RobotContainer.getSubsystem(Transfer.class);
+    }
+
+    @Override
+    public void initialize() {
+        // put the rollers back on
+        intake.setIntakeSpeed(Intake.RollerMaxSpeed); // [cm/s]
+        transfer.setSpeed(50.0);  //[cm/s]
+    }
+
+
+    @Override
+    public boolean isFinished() {
+        // run until count expires
+        if (++count >= DONE_COUNT) {
+            // stop at hopefully the same location
+            intake.setMaxVelocity(Intake.TravelUp);
+            transfer.setSpeed(0.0);
+            intake.setIntakeSpeed(0.0);
+
+            //handle stay_down flag from original IntakeSequence
+            if (!stay_down) {
+                intake.setMaxVelocity(Intake.TravelUp);
+                intake.setAngleSetpoint(Intake.UpPos);
+            }
+            return true;
+        }
+        return false;
+
+    }
+
+}
