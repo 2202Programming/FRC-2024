@@ -24,4 +24,9 @@ public class ShooterAngleSetPos extends Command {
     //shooter.setExtensionPosition(desired_pos); //we want  move , not calibraate
     shooter.setAngleSetpoint(desired_pos);
   }
+
+  @Override
+  public boolean isFinished() {
+    return shooter.atSetpoint();
+  }
 }

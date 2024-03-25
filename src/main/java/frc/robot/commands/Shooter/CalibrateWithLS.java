@@ -42,43 +42,31 @@ public class CalibrateWithLS extends Command {
             case Start:
                 if (shooter.atLowLimit()) {
                     shooter.setExtensionVelocity(6.0);
-                }
-                if (!shooter.atLowLimit()) {
-                    count++;
-                }
-                if(count >=DELAY_COUNT){
-                                        phase = Phase.BeyondLS;
+                } else {
+                    if (++count >= DELAY_COUNT) {
+                        phase = Phase.BeyondLS;
+                    }
                 }
                 break;
             case BeyondLS:
                 shooter.setExtensionVelocity(-1.0);
                 if (shooter.atLowLimit()) {
                     shooter.setExtensionVelocity(0.0);
+                    shooter.setExtensionPosition(ShooterServo.SERVO_CALIB_EXT);
                     phase = Phase.Finished;
                 }
                 break;
             case Finished:
-            break;
+                break;
         }
-    }
-
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {
-        shooter.setExtensionPosition(1.68);
-
     }
 
     // Returns true when the command should end, we end when count hits DONE_COUNT
     @Override
     public boolean isFinished() {
-        if (phase == Phase.Finished) {
-            return (shooter.atSetpoint());
-        }
-        return false;
+        return (phase == Phase.Finished);
         // for alpha
         // return (angleVelocity < 0.0) ? intake.atReverseLimitSwitch() :
         // intake.atForwardLimitSwitch();
-
     }
 }

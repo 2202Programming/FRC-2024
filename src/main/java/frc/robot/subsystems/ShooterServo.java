@@ -16,8 +16,9 @@ public class ShooterServo extends Shooter {
   final static double ShooterAngleRadius = 12.0; // [cm]
   final static int STALL_CURRENT = 0; // [amps]
   final static int FREE_CURRENT = 25;
-  final static double SERVO_MIN = -10.0; // [cm]
-  final static double SERVO_MAX = 12.0; // [cm]
+  final static double SERVO_MIN = 0.0; // [cm] sw stop on extension servo
+  final static double SERVO_MAX = 12.0; // [cm] sw stop on extension
+  public final static double SERVO_CALIB_EXT = 1.5; // [cm] point where reed switch trips moving down
   final static double maxVel  = 40.0; // [cm/sec]
   final static double maxAccel = 20.0; // [cm/sec^2]
   final static double posTol = 1.0; // [cm]
@@ -25,8 +26,8 @@ public class ShooterServo extends Shooter {
   final static double MIN_POSITION = 20.2184; // [cm]
   final static double MAX_POSITION = 32.4866; // [cm]
   final static double Hypotenuse = 42.53992; // [cm]
-  public final static double MIN_DEGREES = 0.0; // [deg]
-  public final static double MAX_DEGREES = 48.00;
+  public final static double MIN_DEGREES = 28.50; // [deg]
+  public final static double MAX_DEGREES = 45.00;  //dpl ext and angle not in sync.
   double cmd_deg; // [deg] angle we want the shooter (calculate extension from this)
 
   final static double DeployAngle = MAX_DEGREES;  // compatibility with pnumantic shooter

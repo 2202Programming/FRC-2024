@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.Etude.EtudeIntake;
 import frc.robot.commands.Intake.AngleCalibration;
@@ -191,7 +192,7 @@ public class BindingsOther {
         final Shooter shooter = (RobotContainer.getRobotSpecs().myRobotName == RobotNames.CompetitionBotBeta2024)
                 ? RobotContainer.getSubsystemOrNull(ShooterServo.class)
                 : RobotContainer.getSubsystem(Shooter.class);
-        if (shooter instanceof Shooter) {
+        if (!(shooter instanceof ShooterServo)) {
             System.out.println("ShooterServo not found, using AlphaShooter, some NPE happen depending on bindings.");
             skip_SS_only = true;
         }
@@ -224,8 +225,15 @@ public class BindingsOther {
                     operator.leftTrigger().onTrue(new ShooterServoSequenceDebug());
                     operator.rightTrigger().onTrue(new ShooterServoSequence()); // auto shoot
                     // Shooter calibrate
-                    operator.povDown().whileTrue(new ShooterAngleVelMove(-2.0));
-                    operator.povRight().whileTrue(new ShooterAngleVelMove(2.0));
+                    operator.rightBumper().onTrue(new CalibrateWithLS(-1.0));
+                    operator.leftBumper().onTrue(new ShooterAngleSetPos(28.5)
+                    .andThen(new WaitCommand(15.0)).andThen(new ShooterAngleSetPos(30.0) )
+                    .andThen(new WaitCommand(15.0)).andThen(new ShooterAngleSetPos(35.0) )
+                    .andThen(new WaitCommand(15.0)).andThen(new ShooterAngleSetPos(40.0) )
+                    .andThen(new WaitCommand(15.0)).andThen(new ShooterAngleSetPos(45.0) )
+                    .andThen(new WaitCommand(15.0)).andThen(new ShooterAngleSetPos(48.0) ) 
+                    );
+
                 }
                 break;
 
