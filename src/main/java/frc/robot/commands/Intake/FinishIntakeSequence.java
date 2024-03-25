@@ -36,7 +36,7 @@ public class FinishIntakeSequence extends Command {
     @Override
     public void initialize() {
         // put the rollers back on
-        System.out.println("RUNNING FINISH SEQUENCE");
+        // System.out.println("RUNNING FINISH SEQUENCE");
         intake.setIntakeSpeed(Intake.RollerMaxSpeed); // [cm/s]
         transfer.setSpeed(50.0);  //[cm/s]
     }
@@ -46,7 +46,7 @@ public class FinishIntakeSequence extends Command {
     public boolean isFinished() {
         // run until count expires
         if(transfer_detected){
-            System.out.println("HIT TRANSFER IN FINISH");
+            // System.out.println("HIT TRANSFER IN FINISH");
         if (++count >= DONE_COUNT) {
             // stop at hopefully the same location
             intake.setMaxVelocity(Intake.TravelUp);

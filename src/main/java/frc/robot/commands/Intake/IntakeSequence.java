@@ -111,7 +111,7 @@ public class IntakeSequence extends Command {
       intake.setMaxVelocity(Intake.TravelUp);
       intake.setAngleSetpoint(Intake.UpPos);
     }
-      System.out.println("SHUTTING EVERYTHING OFF");
+      // System.out.println("SHUTTING EVERYTHING OFF");
     transfer.setSpeed(0.0);
     intake.setIntakeSpeed(0.0);
     // TODO: edge case, the sequential doesn't cancel
@@ -121,7 +121,7 @@ public class IntakeSequence extends Command {
     if (interrupted) {
       // Creates a command to continue going down until we get to the bottom before
       // moving back up, to minimize belt slippage on Alpha
-      System.out.println("Interrupted intakeSequence");
+      // System.out.println("Interrupted intakeSequence");
       var cmd = new SequentialCommandGroup();
       if ((saw_note || intake.senseNote()) && count < DONE_COUNT) {
         //Need to finish the transfer before we do anything else
