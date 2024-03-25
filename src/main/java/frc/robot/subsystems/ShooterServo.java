@@ -18,7 +18,7 @@ public class ShooterServo extends Shooter {
   final static int FREE_CURRENT = 25;
   final static double SERVO_MIN = 0.0; // [cm] sw stop on extension servo
   final static double SERVO_MAX = 10.89; // [cm] sw stop on extension
-  public final static double SERVO_CALIB_EXT = 1.5; // [cm] point where reed switch trips moving down
+  public final static double SERVO_CALIB_EXT = 1.55; // [cm] point where reed switch trips moving down
   final static double maxVel  = 40.0; // [cm/sec]
   final static double maxAccel = 20.0; // [cm/sec^2]
   final static double posTol = 1.0; // [cm]
@@ -27,7 +27,7 @@ public class ShooterServo extends Shooter {
   final static double MAX_POSITION = 32.4866; // [cm]
   final static double Hypotenuse = 42.53992; // [cm]
   public final static double MIN_DEGREES = 28.38; // [deg]
-  public final static double MAX_DEGREES = 47.00;  //dpl ext and angle not in sync.
+  public final static double MAX_DEGREES = 45.5;  //dpl ext and angle not in sync.
   double cmd_deg; // [deg] angle we want the shooter (calculate extension from this)
 
   final static double DeployAngle = MAX_DEGREES;  // compatibility with pnumantic shooter
@@ -53,6 +53,7 @@ public class ShooterServo extends Shooter {
         .setMaxVelocity(maxVel)
         .burnFlash();
     extension.setClamp(SERVO_MIN, SERVO_MAX); // local [cm]
+    extension.setPosition(SERVO_CALIB_EXT); // ASSUME WE CALIBRATED
   }
 
   @Override
@@ -143,6 +144,7 @@ public class ShooterServo extends Shooter {
     NetworkTableEntry nt_cmd_extension;
     NetworkTableEntry nt_extensionVel;
     NetworkTableEntry nt_cmd_extensionVel;
+    NetworkTableEntry nt_extensionPosition;
 
     NetworkTableEntry nt_angle_cmd;
     NetworkTableEntry nt_angle;
@@ -172,6 +174,7 @@ public class ShooterServo extends Shooter {
       nt_cmd_extension = table.getEntry("Extension_cmd");
       nt_extensionVel = table.getEntry("ExtensionVel");
       nt_cmd_extensionVel = table.getEntry("ExtensionVel_cmd");
+      nt_extensionPosition = table.getEntry("ExtensionPos");
 
       nt_angle_cmd = table.getEntry("Angle_cmd");
       nt_angle = table.getEntry("Angel");
@@ -194,6 +197,7 @@ public class ShooterServo extends Shooter {
       nt_cmd_extension.setDouble( extension.getSetpoint());
       nt_extensionVel.setDouble(getExtensionVelocity());
       nt_cmd_extensionVel.setDouble(extension.getVelocityCmd());
+      nt_extensionPosition.setDouble(extension.getPosition());
 
       nt_angle_cmd.setDouble(cmd_deg);
       nt_angle.setDouble(getAngle());

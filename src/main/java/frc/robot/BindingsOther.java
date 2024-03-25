@@ -223,7 +223,8 @@ public class BindingsOther {
                 if (!skip_SS_only) {
                     operator.povUp().onTrue(new AngleCalibration(-25.0));// intake calibrate
                     operator.leftTrigger().onTrue(new ShooterServoSequenceDebug());
-                    operator.rightTrigger().onTrue(new ShooterServoSequence()); // auto shoot
+                    operator.rightTrigger().onTrue(
+                        new ShooterServoSequence()); // auto shoot
                     // Shooter calibrate
                     operator.rightBumper().onTrue(new CalibrateWithLS(-1.0));
                     operator.leftBumper().onTrue(new ShooterAngleSetPos(28.5)
@@ -237,6 +238,7 @@ public class BindingsOther {
                     operator.povLeft().onTrue(new ShooterAngleSetPos(35));
                     operator.povRight().onTrue(new ShooterAngleSetPos(ShooterServo.MAX_DEGREES));
                 }
+
                 break;
 
             case IntakeTesting:
