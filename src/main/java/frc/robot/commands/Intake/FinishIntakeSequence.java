@@ -18,15 +18,17 @@ public class FinishIntakeSequence extends Command {
     final int DONE_COUNT = IntakeSequence.DONE_COUNT; 
     int count;
     boolean stay_down;
+    boolean transfer_detected;
 
     /**
      * 
      * @param count - where were were when interrupted
      * @param stay_down
      */
-    public FinishIntakeSequence(int count, boolean stay_down){
+    public FinishIntakeSequence(int count, boolean stay_down, boolean transfer_detected){
         this.count = count;
         this.stay_down = stay_down;
+        this.transfer_detected = transfer_detected;
         this.intake = RobotContainer.getSubsystem(Intake.class);
         this.transfer = RobotContainer.getSubsystem(Transfer.class);
     }
@@ -34,6 +36,7 @@ public class FinishIntakeSequence extends Command {
     @Override
     public void initialize() {
         // put the rollers back on
+        System.out.println("RUNNING FINISH SEQUENCE");
         intake.setIntakeSpeed(Intake.RollerMaxSpeed); // [cm/s]
         transfer.setSpeed(50.0);  //[cm/s]
     }
@@ -42,6 +45,8 @@ public class FinishIntakeSequence extends Command {
     @Override
     public boolean isFinished() {
         // run until count expires
+        if(transfer_detected){
+            System.out.println("HIT TRANSFER IN FINISH");
         if (++count >= DONE_COUNT) {
             // stop at hopefully the same location
             intake.setMaxVelocity(Intake.TravelUp);
@@ -55,6 +60,10 @@ public class FinishIntakeSequence extends Command {
             }
             return true;
         }
+    }
+    else if (!transfer_detected){
+        transfer_detected = transfer.senseNote();
+    }
         return false;
 
     }

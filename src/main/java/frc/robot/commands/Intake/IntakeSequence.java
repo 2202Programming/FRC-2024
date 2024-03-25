@@ -49,8 +49,13 @@ public class IntakeSequence extends Command {
     this.stay_down = stay_down;
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
-    this.shooter = RobotContainer.getSubsystemOrNull(Shooter.class);
-
+    Object testShooter = RobotContainer.getSubsystemOrNull(Shooter.class);
+    if(testShooter == null){
+      shooter = RobotContainer.getSubsystem(ShooterServo.class);
+    }
+    else{
+      shooter = (Shooter) testShooter;
+    }
     //check Shooter type to know if we must retract, true for standard Shooter
     must_retract_shooter = !(shooter instanceof ShooterServo);
 
@@ -101,6 +106,14 @@ public class IntakeSequence extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+        
+    if (!stay_down && !interrupted) {
+      intake.setMaxVelocity(Intake.TravelUp);
+      intake.setAngleSetpoint(Intake.UpPos);
+    }
+      System.out.println("SHUTTING EVERYTHING OFF");
+    transfer.setSpeed(0.0);
+    intake.setIntakeSpeed(0.0);
     // TODO: edge case, the sequential doesn't cancel
     // TODO: Why did the intake angle go back up even when there is no command to
     // TODO: edge case #2 - If the driver releases button as intake is coming up, it
@@ -110,9 +123,9 @@ public class IntakeSequence extends Command {
       // moving back up, to minimize belt slippage on Alpha
       System.out.println("Interrupted intakeSequence");
       var cmd = new SequentialCommandGroup();
-      if (saw_note && count < DONE_COUNT) {
+      if ((saw_note || intake.senseNote()) && count < DONE_COUNT) {
         //Need to finish the transfer before we do anything else
-        cmd.addCommands(new FinishIntakeSequence(count, stay_down));
+        cmd.addCommands(new FinishIntakeSequence(count, stay_down, saw_note));
       }
       if (!intake.angleAtSetpoint()) {
         cmd.addCommands(new MoveToAnglePos(Intake.DownPos, Intake.TravelDown));
@@ -121,14 +134,7 @@ public class IntakeSequence extends Command {
       cmd.addRequirements(intake);
       cmd.schedule();
     }
-    
-    if (!stay_down && !interrupted) {
-      intake.setMaxVelocity(Intake.TravelUp);
-      intake.setAngleSetpoint(Intake.UpPos);
-    }
     // turn off rollers, if not finished they get turned on again
-    transfer.setSpeed(0.0);
-    intake.setIntakeSpeed(0.0);
   }
 
   // Returns true when the command should end.
