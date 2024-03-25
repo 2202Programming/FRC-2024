@@ -39,6 +39,7 @@ public class MoveToAnglePos extends BlinkyLightUser {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("STARTED MOVETO" + posCmd + ".............." + this.toString());
     intake.setMaxVelocity(velLimit);
     intake.setAngleSetpoint(posCmd);
   }
@@ -46,12 +47,6 @@ public class MoveToAnglePos extends BlinkyLightUser {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    intake.setAngleVelocity(0.0);
-  }
 
   // Returns true when the command should end.
   @Override

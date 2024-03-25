@@ -233,7 +233,9 @@ public class BindingsOther {
                     .andThen(new WaitCommand(15.0)).andThen(new ShooterAngleSetPos(45.0) )
                     .andThen(new WaitCommand(15.0)).andThen(new ShooterAngleSetPos(48.0) ) 
                     );
-
+                    operator.povDown().onTrue(new ShooterAngleSetPos(ShooterServo.MIN_DEGREES));
+                    operator.povLeft().onTrue(new ShooterAngleSetPos(35));
+                    operator.povRight().onTrue(new ShooterAngleSetPos(ShooterServo.MAX_DEGREES));
                 }
                 break;
 

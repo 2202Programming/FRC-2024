@@ -39,6 +39,7 @@ public class IntakeSequence extends Command {
   Phase phase;
   final double DownAngle;
   boolean saw_note;
+  Command lastScheduled;
 
   // Alpha bot doesn't transfer if the pnumatics shooter is up
   final boolean must_retract_shooter;
@@ -46,6 +47,7 @@ public class IntakeSequence extends Command {
    * stay_down = true for No defense rapid shoot
    */
   public IntakeSequence(boolean stay_down) {
+    lastScheduled = null;
     this.stay_down = stay_down;
     this.intake = RobotContainer.getSubsystem(Intake.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
@@ -69,6 +71,11 @@ public class IntakeSequence extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if(lastScheduled != null){
+      lastScheduled.cancel();
+      lastScheduled = null;
+    }
+    System.out.println("STARTED SEQUENCE");
     if (must_retract_shooter)
           shooter.retract();
     count = 0;
@@ -121,7 +128,7 @@ public class IntakeSequence extends Command {
     if (interrupted) {
       // Creates a command to continue going down until we get to the bottom before
       // moving back up, to minimize belt slippage on Alpha
-      // System.out.println("Interrupted intakeSequence");
+      System.out.println("Interrupted intakeSequence");
       var cmd = new SequentialCommandGroup();
       if ((saw_note || intake.senseNote()) && count < DONE_COUNT) {
         //Need to finish the transfer before we do anything else
@@ -133,6 +140,7 @@ public class IntakeSequence extends Command {
       cmd.addCommands(new MoveToAnglePos(Intake.UpPos, Intake.TravelUp));
       cmd.addRequirements(intake);
       cmd.schedule();
+      lastScheduled = cmd;
     }
     // turn off rollers, if not finished they get turned on again
   }
