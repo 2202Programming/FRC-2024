@@ -68,6 +68,8 @@ public class Intake extends SubsystemBase {
   // Intake roller motor
   final CANSparkMax intakeMtr = new CANSparkMax(CAN.INTAKE_MTR, CANSparkMax.MotorType.kBrushless);
   final PIDFController intakeVelPID = new PIDFController(0.008, 0.000012, 0.0, kff); // tuned 3/19 (pls check NR)
+  final double IntakeIZone = 5.0; //[cm/s] error IZone restriction
+
   final SparkPIDController intakeMtrPid;
   final RelativeEncoder intakeMtrEncoder;
   double cmdVelocity = 0.0; //[cm/s] latest commanded velocity
@@ -89,7 +91,7 @@ public class Intake extends SubsystemBase {
    * 
    */
   public Intake(boolean altEncoder) { 
-    final int STALL_CURRENT = 50; // [amp] for neo 550 --> neo motor 3/25 
+    final int STALL_CURRENT = 30; // [amp] staying with 550
     final int FREE_CURRENT = 20; // [amp]
     double angMaxVel = 200.0; // [deg/s]
     final double angMaxAccel = 200.0; // [deg/s^2] (likely not used in servo until smart profile is enabled)
@@ -116,7 +118,8 @@ public class Intake extends SubsystemBase {
     intakeMtrEncoder = intakeMtr.getEncoder();
     intakeMtrEncoder.setPositionConversionFactor(conversionFactor);
     intakeMtrEncoder.setVelocityConversionFactor(conversionFactor / 60.0); // min to sec
-    
+    intakeVelPID.setIZone(IntakeIZone);
+
     // copy hw pid setting for intake roller to the intakeMtrPid
     intakeVelPID.copyTo(intakeMtrPid, 0);
     intakeMtr.burnFlash();
@@ -151,6 +154,9 @@ public class Intake extends SubsystemBase {
    */
   public void setIntakeSpeed(double speed) {      
     intakeMtrPid.setReference(speed, ControlType.kVelocity, 0);
+    // clear any windup on stop
+    if (speed == 0.0)
+      intakeMtrPid.setIAccum(0.0);
     cmdVelocity = speed;
   }
 
