@@ -47,12 +47,12 @@ public class DistanceInterpretor extends TargetWatcherCmd {
 
         // set up table with measured values
         // RPM, limelight distance d4 tag, calculating angle
-        ang_table.put(2.510, 45.0);
-        ang_table.put(2.160, 45.0);
-        ang_table.put(3.100, 36.0); // 3000
-        ang_table.put(3.530, 36.0); // 3000
+        ang_table.put(1.900, 45.0); //3000
+        ang_table.put(2.140, 44.0);
+                ang_table.put(2.499, 42.0); //3000
+        ang_table.put(3.092, 38.0); // 3000
+        ang_table.put(3.549, 37.3); // 3000
         ang_table.put(3.580, 36.0);
-        ang_table.put(3.841, 37.0); //3190
         ang_table.put(4.250, 32.0);
         ang_table.put(4.430, 32.0); // 3500
         ang_table.put(4.500, 29.0); // 4000
@@ -60,16 +60,19 @@ public class DistanceInterpretor extends TargetWatcherCmd {
         ang_table.put(5.440, 28.6); // 4500
         ang_table.put(5.610, 29.0); // 4500
 
-        rpm_table.put(2.510, 3000.0);
-        rpm_table.put(2.160, 3000.0);
-        rpm_table.put(3.100, 3000.0);
-        rpm_table.put(3.530, 3000.0);
+        rpm_table.put(1.900, 3000.0);
+        rpm_table.put(2.140, 3000.0);
+         rpm_table.put(2.499, 3000.0);
+        rpm_table.put(3.092, 3000.0);
+        rpm_table.put(3.549, 3000.0);
         rpm_table.put(3.580, 3000.0);
-        rpm_table.put(3.841, 3200.0);
+        rpm_table.put(3.5801, 3500.0);
         rpm_table.put(4.250, 3500.0);
         rpm_table.put(4.430, 3500.0);
+        rpm_table.put(4.4301, 4000.0);
         rpm_table.put(4.500, 4000.0);
         rpm_table.put(4.930, 4000.0);
+        rpm_table.put(4.9301, 4500.0);
         rpm_table.put(5.440, 4500.0);
         rpm_table.put(5.610, 4500.0);
         

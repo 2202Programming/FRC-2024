@@ -49,7 +49,7 @@ public class CalibrateWithLS extends Command {
                 }
                 break;
             case BeyondLS:
-                shooter.setExtensionVelocity(-1.0);
+                shooter.setExtensionVelocity(-0.5);
                 if (shooter.atLowLimit()) {
                     shooter.setExtensionVelocity(0.0);
                     shooter.setExtensionPosition(ShooterServo.SERVO_CALIB_EXT);

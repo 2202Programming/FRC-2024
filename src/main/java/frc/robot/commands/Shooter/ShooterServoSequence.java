@@ -75,7 +75,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
 
     // start motor right away
     shooter.setAngleSetpoint(angle);
-    shooter.setRPM(speed, speed); // placeholder
+    shooter.setRPM(speed + shooter.adjustment, speed - shooter.adjustment); // placeholder
     System.out.println("***ShooterSequence:init.... motors on ***");
   }
 
