@@ -89,7 +89,7 @@ public class Intake extends SubsystemBase {
    * 
    */
   public Intake(boolean altEncoder) { 
-    final int STALL_CURRENT = 30; // [amp]
+    final int STALL_CURRENT = 50; // [amp] for neo 550 --> neo motor 3/25 
     final int FREE_CURRENT = 20; // [amp]
     double angMaxVel = 200.0; // [deg/s]
     final double angMaxAccel = 200.0; // [deg/s^2] (likely not used in servo until smart profile is enabled)
