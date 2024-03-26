@@ -52,6 +52,7 @@ public class DistanceInterpretor extends TargetWatcherCmd {
                 ang_table.put(2.499, 42.0); //3000
         ang_table.put(3.092, 38.0); // 3000
         ang_table.put(3.549, 37.3); // 3000
+        //tested up to here 3/25 nr/ko
         ang_table.put(3.580, 36.0);
         ang_table.put(4.250, 32.0);
         ang_table.put(4.430, 32.0); // 3500

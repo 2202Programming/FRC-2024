@@ -17,6 +17,7 @@ import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakeSequence;
+import frc.robot.commands.Intake.TestIntakeAngle;
 import frc.robot.commands.Shooter.CalibrateAngle;
 import frc.robot.commands.Shooter.CalibrateWithLS;
 import frc.robot.commands.Shooter.CalibrateZero;
@@ -222,7 +223,7 @@ public class BindingsOther {
                 operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot
                 if (!skip_SS_only) {
                     operator.povUp().onTrue(new AngleCalibration(-25.0));// intake calibrate
-                    operator.leftTrigger().onTrue(new ShooterServoSequenceDebug());
+                    operator.leftTrigger().onTrue   (new ShooterServoSequenceDebug());
                     operator.rightTrigger().onTrue(
                         new ShooterServoSequence()); // auto shoot
                     // Shooter calibrate
@@ -234,8 +235,8 @@ public class BindingsOther {
                     .andThen(new WaitCommand(15.0)).andThen(new ShooterAngleSetPos(45.0) )
                     .andThen(new WaitCommand(15.0)).andThen(new ShooterAngleSetPos(48.0) ) 
                     );
-                    operator.povDown().onTrue(new ShooterAngleSetPos(ShooterServo.MIN_DEGREES));
-                    operator.povLeft().onTrue(new ShooterAngleSetPos(35));
+                    operator.povDown().whileTrue(new TestIntakeAngle(-20.0));
+                    operator.povLeft().whileTrue(new TestIntakeAngle(20.0));
                     operator.povRight().onTrue(new ShooterAngleSetPos(ShooterServo.MAX_DEGREES));
                 }
 
