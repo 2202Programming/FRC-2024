@@ -58,7 +58,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
 
   /**With distance interpret(Automatically changing Angle)*/
   public ShooterServoSequence(){
-    this(0.0, 0.0, false); // alliance dependant so need to be in init
+    this(0.0, 0.0, true); // alliance dependant so need to be in init
     useInterp = true;
   }
 
