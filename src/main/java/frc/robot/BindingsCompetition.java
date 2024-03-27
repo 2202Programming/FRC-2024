@@ -17,6 +17,7 @@ import frc.robot.commands.Shooter.ShooterServoSequence;
 import frc.robot.commands.Shooter.ShooterServoSequenceDebug;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
 import frc.robot.commands.Swerve.RobotCentricDrive;
+import frc.robot.commands.Swerve.TargetCentricDrive;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 import frc.robot.subsystems.Climber;
@@ -43,6 +44,7 @@ public final class BindingsCompetition {
         // Driver buttons
         driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.y().onTrue(new AllianceAwareGyroReset(true));
+        driver.rightTrigger().whileTrue(new TargetCentricDrive(4));
     }
 
 
