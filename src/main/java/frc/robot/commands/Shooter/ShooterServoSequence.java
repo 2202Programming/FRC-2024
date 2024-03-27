@@ -65,12 +65,12 @@ public class ShooterServoSequence extends BlinkyLightUser {
 
   /** With distance interpret(Automatically changing Angle) */
   public ShooterServoSequence() {
-    this(0.0, 0.0, true); // alliance dependant so need to be in init
+    this(0.0, 0.0, false); // alliance dependant so need to be in init
     useInterp = true;
   }
 
   public ShooterServoSequence(boolean auto) {
-    this(0.0, 0.0, true, auto); // alliance dependant so need to be in init
+    this(0.0, 0.0, false, auto); // alliance dependant so need to be in init
     useInterp = true;
   }
 
@@ -132,8 +132,8 @@ public class ShooterServoSequence extends BlinkyLightUser {
     if (!auto) {
       shooter.setRPM(0.0, 0.0);
     }
-    if (!stay) {
-      shooter.setAngleSetpoint(ShooterServo.MIN_DEGREES);
+    if (!stay && shooter.getAngle() < ShooterServo.MAX_SERVO_INTAKE_ANGLE) {
+      shooter.setAngleSetpoint(ShooterServo.MAX_SERVO_INTAKE_ANGLE);
     }
   }
 
