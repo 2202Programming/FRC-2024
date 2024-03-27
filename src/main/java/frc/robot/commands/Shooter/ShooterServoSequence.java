@@ -31,21 +31,28 @@ public class ShooterServoSequence extends BlinkyLightUser {
   final int DONE_COUNT = (int) Math.ceil((NoteTravelDist / TransferSpeed) / Constants.DT);
 
   double speed;
-  double rpm_tolerance = 0.02; // was 3%, .5% used for testing accuracy 
-  //TODO .5% worked but was slow speed it up
+  double rpm_tolerance = 0.02; // was 3%, .5% used for testing accuracy
+  // TODO .5% worked but was slow speed it up
   double angle;
   int count = 0;
   Phase phase;
+  boolean auto;
   final DistanceInterpretor interp;
   boolean useInterp = false;
+
   public enum Phase {
     WaitingForSetpoints, WaitingForFinish, Finished;
   }
 
   public ShooterServoSequence(double angle, double speed, boolean stay) {
+    this(angle, speed, stay, false);
+  }
+
+  public ShooterServoSequence(double angle, double speed, boolean stay, boolean auto) {
     this.stay = stay;
     this.angle = angle;
     this.speed = speed;
+    this.auto = auto;
     this.shooter = RobotContainer.getSubsystem(ShooterServo.class);
     this.transfer = RobotContainer.getSubsystem(Transfer.class);
     interp = DistanceInterpretor.getSingleton();
@@ -56,17 +63,22 @@ public class ShooterServoSequence extends BlinkyLightUser {
     this(angle, speed, false);
   }
 
-  /**With distance interpret(Automatically changing Angle)*/
-  public ShooterServoSequence(){
+  /** With distance interpret(Automatically changing Angle) */
+  public ShooterServoSequence() {
     this(0.0, 0.0, true); // alliance dependant so need to be in init
+    useInterp = true;
+  }
+
+  public ShooterServoSequence(boolean auto) {
+    this(0.0, 0.0, true, auto); // alliance dependant so need to be in init
     useInterp = true;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(useInterp){//Just if we are changing rpm automatically
-      interp.setTarget();  //uses alliance and speaker tag
+    if (useInterp) {// Just if we are changing rpm automatically
+      interp.setTarget(); // uses alliance and speaker tag
       angle = interp.getTargetAngle();
       speed = interp.getTargetRPM();
     }
@@ -94,7 +106,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
   public void execute() {
     switch (phase) {
       case WaitingForSetpoints:
-        if (shooter.atSetpoint() && shooter.isAtRPM(speed*rpm_tolerance)) { // prev at 100RPM
+        if (shooter.atSetpoint() && shooter.isAtRPM(speed * rpm_tolerance)) { // prev at 100RPM
           transfer.setSpeed(40.0);
           System.out.println("***ShooterSequence:Setpoints reached, transfer moving ....***");
           phase = Phase.WaitingForFinish;
@@ -117,7 +129,9 @@ public class ShooterServoSequence extends BlinkyLightUser {
   public void end(boolean interrupted) {
     transfer.setHasNote(false);
     transfer.setSpeed(0.0);
-    shooter.setRPM(0.0, 0.0);
+    if (!auto) {
+      shooter.setRPM(0.0, 0.0);
+    }
     if (!stay) {
       shooter.setAngleSetpoint(ShooterServo.MIN_DEGREES);
     }
