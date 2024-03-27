@@ -6,15 +6,12 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Shooter.ShooterServoSequence;
 import frc.robot.commands.Swerve.RotateTo;
 import frc.robot.commands.Swerve.RotateUntilSeeTags;
-import frc.robot.subsystems.ShooterServo;
-
 /*
  * Place commands named in PathPlaner autos here.
  */
@@ -22,13 +19,9 @@ public class RegisteredCommands {
 
     public static SendableChooser<Command> RegisterCommands() {
         SendableChooser<Command> autoChooser;
-        var shooter = RobotContainer.getSubsystem(ShooterServo.class);
 
         // NamedCommands for use in PathPlanner scripts.
         NamedCommands.registerCommand("pickup", new IntakeSequence(true));
-                    NamedCommands.registerCommand("off_rpm", new InstantCommand(() -> {
-                shooter.setRPM(0.0, 0.0);
-            }));
         if (RobotContainer.getRobotSpecs().getRobotNameString().equals("CompetitionBotAlpha2024")) {// Just for alpha
             NamedCommands.registerCommand("shoot", new ShooterSequence(true, 3500.0));
             NamedCommands.registerCommand("angle_shoot",
