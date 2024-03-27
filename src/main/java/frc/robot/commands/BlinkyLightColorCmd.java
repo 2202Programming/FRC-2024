@@ -24,18 +24,18 @@ import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
  * 
  * That's it!
  */
-public class BlinkyLightColoirCmd extends BlinkyLightUser {
+public class BlinkyLightColorCmd extends BlinkyLightUser {
   /** Creates a new Lights Command */
   private Color8Bit myColor;
   ShooterServo shooter = RobotContainer.getSubsystem(ShooterServo.class);
   Transfer transfer = RobotContainer.getSubsystem(Transfer.class);
   Intake intake = RobotContainer.getSubsystem(Intake.class);
 
-  public BlinkyLightColoirCmd(Color8Bit Color) {
+  public BlinkyLightColorCmd(Color8Bit Color) {
     myColor = Color;
   }
 
-  public BlinkyLightColoirCmd() {
+  public BlinkyLightColorCmd() {
     this(BlinkyLights.RED);
   }
 

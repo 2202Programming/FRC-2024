@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.commands.PDPMonitorCmd;
-import frc.robot.commands.RandomLightsCmd;
+import frc.robot.commands.BlinkyLightColorCmd;
 import frc.robot.commands.Shooter.ContinousAngleTracker;
 import frc.robot.commands.Swerve.FieldCentricDrive;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
@@ -111,7 +111,7 @@ public class RobotContainer {
     autoChooser = RegisteredCommands.RegisterCommands();
 
     // Testing, but also to drive the drivers nuts...
-    Command random_lights = new RandomLightsCmd();
+    Command random_lights = new BlinkyLightColorCmd();
     random_lights.schedule();
 
     // Quiet some of the noise
