@@ -82,7 +82,7 @@ public final class BindingsCompetition {
             .onTrue(new AutoShooting(ShootingTarget.Speaker, 36.0, 3200.0));
         
         // Calibration commands
-        ShooterCalibrate.and(operator.povUp()).onTrue(new CalibrateWithLS(-1.0)); 
+        ShooterCalibrate.and(operator.povUp()).onTrue(new CalibrateWithLS()); 
         ShooterCalibrate.and(operator.povDown()).whileTrue(new ShooterAngleVelMove(-2.0));
         ShooterCalibrate.and(operator.povLeft()).onTrue(
             new InstantCommand( () -> { shooter.setExtensionPosition(0.0); } )); 
