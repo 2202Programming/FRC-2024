@@ -72,7 +72,7 @@ public final class BindingsCompetition {
         IntakeCalibrate.and(operator.povDown()).whileTrue(new TestIntake(0.0));
 
         ManualShoot.and(operator.rightBumper()).onTrue(new ShooterServoSequence(46.5, 2800.0));                                                                                                
-        ManualShoot.and(operator.rightTrigger()).onTrue(new ShooterServoSequence(36.0, 3000.0)); // was 35
+        ManualShoot.and(operator.rightTrigger()).onTrue(new ShooterServoSequence()); // was 35
         ManualShoot.and(operator.leftTrigger()).onTrue(new ShooterServoSequenceDebug());
         // AutoShootm 
         ManualShoot.negate().and(operator.rightBumper())
