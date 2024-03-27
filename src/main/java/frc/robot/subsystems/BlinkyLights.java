@@ -37,6 +37,7 @@ public class BlinkyLights extends SubsystemBase {
     static public Color8Bit GREEN = new Color8Bit(0, 255, 0);
     static public Color8Bit BLUE = new Color8Bit(0, 0, 255);
     static public Color8Bit ORANGE = new Color8Bit(255, 145, 0);
+    static public Color8Bit YELLOW = new Color8Bit(255, 255, 0);
 
     // State vars
     CANdle candle_l;

@@ -4,8 +4,13 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.BlinkyLights;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.ShooterServo;
+import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
 
 /*
@@ -22,35 +27,36 @@ public class RandomLightsCmd extends BlinkyLightUser {
   /** Creates a new Lights Command */
   final int FRAMES = 10; // change color every N frames
   private Color8Bit myColor;
-  private int count = 0;
+  ShooterServo shooter = RobotContainer.getSubsystem(ShooterServo.class);
+  Transfer transfer = RobotContainer.getSubsystem(Transfer.class);
+  Intake intake = RobotContainer.getSubsystem(Intake.class);
 
   public RandomLightsCmd(Color8Bit Color) {
     myColor = Color;
   }
 
   public RandomLightsCmd() {
-    this(BlinkyLights.ORANGE);
+    this(BlinkyLights.RED);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    count = 0;
     enableLights();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (++count < FRAMES)
-      return;
-
-    // pick a new random color
-    count = 0;
-    myColor = new Color8Bit(
-        (int) (Math.random() * 255),
-        (int) (Math.random() * 255),
-        (int) (Math.random() * 255));
+    if(intake.senseNote()){
+      myColor = new Color8Bit(Color.kYellow);
+    }
+   else if(transfer.hasNote()){
+    myColor = new Color8Bit(Color.kGreen);
+   }
+   else{
+    myColor = new Color8Bit(Color.kRed);
+   }
   }
 
   @Override
