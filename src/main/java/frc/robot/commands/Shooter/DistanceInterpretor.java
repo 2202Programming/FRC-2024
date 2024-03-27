@@ -60,6 +60,8 @@ public class DistanceInterpretor extends TargetWatcherCmd {
         ang_table.put(4.930, 30.0); // 4000
         ang_table.put(5.440, 28.6); // 4500
         ang_table.put(5.610, 29.0); // 4500
+        ang_table.put(5.611, 45.0);
+        ang_table.put(20.0, 45.0);
 
         rpm_table.put(1.900, 3000.0);
         rpm_table.put(2.140, 3000.0);
@@ -76,6 +78,8 @@ public class DistanceInterpretor extends TargetWatcherCmd {
         rpm_table.put(4.9301, 4500.0);
         rpm_table.put(5.440, 4500.0);
         rpm_table.put(5.610, 4500.0);
+        rpm_table.put(5.611, 4500.0);
+        rpm_table.put(20.0, 4500.0);
         
         // ensure we have a default speaker target, based on alliance
         setTarget();  

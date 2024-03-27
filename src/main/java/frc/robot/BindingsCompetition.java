@@ -22,7 +22,6 @@ import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 
@@ -53,7 +52,6 @@ public final class BindingsCompetition {
         var operator = dc.Operator();
 
         var climber = RobotContainer.getSubsystem(Climber.class);
-        var shooter = RobotContainer.getSubsystem(ShooterServo.class);
 
         Trigger ManualShoot = sideboard.sw16();
         Trigger ClimberCalibrate = sideboard.sw11();
