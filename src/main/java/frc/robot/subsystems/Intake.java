@@ -107,7 +107,7 @@ public class Intake extends SubsystemBase {
     // using hack (alt encoder used as flag for elvis) - strange inversion
     angle_servo = new NeoServo(CAN.ANGLE_MTR,
         anglePositionPID, hwAngleVelPID,
-        altEncoder, 0);
+        !altEncoder, 0);
 
     // use velocity control on intake motor
     intakeMtr.clearFaults();
