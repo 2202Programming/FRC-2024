@@ -11,6 +11,7 @@ import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Shooter.ShooterServoSequence;
 import frc.robot.commands.Swerve.RotateTo;
+import frc.robot.commands.Swerve.RotateUntilSeeTags;
 
 /*
  * Place commands named in PathPlaner autos here.
@@ -27,10 +28,11 @@ public class RegisteredCommands {
             NamedCommands.registerCommand("angle_shoot", new SequentialCommandGroup(new RotateTo(),new ShooterSequence(3200.0)));
         }
         else{
-            NamedCommands.registerCommand("shoot", new ShooterServoSequence());
-            NamedCommands.registerCommand("angle_shoot", new SequentialCommandGroup(new RotateTo(), new ShooterServoSequence()));
+            NamedCommands.registerCommand("shoot", new ShooterServoSequence()); 
+            //TODO: CHANGE THE TAG BASED ON ALLIANCE
+            NamedCommands.registerCommand("angle_shoot", new SequentialCommandGroup(new RotateUntilSeeTags(4), new ShooterServoSequence()));
         }
-        NamedCommands.registerCommand("RotateTo", new RotateTo());
+        NamedCommands.registerCommand("RotateTo", new RotateUntilSeeTags(4));
         autoChooser = AutoBuilder.buildAutoChooser(); 
         // select our auto
         SmartDashboard.putData("Auto Chooser", autoChooser);
