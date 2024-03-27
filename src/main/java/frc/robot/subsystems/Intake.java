@@ -31,9 +31,9 @@ import frc.robot.util.PIDFController;
 
 public class Intake extends SubsystemBase {
   //angle constants for commands
-  public static final double UpPos = 0.0; // [deg]
+  public static final double UpPos = 2.0; // [deg]
   public static final double ShootingPos = 20.0; // [deg]
-  public static final double DownPos = 108.0; // [deg]
+  public static final double DownPos = 105.0; // [deg]
   public static final double TravelUp = 180.0; // [deg/s]
   public static final double TravelDown = 170.0; // [deg/s]
   

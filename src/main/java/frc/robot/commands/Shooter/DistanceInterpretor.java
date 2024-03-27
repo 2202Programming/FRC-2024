@@ -54,8 +54,10 @@ public class DistanceInterpretor extends TargetWatcherCmd {
         ang_table.put(3.549, 37.3); // 3000
         //tested up to here 3/25 nr/ko
         ang_table.put(3.580, 36.0);
+        ang_table.put(3.8066, 33.5);
+        ang_table.put(4.030, 32.3);
         ang_table.put(4.250, 32.0);
-        ang_table.put(4.430, 32.0); // 3500
+        ang_table.put(4.399, 31.4);
         ang_table.put(4.500, 29.0); // 4000
         ang_table.put(4.930, 30.0); // 4000
         ang_table.put(5.440, 28.6); // 4500
@@ -70,9 +72,11 @@ public class DistanceInterpretor extends TargetWatcherCmd {
         rpm_table.put(3.549, 3000.0);
         rpm_table.put(3.580, 3000.0);
         rpm_table.put(3.5801, 3500.0);
+        rpm_table.put(3.8066, 3500.0);
+        rpm_table.put(4.030, 3500.0);
         rpm_table.put(4.250, 3500.0);
-        rpm_table.put(4.430, 3500.0);
-        rpm_table.put(4.4301, 4000.0);
+        rpm_table.put(4.399, 3500.0);
+        rpm_table.put(4.4400, 4000.0);
         rpm_table.put(4.500, 4000.0);
         rpm_table.put(4.930, 4000.0);
         rpm_table.put(4.9301, 4500.0);

@@ -37,7 +37,7 @@ public class AngleCalibration extends  Command {
     public void execute() {
         delay_count++;
         if(delay_count >= DELAY){
-        count = (Math.abs(intake.getAngleVelocity()) < 0.1) ? ++count : 0;
+        count = (Math.abs(intake.getAngleVelocity()) < 3.0) ? ++count : 0;
         }
     }
     
@@ -51,7 +51,7 @@ public class AngleCalibration extends  Command {
 
         //made it here, then we completed calibration, so set our position
          System.out.println("Calibration at " + intake.getAnglePosition());
-        intake.setAnglePosition( (angleVelocity < 0.0) ? Intake.UpPos : intake.getAnglePosition());
+        intake.setAnglePosition( (angleVelocity < 0.0) ? 0.0 : intake.getAnglePosition());
         intake.setAngleSetpoint(intake.getAnglePosition());
     }
 
