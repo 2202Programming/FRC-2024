@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.RobotContainer;
@@ -23,19 +24,18 @@ import frc.robot.subsystems.BlinkyLights.BlinkyLightUser;
  * 
  * That's it!
  */
-public class RandomLightsCmd extends BlinkyLightUser {
+public class BlinkyLightColoirCmd extends BlinkyLightUser {
   /** Creates a new Lights Command */
-  final int FRAMES = 10; // change color every N frames
   private Color8Bit myColor;
   ShooterServo shooter = RobotContainer.getSubsystem(ShooterServo.class);
   Transfer transfer = RobotContainer.getSubsystem(Transfer.class);
   Intake intake = RobotContainer.getSubsystem(Intake.class);
 
-  public RandomLightsCmd(Color8Bit Color) {
+  public BlinkyLightColoirCmd(Color8Bit Color) {
     myColor = Color;
   }
 
-  public RandomLightsCmd() {
+  public BlinkyLightColoirCmd() {
     this(BlinkyLights.RED);
   }
 
@@ -48,7 +48,10 @@ public class RandomLightsCmd extends BlinkyLightUser {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(intake.senseNote()){
+    if(DriverStation.getMatchTime() < 15.0){
+      myColor = new Color8Bit(Color.kOrange);
+    }
+    else if(intake.senseNote()){
       myColor = new Color8Bit(Color.kYellow);
     }
    else if(transfer.hasNote()){
