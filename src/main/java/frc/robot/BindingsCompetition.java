@@ -10,6 +10,7 @@ import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.MoveToAnglePos;
 import frc.robot.commands.Intake.TestIntake;
+import frc.robot.commands.Shooter.CalibrateWithLS;
 import frc.robot.commands.Shooter.ShooterAngleSetPos;
 import frc.robot.commands.Shooter.ShooterAngleVelMove;
 import frc.robot.commands.Shooter.ShooterServoSequence;
@@ -81,7 +82,7 @@ public final class BindingsCompetition {
             .onTrue(new AutoShooting(ShootingTarget.Speaker, 36.0, 3200.0));
         
         // Calibration commands
-        ShooterCalibrate.and(operator.povUp()).whileTrue(new ShooterAngleVelMove(2.0)); 
+        ShooterCalibrate.and(operator.povUp()).onTrue(new CalibrateWithLS(-1.0)); 
         ShooterCalibrate.and(operator.povDown()).whileTrue(new ShooterAngleVelMove(-2.0));
         ShooterCalibrate.and(operator.povLeft()).onTrue(
             new InstantCommand( () -> { shooter.setExtensionPosition(0.0); } )); 

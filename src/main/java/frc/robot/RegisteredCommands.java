@@ -11,8 +11,6 @@ import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Shooter.ShooterServoSequence;
 import frc.robot.commands.Swerve.RotateTo;
-import frc.robot.commands.auto.AutoShooting;
-import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 
 /*
  * Place commands named in PathPlaner autos here.
@@ -29,8 +27,8 @@ public class RegisteredCommands {
             NamedCommands.registerCommand("angle_shoot", new SequentialCommandGroup(new RotateTo(),new ShooterSequence(3200.0)));
         }
         else{
-            NamedCommands.registerCommand("shoot", new ShooterServoSequence(46.0, 3000.0));
-            NamedCommands.registerCommand("angle_shoot", new AutoShooting(ShootingTarget.Speaker, 38, 3200.0));
+            NamedCommands.registerCommand("shoot", new ShooterServoSequence());
+            NamedCommands.registerCommand("angle_shoot", new SequentialCommandGroup(new RotateTo(), new ShooterServoSequence()));
         }
         NamedCommands.registerCommand("RotateTo", new RotateTo());
         autoChooser = AutoBuilder.buildAutoChooser(); 

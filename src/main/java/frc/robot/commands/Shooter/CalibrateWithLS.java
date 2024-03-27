@@ -13,7 +13,6 @@ public class CalibrateWithLS extends Command {
 
     /** Creates a new intakeForward. */
     public final ShooterServo shooter;
-    double angleVelocity; // [deg/s]
     int count;
     final int DELAY_COUNT = 15;
 
@@ -23,9 +22,9 @@ public class CalibrateWithLS extends Command {
 
     Phase phase;
 
-    public CalibrateWithLS(double angleVelocity) {
+    public CalibrateWithLS() {
         this.shooter = RobotContainer.getSubsystem(ShooterServo.class);
-        this.angleVelocity = angleVelocity;
+
     }
 
     // Called when the command is initially scheduled.

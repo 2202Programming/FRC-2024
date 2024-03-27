@@ -227,7 +227,7 @@ public class BindingsOther {
                     operator.rightTrigger().onTrue(
                         new ShooterServoSequence()); // auto shoot
                     // Shooter calibrate
-                    operator.rightBumper().onTrue(new CalibrateWithLS(-1.0));
+                    operator.rightBumper().onTrue(new CalibrateWithLS());
                     operator.leftBumper().onTrue(new ShooterAngleSetPos(28.5)
                     .andThen(new WaitCommand(15.0)).andThen(new ShooterAngleSetPos(30.0) )
                     .andThen(new WaitCommand(15.0)).andThen(new ShooterAngleSetPos(35.0) )
@@ -284,7 +284,7 @@ public class BindingsOther {
 
                     operator.povLeft().onTrue(new CalibrateAngle(-1.0));
                     operator.povRight().onTrue(new CalibrateAngle(1.0));
-                    operator.rightBumper().onTrue(new CalibrateWithLS(-1.0));
+                    operator.rightBumper().onTrue(new CalibrateWithLS());
                 }
                 operator.y().whileTrue(new IntakeSequence(true));
                 operator.b().whileTrue(new IntakeSequence(false));
