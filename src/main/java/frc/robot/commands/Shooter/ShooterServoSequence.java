@@ -132,7 +132,7 @@ public class ShooterServoSequence extends BlinkyLightUser {
     if (!auto) {
       shooter.setRPM(0.0, 0.0);
     }
-    if (!stay && shooter.getAngle() < ShooterServo.MAX_SERVO_INTAKE_ANGLE) {
+    if (!stay && shooter.getAngle() > ShooterServo.MAX_SERVO_INTAKE_ANGLE) {
       shooter.setAngleSetpoint(ShooterServo.MAX_SERVO_INTAKE_ANGLE);
     }
   }
