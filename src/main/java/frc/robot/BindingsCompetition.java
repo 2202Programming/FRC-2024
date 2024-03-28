@@ -43,7 +43,7 @@ public final class BindingsCompetition {
         // Driver buttons
         driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.y().onTrue(new AllianceAwareGyroReset(true));
-        driver.rightTrigger().whileTrue(new TargetCentricDrive(4));
+        driver.rightTrigger().whileTrue(new TargetCentricDrive());
     }
 
 
