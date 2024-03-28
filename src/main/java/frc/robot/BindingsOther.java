@@ -159,14 +159,14 @@ public class BindingsOther {
                 driver.b().onTrue(new RotateTo());
                 driver.x().onTrue(new TurnFaceShootAuto(4));
                 driver.rightBumper().onTrue(new SpeakerShooter(1750.0));
-                driver.leftTrigger().whileTrue(new TargetCentricDrive(4.0));
+                driver.leftTrigger().whileTrue(new TargetCentricDrive());
                 break;
 
             case Etude:
                 driver.a().onTrue(new TestConstantVelocity(3.0, 6.0));
                 driver.b().onTrue(new TestRotateVelocity(15.0, 6.0));
                 driver.y().onTrue(new AllianceAwareGyroReset(true));
-                driver.leftTrigger().whileTrue(new TargetCentricDrive(4.0));
+                driver.leftTrigger().whileTrue(new TargetCentricDrive());
                 driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
 
                 break;
@@ -176,7 +176,7 @@ public class BindingsOther {
                 driver.a().onTrue(new TestConstantVelocity(1.0, 4.0));
                 driver.b().onTrue(new TestRotateVelocity(15.0, 6.0));
                 driver.y().onTrue(new AllianceAwareGyroReset(true));
-                driver.leftTrigger().whileTrue(new TargetCentricDrive(4.0));
+                driver.leftTrigger().whileTrue(new TargetCentricDrive());
                 driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
 
                 break;
