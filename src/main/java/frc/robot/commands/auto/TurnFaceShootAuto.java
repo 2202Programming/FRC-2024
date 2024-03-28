@@ -36,7 +36,7 @@ public class TurnFaceShootAuto extends Command {
       } 
       else{ //target tag is not *yet* visible
         new SequentialCommandGroup(
-          new RotateUntilSeeTags(tagID),
+          new RotateUntilSeeTags(),
           new FaceToTag(targetTagID),
           new ShooterSequence(3000)
         ).schedule();
