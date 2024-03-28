@@ -38,7 +38,7 @@ public class AutoShooting extends SequentialCommandGroup {
 
     double tagID = determineTag(target);
 
-    addCommands(new RotateUntilSeeTags((int) tagID));
+    addCommands(new RotateUntilSeeTags());
     addCommands(new FaceToTag(tagID));
     if (target == ShootingTarget.Speaker) {
       addCommands(new SpeakerShooter());
@@ -58,7 +58,7 @@ public class AutoShooting extends SequentialCommandGroup {
 
     double tagID = determineTag(target);
 
-    addCommands(new RotateUntilSeeTags((int) tagID));
+    addCommands(new RotateUntilSeeTags());
     addCommands(new FaceToTag(tagID));
     if (target == ShootingTarget.Speaker) {
       addCommands(new SpeakerShooter(rpm));
@@ -77,7 +77,7 @@ public class AutoShooting extends SequentialCommandGroup {
 
     double tagID = determineTag(target);
 
-    addCommands(new RotateUntilSeeTags((int)tagID));
+    addCommands(new RotateUntilSeeTags());
     addCommands(new FaceToTag(tagID));
     if (target == ShootingTarget.Speaker) {
       addCommands(new ShooterServoSequence(angle, rpm));
