@@ -43,12 +43,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": null
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
