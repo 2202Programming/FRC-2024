@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.25,
-      "y": 2
+      "x": 0.93,
+      "y": 4.41
     },
-    "rotation": 0
+    "rotation": -36.84000000000003
   },
   "command": {
     "type": "sequential",
@@ -18,13 +18,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "eject"
+                  "name": "shoot"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Pos4 to NE"
+                  "pathName": "Pos3 to NE"
                 }
               },
               {

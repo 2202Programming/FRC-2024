@@ -3,10 +3,10 @@
   "robotLength": 0.83,
   "holonomicMode": true,
   "pathFolders": [
-    "Pos4",
     "Pos1",
     "Pos2",
-    "Pos3"
+    "Pos3",
+    "Pos4"
   ],
   "autoFolders": [
     "Pos4",
