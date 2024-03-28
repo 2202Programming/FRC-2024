@@ -299,7 +299,7 @@ public class SwerveDrivetrain extends SubsystemBase {
      * old_pose) / 0.02);
      * 
      */
-
+    m_field.setRobotPose(m_odometry.getPoseMeters());
   }
 
   public void simulationInit() {
