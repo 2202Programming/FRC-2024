@@ -180,6 +180,13 @@ public class BindingsOther {
                 driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
 
                 break;
+                case comp_not_comp:
+        
+                // Driver buttons
+                driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
+                driver.y().onTrue(new AllianceAwareGyroReset(true));
+                driver.rightTrigger().whileTrue(new TargetCentricDrive());
+                break;
 
             default:
                 break;
@@ -306,6 +313,9 @@ public class BindingsOther {
                 operator.leftBumper().onTrue(new ShooterSequence(true, 800.0));
                 operator.rightTrigger().onTrue(new ShooterSequence(3500.0));
                 break;
+                case comp_not_comp:
+                
+
             default:
                 break;
         }
