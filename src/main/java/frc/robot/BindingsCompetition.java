@@ -69,20 +69,20 @@ public final class BindingsCompetition {
                 .andThen(new ShooterAngleSetPos(36.0)));
         operator.b().whileTrue(new EjectNote()); // eject note from intake
         operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot
-        operator.povUp().onTrue(new AngleCalibration(-25.0));// intake calibrate
+        IntakeCalibrate.and(operator.povUp()).onTrue(new AngleCalibration(-25.0));// intake calibrate
         IntakeCalibrate.and(operator.povDown()).whileTrue(new TestIntake(0.0));
 
         ManualShoot.and(operator.rightBumper()).onTrue(new ShooterServoSequence(46.5, 2200.0));                                                                                                
-        operator.rightTrigger().onTrue(new ShooterServoSequence()); // was 35
-        operator.leftTrigger().onTrue(new ShooterServoSequenceDebug());
+        ManualShoot.and(operator.rightTrigger()).onTrue(new ShooterServoSequence()); // was 35
+        ManualShoot.and(operator.leftTrigger()).onTrue(new ShooterServoSequenceDebug());
         // AutoShootm 
         ManualShoot.negate().and(operator.rightBumper())
             .onTrue(new AutoShooting(ShootingTarget.Speaker, 45.0, 3000.0));
-        // ManualShoot.negate().and(operator.rightTrigger())
-        //     .onTrue(new AutoShooting(ShootingTarget.Speaker, 36.0, 3200.0));
+        ManualShoot.negate().and(operator.rightTrigger())
+            .onTrue(new AutoShooting(ShootingTarget.Speaker, 36.0, 3200.0));
         
         // Calibration commands
-        operator.povUp().onTrue(new CalibrateWithLS()); 
+        ShooterCalibrate.and(operator.povUp()).onTrue(new CalibrateWithLS()); 
         ShooterCalibrate.and(operator.povDown()).whileTrue(new ShooterAngleVelMove(-2.0));
         ClimberCalibrate.and(operator.povUp()).whileTrue(new ClimberVelocity(Climber.ClimbCalibrateVel));
         ClimberCalibrate.and(operator.povDown()).whileTrue(new ClimberVelocity(-Climber.ClimbCalibrateVel));
