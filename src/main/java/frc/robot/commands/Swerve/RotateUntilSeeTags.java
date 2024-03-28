@@ -38,8 +38,7 @@ public class RotateUntilSeeTags extends Command {
   private double TagID;
 
   /** Creates a new RotateTo. */
-  public RotateUntilSeeTags(int TagID) {
-    this.TagID = TagID;
+  public RotateUntilSeeTags() {
     drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
     limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
     addRequirements(drivetrain);
@@ -54,7 +53,8 @@ public class RotateUntilSeeTags extends Command {
   @Override
   public void initialize() {
     System.out.println("***RotateIUntilSeeTags: Init...");
-    targetPose = (DriverStation.getAlliance().get() == Alliance.Blue) ? Tag_Pose.ID7 : Tag_Pose.ID4;
+    TagID = (DriverStation.getAlliance().get() == Alliance.Blue) ? 7: 4;
+    targetPose = Tag_Pose.tagLocations[(int) TagID];
     timer.restart();
     currentPose = drivetrain.getPose();
     targetRot = (Math.atan2(currentPose.getTranslation().getY() - targetPose.getY(),

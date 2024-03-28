@@ -88,7 +88,7 @@ public class TargetCentricDrive extends Command {
   final SlewRateLimiter yspeedLimiter = new SlewRateLimiter(3);
   final SlewRateLimiter rotLimiter = new SlewRateLimiter(3);
 
-  public TargetCentricDrive(double TagID) {
+  public TargetCentricDrive() {
     this.dc = RobotContainer.getSubsystem("DC"); // driverControls
     this.drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
     this.intake = RobotContainer.getSubsystem(Intake.class);
@@ -97,9 +97,6 @@ public class TargetCentricDrive extends Command {
 
     addRequirements(drivetrain); // This means we area read-only for everything but drivetrain
                                  // limelight and intake are used as read-only
-
-    this.TagID = TagID;
-    targetPose = Tag_Pose.tagLocations[(int) TagID];
 
     // PID for when tag is in view
     centeringPid = new PIDController(centering_kP, centering_kI, centering_kD);
@@ -114,6 +111,8 @@ public class TargetCentricDrive extends Command {
 
   @Override
   public void initialize() {
+    TagID = (DriverStation.getAlliance().get() == Alliance.Blue) ? 7: 4;
+    targetPose = Tag_Pose.tagLocations[(int) TagID];
     currentState = state.Init;
     SmartDashboard.putString("TargetCentricDrive State", currentState.toString());
   }
