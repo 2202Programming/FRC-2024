@@ -52,7 +52,7 @@ public class RotateTo extends Command {
     currentPose = drivetrain.getPose();
     targetRot = (Math.atan2(currentPose.getTranslation().getY() - targetPose.getY(),
         currentPose.getTranslation().getX() - targetPose.getX())) // [-pi, pi]
-        * 180 / Math.PI - 180;
+        * 180 / Math.PI;
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -32,7 +32,7 @@ public class RegisteredCommands {
             NamedCommands.registerCommand("shoot", new ShooterServoSequence(true));
             // TODO: CHANGE THE TAG BASED ON ALLIANCE
             NamedCommands.registerCommand("angle_shoot",
-                    new SequentialCommandGroup(new RotateUntilSeeTags(), new ShooterServoSequence(true)));
+                    new SequentialCommandGroup(new RotateTo(), new ShooterServoSequence(true)));
             NamedCommands.registerCommand("RotateTo", new RotateUntilSeeTags());
         }
         autoChooser = AutoBuilder.buildAutoChooser();
