@@ -8,15 +8,21 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.PDPMonitorCmd;
+import frc.robot.commands.Climber.Climb;
+import frc.robot.commands.Climber.ClimberVelocity;
 import frc.robot.commands.Etude.EtudeIntake;
 import frc.robot.commands.Intake.AngleCalibration;
 import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakeSequence;
+import frc.robot.commands.Intake.MoveToAnglePos;
+import frc.robot.commands.Intake.TestIntake;
 import frc.robot.commands.Intake.TestIntakeAngle;
 import frc.robot.commands.Shooter.CalibrateAngle;
 import frc.robot.commands.Shooter.CalibrateWithLS;
@@ -38,6 +44,8 @@ import frc.robot.commands.Swerve.calibrate.TestRotateVelocity;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 import frc.robot.commands.auto.TurnFaceShootAuto;
+import frc.robot.subsystems.AmpMechanism;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterServo;
@@ -314,6 +322,29 @@ public class BindingsOther {
                 operator.rightTrigger().onTrue(new ShooterSequence(3500.0));
                 break;
                 case comp_not_comp:
+                 var sideboard = dc.SwitchBoard();
+        var AmpMechanism = RobotContainer.getSubsystem(AmpMechanism.class);
+                SmartDashboard.putNumber("AMP MECHANISM DEBUG", 0.5);
+        // Switchboard buttons too
+        sideboard.sw21().onTrue(new Climb(Climber.ExtendPosition));
+        sideboard.sw22().onTrue(new Climb(Climber.ClimbPosition));
+        sideboard.sw23().onTrue(new MoveToAnglePos(Intake.DownPos, Intake.TravelUp));
+
+        /***************************************************************************************/
+        // REAL COMPETITION BINDINGS.
+        operator.a().whileTrue(new IntakeSequence(false)
+                .andThen(new ShooterAngleSetPos(36.0)));
+        operator.b().whileTrue(new EjectNote()); // eject note from intake
+        operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot
+operator.povUp().onTrue(new AngleCalibration(-25.0));// intake calibrate
+
+operator.rightBumper().onTrue(new ShooterServoSequence(46.5, 2200.0));                                                                                                
+operator.rightTrigger().onTrue(new ShooterServoSequence()); // was 35
+operator.leftTrigger().onTrue(new ShooterServoSequenceDebug());
+        // Calibration commands
+    operator.povUp().onTrue(new CalibrateWithLS()); 
+   operator.povLeft().onTrue(
+            new InstantCommand( ()-> {AmpMechanism.setServo(SmartDashboard.getNumber("AMP MECHANISM DEBUG", 0.5)); } ));
                 
 
             default:
