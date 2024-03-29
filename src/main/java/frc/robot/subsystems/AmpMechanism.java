@@ -12,7 +12,7 @@ import frc.robot.Constants.PWM;
 public class AmpMechanism extends SubsystemBase {
   final double GearRatio = 40.0/60.0;
   final double turns = 5.0;
-  final double parked = -1.0;
+  final double parked = 0.0;
   final double extended = 1.0;
   final double field_goal = 0.5;
   public double desiredPos;
@@ -21,11 +21,11 @@ public class AmpMechanism extends SubsystemBase {
   /** Creates a new AmpMechanism. */
   public AmpMechanism() {
     SmartDashboard.putNumber("AMP MECHANISM DEBUG", 0.5);
-    left_servo.set(parked);
+    left_servo.set(1.0 - parked);
     right_servo.set(parked);
   }
   public void setServo(double cmdPos){
-    left_servo.set(cmdPos);
+    left_servo.set(1.0-cmdPos);
     right_servo.set(cmdPos);
   }
 

@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.CAN;
 import frc.robot.commands.Shooter.DistanceInterpretor;
+import frc.robot.subsystems.AmpMechanism;
 import frc.robot.subsystems.BlinkyLights;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
@@ -83,6 +84,7 @@ public class Configs {
       .add(Transfer.class)
       .add(ShooterServo.class)
       .add(Climber.class)
+      .add(AmpMechanism.class)
       .add(Command.class, "ClimberWatcher", () -> {
         return RobotContainer.getSubsystem(Climber.class).getWatcher();
       })
