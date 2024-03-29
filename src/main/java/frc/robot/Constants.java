@@ -253,6 +253,11 @@ public final class Constants {
     public static final boolean BURN_FLASH = false; // swerve-mk3
   }
 
+  public static final class PWM{
+    public static final int LEFT_AMP_MECHANISM = 1;
+    public static final int RIGHT_AMP_MECHANISM = 0;
+  }
+
   public static final class AnalogIn {
     public static final int Pressure_Sensor = 0;
     // public static final int MAGAZINE_ANGLE = 0;

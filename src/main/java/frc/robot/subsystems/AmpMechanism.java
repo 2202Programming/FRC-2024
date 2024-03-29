@@ -6,14 +6,17 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.PWM;
 
 public class AmpMechanism extends SubsystemBase {
-   Servo mServo = new Servo(0);
+   Servo left_servo = new Servo(PWM.LEFT_AMP_MECHANISM);
+   Servo right_servo = new Servo(PWM.RIGHT_AMP_MECHANISM);
   /** Creates a new AmpMechanism. */
   public AmpMechanism() {
   }
   public void setServo(double cmdPos){
-    mServo.set(cmdPos);
+    left_servo.set(cmdPos);
+    right_servo.set(cmdPos);
   }
 
   @Override

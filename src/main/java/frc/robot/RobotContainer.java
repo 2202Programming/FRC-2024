@@ -30,11 +30,11 @@ public class RobotContainer {
   // enum for bindings add when needed
   public enum Bindings {
     Competition,
-    DriveTest, Shooter_test, IntakeTesting, auto_shooter_test, new_bot_test, Etude
+    DriveTest, Shooter_test, IntakeTesting, auto_shooter_test, new_bot_test, comp_not_comp, Etude
   }
 
   // Change the line below for testing, try not to commit a change 
-  public static final frc.robot.RobotContainer.Bindings bindings = Bindings.Competition;
+  public static final frc.robot.RobotContainer.Bindings bindings = Bindings.comp_not_comp;
 
   // The robot's subsystems and commands are defined here...
   static RobotContainer rc;
