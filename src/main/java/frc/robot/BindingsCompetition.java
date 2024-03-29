@@ -1,6 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Climber.Climb;
 import frc.robot.commands.Climber.ClimberVelocity;
@@ -20,6 +22,7 @@ import frc.robot.commands.Swerve.RobotCentricDrive;
 import frc.robot.commands.Swerve.TargetCentricDrive;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
+import frc.robot.subsystems.AmpMechanism;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
@@ -52,6 +55,7 @@ public final class BindingsCompetition {
         var operator = dc.Operator();
 
         var climber = RobotContainer.getSubsystem(Climber.class);
+        var AmpMechanism = RobotContainer.getSubsystem(AmpMechanism.class);
 
         Trigger ManualShoot = sideboard.sw16();
         Trigger ClimberCalibrate = sideboard.sw11();
@@ -59,7 +63,10 @@ public final class BindingsCompetition {
         Trigger IntakeCalibrate = sideboard.sw13();
 
         // Switchboard buttons too
-        sideboard.sw21().onTrue(new Climb(Climber.ExtendPosition));
+        sideboard.sw21().onTrue(new SequentialCommandGroup (
+            new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.field_goal); }),
+            new WaitCommand(0.5),
+            new Climb(Climber.ExtendPosition)));
         sideboard.sw22().onTrue(new Climb(Climber.ClimbPosition));
         sideboard.sw23().onTrue(new MoveToAnglePos(Intake.DownPos, Intake.TravelUp));
 

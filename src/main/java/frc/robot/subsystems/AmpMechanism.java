@@ -12,9 +12,9 @@ import frc.robot.Constants.PWM;
 public class AmpMechanism extends SubsystemBase {
   final double GearRatio = 40.0/60.0;
   final double turns = 5.0;
-  final double parked = 0.0;
-  final double extended = 1.0;
-  final double field_goal = 0.5;
+  public final double parked = 0.0;
+  public final double extended = 0.118;
+  public final double field_goal = 0.08;
   public double desiredPos;
    Servo left_servo = new Servo(PWM.LEFT_AMP_MECHANISM);
    Servo right_servo = new Servo(PWM.RIGHT_AMP_MECHANISM);
