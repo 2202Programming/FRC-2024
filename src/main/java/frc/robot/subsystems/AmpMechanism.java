@@ -5,14 +5,24 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PWM;
 
 public class AmpMechanism extends SubsystemBase {
+  final double GearRatio = 40.0/60.0;
+  final double turns = 5.0;
+  final double parked = -1.0;
+  final double extended = 1.0;
+  final double field_goal = 0.5;
+  public double desiredPos;
    Servo left_servo = new Servo(PWM.LEFT_AMP_MECHANISM);
    Servo right_servo = new Servo(PWM.RIGHT_AMP_MECHANISM);
   /** Creates a new AmpMechanism. */
   public AmpMechanism() {
+    SmartDashboard.putNumber("AMP MECHANISM DEBUG", 0.5);
+    left_servo.set(parked);
+    right_servo.set(parked);
   }
   public void setServo(double cmdPos){
     left_servo.set(cmdPos);
@@ -21,6 +31,7 @@ public class AmpMechanism extends SubsystemBase {
 
   @Override
   public void periodic() {
+    desiredPos = SmartDashboard.getNumber("AMP MECHANISM DEBUG", 0.5);
     // This method will be called once per scheduler run
   }
 }

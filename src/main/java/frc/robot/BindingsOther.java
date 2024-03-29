@@ -344,7 +344,7 @@ operator.leftTrigger().onTrue(new ShooterServoSequenceDebug());
         // Calibration commands
     operator.povUp().onTrue(new CalibrateWithLS()); 
    operator.povLeft().onTrue(
-            new InstantCommand( ()-> {AmpMechanism.setServo(SmartDashboard.getNumber("AMP MECHANISM DEBUG", 0.5)); } ));
+            new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.desiredPos); } ));
                 
 
             default:
