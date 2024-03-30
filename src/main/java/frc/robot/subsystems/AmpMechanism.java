@@ -21,8 +21,7 @@ public class AmpMechanism extends SubsystemBase {
   /** Creates a new AmpMechanism. */
   public AmpMechanism() {
     SmartDashboard.putNumber("AMP MECHANISM DEBUG", 0.5);
-    left_servo.set(1.0 - parked);
-    right_servo.set(parked);
+    setServo(parked);
   }
   public void setServo(double cmdPos){
     left_servo.set(1.0-cmdPos);
