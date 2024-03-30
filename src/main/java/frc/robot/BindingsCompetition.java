@@ -64,12 +64,11 @@ public final class BindingsCompetition {
         Trigger IntakeCalibrate = sideboard.sw13();
 
         // Switchboard buttons too
-        sideboard.sw21().onTrue(new SequentialCommandGroup (
-            new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.field_goal); }),
-            new WaitCommand(0.5),
-            new Climb(Climber.ExtendPosition)));
+        sideboard.sw21().onTrue(new Climb(Climber.ExtendPosition));
         sideboard.sw22().onTrue(new Climb(Climber.ClimbPosition));
         sideboard.sw23().onTrue(new MoveToAnglePos(Intake.DownPos, Intake.TravelUp));
+        sideboard.sw24().toggleOnTrue(new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.field_goal); }));
+        sideboard.sw24().toggleOnFalse(new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.parked); }));
 
         /***************************************************************************************/
         // REAL COMPETITION BINDINGS.
