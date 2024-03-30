@@ -45,7 +45,7 @@ public final class BindingsCompetition {
         var drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
 
         // Driver buttons
-        driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
+        driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.y().onTrue(new AllianceAwareGyroReset(true));
         driver.rightTrigger().whileTrue(new TargetCentricDrive());
     }
