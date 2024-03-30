@@ -332,8 +332,10 @@ public class BindingsOther {
 
         /***************************************************************************************/
         // REAL COMPETITION BINDINGS.
-        operator.a().whileTrue(new IntakeSequence(false).andThen(new WaitCommand(0.2))
-                .andThen(new ShooterAngleSetPos(36.0)));
+        operator.a().whileTrue(new SequentialCommandGroup(
+            new InstantCommand( ()-> {shooter.setAngleSetpoint(32.0); }),
+            new IntakeSequence(false)));
+
         operator.b().whileTrue(new EjectNote()); // eject note from intake
         operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot
 operator.povUp().onTrue(new AngleCalibration(-25.0));// intake calibrate

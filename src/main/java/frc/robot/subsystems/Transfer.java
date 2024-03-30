@@ -27,7 +27,7 @@ public class Transfer extends SubsystemBase {
   final static double conversionFactor = radius * gearRatio; // [cm/rotations]
 
   static final double MIN_SPEED = -1.0, MAX_SPEED = 1.0; // example looks like Pct Pwr
-  public static final double MAX_VEL = 43.2;
+  public static final double MAX_VEL = 42.0;
 
   // calc Kff for vel control from measured (RPS / %pwr)
   final static double Kff = (1.0 / 43.2); // full pwr gave 43.2 [cm/s]
