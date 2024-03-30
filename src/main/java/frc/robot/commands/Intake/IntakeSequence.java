@@ -91,7 +91,7 @@ public class IntakeSequence extends Command {
         intake.setMaxVelocity(Intake.TravelDown);
         intake.setAngleSetpoint(DownAngle);
         intake.setIntakeSpeed(Intake.RollerMaxSpeed); // [cm/s]
-        transfer.setSpeed(50.0);  //[cm/s]
+        transfer.setSpeed(Transfer.MAX_VEL);  //[cm/s]
         phase = Phase.WaitingForNote;
         break;
 
