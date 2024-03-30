@@ -8,6 +8,18 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ShooterServo;
 
+/*
+ * Moves shooter up outside the calibration switch then slowly brings down
+ * to the calibration point.  Then sets the calibrated position.
+ * 
+ * After calibration, it moves the shooter to its firstShot position
+ * at which point it can be turned off.
+ * 
+ * Note: this requires the powerup extension point to be set to the 
+ * first shot position. See line 61 of the subsystem.
+ *    EXTENSION_POWERUP_POS = Math.sin(FirstShot) * Hypotenuse - MIN_POSITION; // [cm]
+ * 
+ */
 public class CalibrateWithLS extends Command {
     // Safe speed for moving to limit switch
 
@@ -59,7 +71,12 @@ public class CalibrateWithLS extends Command {
                 break;
         }
     }
-
+    @Override
+    public void end(boolean interrupted) {
+        // Now move shooter to NEW PowerUp angle, FirstShot
+        shooter.setAngleSetpoint(shooter.FirstShot); //Turn off when finished moving
+    }
+    
     // Returns true when the command should end, we end when count hits DONE_COUNT
     @Override
     public boolean isFinished() {

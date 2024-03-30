@@ -12,6 +12,8 @@ import frc.robot.util.PIDFController;
 
 public class ShooterServo extends Shooter {
 
+  public final double FirstShot = 38.0; // [deg] this is also the power up position
+
   final static double ShooterAngleGearRatio = 350.0;
   final static double ShooterAngleRadius = 12.0; // [cm]
   final static int STALL_CURRENT = 0; // [amps]
@@ -54,7 +56,10 @@ public class ShooterServo extends Shooter {
         .setMaxVelocity(maxVel)
         .burnFlash();
     extension.setClamp(SERVO_MIN, SERVO_MAX); // local [cm]
-    extension.setPosition(SERVO_CALIB_EXT); // ASSUME WE CALIBRATED
+
+    // tell extension servo our power up position
+    double EXTENSION_POWERUP_POS = Math.sin(FirstShot) * Hypotenuse - MIN_POSITION; // [cm]
+    extension.setPosition(EXTENSION_POWERUP_POS); // ASSUME WE CALIBRATED AT FirstShot.
   }
 
   @Override
