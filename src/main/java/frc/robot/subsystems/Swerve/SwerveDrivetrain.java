@@ -425,7 +425,8 @@ public class SwerveDrivetrain extends SubsystemBase {
       llPoseEstimatorUpdate();
     }
 
-    if ((limelight != null) && (llPose != null) && (limelight.getNumApriltags() > 0) && (limelight.getTA() > 0.13)) { // just use LL for now
+    if ((limelight != null) && (llPose != null) && (limelight.getNumApriltags() > 0) && 
+    (limelight.getTA() > 0.24) && (Math.abs(modules[0].getVelocity()) < 1.5)) { //TODO: KO define
       Pose2d prev_m_Pose = m_pose;
       if (visionPoseEnabled) {
         watchdog.update(prev_m_Pose, llPose);
