@@ -83,7 +83,7 @@ public final class BindingsCompetition {
         //amp is rightbumper
         ManualShoot.and(operator.rightBumper()).onTrue(new SequentialCommandGroup (
             new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.extended); }),
-            new ShooterServoSequence(46.5, 2200).andThen(new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.parked); }))));                                                                                              
+            new ShooterServoSequence(45.5, 2200).andThen(new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.parked); }))));                                                                                              
         ManualShoot.and(operator.rightTrigger()).onTrue(new ShooterServoSequence()); // was 35
         ManualShoot.and(operator.leftTrigger()).onTrue(new ShooterServoSequenceDebug());
         // AutoShootm 

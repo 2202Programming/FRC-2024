@@ -12,9 +12,35 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Pos2 ShootingPose"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Pos2 ShootingPose"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.05
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "disableLimelight"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
@@ -99,7 +125,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "NA to Shoot"
+                  "pathName": "N1 to NA"
                 }
               }
             ]
@@ -108,7 +134,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NA to N2"
+            "pathName": "NA to Shoot"
           }
         },
         {
