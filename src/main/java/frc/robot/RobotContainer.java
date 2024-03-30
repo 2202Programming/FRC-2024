@@ -34,7 +34,7 @@ public class RobotContainer {
   }
 
   // Change the line below for testing, try not to commit a change 
-  public static final frc.robot.RobotContainer.Bindings bindings = Bindings.comp_not_comp;
+  public static final frc.robot.RobotContainer.Bindings bindings = Bindings.Competition;
 
   // The robot's subsystems and commands are defined here...
   static RobotContainer rc;
