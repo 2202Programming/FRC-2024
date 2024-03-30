@@ -68,7 +68,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "N2 to NB"
+                  "pathName": "N2 to NA"
                 }
               },
               {
@@ -83,7 +83,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NB to N2"
+            "pathName": "NA to N2"
           }
         },
         {

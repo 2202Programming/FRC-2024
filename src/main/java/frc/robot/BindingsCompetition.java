@@ -25,6 +25,7 @@ import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 import frc.robot.subsystems.AmpMechanism;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 
@@ -78,8 +79,10 @@ public final class BindingsCompetition {
         operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot
         IntakeCalibrate.and(operator.povUp()).onTrue(new AngleCalibration(-25.0));// intake calibrate
         IntakeCalibrate.and(operator.povDown()).whileTrue(new TestIntake(0.0));
-
-        ManualShoot.and(operator.rightBumper()).onTrue(new ShooterServoSequence(46.5, 2200.0));                                                                                                
+        //amp is rightbumper
+        ManualShoot.and(operator.rightBumper()).onTrue(new SequentialCommandGroup (
+            new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.extended); }),
+            new ShooterServoSequence(46.5, 2200).andThen(new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.parked); }))));                                                                                              
         ManualShoot.and(operator.rightTrigger()).onTrue(new ShooterServoSequence()); // was 35
         ManualShoot.and(operator.leftTrigger()).onTrue(new ShooterServoSequenceDebug());
         // AutoShootm 
