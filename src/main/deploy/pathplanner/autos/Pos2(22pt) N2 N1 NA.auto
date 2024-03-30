@@ -99,7 +99,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "N1 to NB"
+                  "pathName": "NA to Shoot"
                 }
               }
             ]
@@ -108,7 +108,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NB to N1"
+            "pathName": "NA to N2"
           }
         },
         {
