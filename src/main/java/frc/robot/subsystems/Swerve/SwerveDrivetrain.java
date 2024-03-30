@@ -425,8 +425,13 @@ public class SwerveDrivetrain extends SubsystemBase {
       llPoseEstimatorUpdate();
     }
 
+    //TODO: Currently, the limelight is wrong. Whenever you move just past the stage, it appears
+    //that something is off. Specifically, the robot dramatically shifts its position. Additionally,
+    // this often causes the autonomous program to be off. Because of this, we're missing out on
+    // not only crucial points needed to win matches, but also the potential melody ranking point.
+    // Thus, we must ADD UNIT AND CONSTANT FIX TO AVOID BAD UPDATE FROM LIMELIGHT>>>>
     if ((limelight != null) && (llPose != null) && (limelight.getNumApriltags() > 0) && 
-    (limelight.getTA() > 0.24) && (Math.abs(modules[0].getVelocity()) < 1.5)) { //TODO: KO define
+    (limelight.getTA() > 0.24) && (Math.abs(modules[0].getVelocity()) < 1.5)) {
       Pose2d prev_m_Pose = m_pose;
       if (visionPoseEnabled) {
         watchdog.update(prev_m_Pose, llPose);
