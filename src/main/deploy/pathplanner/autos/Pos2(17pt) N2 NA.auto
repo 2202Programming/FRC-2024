@@ -12,35 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Pos2 ShootingPose"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.05
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "disableLimelight"
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "pathName": "Pos2 ShootingPose"
           }
         },
         {
