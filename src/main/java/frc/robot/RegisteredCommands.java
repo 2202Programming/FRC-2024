@@ -19,25 +19,38 @@ import frc.robot.commands.Swerve.RotateUntilSeeTags;
 public class RegisteredCommands {
 
     //Timeouts allow paths to continue in auto even if we miss a Note.
-    static final double IntakeTimeOut = 2.0;
+    static final double IntakeTimeOut = 2.5;
     static final double ShooterTimeOut = 1.0;
 
     public static SendableChooser<Command> RegisterCommands() {
         SendableChooser<Command> autoChooser;
 
         // NamedCommands for use in PathPlanner scripts.
-        NamedCommands.registerCommand("pickup", new IntakeSequence(true).withTimeout(IntakeTimeOut) );
-        NamedCommands.registerCommand("eject", new EjectNote());
+        NamedCommands.registerCommand("pickup", 
+            new IntakeSequence(true).withTimeout(IntakeTimeOut) );
+        
+        NamedCommands.registerCommand("eject", 
+            new EjectNote());
+        
         if (RobotContainer.getRobotSpecs().getRobotNameString().equals("CompetitionBotAlpha2024")) {// Just for alpha
-            NamedCommands.registerCommand("shoot", new ShooterSequence(true, 3500.0).withTimeout(ShooterTimeOut));
+            NamedCommands.registerCommand("shoot",
+                new ShooterSequence(true, 3500.0).withTimeout(ShooterTimeOut));
+            
             NamedCommands.registerCommand("angle_shoot",
-                    new SequentialCommandGroup(new RotateTo(), new ShooterSequence(3200.0)).withTimeout(ShooterTimeOut));
+                new SequentialCommandGroup(
+                    new RotateTo(), 
+                    new ShooterSequence(3200.0)).withTimeout(ShooterTimeOut));
         } else {
-            NamedCommands.registerCommand("shoot", new ShooterServoSequence(true).withTimeout(ShooterTimeOut));
-            // TODO: CHANGE THE TAG BASED ON ALLIANCE
+            NamedCommands.registerCommand("shoot", 
+                    new ShooterServoSequence(true).withTimeout(ShooterTimeOut));
+            
             NamedCommands.registerCommand("angle_shoot",
-                    new SequentialCommandGroup(new RotateTo(), new ShooterServoSequence(true).withTimeout(ShooterTimeOut)));
-            NamedCommands.registerCommand("RotateTo", new RotateUntilSeeTags());
+                new SequentialCommandGroup(
+                    new RotateTo(), 
+                    new ShooterServoSequence(true).withTimeout(ShooterTimeOut)));
+        
+            NamedCommands.registerCommand("RotateTo", 
+                new RotateUntilSeeTags());
         }
         autoChooser = AutoBuilder.buildAutoChooser();
         // select our auto
