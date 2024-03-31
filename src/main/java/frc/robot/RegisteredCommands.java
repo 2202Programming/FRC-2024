@@ -18,8 +18,7 @@ import frc.robot.commands.Swerve.RotateUntilSeeTags;
  */
 public class RegisteredCommands {
 
-    //Timeouts allow paths to continue in auto even if we miss a Note.
-    static final double IntakeTimeOut = 2.5;
+    //Timeouts allow paths to continue in auto even if we miss a Note.   
     static final double ShooterTimeOut = 1.0;
 
     public static SendableChooser<Command> RegisterCommands() {
@@ -27,7 +26,7 @@ public class RegisteredCommands {
 
         // NamedCommands for use in PathPlanner scripts.
         NamedCommands.registerCommand("pickup", 
-            new IntakeSequence(true).withTimeout(IntakeTimeOut) );
+            new IntakeSequence(true));
         
         NamedCommands.registerCommand("eject", 
             new EjectNote());
