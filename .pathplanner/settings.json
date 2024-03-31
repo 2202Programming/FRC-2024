@@ -14,7 +14,7 @@
     "Pos2",
     "Pos3"
   ],
-  "defaultMaxVel": 4.5,
+  "defaultMaxVel": 4.93,
   "defaultMaxAccel": 6.0,
   "defaultMaxAngVel": 360.0,
   "defaultMaxAngAccel": 180.0,
