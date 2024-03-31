@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.IntakeSequence;
@@ -29,9 +28,12 @@ public class RegisteredCommands {
         var intake = RobotContainer.getSubsystem(Intake.class);
 
         // NamedCommands for use in PathPlanner scripts.
-        NamedCommands.registerCommand("intakeDown", new ParallelCommandGroup(
-             new InstantCommand( () -> {intake.setAngleSetpoint(Intake.DownPos); }),
-             new InstantCommand( () -> {intake.setIntakeSpeed(Intake.RollerMaxSpeed);})));
+        NamedCommands.registerCommand("intakeDown", 
+             new InstantCommand( () -> {
+                intake.setAngleSetpoint(Intake.DownPos);
+                intake.setIntakeSpeed(Intake.RollerMaxSpeed);
+            }));
+
         NamedCommands.registerCommand("pickup", 
             new IntakeSequence(true));
         
