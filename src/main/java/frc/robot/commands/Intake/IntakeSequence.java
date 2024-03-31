@@ -63,7 +63,7 @@ public class IntakeSequence extends Command {
 
     // Select down angle based on which bot we have
     DownAngle = (RobotContainer.getRobotSpecs().myRobotName == RobotNames.CompetitionBotAlpha2024) ?
-      91.0 : 105.0;
+      91.0 : Intake.DownPos;
 
     addRequirements(intake, transfer);
   }
