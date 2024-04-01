@@ -58,7 +58,7 @@ public class ShooterServo extends Shooter {
     extension.setClamp(SERVO_MIN, SERVO_MAX); // local [cm]
 
     // tell extension servo our power up position
-    double EXTENSION_POWERUP_POS = Math.sin(FirstShot) * Hypotenuse - MIN_POSITION; // [cm]
+    double EXTENSION_POWERUP_POS = (Math.sin(FirstShot * Math.PI /180.0)) * Hypotenuse - MIN_POSITION; // [cm]
     extension.setPosition(EXTENSION_POWERUP_POS); // ASSUME WE CALIBRATED AT FirstShot.
   }
 

@@ -89,7 +89,7 @@
         {
           "type": "named",
           "data": {
-            "name": "shoot"
+            "name": "angle_shoot"
           }
         }
       ]
