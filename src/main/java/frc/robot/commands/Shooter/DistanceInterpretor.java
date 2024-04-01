@@ -49,8 +49,8 @@ public class DistanceInterpretor extends TargetWatcherCmd {
         // RPM, limelight distance d4 tag, calculating angle
         ang_table.put(1.900, 45.0); //3000
         ang_table.put(2.140, 44.0);
-                ang_table.put(2.499, 42.0); //3000
-        ang_table.put(3.092, 38.0); // 3000
+        ang_table.put(2.499, 42.0); //3000
+        ang_table.put(3.092, 38.0); //3000
         //tested up to here 3/25 nr/ko
         ang_table.put(3.5855, 36.0); //3000
         ang_table.put(3.5856, 34.2); //3500
@@ -67,7 +67,7 @@ public class DistanceInterpretor extends TargetWatcherCmd {
 
         rpm_table.put(1.900, 3000.0);
         rpm_table.put(2.140, 3000.0);
-         rpm_table.put(2.499, 3000.0);
+        rpm_table.put(2.499, 3000.0);
         rpm_table.put(3.092, 3000.0);
         rpm_table.put(3.549, 3000.0);
         rpm_table.put(3.5855, 3000.0);
