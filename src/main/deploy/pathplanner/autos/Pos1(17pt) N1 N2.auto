@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.282954626977957,
-      "y": 6.715747579077855
-    },
-    "rotation": 57.60730056276861
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -18,7 +12,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "shoot"
+                  "name": "angle_shoot"
                 }
               },
               {
