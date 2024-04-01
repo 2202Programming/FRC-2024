@@ -12,6 +12,7 @@ import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Shooter.ShooterServoSequence;
+import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.RotateTo;
 import frc.robot.commands.Swerve.RotateUntilSeeTags;
 import frc.robot.subsystems.Intake;
@@ -54,11 +55,14 @@ public class RegisteredCommands {
             
             NamedCommands.registerCommand("angle_shoot",
                 new SequentialCommandGroup(
-                    new RotateTo(), 
+                    new RotateUntilSeeTags(), 
+                    new FaceToTag(100),//HACK Does not matter
                     new ShooterServoSequence(true).withTimeout(ShooterTimeOut)));
         
             NamedCommands.registerCommand("RotateTo", 
                 new RotateUntilSeeTags());
+            NamedCommands.registerCommand("highShoot", new ShooterServoSequence(45.5,2500,false,true));
+            NamedCommands.registerCommand("midShoot", new ShooterServoSequence(39,3000.0,false,true));
         }
         autoChooser = AutoBuilder.buildAutoChooser();
         // select our auto

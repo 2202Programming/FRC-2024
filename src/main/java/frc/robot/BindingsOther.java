@@ -155,19 +155,11 @@ public class BindingsOther {
             case auto_shooter_test:
                 driver.y().onTrue(new AllianceAwareGyroReset(true));
                 driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
-                // I KNOW THIS IS BAD BUT I DONT REALLY CARE IF IT WORKS
-                driver.povUp().onTrue(new ShooterServoSequence(28.52, 3000.0));
-                driver.povLeft().onTrue(new ShooterServoSequence(46.0, 3000.0));
-
-                // driver.povUp().onTrue(new SpeakerShooter( 3500.0));
-                // driver.povLeft().onTrue(new SpeakerShooter( 3250.0));
-                driver.povRight().onTrue(new SpeakerShooter(3000.0));
-                driver.povDown().onTrue(new SpeakerShooter(2750.0));
-                driver.a().onTrue(new FaceToTag(4.0));
-                driver.b().onTrue(new RotateTo());
-                driver.x().onTrue(new TurnFaceShootAuto(4));
-                driver.rightBumper().onTrue(new SpeakerShooter(1750.0));
-                driver.leftTrigger().whileTrue(new TargetCentricDrive());
+                driver.povUp().onTrue(new CalibrateWithLS());
+                driver.povUp().whileTrue(new AngleCalibration(-25.0));
+                driver.a().whileTrue(new IntakeSequence(false)
+                .andThen(new ShooterAngleSetPos(36.0)));
+        driver.b().whileTrue(new EjectNote());
                 break;
 
             case Etude:

@@ -24,7 +24,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "shoot"
+                  "name": "highShoot"
                 }
               },
               {
@@ -37,7 +37,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -47,9 +47,22 @@
                 }
               },
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "ShootingPose N2"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "ShootingPose N2"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -62,19 +75,32 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "N2 to N1"
-                }
-              },
               {
                 "type": "named",
                 "data": {
                   "name": "pickup"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "N2 to N1"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -87,19 +113,32 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "race",
           "data": {
             "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "N1 to NA"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    }
+                  ]
+                }
+              },
               {
                 "type": "named",
                 "data": {
                   "name": "pickup"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "N1 to NA"
                 }
               }
             ]
@@ -108,13 +147,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "NA to Shoot"
+            "pathName": "NA to N2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "angle_shoot"
+            "name": "midShoot"
           }
         }
       ]

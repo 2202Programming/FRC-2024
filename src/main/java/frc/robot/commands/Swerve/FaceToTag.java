@@ -10,6 +10,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -85,6 +87,8 @@ public class FaceToTag extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    //HACK -KO face to speaker
+    TagID = (DriverStation.getAlliance().get() == Alliance.Blue) ? 7: 4;
     no_turn_states = kinematics.toSwerveModuleStates(zero_cs);
     vision_out = kinematics.toSwerveModuleStates(zero_cs);
     timer.restart();
