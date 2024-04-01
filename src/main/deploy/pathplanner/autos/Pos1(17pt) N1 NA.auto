@@ -12,9 +12,22 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "shoot"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "highShoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "intakeDown"
+                }
+              }
+            ]
           }
         },
         {
