@@ -12,7 +12,7 @@ public class AngleCalibration extends  Command {
     //Safe speed for moving to limit switch
 
     /** Creates a new intakeForward. */
-    final int DELAY = 3;
+    final int DELAY = 5;
     int delay_count;
     public final Intake intake;
     double angleVelocity; //[deg/s]
