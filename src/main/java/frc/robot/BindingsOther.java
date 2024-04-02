@@ -155,8 +155,9 @@ public class BindingsOther {
             case auto_shooter_test:
                 driver.y().onTrue(new AllianceAwareGyroReset(true));
                 driver.leftBumper().whileTrue(new RobotCentricDrive(drivetrain, dc));
+                driver.rightTrigger().whileTrue(new TargetCentricDrive());
                 driver.povUp().onTrue(new CalibrateWithLS());
-                driver.povUp().whileTrue(new AngleCalibration(-25.0));
+                driver.povUp().onTrue(new AngleCalibration(-25.0));
                 driver.a().whileTrue(new IntakeSequence(false)
                 .andThen(new ShooterAngleSetPos(36.0)));
         driver.b().whileTrue(new EjectNote());
