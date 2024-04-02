@@ -432,7 +432,7 @@ public class SwerveDrivetrain extends SubsystemBase {
     // not only crucial points needed to win matches, but also the potential melody ranking point.
     // Thus, we must ADD UNIT AND CONSTANT FIX TO AVOID BAD UPDATE FROM LIMELIGHT>>>>
     if ((limelight != null) && (llPose != null) && (limelight.getNumApriltags() > 0) && 
-    (limelight.getTA() > 0.24) && (Math.abs(modules[0].getVelocity()) < 1.5)) {
+    (limelight.getTA() > 0.13) && (Math.abs(modules[0].getVelocity()) < 2.5)) {
       Pose2d prev_m_Pose = m_pose;
       if (visionPoseEnabled) {
         watchdog.update(prev_m_Pose, llPose);
