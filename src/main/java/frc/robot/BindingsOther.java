@@ -161,6 +161,8 @@ public class BindingsOther {
                 driver.a().whileTrue(new IntakeSequence(false)
                 .andThen(new ShooterAngleSetPos(36.0)));
         driver.b().whileTrue(new EjectNote());
+        driver.povDown().whileTrue(new ShooterAngleVelMove(-2));
+        driver.povRight().whileTrue(new ShooterAngleVelMove(2));
                 break;
 
             case Etude:

@@ -50,7 +50,7 @@ public class RegisteredCommands {
                     new RotateTo(), 
                     new ShooterSequence(3200.0)).withTimeout(ShooterTimeOut));
         } else {
-            NamedCommands.registerCommand("shoot", 
+            NamedCommands.registerCommand("shoot",  
                     new ShooterServoSequence(true).withTimeout(ShooterTimeOut));
             
             NamedCommands.registerCommand("angle_shoot",
@@ -62,6 +62,7 @@ public class RegisteredCommands {
             NamedCommands.registerCommand("RotateTo", 
                 new RotateUntilSeeTags());
             NamedCommands.registerCommand("highShoot", new ShooterServoSequence(45.5,3000,false,true));
+            NamedCommands.registerCommand("highShoot2500", new ShooterServoSequence(45.5,2500,false,true));
             NamedCommands.registerCommand("midShoot", new ShooterServoSequence(39,3000.0,false,true));
         }
         autoChooser = AutoBuilder.buildAutoChooser();

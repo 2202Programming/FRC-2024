@@ -67,12 +67,13 @@ public class TargetCentricDrive extends Command {
 
   // odometery PID
   PIDController centeringPid;
-  double centering_kP = 3.0; //used to be 3.5 when we were in degrees
+  double centering_kP = 2.0; //used to be 3.5 when we were in degrees
   double centering_kI = 0;
   double centering_kD = 0;
   double centeringPidOutput = 2.0;
   double vel_tol = 1.0 / 57.3; // [rad/sec]
-  double pos_tol = 2.0/ 57.3; // [rad]
+  double pos_tol_blind = 5.0/ 57.3; // [rad]
+  double pos_tol_tag = 2.5;
   double max_rot_rate = 45.0; // [deg/s]
   double min_rot_rate = 6.0;
   private double TagID;
@@ -100,12 +101,12 @@ public class TargetCentricDrive extends Command {
 
     // PID for when tag is in view
     centeringPid = new PIDController(centering_kP, centering_kI, centering_kD);
-    centeringPid.setTolerance(pos_tol, vel_tol);
+    centeringPid.setTolerance(pos_tol_tag, vel_tol);
 
     // PID for when tag is not visable
     blindPid = new PIDController(blindPid_kp, blindPid_ki, blindPid_kd); //[rad]
     blindPid.enableContinuousInput(-Math.PI, Math.PI); //[rad]
-    blindPid.setTolerance(pos_tol, vel_tol);  // Not being used
+    blindPid.setTolerance(pos_tol_blind, vel_tol);  // Not being used
 
   }
 
