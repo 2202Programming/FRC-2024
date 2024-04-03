@@ -18,8 +18,8 @@ import frc.robot.util.PIDFController;
 public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
   public final static double StartPosition = 0.0; //[cm]
-  public final static double ExtendPosition = 28.0; //[cm]
-  public final static double ClimbPosition = -2.5; //[cm]
+  public final static double ExtendPosition = 27.0; //[cm]
+  public final static double ClimbPosition = -3.5; //[cm]
   public final static double ClimbCalibrateVel = 2.0; //[cm/s]
 
   final double GearRatio = 1.0/25.0; // have 2 eventually probably lol
