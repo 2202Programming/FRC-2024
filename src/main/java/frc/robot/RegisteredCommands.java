@@ -22,7 +22,7 @@ import frc.robot.subsystems.Intake;
 public class RegisteredCommands {
 
     //Timeouts allow paths to continue in auto even if we miss a Note.   
-    static final double ShooterTimeOut = 1.0;
+    static final double ShooterTimeOut = 3.0;
 
     public static SendableChooser<Command> RegisterCommands() {
         SendableChooser<Command> autoChooser;
