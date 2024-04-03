@@ -12,7 +12,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "shoot"
+                  "name": "highShoot"
                 }
               },
               {
@@ -32,31 +32,6 @@
                 "type": "path",
                 "data": {
                   "pathName": "Pos3 to N3"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "pickup"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "angle_shoot"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "N3 to N2"
                 }
               },
               {
