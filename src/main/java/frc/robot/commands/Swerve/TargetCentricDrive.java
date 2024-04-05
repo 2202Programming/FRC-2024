@@ -18,7 +18,6 @@ import frc.robot.Constants.Tag_Pose;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Sensors.LimelightHelpers.LimelightTarget_Fiducial;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Sensors.Limelight_Subsystem;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
@@ -35,7 +34,6 @@ public class TargetCentricDrive extends Command {
   public enum state {
     Init("Init"),
     BlindTrack("BlindTrack"),
-    NoNote("NoNote"),
     TagTrack("TagTrack");
 
     private String name;
@@ -54,8 +52,7 @@ public class TargetCentricDrive extends Command {
   final SwerveDriveKinematics kinematics;
   final HID_Xbox_Subsystem dc;
   private final Limelight_Subsystem limelight;
-  private final Intake intake;
-
+  
   // Limelight PID
   private PIDController blindPid;
   private final double blindPid_kp = 3.0;
@@ -92,7 +89,6 @@ public class TargetCentricDrive extends Command {
   public TargetCentricDrive() {
     this.dc = RobotContainer.getSubsystem("DC"); // driverControls
     this.drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
-    this.intake = RobotContainer.getSubsystem(Intake.class);
     this.kinematics = drivetrain.getKinematics();
     this.limelight = RobotContainer.getSubsystem(Limelight_Subsystem.class);
 
@@ -120,37 +116,29 @@ public class TargetCentricDrive extends Command {
 
   @Override
   public void execute() {
-
     double tagXfromCenter = checkForTarget(TagID); // checkForTarget is updating tagXfromCenter, hasTarget
 
-    SmartDashboard.putBoolean("TargetCentricDrive hasNote", intake.hasNote());
-
-    if (intake.hasNote()) { //HACK WARNING -JR
-      currentState = state.NoNote;
-    } else {
-      if (hasTarget) {
+    if (hasTarget) {
         currentState = state.TagTrack;
       } else {
         currentState = state.BlindTrack;
       }
-    }
 
     SmartDashboard.putString("TargetCentricDrive State", currentState.toString());
 
     calculateRotFromOdometery(); // always feed PID, even if rot gets overwritten later.
 
     switch (currentState) {
-      case NoNote:
-        calculateRotFromJoystick(); // human controls rotation
-        break;
       case TagTrack:
         // 3/23/24 Seems to be working  
         calculateRotFromTarget(tagXfromCenter); // has note, can see target tag, close loop via limelight
         break;
-      case Init: //should never get here
+      
+        case Init: //should never get here
         System.out.println("***Impossible state reached in TargetCentricDrive***");
         break;
-      case BlindTrack:
+      
+        case BlindTrack:
         // has note, but can't see target, use odometery for rot (already run)
         break;
     }
