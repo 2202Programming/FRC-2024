@@ -24,8 +24,8 @@ public class ShooterServo extends Shooter {
   public final static double MAX_SERVO_INTAKE_ANGLE = 36.0;
   final static double maxVel  = 40.0; // [cm/sec]
   final static double maxAccel = 20.0; // [cm/sec^2]
-  final static double posTol = 1.0; // [cm]
-  final static double velTol = 1.0; // [cm/s]
+  final static double posTol = 0.10; // [cm]  dpl - was 1cm =way too big pos an vel 
+  final static double velTol = 0.50; // [cm/s]
   final static double MIN_POSITION = 20.2184; // [cm]
   final static double MAX_POSITION = 32.4866; // [cm]
   final static double Hypotenuse = 42.53992; // [cm]
