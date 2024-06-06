@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.hid.DriverControls.Id;
 import frc.robot.subsystems.hid.SwitchboardController.SBButton;
@@ -51,13 +52,14 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
   private final CommandXboxController driver;
   private final CommandXboxController operator;
   private final CommandSwitchboardController switchBoard;
+  private final CommandJoystick joystick;
 
   // Buttons onStartup - in case you want to do something based on controls
   // being held at power up or on switchboard.
   int initDriverButtons;
   int initAssistentButtons;
   int initSwitchBoardButtons;
-
+  int initJoystickButtons;
   //boolean limitRotation = true;
   //Scale back the sticks for precision control
   double scale_xy = 1.0;
@@ -86,7 +88,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
     driver = (CommandXboxController) registerController(Id.Driver, new CommandXboxController(Id.Driver.value));
     operator = (CommandXboxController) registerController(Id.Operator, new CommandXboxController(Id.Operator.value));
     switchBoard = (CommandSwitchboardController) registerController(Id.SwitchBoard, new CommandSwitchboardController(Id.SwitchBoard.value));
-   
+    joystick = (CommandJoystick) registerController(Id.Joystick, new CommandJoystick(Id.Joystick.value));
     this.deadzone = deadzone;
     /**
      * All Joysticks are read and shaped without sign conventions.
@@ -96,10 +98,13 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
 
     // XYRot or Swerve Drive
     // Rotation on Left-X axis,  X-Y throttle on Right
-    velXShaper = new ExpoShaper(velExpo,  () -> driver.getRightY()); // X robot is Y axis on Joystick
-    velYShaper = new ExpoShaper(velExpo,  () -> driver.getRightX()); // Y robot is X axis on Joystick
-    swRotShaper = new ExpoShaper(rotExpo, () -> driver.getLeftX());
+    //velXShaper = new ExpoShaper(velExpo,  () -> driver.getRightY()); // X robot is Y axis on Joystick
+    //velYShaper = new ExpoShaper(velExpo,  () -> driver.getRightX()); // Y robot is X axis on Joystick
+    //swRotShaper = new ExpoShaper(rotExpo, () -> driver.getLeftX());
 
+    velXShaper = new ExpoShaper(velExpo,  () -> joystick.getThrottle()); // X robot is Y axis on Joystick
+    velYShaper = new ExpoShaper(velExpo,  () -> joystick.getTwist()); // Y robot is X axis on Joystick
+    swRotShaper = new ExpoShaper(rotExpo, () -> joystick.getDirectionRadians());
     // deadzone for swerve
     velXShaper.setDeadzone(deadzone);
     velYShaper.setDeadzone(deadzone);
@@ -114,6 +119,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
     initDriverButtons = getButtonsRaw(Id.Driver);
     initAssistentButtons = getButtonsRaw(Id.Operator);
     initSwitchBoardButtons = getButtonsRaw(Id.SwitchBoard);
+    initJoystickButtons = getButtonsRaw(Id.Joystick);
   }
 
   /**
@@ -132,7 +138,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
   public CommandXboxController Driver() {return driver; }
   public CommandXboxController Operator() {return operator;}
   public CommandSwitchboardController SwitchBoard() {return switchBoard; }
-
+  public CommandJoystick Joystick() {return joystick; }
   /**
    * constructor of the implementing class.
    * 
