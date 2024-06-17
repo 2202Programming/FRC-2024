@@ -11,7 +11,9 @@ import java.util.HashMap;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -52,7 +54,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
   private final CommandXboxController driver;
   private final CommandXboxController operator;
   private final CommandSwitchboardController switchBoard;
-  private final CommandJoystick joystick;
+  private final ThrustMaster T16000;
 
   // Buttons onStartup - in case you want to do something based on controls
   // being held at power up or on switchboard.
@@ -88,7 +90,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
     driver = (CommandXboxController) registerController(Id.Driver, new CommandXboxController(Id.Driver.value));
     operator = (CommandXboxController) registerController(Id.Operator, new CommandXboxController(Id.Operator.value));
     switchBoard = (CommandSwitchboardController) registerController(Id.SwitchBoard, new CommandSwitchboardController(Id.SwitchBoard.value));
-    joystick = (CommandJoystick) registerController(Id.Joystick, new CommandJoystick(Id.Joystick.value));
+    T16000 = (ThrustMaster) registerController(Id.Joystick, new ThrustMaster(Id.Joystick.value));
     this.deadzone = deadzone;
     /**
      * All Joysticks are read and shaped without sign conventions.
@@ -102,9 +104,9 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
     //velYShaper = new ExpoShaper(velExpo,  () -> driver.getRightX()); // Y robot is X axis on Joystick
     //swRotShaper = new ExpoShaper(rotExpo, () -> driver.getLeftX());
 
-    velXShaper = new ExpoShaper(velExpo,  () -> joystick.getThrottle()); // X robot is Y axis on Joystick
-    velYShaper = new ExpoShaper(velExpo,  () -> joystick.getTwist()); // Y robot is X axis on Joystick
-    swRotShaper = new ExpoShaper(rotExpo, () -> joystick.getDirectionRadians());
+    // velXShaper = new ExpoShaper(velExpo,  () -> joystick.getThrottle()); // X robot is Y axis on Joystick
+    // velYShaper = new ExpoShaper(velExpo,  () -> joystick.getTwist()); // Y robot is X axis on Joystick
+    // swRotShaper = new ExpoShaper(rotExpo, () -> joystick.getDirectionRadians());
     // deadzone for swerve
     velXShaper.setDeadzone(deadzone);
     velYShaper.setDeadzone(deadzone);
@@ -138,7 +140,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
   public CommandXboxController Driver() {return driver; }
   public CommandXboxController Operator() {return operator;}
   public CommandSwitchboardController SwitchBoard() {return switchBoard; }
-  public CommandJoystick Joystick() {return joystick; }
+  public ThrustMaster ThrustMaster() {return T16000; }
   /**
    * constructor of the implementing class.
    * 
@@ -151,6 +153,10 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
     return hid;
   }
 
+  public GenericHID registerController(Id id, GenericHID hid) {
+    deviceMap.put(id, hid);
+    return hid;
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler frame and read all stick inputs
