@@ -53,7 +53,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
   private final CommandXboxController driver;
   private final CommandXboxController operator;
   private final CommandSwitchboardController switchBoard;
-  private final CommandJoystick joystick;
+  private final ThrustMaster joystick;
 
   // Buttons onStartup - in case you want to do something based on controls
   // being held at power up or on switchboard.
@@ -140,7 +140,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
   public CommandXboxController Driver() {return driver; }
   public CommandXboxController Operator() {return operator;}
   public CommandSwitchboardController SwitchBoard() {return switchBoard; }
-  public CommandJoystick Joystick() {return joystick; }
+  public ThrustMaster Joystick() {return joystick; }
   /**
    * constructor of the implementing class.
    * 

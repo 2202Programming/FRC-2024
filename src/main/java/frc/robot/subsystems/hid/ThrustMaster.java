@@ -25,8 +25,8 @@ public class ThrustMaster  extends CommandJoystick{
     }
   }
 
-  public Buttons getButton(Buttons button) {
-    return button;
+  public boolean getUpTop(){
+    return getHID().getRawButton(Buttons.UpTop.value);
   }
   
 }
