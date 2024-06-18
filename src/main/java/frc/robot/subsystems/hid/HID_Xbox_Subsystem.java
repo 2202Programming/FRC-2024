@@ -89,7 +89,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
     driver = (CommandXboxController) registerController(Id.Driver, new CommandXboxController(Id.Driver.value));
     operator = (CommandXboxController) registerController(Id.Operator, new CommandXboxController(Id.Operator.value));
     switchBoard = (CommandSwitchboardController) registerController(Id.SwitchBoard, new CommandSwitchboardController(Id.SwitchBoard.value));
-    joystick = (CommandJoystick) registerController(Id.Joystick, new CommandJoystick(Id.Joystick.value));
+    joystick = (ThrustMaster) registerController(Id.Joystick, new ThrustMaster(Id.Joystick.value));
     this.deadzone = deadzone;
     /**
      * All Joysticks are read and shaped without sign conventions.
