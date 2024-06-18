@@ -43,11 +43,13 @@ public final class BindingsCompetition {
     static void DriverBinding(HID_Xbox_Subsystem dc) {
         var driver = dc.Driver();
         var drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
+        var Joystick = dc.Joystick();
 
         // Driver buttons
         driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.y().onTrue(new AllianceAwareGyroReset(true));
         driver.rightTrigger().whileTrue(new TargetCentricDrive());
+        Joystick.povUp().whileTrue(new IntakeSequence(false));
     }
 
 

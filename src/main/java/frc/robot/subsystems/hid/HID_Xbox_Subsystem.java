@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.hid.DriverControls.Id;
 import frc.robot.subsystems.hid.SwitchboardController.SBButton;
+import frc.robot.subsystems.hid.ThrustMaster.Buttons;
 
 /**
  * HID_Subsystem - Human Input Device
@@ -52,7 +53,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
   private final CommandXboxController driver;
   private final CommandXboxController operator;
   private final CommandSwitchboardController switchBoard;
-  private final CommandJoystick joystick;
+  private final ThrustMaster joystick;
 
   // Buttons onStartup - in case you want to do something based on controls
   // being held at power up or on switchboard.
@@ -88,7 +89,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
     driver = (CommandXboxController) registerController(Id.Driver, new CommandXboxController(Id.Driver.value));
     operator = (CommandXboxController) registerController(Id.Operator, new CommandXboxController(Id.Operator.value));
     switchBoard = (CommandSwitchboardController) registerController(Id.SwitchBoard, new CommandSwitchboardController(Id.SwitchBoard.value));
-    joystick = (CommandJoystick) registerController(Id.Joystick, new CommandJoystick(Id.Joystick.value));
+    joystick = (ThrustMaster) registerController(Id.Joystick, new CommandJoystick(Id.Joystick.value));
     this.deadzone = deadzone;
     /**
      * All Joysticks are read and shaped without sign conventions.
@@ -114,6 +115,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
     // CHANGED for 2022
     operator.getRightX();
     switchBoard.getRawAxis(0);
+    joystick.getRawAxis(0);
 
     // read initial buttons for each device - maybe used for configurions
     initDriverButtons = getButtonsRaw(Id.Driver);
@@ -243,6 +245,8 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
       return initAssistentButtons;
     case SwitchBoard:
       return initSwitchBoardButtons;
+    case Joystick:
+      return initJoystickButtons;
     default:
       return 0;
     }
@@ -250,6 +254,14 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
 
 public boolean readSideboard(SBButton buttonId) {
   return this.switchBoard.getHID().getRawButton(buttonId.value);
+  // The below isn't working. The above works. We don't have time to debug the below. --nren 02-15-2023 9:50pm
+  // int switches = getInitialButtons(Id.SwitchBoard);
+  // int mask = 1 << (buttonId.value -1);
+  // return (switches & mask) !=0 ? true : false ;
+}
+
+public boolean readJoystick(Buttons buttonId) {
+  return this.joystick.getHID().getRawButton(buttonId.value);
   // The below isn't working. The above works. We don't have time to debug the below. --nren 02-15-2023 9:50pm
   // int switches = getInitialButtons(Id.SwitchBoard);
   // int mask = 1 << (buttonId.value -1);
@@ -287,6 +299,8 @@ public boolean isConnected(Id id){
       return operator.getHID().isConnected();
     case SwitchBoard:
       return switchBoard.getHID().isConnected();
+    case Joystick:
+      return joystick.getHID().isConnected();
     default:
       return false;
   }
