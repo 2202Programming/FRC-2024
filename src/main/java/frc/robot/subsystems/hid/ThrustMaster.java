@@ -1,32 +1,90 @@
 package frc.robot.subsystems.hid;
 
+import edu.wpi.first.wpilibj.event.EventLoop;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 
-public class ThrustMaster  extends CommandJoystick{
+/**
+ * Extension of the CommandJoystick class that adds support for additional buttons on Thrustmaster T16000M
+ * @see CommandJoystick
+ */
+public class ThrustMaster  extends CommandGenericHID{
 
+  private m_Joystick joystick;
 
   public ThrustMaster(final int port) {
     super(port);
-  }
-  
-  public enum Buttons{
-     UpTop(2),  
-    LeftTop(3), RightTop(4), LeftOne(5), LeftTwo(6), LeftThree(7), LeftFour(8), 
-    LeftFive(9), LeftSix(10), RightOne(11), 
-    RightTwo(12),
-    RightThree(13),
-    RightFour(14), RightFive(15), RightSix(18), /* , PinkyTopTriggerRed(19),
-    TriggerGn(16), PinkyTriggerGn(17), TopTriggerGn(20), PinkyTopTriggerGn(21), */
-    Mode(30);     //this will also switch trigger modes   - number one
-
-    public int value;
-    private Buttons(final int val) {
-      value = val;
-    }
+    joystick = new m_Joystick(port);
   }
 
-  public boolean getUpTop(){
-    return getHID().getRawButton(Buttons.UpTop.value);
+  /**
+   * Get the x position of the HID.
+   *
+   * @return the x position
+   */
+  public double getX() {
+    return joystick.getX();
   }
-  
+
+  /**
+   * Get the y position of the HID.
+   *
+   * @return the y position
+   */
+  public double getY() {
+    return joystick.getY();
+  }
+
+  /**
+   * Get the z position of the HID.
+   *
+   * @return the z position
+   */
+  public double getZ() {
+    return joystick.getZ();
+  }
+    /**
+   * Get the twist value of the current joystick. This depends on the mapping of the joystick
+   * connected to the current port.
+   *
+   * @return The Twist value of the joystick.
+   */
+  public double getTwist() {
+    return joystick.getTwist();
+  }
+
+  /**
+   * Get the throttle value of the current joystick. This depends on the mapping of the joystick
+   * connected to the current port.
+   *
+   * @return The Throttle value of the joystick.
+   */
+  public double getThrottle() {
+    return joystick.getThrottle();
+  }
+  /*---------------------- EXTENSION BUTTONS -------------------- */
+
+  /**
+   * Constructs an event instance around designated buttons digital signal.
+   *
+   * @return an event instance representing designated digital signal attached to the {@link
+   *     CommandScheduler#getDefaultButtonLoop() default scheduler button loop}.
+   * @see #Button(EventLoop)
+   */
+  public Trigger trigger(m_Joystick.AxisType button) {
+    return trigger(button,CommandScheduler.getInstance().getDefaultButtonLoop());
+  }
+
+  /**
+   * Constructs an event instance around designated digital signal.
+   *
+   * @param loop the event loop instance to attach the event to.
+   * @return an event instance representing designated digital signal attached to the given
+   *     loop.
+   */
+  public Trigger trigger(m_Joystick.AxisType button ,EventLoop loop) {
+    return joystick.Button(button,loop).castTo(Trigger::new);
+  }
 }

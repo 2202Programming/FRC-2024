@@ -14,11 +14,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.hid.DriverControls.Id;
 import frc.robot.subsystems.hid.SwitchboardController.SBButton;
-import frc.robot.subsystems.hid.ThrustMaster.Buttons;
 
 /**
  * HID_Subsystem - Human Input Device
@@ -254,14 +252,6 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
 
 public boolean readSideboard(SBButton buttonId) {
   return this.switchBoard.getHID().getRawButton(buttonId.value);
-  // The below isn't working. The above works. We don't have time to debug the below. --nren 02-15-2023 9:50pm
-  // int switches = getInitialButtons(Id.SwitchBoard);
-  // int mask = 1 << (buttonId.value -1);
-  // return (switches & mask) !=0 ? true : false ;
-}
-
-public boolean readJoystick(Buttons buttonId) {
-  return this.joystick.getHID().getRawButton(buttonId.value);
   // The below isn't working. The above works. We don't have time to debug the below. --nren 02-15-2023 9:50pm
   // int switches = getInitialButtons(Id.SwitchBoard);
   // int mask = 1 << (buttonId.value -1);

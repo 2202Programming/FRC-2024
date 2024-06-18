@@ -25,9 +25,9 @@ import frc.robot.commands.auto.AutoShooting.ShootingTarget;
 import frc.robot.subsystems.AmpMechanism;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
+import frc.robot.subsystems.hid.m_Joystick;
 
 /*
  * Please don't edit this without leads/mentor/driveteam review
@@ -49,7 +49,10 @@ public final class BindingsCompetition {
         driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
         driver.y().onTrue(new AllianceAwareGyroReset(true));
         driver.rightTrigger().whileTrue(new TargetCentricDrive());
+
+        // testing
         Joystick.povUp().whileTrue(new IntakeSequence(false));
+        Joystick.trigger(m_Joystick.AxisType.UpTop).whileTrue(new IntakeSequence(true));
     }
 
 
