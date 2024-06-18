@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj.event.BooleanEvent;
 import edu.wpi.first.wpilibj.event.EventLoop;
 
 /**
- * Extension of the Joystick class that adds support for additional buttons on Thrustmaster T16000M
+ * Extension of the Joystick class that adds support for additional buttons on
+ * Thrustmaster T16000M
+ * 
  * @see Joystick
  */
 public class m_Joystick extends GenericHID {
@@ -42,18 +44,7 @@ public class m_Joystick extends GenericHID {
     /** Twist axis. */
     kTwist(3),
     /** Throttle axis. */
-    kThrottle(4),
-
-
-    //Buttons (Extension)
-    UpTop(2),  LeftTop(3), RightTop(4), 
-
-    LeftOne(5),LeftTwo(6),LeftThree(7),
-    LeftFour(8),LeftFive(9),LeftSix(10), 
-
-    RightOne(11),RightTwo(12),RightThree(13),
-    RightFour(14),RightFive(15),RightSix(18);
-
+    kThrottle(4);
 
     /** AxisType value. */
     public final int value;
@@ -65,10 +56,14 @@ public class m_Joystick extends GenericHID {
 
   /** Represents a digital button on a joystick. */
   public enum ButtonType {
-    /** kTrigger. */
-    kTrigger(1),
-    /** kTop. */
-    kTop(2);
+    Trigger(1),
+    UpTop(2), LeftTop(3), RightTop(4),
+
+    LeftOne(5), LeftTwo(6), LeftThree(7),
+    LeftFour(8), LeftFive(9), LeftSix(10),
+
+    RightOne(11), RightTwo(12), RightThree(13),
+    RightFour(14), RightFive(15), RightSix(18);
 
     /** ButtonType value. */
     public final int value;
@@ -83,7 +78,8 @@ public class m_Joystick extends GenericHID {
   /**
    * Construct an instance of a joystick.
    *
-   * @param port The port index on the Driver Station that the joystick is plugged into.
+   * @param port The port index on the Driver Station that the joystick is plugged
+   *             into.
    */
   public m_Joystick(final int port) {
     super(port);
@@ -98,7 +94,8 @@ public class m_Joystick extends GenericHID {
   }
 
   /**
-   * Get the X value of the joystick. This depends on the mapping of the joystick connected to the
+   * Get the X value of the joystick. This depends on the mapping of the joystick
+   * connected to the
    * current port.
    *
    * @return The X value of the joystick.
@@ -108,7 +105,8 @@ public class m_Joystick extends GenericHID {
   }
 
   /**
-   * Get the Y value of the joystick. This depends on the mapping of the joystick connected to the
+   * Get the Y value of the joystick. This depends on the mapping of the joystick
+   * connected to the
    * current port.
    *
    * @return The Y value of the joystick.
@@ -127,7 +125,8 @@ public class m_Joystick extends GenericHID {
   }
 
   /**
-   * Get the twist value of the current joystick. This depends on the mapping of the joystick
+   * Get the twist value of the current joystick. This depends on the mapping of
+   * the joystick
    * connected to the current port.
    *
    * @return The Twist value of the joystick.
@@ -137,7 +136,8 @@ public class m_Joystick extends GenericHID {
   }
 
   /**
-   * Get the throttle value of the current joystick. This depends on the mapping of the joystick
+   * Get the throttle value of the current joystick. This depends on the mapping
+   * of the joystick
    * connected to the current port.
    *
    * @return The Throttle value of the joystick.
@@ -147,83 +147,8 @@ public class m_Joystick extends GenericHID {
   }
 
   /**
-   * Read the state of the trigger on the joystick.
-   *
-   * @return The state of the trigger.
-   */
-  public boolean getTrigger() {
-    return getRawButton(ButtonType.kTrigger.value);
-  }
-
-  /**
-   * Whether the trigger was pressed since the last check.
-   *
-   * @return Whether the button was pressed since the last check.
-   */
-  public boolean getTriggerPressed() {
-    return getRawButtonPressed(ButtonType.kTrigger.value);
-  }
-
-  /**
-   * Whether the trigger was released since the last check.
-   *
-   * @return Whether the button was released since the last check.
-   */
-  public boolean getTriggerReleased() {
-    return getRawButtonReleased(ButtonType.kTrigger.value);
-  }
-
-  /**
-   * Constructs an event instance around the trigger button's digital signal.
-   *
-   * @param loop the event loop instance to attach the event to.
-   * @return an event instance representing the trigger button's digital signal attached to the
-   *     given loop.
-   */
-  public BooleanEvent trigger(EventLoop loop) {
-    return new BooleanEvent(loop, this::getTrigger);
-  }
-
-  /**
-   * Read the state of the top button on the joystick.
-   *
-   * @return The state of the top button.
-   */
-  public boolean getTop() {
-    return getRawButton(ButtonType.kTop.value);
-  }
-
-  /**
-   * Whether the top button was pressed since the last check.
-   *
-   * @return Whether the button was pressed since the last check.
-   */
-  public boolean getTopPressed() {
-    return getRawButtonPressed(ButtonType.kTop.value);
-  }
-
-  /**
-   * Whether the top button was released since the last check.
-   *
-   * @return Whether the button was released since the last check.
-   */
-  public boolean getTopReleased() {
-    return getRawButtonReleased(ButtonType.kTop.value);
-  }
-
-  /**
-   * Constructs an event instance around the top button's digital signal.
-   *
-   * @param loop the event loop instance to attach the event to.
-   * @return an event instance representing the top button's digital signal attached to the given
-   *     loop.
-   */
-  public BooleanEvent top(EventLoop loop) {
-    return new BooleanEvent(loop, this::getTop);
-  }
-
-  /**
-   * Get the magnitude of the direction vector formed by the joystick's current position relative to
+   * Get the magnitude of the direction vector formed by the joystick's current
+   * position relative to
    * its origin.
    *
    * @return The magnitude of the direction vector
@@ -233,7 +158,8 @@ public class m_Joystick extends GenericHID {
   }
 
   /**
-   * Get the direction of the vector formed by the joystick and its origin in radians.
+   * Get the direction of the vector formed by the joystick and its origin in
+   * radians.
    *
    * @return The direction of the vector in radians
    */
@@ -242,7 +168,8 @@ public class m_Joystick extends GenericHID {
   }
 
   /**
-   * Get the direction of the vector formed by the joystick and its origin in degrees.
+   * Get the direction of the vector formed by the joystick and its origin in
+   * degrees.
    *
    * @return The direction of the vector in degrees
    */
@@ -250,26 +177,45 @@ public class m_Joystick extends GenericHID {
     return Math.toDegrees(getDirectionRadians());
   }
 
-
-
-  /*---------------------- EXTENSION BUTTONS -------------------- */
+  /*---------------------- BUTTONS -------------------- */
   /**
    * Read the value of Sw11 on the switchboard.
+   * 
    * @button the button to read the state of.
    * @return The state of the button.
    */
-  public boolean getButton(AxisType button) {
+  public boolean getButton(ButtonType button) {
     return getRawButton(button.value);
   }
 
   /**
    * Constructs an event instance around Sw11's digital signal.
+   * 
    * @param button the button to read the state of.
-   * @param loop the event loop instance to attach the event to.
-   * @return an event instance representing the Sw11 button's digital signal attached to the given
-   *     loop.
+   * @param loop   the event loop instance to attach the event to.
+   * @return an event instance representing the Sw11 button's digital signal
+   *         attached to the given
+   *         loop.
    */
-  public BooleanEvent Button(AxisType button, EventLoop loop) {
+  public BooleanEvent Button(ButtonType button, EventLoop loop) {
     return new BooleanEvent(loop, () -> getButton(button));
-}
+  }
+
+  /**
+   * Whether the button was pressed since the last check.
+   *
+   * @return Whether the button was pressed since the last check.
+   */
+  public boolean getButtonPressed(ButtonType button) {
+    return getRawButtonPressed(button.value);
+  }
+
+  /**
+   * Whether the top button was released since the last check.
+   *
+   * @return Whether the button was released since the last check.
+   */
+  public boolean getButtonReleased(ButtonType button) {
+    return getRawButtonReleased(button.value);
+  }
 }

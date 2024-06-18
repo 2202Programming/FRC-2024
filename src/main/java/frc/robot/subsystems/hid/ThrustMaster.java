@@ -7,10 +7,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 
 /**
- * Extension of the CommandJoystick class that adds support for additional buttons on Thrustmaster T16000M
+ * Extension of the CommandJoystick class that adds support for additional
+ * buttons on Thrustmaster T16000M
+ * 
  * @see CommandJoystick
  */
-public class ThrustMaster  extends CommandGenericHID{
+public class ThrustMaster extends CommandGenericHID {
 
   private m_Joystick joystick;
 
@@ -45,8 +47,10 @@ public class ThrustMaster  extends CommandGenericHID{
   public double getZ() {
     return joystick.getZ();
   }
-    /**
-   * Get the twist value of the current joystick. This depends on the mapping of the joystick
+
+  /**
+   * Get the twist value of the current joystick. This depends on the mapping of
+   * the joystick
    * connected to the current port.
    *
    * @return The Twist value of the joystick.
@@ -56,7 +60,8 @@ public class ThrustMaster  extends CommandGenericHID{
   }
 
   /**
-   * Get the throttle value of the current joystick. This depends on the mapping of the joystick
+   * Get the throttle value of the current joystick. This depends on the mapping
+   * of the joystick
    * connected to the current port.
    *
    * @return The Throttle value of the joystick.
@@ -69,22 +74,25 @@ public class ThrustMaster  extends CommandGenericHID{
   /**
    * Constructs an event instance around designated buttons digital signal.
    *
-   * @return an event instance representing designated digital signal attached to the {@link
-   *     CommandScheduler#getDefaultButtonLoop() default scheduler button loop}.
+   * @return an event instance representing designated digital signal attached to
+   *         the {@link
+   *         CommandScheduler#getDefaultButtonLoop() default scheduler button
+   *         loop}.
    * @see #Button(EventLoop)
    */
-  public Trigger trigger(m_Joystick.AxisType button) {
-    return trigger(button,CommandScheduler.getInstance().getDefaultButtonLoop());
+  public Trigger trigger(m_Joystick.ButtonType button) {
+    return trigger(button, CommandScheduler.getInstance().getDefaultButtonLoop());
   }
 
   /**
    * Constructs an event instance around designated digital signal.
    *
    * @param loop the event loop instance to attach the event to.
-   * @return an event instance representing designated digital signal attached to the given
-   *     loop.
+   * @return an event instance representing designated digital signal attached to
+   *         the given
+   *         loop.
    */
-  public Trigger trigger(m_Joystick.AxisType button ,EventLoop loop) {
-    return joystick.Button(button,loop).castTo(Trigger::new);
+  public Trigger trigger(m_Joystick.ButtonType button, EventLoop loop) {
+    return joystick.Button(button, loop).castTo(Trigger::new);
   }
 }
