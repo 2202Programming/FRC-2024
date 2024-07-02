@@ -51,7 +51,9 @@ public final class BindingsCompetition {
 
         // testing
         Joystick.povUp().whileTrue(new IntakeSequence(false));
-        Joystick.trigger(m_Joystick.ButtonType.UpTop).whileTrue(new IntakeSequence(true));
+        Joystick.trigger(m_Joystick.ButtonType.UpTop).whileTrue(new IntakeSequence(false));
+        Joystick.trigger(m_Joystick.ButtonType.Trigger).whileTrue(new IntakeSequence(false));
+        Joystick.trigger(m_Joystick.ButtonType.Trigger).whileTrue(new RobotCentricDrive(drivetrain, dc));
     }
 
     static void OperatorBindings(HID_Xbox_Subsystem dc) {

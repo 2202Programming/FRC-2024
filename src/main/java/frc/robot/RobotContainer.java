@@ -30,11 +30,11 @@ public class RobotContainer {
   // enum for bindings add when needed
   public enum Bindings {
     Competition,
-    DriveTest, Shooter_test, IntakeTesting, auto_shooter_test, new_bot_test, comp_not_comp, Etude
+    DriveTest, Shooter_test, IntakeTesting, auto_shooter_test, new_bot_test, comp_not_comp, Etude, joystickTest
   }
 
   // Change the line below for testing, try not to commit a change 
-  public static final frc.robot.RobotContainer.Bindings bindings = Bindings.Competition;
+  public static final frc.robot.RobotContainer.Bindings bindings = Bindings.joystickTest;
 
   // The robot's subsystems and commands are defined here...
   static RobotContainer rc;
@@ -111,8 +111,9 @@ public class RobotContainer {
     autoChooser = RegisteredCommands.RegisterCommands();
 
     // Testing, but also to drive the drivers nuts...
-    Command random_lights = new BlinkyLightColorCmd();
-    random_lights.schedule();
+    //TODO: deleted
+    //Command random_lights = new BlinkyLightColorCmd();
+    //random_lights.schedule();
 
     // Quiet some of the noise
     DriverStation.silenceJoystickConnectionWarning(true);

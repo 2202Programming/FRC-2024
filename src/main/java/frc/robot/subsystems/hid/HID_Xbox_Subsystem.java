@@ -95,6 +95,8 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
      * being used.
      */
 
+    
+    /*uncomment this to use xbox controller in Port 1(driver) */
     // XYRot or Swerve Drive
     // Rotation on Left-X axis,  X-Y throttle on Right
     //velXShaper = new ExpoShaper(velExpo,  () -> driver.getRightY()); // X robot is Y axis on Joystick

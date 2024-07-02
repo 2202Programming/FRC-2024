@@ -179,7 +179,7 @@ public class m_Joystick extends GenericHID {
 
   /*---------------------- BUTTONS -------------------- */
   /**
-   * Read the value of Sw11 on the switchboard.
+   * Read the value of buttons on the ThrustMaster.
    * 
    * @button the button to read the state of.
    * @return The state of the button.
@@ -189,7 +189,7 @@ public class m_Joystick extends GenericHID {
   }
 
   /**
-   * Constructs an event instance around Sw11's digital signal.
+   * Constructs an event instance around buttons digital signal.
    * 
    * @param button the button to read the state of.
    * @param loop   the event loop instance to attach the event to.

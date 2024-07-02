@@ -52,6 +52,7 @@ import frc.robot.subsystems.ShooterServo;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.RobotSpecs.RobotNames;
+import frc.robot.subsystems.hid.m_Joystick;
 
 /*
  * Bindings here for testing, 
@@ -190,6 +191,11 @@ public class BindingsOther {
                 driver.y().onTrue(new AllianceAwareGyroReset(true));
                 driver.rightTrigger().whileTrue(new TargetCentricDrive());
                 break;
+            case joystickTest:
+            var Joystick = dc.Joystick();
+            Joystick.povUp().whileTrue(new IntakeSequence(false));
+            Joystick.trigger(m_Joystick.ButtonType.UpTop).whileTrue(new IntakeSequence(false));
+            Joystick.trigger(m_Joystick.ButtonType.Trigger).whileTrue(new RobotCentricDrive(drivetrain, dc));
 
             default:
                 break;

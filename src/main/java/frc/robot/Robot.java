@@ -83,8 +83,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    var shooter = RobotContainer.getSubsystem(ShooterServo.class);
-    shooter.setRPM(0.0, 0.0);
+    //TODO: CANNOT RUN ON ALPHA
+    //var shooter = RobotContainer.getSubsystem(ShooterServo.class);
+    //shooter.setRPM(0.0, 0.0);
     RobotContainer.getSubsystem(SwerveDrivetrain.class).enableVisionPose();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to

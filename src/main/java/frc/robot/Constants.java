@@ -48,7 +48,8 @@ public final class Constants {
     // Constraints on speeds enforeced in DriveTrain
     // TODO make kMaxSpeed Bot dependent
     public static final double kMaxSpeed = 16.2 * MperFT; // [m/s] new gears 3/23/24 16.6 m/s max
-    public static final double kMaxAngularSpeed = 2 * Math.PI; // [rad/s]
+    //CHANGED TO 1 FOR JOYSTICK
+    public static final double kMaxAngularSpeed = 1.5 * Math.PI; // [rad/s]
   
     // SmartMax PID values [kp, ki, kd, kff] - these get sent to hardware controller
     // DEBUG - SET FF first for drive, then add KP
