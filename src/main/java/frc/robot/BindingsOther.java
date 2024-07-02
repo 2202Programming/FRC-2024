@@ -49,6 +49,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterServo;
+import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Swerve.SwerveDrivetrain;
 import frc.robot.subsystems.hid.HID_Xbox_Subsystem;
 import frc.robot.util.RobotSpecs.RobotNames;
@@ -191,6 +192,16 @@ public class BindingsOther {
                 driver.rightTrigger().whileTrue(new TargetCentricDrive());
                 break;
 
+                case Parade:
+        
+                // Driver buttons
+                driver.leftTrigger().whileTrue(new RobotCentricDrive(drivetrain, dc));
+                driver.y().onTrue(new AllianceAwareGyroReset(true));
+                driver.rightTrigger().whileTrue(new TargetCentricDrive());
+                driver.povUp().whileTrue(new ClimberVelocity(Climber.ClimbCalibrateVel)); //manual climber cal
+       driver.povDown().whileTrue(new ClimberVelocity(-Climber.ClimbCalibrateVel)); //manual climber cal
+                break;
+
             default:
                 break;
         }
@@ -198,6 +209,7 @@ public class BindingsOther {
 
     static void OperatorBindings(HID_Xbox_Subsystem dc) {
         var operator = dc.Operator();
+        var AmpMechanism = RobotContainer.getSubsystem(AmpMechanism.class);
         var bindings = RobotContainer.bindings;
         boolean skip_SS_only = false;
         final Shooter shooter = (RobotContainer.getRobotSpecs().myRobotName == RobotNames.CompetitionBotBeta2024)
@@ -318,7 +330,6 @@ public class BindingsOther {
                 break;
                 case comp_not_comp:
                  var sideboard = dc.SwitchBoard();
-        var AmpMechanism = RobotContainer.getSubsystem(AmpMechanism.class);
                 SmartDashboard.putNumber("AMP MECHANISM DEBUG", 0.5);
         // Switchboard buttons too
         sideboard.sw21().onTrue(new Climb(Climber.ExtendPosition));
@@ -344,6 +355,37 @@ operator.leftTrigger().onTrue(new ShooterServoSequenceDebug());
             new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.desiredPos); } ));
                 
 
+            case Parade:
+            var transfer = RobotContainer.getSubsystem(Transfer.class);
+            operator.rightBumper().onTrue(new ShooterServoSequence(44.5, 3000.0)); //high
+             operator.leftBumper().onTrue(new ShooterServoSequence(36.2, 3000.0)); // low
+             operator.leftTrigger().onTrue(new SequentialCommandGroup ( //amp
+                new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.extended); }), //amp
+                new ShooterServoSequence(45.5, 2200).andThen(new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.parked); })))); //amp
+            operator.a().whileTrue(new IntakeSequence(false)); //intake
+            operator.x().onTrue(new SequentialCommandGroup ( //climb up
+                new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.field_goal); }),
+                new WaitCommand(0.5),
+                new Climb(Climber.ExtendPosition)));
+            operator.b().onTrue(new Climb(Climber.ClimbPosition)); //climb down
+
+
+
+            operator.y().onTrue(new CalibrateWithLS()); //shooter calibrate
+            operator.povUp().whileTrue(new ShooterAngleVelMove(2.0)); //move shooter up manual
+            operator.povDown().whileTrue(new ShooterAngleVelMove(-2.0)); //move shooter down manual
+            operator.rightTrigger().onTrue(new SequentialCommandGroup( //shoot manually
+            new InstantCommand( ()-> {shooter.setRPM(3000.0, 3000.0); }) ,
+            new WaitCommand(1.0),
+            new InstantCommand( ()-> {transfer.setSpeed(30.0); }),
+            new WaitCommand(1.5),
+            new InstantCommand( ()-> {transfer.setSpeed(0.0); }),
+            new InstantCommand( ()-> {shooter.setRPM(0.0, 0.0); })) );
+            operator.povLeft().onTrue(new SequentialCommandGroup( //climber calibrate
+                                new Climb(Climber.StartPosition),
+                                new WaitCommand(1.0),
+                new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.parked); })));
+            break;
             default:
                 break;
         }
