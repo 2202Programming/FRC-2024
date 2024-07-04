@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.PDPMonitorCmd;
 import frc.robot.commands.Climber.Climb;
 import frc.robot.commands.Climber.ClimberVelocity;
@@ -22,7 +21,6 @@ import frc.robot.commands.Intake.EjectNote;
 import frc.robot.commands.Intake.InIntake;
 import frc.robot.commands.Intake.IntakeSequence;
 import frc.robot.commands.Intake.MoveToAnglePos;
-import frc.robot.commands.Intake.TestIntake;
 import frc.robot.commands.Intake.TestIntakeAngle;
 import frc.robot.commands.Shooter.CalibrateAngle;
 import frc.robot.commands.Shooter.CalibrateWithLS;
@@ -32,18 +30,14 @@ import frc.robot.commands.Shooter.ShooterAngleVelMove;
 import frc.robot.commands.Shooter.ShooterSequence;
 import frc.robot.commands.Shooter.ShooterServoSequence;
 import frc.robot.commands.Shooter.ShooterServoSequenceDebug;
-import frc.robot.commands.Shooter.SpeakerShooter;
 import frc.robot.commands.Shooter.TestShoot;
 import frc.robot.commands.Swerve.AllianceAwareGyroReset;
-import frc.robot.commands.Swerve.FaceToTag;
 import frc.robot.commands.Swerve.RobotCentricDrive;
-import frc.robot.commands.Swerve.RotateTo;
 import frc.robot.commands.Swerve.TargetCentricDrive;
 import frc.robot.commands.Swerve.calibrate.TestConstantVelocity;
 import frc.robot.commands.Swerve.calibrate.TestRotateVelocity;
 import frc.robot.commands.auto.AutoShooting;
 import frc.robot.commands.auto.AutoShooting.ShootingTarget;
-import frc.robot.commands.auto.TurnFaceShootAuto;
 import frc.robot.subsystems.AmpMechanism;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Intake;
@@ -357,8 +351,23 @@ operator.leftTrigger().onTrue(new ShooterServoSequenceDebug());
 
             case Parade:
             var transfer = RobotContainer.getSubsystem(Transfer.class);
-            operator.rightBumper().onTrue(new ShooterServoSequence(44.5, 3000.0)); //high
-             operator.leftBumper().onTrue(new ShooterServoSequence(36.2, 3000.0)); // low
+
+             operator.leftBumper().onTrue(new SequentialCommandGroup( //SHOOT LOW
+                new InstantCommand( ()-> {shooter.setRPM(2000.0, 2000.0); }),
+                new WaitCommand(0.5),
+                new InstantCommand( ()-> {transfer.setSpeed(30.0); }),
+                new WaitCommand(1.0),
+                new InstantCommand( ()-> {transfer.setSpeed(0.0);}),
+                new InstantCommand( ()-> {shooter.setRPM(0.0,0.0);})));
+
+            operator.rightBumper().onTrue(new SequentialCommandGroup( //SHOOT HIGH
+                new InstantCommand( ()-> {shooter.setRPM(3000.0, 3000.0); }),
+                new WaitCommand(0.5),
+                new InstantCommand( ()-> {transfer.setSpeed(30.0); }),
+                new WaitCommand(1.0),
+                new InstantCommand( ()-> {transfer.setSpeed(0.0);}),
+                new InstantCommand( ()-> {shooter.setRPM(0.0,0.0);})));
+
              operator.leftTrigger().onTrue(new SequentialCommandGroup ( //amp
                 new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.extended); }), //amp
                 new ShooterServoSequence(45.5, 2200).andThen(new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.parked); })))); //amp
@@ -372,15 +381,8 @@ operator.leftTrigger().onTrue(new ShooterServoSequenceDebug());
 
 
             operator.y().onTrue(new CalibrateWithLS()); //shooter calibrate
-            operator.povUp().whileTrue(new ShooterAngleVelMove(2.0)); //move shooter up manual
-            operator.povDown().whileTrue(new ShooterAngleVelMove(-2.0)); //move shooter down manual
-            operator.rightTrigger().onTrue(new SequentialCommandGroup( //shoot manually
-            new InstantCommand( ()-> {shooter.setRPM(3000.0, 3000.0); }) ,
-            new WaitCommand(1.0),
-            new InstantCommand( ()-> {transfer.setSpeed(30.0); }),
-            new WaitCommand(1.5),
-            new InstantCommand( ()-> {transfer.setSpeed(0.0); }),
-            new InstantCommand( ()-> {shooter.setRPM(0.0, 0.0); })) );
+            operator.povUp().whileTrue(new ShooterAngleVelMove(2.5)); //move shooter up manual
+            operator.povDown().whileTrue(new ShooterAngleVelMove(-2.5)); //move shooter down manual
             operator.povLeft().onTrue(new SequentialCommandGroup( //climber calibrate
                                 new Climb(Climber.StartPosition),
                                 new WaitCommand(1.0),
