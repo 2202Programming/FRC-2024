@@ -12,7 +12,7 @@ import frc.robot.util.PIDFController;
 
 public class ShooterServo extends Shooter {
 
-  public final double FirstShot = 28.5; // [deg] this is also the power up position
+  public final double FirstShot = 38.0; // [deg] this is also the power up position
 
   final static double ShooterAngleGearRatio = 350.0;
   final static double ShooterAngleRadius = 12.0; // [cm]
