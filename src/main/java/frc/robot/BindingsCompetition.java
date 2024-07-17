@@ -93,8 +93,9 @@ public final class BindingsCompetition {
             .onTrue(new AutoShooting(ShootingTarget.Speaker, 36.0, 3200.0));
         
         // Calibration commands
-        ShooterCalibrate.and(operator.povUp()).onTrue(new CalibrateWithLS()); 
+        ShooterCalibrate.and(operator.povUp()).whileTrue(new ShooterAngleVelMove(2.0)); 
         ShooterCalibrate.and(operator.povDown()).whileTrue(new ShooterAngleVelMove(-2.0));
+        ShooterCalibrate.and(operator.x()).onTrue(new CalibrateWithLS());
         ClimberCalibrate.and(operator.povUp()).whileTrue(new ClimberVelocity(Climber.ClimbCalibrateVel));
         ClimberCalibrate.and(operator.povDown()).whileTrue(new ClimberVelocity(-Climber.ClimbCalibrateVel));
         ClimberCalibrate.and(operator.povLeft()).onTrue(

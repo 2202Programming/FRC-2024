@@ -60,10 +60,10 @@ public class CalibrateWithLS extends Command {
                 }
                 break;
             case BeyondLS:
-                shooter.setExtensionVelocity(-0.5);
+                shooter.setExtensionVelocity(-0.2);
                 if (shooter.atLowLimit()) {
                     shooter.setExtensionVelocity(0.0);
-                    shooter.setExtensionPosition(ShooterServo.SERVO_CALIB_EXT);
+                    // shooter.setExtensionPosition(ShooterServo.SERVO_CALIB_EXT);
                     phase = Phase.Finished;
                 }
                 break;
@@ -74,7 +74,7 @@ public class CalibrateWithLS extends Command {
     @Override
     public void end(boolean interrupted) {
         // Now move shooter to NEW PowerUp angle, FirstShot
-        shooter.setAngleSetpoint(shooter.FirstShot); //Turn off when finished moving
+        // shooter.setAngleSetpoint(shooter.FirstShot); //Turn off when finished moving
     }
     
     // Returns true when the command should end, we end when count hits DONE_COUNT
