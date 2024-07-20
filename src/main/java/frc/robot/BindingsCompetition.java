@@ -77,9 +77,8 @@ public final class BindingsCompetition {
         operator.a().whileTrue(new IntakeSequence(false)
                 .andThen(new ShooterAngleSetPos(36.0)));
         operator.b().whileTrue(new EjectNote()); // eject note from intake
-        operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot
-        IntakeCalibrate.and(operator.povUp()).onTrue(new AngleCalibration(-25.0));// intake calibrate
-        IntakeCalibrate.and(operator.povDown()).whileTrue(new TestIntake(0.0));
+        operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot --> obsolete bc amp bar -er
+        
         //amp is rightbumper
         ManualShoot.and(operator.rightBumper()).onTrue(new SequentialCommandGroup (
             new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.extended); }),
@@ -95,10 +94,14 @@ public final class BindingsCompetition {
         // Calibration commands
         ShooterCalibrate.and(operator.povUp()).whileTrue(new ShooterAngleVelMove(2.0)); 
         ShooterCalibrate.and(operator.povDown()).whileTrue(new ShooterAngleVelMove(-2.0));
-        ShooterCalibrate.and(operator.x()).onTrue(new CalibrateWithLS());
+        ShooterCalibrate.and(operator.x()).onTrue(new CalibrateWithLS()); // full shooter calibration 
+
         ClimberCalibrate.and(operator.povUp()).whileTrue(new ClimberVelocity(Climber.ClimbCalibrateVel));
         ClimberCalibrate.and(operator.povDown()).whileTrue(new ClimberVelocity(-Climber.ClimbCalibrateVel));
         ClimberCalibrate.and(operator.povLeft()).onTrue(
             new InstantCommand( ()-> {climber.setClimberPos(0.0); } ));
+
+        IntakeCalibrate.and(operator.povUp()).onTrue(new AngleCalibration(-25.0));// intake calibrate
+        IntakeCalibrate.and(operator.povDown()).whileTrue(new TestIntake(0.0));
     }
 }
