@@ -92,8 +92,8 @@ public final class BindingsCompetition {
         ManualShoot.negate().and(operator.rightTrigger())
             .onTrue(new AutoShooting(ShootingTarget.Speaker, 36.0, 3200.0));
         // following 2 bindings are temp for MROC bc autoshooting is wonky af - ER and NR
-        ManualShoot.negate().and(operator.x()).onTrue(new AutoShooting(ShootingTarget.Speaker, 39.0, 3500.0)); 
-        ManualShoot.negate().and(operator.leftTrigger()).onTrue(new AutoShooting(ShootingTarget.Speaker, 33.0, 3500.0));
+        ManualShoot.negate().and(operator.x()).onTrue(new AutoShooting(ShootingTarget.Speaker, 30.0, 3750.0)); 
+        ManualShoot.negate().and(operator.leftTrigger()).onTrue(new AutoShooting(ShootingTarget.Speaker, 45.0, 4000.0)); //across field
         
         
         // Calibration commands
