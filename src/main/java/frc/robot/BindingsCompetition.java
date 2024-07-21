@@ -73,11 +73,12 @@ public final class BindingsCompetition {
         sideboard.sw24().toggleOnTrue(new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.parked); }));
 
         /***************************************************************************************/
+       
         // REAL COMPETITION BINDINGS.
         operator.a().whileTrue(new IntakeSequence(false)
                 .andThen(new ShooterAngleSetPos(36.0)));
         operator.b().whileTrue(new EjectNote()); // eject note from intake
-        operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot --> obsolete bc amp bar -er
+        // operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot --> obsolete bc amp bar -er
         
         //amp is rightbumper
         ManualShoot.and(operator.rightBumper()).onTrue(new SequentialCommandGroup (
@@ -90,6 +91,9 @@ public final class BindingsCompetition {
             .onTrue(new AutoShooting(ShootingTarget.Speaker, 45.0, 3000.0));
         ManualShoot.negate().and(operator.rightTrigger())
             .onTrue(new AutoShooting(ShootingTarget.Speaker, 36.0, 3200.0));
+        ManualShoot.negate().and(operator.x()).onTrue(new AutoShooting(ShootingTarget.Speaker, 39.0, 3500.0)); //following 2 are temp
+        ManualShoot.negate().and(operator.leftTrigger()).onTrue(new AutoShooting(ShootingTarget.Speaker, 33.0, 3500.0));
+        
         
         // Calibration commands
         ShooterCalibrate.and(operator.povUp()).whileTrue(new ShooterAngleVelMove(2.0)); 
