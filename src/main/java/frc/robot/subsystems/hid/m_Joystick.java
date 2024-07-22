@@ -63,7 +63,7 @@ public class m_Joystick extends GenericHID {
     LeftFour(8), LeftFive(9), LeftSix(10),
 
     RightOne(11), RightTwo(12), RightThree(13),
-    RightFour(14), RightFive(15), RightSix(18);
+    RightFour(14), RightFive(15), RightSix(16);
 
     /** ButtonType value. */
     public final int value;
