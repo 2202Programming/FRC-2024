@@ -5,7 +5,7 @@
       "x": 1.22,
       "y": 4.0
     },
-    "rotation": 0
+    "rotation": -48.93631794908217
   },
   "command": {
     "type": "sequential",
@@ -47,49 +47,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "NE to S"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "angle_shoot"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "S to ND"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "pickup"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ND to S"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "angle_shoot"
           }
         }
       ]

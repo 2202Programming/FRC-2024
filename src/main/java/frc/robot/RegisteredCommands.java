@@ -55,9 +55,9 @@ public class RegisteredCommands {
             
             NamedCommands.registerCommand("angle_shoot",
                 new SequentialCommandGroup(
-                    new RotateUntilSeeTags(), 
-                    new FaceToTag(100),//HACK Does not matter
-                    new ShooterServoSequence(true).withTimeout(ShooterTimeOut)));
+                    // new RotateUntilSeeTags(), 
+                    // new FaceToTag(100),//HACK Does not matter
+                    new ShooterServoSequence(45.0, 3500.0).withTimeout(ShooterTimeOut)));
         
             NamedCommands.registerCommand("RotateTo", 
                 new RotateUntilSeeTags());

@@ -88,14 +88,13 @@ public final class BindingsCompetition {
         ManualShoot.and(operator.leftTrigger()).onTrue(new ShooterServoSequenceDebug());
         // AutoShootm 
         ManualShoot.negate().and(operator.rightBumper())
-            .onTrue(new AutoShooting(ShootingTarget.Speaker, 45.0, 3000.0));
-        ManualShoot.negate().and(operator.rightTrigger())
-            .onTrue(new AutoShooting(ShootingTarget.Speaker, 36.0, 3200.0));
+            .onTrue(new ShooterServoSequence(45.0, 3000.0));
         // following 2 bindings are temp for MROC bc autoshooting is wonky af - ER and NR
-        ManualShoot.negate().and(operator.x()).onTrue(new AutoShooting(ShootingTarget.Speaker, 30.0, 3750.0)); 
-        ManualShoot.negate().and(operator.leftTrigger()).onTrue(new AutoShooting(ShootingTarget.Speaker, 45.0, 4000.0)); //across field
-        
-        
+        ManualShoot.negate().and(operator.x()).onTrue(new ShooterServoSequence( 30.0, 3750.0)); 
+        ManualShoot.negate().and(operator.leftTrigger()).onTrue(new ShooterServoSequence( 45.0, 4000.0)); //across field
+        ManualShoot.negate().and(operator.rightTrigger()).onTrue(new ShooterServoSequence( 45.0, 4500.0)); //across field
+        ManualShoot.negate().and(operator.leftBumper()).onTrue(new ShooterServoSequence( 45.0, 3500.0)); //across field
+
         // Calibration commands
         ShooterCalibrate.and(operator.povUp()).whileTrue(new ShooterAngleVelMove(2.0)); 
         ShooterCalibrate.and(operator.povDown()).whileTrue(new ShooterAngleVelMove(-2.0));
