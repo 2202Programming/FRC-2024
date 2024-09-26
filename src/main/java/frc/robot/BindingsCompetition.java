@@ -54,6 +54,7 @@ public final class BindingsCompetition {
         Joystick.trigger(m_Joystick.ButtonType.UpTop).whileTrue(new IntakeSequence(false));
         Joystick.trigger(m_Joystick.ButtonType.Trigger).whileTrue(new IntakeSequence(false));
         Joystick.trigger(m_Joystick.ButtonType.Trigger).whileTrue(new RobotCentricDrive(drivetrain, dc));
+        Joystick.trigger(m_Joystick.ButtonType.LeftOne).onTrue(new AllianceAwareGyroReset(true));
     }
 
     static void OperatorBindings(HID_Xbox_Subsystem dc) {
