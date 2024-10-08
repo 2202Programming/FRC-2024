@@ -80,21 +80,21 @@ public final class BindingsCompetition {
         operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot --> obsolete bc amp bar -er
         
         //amp is rightbumper
-        ManualShoot.and(operator.rightBumper()).onTrue(new SequentialCommandGroup (
-            new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.extended); }),
-            new ShooterServoSequence(45.5, 2200).andThen(new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.parked); }))));                                                                                              
-        ManualShoot.and(operator.rightTrigger()).onTrue(new ShooterServoSequence()); // was 35
-        ManualShoot.and(operator.leftTrigger()).onTrue(new ShooterServoSequenceDebug());
-        // AutoShootm 
-        ManualShoot.negate().and(operator.rightBumper())
-            .onTrue(new AutoShooting(ShootingTarget.Speaker, 45.0, 3000.0));
-        ManualShoot.negate().and(operator.rightTrigger())
-            .onTrue(new AutoShooting(ShootingTarget.Speaker, 36.0, 3200.0));
+        // ManualShoot.and(operator.rightBumper()).onTrue(new SequentialCommandGroup (
+        //     new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.extended); }),
+        //     new ShooterServoSequence(45.5, 2200).andThen(new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.parked); }))));                                                                                              
+        // ManualShoot.and(operator.rightTrigger()).onTrue(new ShooterServoSequence()); // was 35
+        // ManualShoot.and(operator.leftTrigger()).onTrue(new ShooterServoSequenceDebug());
+        // // AutoShootm 
+operator.rightBumper()
+            .onTrue(new ShooterServoSequence( 45.0, 3000.0));
+            operator.rightTrigger()
+            .onTrue(new ShooterServoSequence( 36.0, 3000.0));
         
         // Calibration commands
-        ShooterCalibrate.and(operator.povUp()).whileTrue(new ShooterAngleVelMove(2.0)); 
-        ShooterCalibrate.and(operator.povDown()).whileTrue(new ShooterAngleVelMove(-2.0));
-        ShooterCalibrate.and(operator.x()).onTrue(new CalibrateWithLS()); // full shooter calibration 
+        operator.povUp().whileTrue(new ShooterAngleVelMove(2.0)); 
+       operator.povDown().whileTrue(new ShooterAngleVelMove(-2.0));
+        operator.y().onTrue(new CalibrateWithLS()); // full shooter calibration 
 
         ClimberCalibrate.and(operator.povUp()).whileTrue(new ClimberVelocity(Climber.ClimbCalibrateVel));
         ClimberCalibrate.and(operator.povDown()).whileTrue(new ClimberVelocity(-Climber.ClimbCalibrateVel));

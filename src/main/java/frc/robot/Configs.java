@@ -39,10 +39,11 @@ public class Configs {
         pdp.clearStickyFaults();
         return pdp;
       })
+
       .add(PneumaticsControl.class)
       // .add(BlinkyLights.class, "LIGHTS")
       .add(HID_Xbox_Subsystem.class, "DC", () -> {
-        return new HID_Xbox_Subsystem(0.3, 0.9, 0.05);
+        return new HID_Xbox_Subsystem(0.3, 0.90, 0.015);//0.05 for xbox, 0.03 before on joystick
       })
       .add(Sensors_Subsystem.class)
       .add(Limelight_Subsystem.class)
