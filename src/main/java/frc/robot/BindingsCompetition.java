@@ -73,11 +73,13 @@ public final class BindingsCompetition {
         sideboard.sw24().toggleOnTrue(new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.parked); }));
 
         /***************************************************************************************/
-        // REAL COMPETITION BINDINGS.
+        // // REAL COMPETITION BINDINGS.
         operator.a().whileTrue(new IntakeSequence(false)
                 .andThen(new ShooterAngleSetPos(36.0)));
         operator.b().whileTrue(new EjectNote()); // eject note from intake
-        operator.x().whileTrue(new InIntake(false)); // works ---> seq for stay in intake for amp shoot --> obsolete bc amp bar -er
+        operator.x().whileTrue(new InIntake(false));
+        operator.leftBumper().onTrue((new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.parked); })));
+        operator.leftTrigger().onTrue((new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.extended); }))); // works ---> seq for stay in intake for amp shoot --> obsolete bc amp bar -er
         
         //amp is rightbumper
         // ManualShoot.and(operator.rightBumper()).onTrue(new SequentialCommandGroup (
@@ -86,22 +88,22 @@ public final class BindingsCompetition {
         // ManualShoot.and(operator.rightTrigger()).onTrue(new ShooterServoSequence()); // was 35
         // ManualShoot.and(operator.leftTrigger()).onTrue(new ShooterServoSequenceDebug());
         // // AutoShootm 
-operator.rightBumper()
-            .onTrue(new ShooterServoSequence( 45.0, 3000.0));
+        operator.rightBumper()
+            .onTrue(new SequentialCommandGroup((new InstantCommand( ()-> {AmpMechanism.setServo(AmpMechanism.extended); })), new ShooterServoSequence( 45.5, 2200.0)));
             operator.rightTrigger()
-            .onTrue(new ShooterServoSequence( 36.0, 3000.0));
+            .onTrue(new ShooterServoSequence( 45.0, 3000.0));
         
-        // Calibration commands
-        operator.povUp().whileTrue(new ShooterAngleVelMove(2.0)); 
-       operator.povDown().whileTrue(new ShooterAngleVelMove(-2.0));
+    //     // Calibration commands
+        operator.povUp().whileTrue(new ShooterAngleVelMove(4.0)); 
+       operator.povDown().whileTrue(new ShooterAngleVelMove(-4.0));
         operator.y().onTrue(new CalibrateWithLS()); // full shooter calibration 
 
-        ClimberCalibrate.and(operator.povUp()).whileTrue(new ClimberVelocity(Climber.ClimbCalibrateVel));
-        ClimberCalibrate.and(operator.povDown()).whileTrue(new ClimberVelocity(-Climber.ClimbCalibrateVel));
-        ClimberCalibrate.and(operator.povLeft()).onTrue(
+    //    operator.povUp().whileTrue(new ClimberVelocity(Climber.ClimbCalibrateVel));
+    //     operator.povDown().whileTrue(new ClimberVelocity(-Climber.ClimbCalibrateVel));
+        operator.povLeft().onTrue(
             new InstantCommand( ()-> {climber.setClimberPos(0.0); } ));
 
-        IntakeCalibrate.and(operator.povUp()).onTrue(new AngleCalibration(-25.0));// intake calibrate
+       operator.povRight().onTrue(new AngleCalibration(-25.0));// intake calibrate
         IntakeCalibrate.and(operator.povDown()).whileTrue(new TestIntake(0.0));
     }
 }

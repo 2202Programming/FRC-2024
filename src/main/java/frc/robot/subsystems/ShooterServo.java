@@ -19,7 +19,7 @@ public class ShooterServo extends Shooter {
   final static int STALL_CURRENT = 0; // [amps]
   final static int FREE_CURRENT = 25;
   final static double SERVO_MIN = -0.25; // [cm] sw stop on extension servo
-  final static double SERVO_MAX = 10.89; // [cm] sw stop on extension
+  final static double SERVO_MAX = 13.0; // [cm] sw stop on extension
   public final static double SERVO_CALIB_EXT = 1.407; // [cm] point where reed switch trips moving down
   public final static double MAX_SERVO_INTAKE_ANGLE = 36.0;
   final static double maxVel  = 40.0; // [cm/sec]
