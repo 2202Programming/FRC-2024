@@ -55,7 +55,7 @@ public class EtudeIntake extends Command {
   @Override
   public void initialize() {
     sensed_note = false;
-    count = 5;
+    count = 0;
     phase = Phase.IntakeDown;
   }
 
