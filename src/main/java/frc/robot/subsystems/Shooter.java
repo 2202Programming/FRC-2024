@@ -84,7 +84,7 @@ public class Shooter extends SubsystemBase {
     hw_leftPid.setReference(leftRPM, ControlType.kVelocity, slot);
     hw_rightPid.setReference(rightRPM, ControlType.kVelocity, slot);
     cmdLeftRPM = leftRPM;
-    cmdRightRPM = leftRPM; // changed from rightRPM
+    cmdRightRPM = rightRPM;
   }
 
   /* 
