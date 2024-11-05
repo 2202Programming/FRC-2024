@@ -56,6 +56,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
  private final CommandXboxController operator;
  private final CommandSwitchboardController switchBoard;
  private final ThrustMaster joystick;
+ private final ThrustMaster joystickOperator;
 
 
  // Buttons onStartup - in case you want to do something based on controls
@@ -64,6 +65,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
  int initAssistentButtons;
  int initSwitchBoardButtons;
  int initJoystickButtons;
+ int initJoystickOperatorButtons;
  //boolean limitRotation = true;
  //Scale back the sticks for precision control
  double scale_xy = 1.0;
@@ -99,6 +101,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
    operator = (CommandXboxController) registerController(Id.Operator, new CommandXboxController(Id.Operator.value));
    switchBoard = (CommandSwitchboardController) registerController(Id.SwitchBoard, new CommandSwitchboardController(Id.SwitchBoard.value));
    joystick = (ThrustMaster) registerController(Id.Joystick, new ThrustMaster(Id.Joystick.value));
+   joystickOperator = (ThrustMaster) registerController(Id.JoystickOperator, new ThrustMaster(Id.JoystickOperator.value));
    this.deadzone = deadzone;
    /**
     * All Joysticks are read and shaped without sign conventions.
@@ -118,7 +121,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
 
    velXShaper = new ExpoShaper(velExpo,  () -> joystick.getY()); // X robot is Y axis on Joystick
    velYShaper = new ExpoShaper(velExpo,  () -> joystick.getX()); // Y robot is X axis on Joystick
-   swRotShaper = new ExpoShaper(rotExpo, () -> joystick.getTwist());
+   swRotShaper = new ExpoShaper(rotExpo, () -> joystickOperator.getTwist());
    // deadzone for swerve
    velXShaper.setDeadzone(deadzone);
    velYShaper.setDeadzone(deadzone);
@@ -137,6 +140,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
    initAssistentButtons = getButtonsRaw(Id.Operator);
    initSwitchBoardButtons = getButtonsRaw(Id.SwitchBoard);
    initJoystickButtons = getButtonsRaw(Id.Joystick);
+   initJoystickOperatorButtons = getButtonsRaw(Id.JoystickOperator);
  }
 
 
@@ -158,6 +162,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
  public CommandXboxController Operator() {return operator;}
  public CommandSwitchboardController SwitchBoard() {return switchBoard; }
  public ThrustMaster Joystick() {return joystick; }
+ public ThrustMaster JoystickOperator() {return joystickOperator; }
  /**
   * constructor of the implementing class.
   *
@@ -327,6 +332,8 @@ public boolean isConnected(Id id){
      return switchBoard.getHID().isConnected();
    case Joystick:
      return joystick.getHID().isConnected();
+     case JoystickOperator:
+      return joystickOperator.getHID().isConnected();
    default:
      return false;
  }

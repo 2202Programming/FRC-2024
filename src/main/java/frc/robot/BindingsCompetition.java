@@ -47,6 +47,7 @@ public final class BindingsCompetition {
        var driver = dc.Driver();
        var drivetrain = RobotContainer.getSubsystem(SwerveDrivetrain.class);
        var Joystick = dc.Joystick();
+       var JoystickOperator = dc.JoystickOperator();
 
 
        // Driver buttons
