@@ -76,6 +76,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
  ExpoShaper velXShaper;    // left/right 
  ExpoShaper velYShaper;    // forward/backward
  ExpoShaper swRotShaper;   // rotation for XYRot
+ ExpoShaper swSpecificRotShaper;
 
 
  //values updated each frame
@@ -122,10 +123,12 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
    velXShaper = new ExpoShaper(velExpo,  () -> joystick.getY()); // X robot is Y axis on Joystick
    velYShaper = new ExpoShaper(velExpo,  () -> joystick.getX()); // Y robot is X axis on Joystick
    swRotShaper = new ExpoShaper(rotExpo, () -> joystickOperator.getX());
+   swSpecificRotShaper = new ExpoShaper(rotExpo, () -> joystickOperator.getTwist());
    // deadzone for swerve
    velXShaper.setDeadzone(deadzone);
    velYShaper.setDeadzone(deadzone);
    swRotShaper.setDeadzone(deadzone);
+   swSpecificRotShaper.setDeadzone(deadzone);
 
 
    // read some values to remove unused warning
@@ -187,7 +190,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
    //Added scale-factors for low-speed creeper mode
    velX = -velXShaper.get() * scale_xy;    //invert, so right stick moves robot, right, lowering Y
    velY = -velYShaper.get() * scale_xy;    //invert, so forward stick is positive, increase X
-   xyRot = -swRotShaper.get() * scale_rot; //invert, so positive is CCW
+   xyRot =(-swRotShaper.get() - swSpecificRotShaper.get()) * scale_rot; //invert, so positive is CCW
  }
   //public void setLimitRotation(boolean enableLimit) {
  //  this.limitRotation = enableLimit;
