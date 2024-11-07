@@ -7,7 +7,7 @@ public class DriverControls {
   }
 
   public enum Id {
-    Driver(0), Operator(1), SwitchBoard(2), Phantom(3),
+    Driver(0), Operator(1), SwitchBoard(2), JoystickOperator(3),
     // Just an ex. I dont know what Phantom is for lol.
     Joystick(4);
 
