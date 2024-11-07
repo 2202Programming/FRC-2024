@@ -121,7 +121,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
 
    velXShaper = new ExpoShaper(velExpo,  () -> joystick.getY()); // X robot is Y axis on Joystick
    velYShaper = new ExpoShaper(velExpo,  () -> joystick.getX()); // Y robot is X axis on Joystick
-   swRotShaper = new ExpoShaper(rotExpo, () -> joystickOperator.getTwist());
+   swRotShaper = new ExpoShaper(rotExpo, () -> joystickOperator.getX());
    // deadzone for swerve
    velXShaper.setDeadzone(deadzone);
    velYShaper.setDeadzone(deadzone);
