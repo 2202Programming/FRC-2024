@@ -70,6 +70,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
  //Scale back the sticks for precision control
  double scale_xy = 1.0;
  double scale_rot = 1.0;
+ double twist_rot = 0.7;
 
 
  //XYRot / Swerve (field or robot relative)
@@ -190,7 +191,7 @@ public class HID_Xbox_Subsystem extends SubsystemBase {
    //Added scale-factors for low-speed creeper mode
    velX = -velXShaper.get() * scale_xy;    //invert, so right stick moves robot, right, lowering Y
    velY = -velYShaper.get() * scale_xy;    //invert, so forward stick is positive, increase X
-   xyRot =(-swRotShaper.get() - swSpecificRotShaper.get()) * scale_rot; //invert, so positive is CCW
+   xyRot =(-swRotShaper.get() * scale_rot) - (swSpecificRotShaper.get() * twist_rot); //invert, so positive is CCW
  }
   //public void setLimitRotation(boolean enableLimit) {
  //  this.limitRotation = enableLimit;
